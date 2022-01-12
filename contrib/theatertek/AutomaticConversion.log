@@ -1,0 +1,12 @@
+theatertek.lpi Note: Added defines -dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL in custom options
+ Progress: Found all unit files
+theatertek.lpr(1,20) Note: Added MODE Delphi syntax modifier after unit name.
+ : 
+ : *** Converting unit files belonging to project/package ***
+TTINFO.pas(1,13) Note: Added MODE Delphi syntax modifier after unit name.
+ : 
+ : *** Fixing used units and Repairing form files ***
+TTINFO.pas Note: Removed property "TextHeight".
+TTINFO.pas Note: Removed property "OldCreateOrder".
+ Progress: Conversion took: 00:00:46
+ : Conversion Ready.

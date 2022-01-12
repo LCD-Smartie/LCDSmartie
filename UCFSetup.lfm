@@ -1,0 +1,110 @@
+object CrystalFontzSetupForm: TCrystalFontzSetupForm
+  Left = 533
+  Height = 179
+  Top = 359
+  Width = 179
+  BorderIcons = []
+  BorderStyle = bsToolWindow
+  Caption = 'Crystalfontz settings'
+  ClientHeight = 179
+  ClientWidth = 179
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.0.12.0'
+  object GroupBox3: TGroupBox
+    Left = 8
+    Height = 49
+    Top = 6
+    Width = 166
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Contrast'
+    ClientHeight = 31
+    ClientWidth = 162
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 0
+    object ContrastTrackBar: TTrackBar
+      Left = 4
+      Height = 25
+      Top = 18
+      Width = 153
+      Frequency = 4
+      LineSize = 2
+      Max = 100
+      OnChange = ContrastTrackBarChange
+      Position = 0
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+  end
+  object GroupBox4: TGroupBox
+    Left = 8
+    Height = 49
+    Top = 62
+    Width = 166
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Backlight'
+    ClientHeight = 31
+    ClientWidth = 162
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 1
+    object BacklightTrackBar: TTrackBar
+      Left = 4
+      Height = 25
+      Top = 20
+      Width = 153
+      Frequency = 4
+      LineSize = 2
+      Max = 100
+      OnChange = BacklightTrackBarChange
+      Position = 0
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+  end
+  object OKButton: TButton
+    Left = 12
+    Height = 25
+    Top = 152
+    Width = 75
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 3
+  end
+  object V2CGROMCheckbox: TCheckBox
+    Left = 8
+    Height = 19
+    Hint = 'If the @ symbol (and others) arent displaying correctly, change this.'
+    Top = 120
+    Width = 99
+    Caption = 'v2 character set'
+    OnClick = V2CGROMCheckboxClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+  end
+  object CancelButton: TButton
+    Left = 96
+    Height = 25
+    Top = 152
+    Width = 75
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+  end
+end

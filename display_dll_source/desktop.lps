@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Release"/>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="desktop.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="38" Y="110"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="dispform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LCDDisplayForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DISPFORM"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="379"/>
+        <CursorPos X="63" Y="417"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="dispform.lfm"/>
+        <EditorIndex Value="2"/>
+        <CursorPos X="4" Y="41"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit2>
+    </Units>
+    <OtherDefines Count="5">
+      <Define0 Value="Borland"/>
+      <Define1 Value="Ver150"/>
+      <Define2 Value="Delphi7"/>
+      <Define3 Value="Compiler6_Up"/>
+      <Define4 Value="PUREPASCAL"/>
+    </OtherDefines>
+    <JumpHistory Count="29" HistoryIndex="28">
+      <Position1>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="113" TopLine="96"/>
+      </Position1>
+      <Position2>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="135" Column="39" TopLine="99"/>
+      </Position2>
+      <Position3>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="163" Column="6" TopLine="134"/>
+      </Position3>
+      <Position4>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="124" Column="6" TopLine="90"/>
+      </Position4>
+      <Position5>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="291" Column="41" TopLine="256"/>
+      </Position5>
+      <Position6>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="264" Column="15" TopLine="250"/>
+      </Position6>
+      <Position7>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="310" Column="26" TopLine="288"/>
+      </Position7>
+      <Position8>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="316" Column="22" TopLine="294"/>
+      </Position8>
+      <Position9>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="249" Column="4" TopLine="238"/>
+      </Position9>
+      <Position10>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="14" Column="12"/>
+      </Position10>
+      <Position11>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="373" Column="26" TopLine="351"/>
+      </Position11>
+      <Position12>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="405" Column="23" TopLine="383"/>
+      </Position12>
+      <Position13>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="412" Column="36" TopLine="390"/>
+      </Position13>
+      <Position14>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="413" Column="30" TopLine="391"/>
+      </Position14>
+      <Position15>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="462" Column="28" TopLine="430"/>
+      </Position15>
+      <Position16>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="15" Column="13" TopLine="4"/>
+      </Position16>
+      <Position17>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="374" Column="28" TopLine="345"/>
+      </Position17>
+      <Position18>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="410" Column="36" TopLine="385"/>
+      </Position18>
+      <Position19>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="463" Column="31" TopLine="430"/>
+      </Position19>
+      <Position20>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="101" Column="83" TopLine="81"/>
+      </Position20>
+      <Position21>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="102" Column="15" TopLine="73"/>
+      </Position21>
+      <Position22>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="75" Column="3" TopLine="59"/>
+      </Position22>
+      <Position23>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="76" Column="5" TopLine="54"/>
+      </Position23>
+      <Position24>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="94" Column="16" TopLine="71"/>
+      </Position24>
+      <Position25>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="93" Column="21" TopLine="69"/>
+      </Position25>
+      <Position26>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="482" Column="6" TopLine="439"/>
+      </Position26>
+      <Position27>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="32" Column="37" TopLine="13"/>
+      </Position27>
+      <Position28>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="452" Column="29" TopLine="432"/>
+      </Position28>
+      <Position29>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="234" Column="23" TopLine="231"/>
+      </Position29>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

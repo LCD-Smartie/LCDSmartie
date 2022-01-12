@@ -1,0 +1,8 @@
+for proper working of lcdsmartie:
+libeay32.dll
+openssl.cfg
+openssl.exe
+ssleay32.dll
+
+cert.pem and key.pem  files are for remote display server SSL
+you can add your own or use the generate button in settings

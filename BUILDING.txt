@@ -1,0 +1,37 @@
+Delphi Version
+==============
+This project is built using Lazarus https://www.lazarus-ide.org
+
+Required Components
+===================
+This project requires the following components to be installed and in
+the projects path:
+ - WinampCtrl.
+
+This can be found in the components sub-directory
+
+Indy 10
+This can be installed via lazarus package manager
+
+Install all components before loading the LCD Smartie project.
+
+Building
+========
+
+Built binaries are built into their proper places in the release-dir directory
+
+Directory structure:
+lcdsmartie	->
+		->components ->3rd party stuff required to build
+		->contrib ->3rd party plugin source
+		->display_dll_source ->display dll source
+		->DLL example ->demo.dll plugin source in a few different programming languages
+		->DNBridge -> .net bridge dll source
+		->graphics -> image files for the program to use internally
+		->images -> skin images
+		->release-dir -> after compiling, program and plugins can be found here. This whole folder would be zipped up for a release
+		->extras -> schematics, info, data sheets, etc.
+
+---------------------------------------------------------------
+
+

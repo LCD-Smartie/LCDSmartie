@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Release"/>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="theatertek.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="TTINFO.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="20" Y="9"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+    </Units>
+    <OtherDefines Count="5">
+      <Define0 Value="Borland"/>
+      <Define1 Value="Ver150"/>
+      <Define2 Value="Delphi7"/>
+      <Define3 Value="Compiler6_Up"/>
+      <Define4 Value="PUREPASCAL"/>
+    </OtherDefines>
+    <JumpHistory Count="4" HistoryIndex="3">
+      <Position1>
+        <Filename Value="TTINFO.pas"/>
+      </Position1>
+      <Position2>
+        <Filename Value="TTINFO.pas"/>
+        <Caret Line="10" Column="22"/>
+      </Position2>
+      <Position3>
+        <Filename Value="TTINFO.pas"/>
+        <Caret Line="9" Column="28"/>
+      </Position3>
+      <Position4>
+        <Filename Value="TTINFO.pas"/>
+        <Caret Line="12" Column="29"/>
+      </Position4>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+  <SkipCheckLCLInterfaces Value="True"/>
+</CONFIG>

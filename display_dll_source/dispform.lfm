@@ -1,0 +1,50 @@
+object LCDDisplayForm: TLCDDisplayForm
+  Left = 321
+  Height = 75
+  Top = 182
+  Width = 260
+  BorderIcons = []
+  BorderStyle = bsSizeToolWin
+  Caption = 'LCD Display'
+  ClientHeight = 75
+  ClientWidth = 260
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.0.12.0'
+  object RootPanel: TPanel
+    Left = 0
+    Height = 75
+    Top = 0
+    Width = 260
+    Align = alClient
+    BevelOuter = bvNone
+    BorderWidth = 5
+    ClientHeight = 75
+    ClientWidth = 260
+    TabOrder = 0
+    object LCDPanel: TPanel
+      Left = 5
+      Height = 65
+      Top = 5
+      Width = 250
+      Align = alClient
+      ClientHeight = 65
+      ClientWidth = 250
+      Color = clBtnFace
+      ParentColor = False
+      TabOrder = 0
+      object PaintBox: TPaintBox
+        Left = 1
+        Height = 63
+        Top = 1
+        Width = 248
+        Align = alClient
+        OnPaint = PaintBoxPaint
+      end
+    end
+  end
+end

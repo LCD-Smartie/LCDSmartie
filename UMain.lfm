@@ -1,0 +1,568 @@
+object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
+  Left = 1093
+  Height = 198
+  Top = 248
+  Width = 243
+  HorzScrollBar.Visible = False
+  VertScrollBar.Visible = False
+  Anchors = []
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsToolWindow
+  Caption = 'LCD Smartie x.x.x.x'
+  ClientHeight = 198
+  ClientWidth = 243
+  Color = clBtnFace
+  DoubleBuffered = True
+  Font.CharSet = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  KeyPreview = True
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  ParentBiDiMode = False
+  ParentDoubleBuffered = False
+  Position = poDefault
+  ShowInTaskBar = stNever
+  LCLVersion = '2.0.12.0'
+  Scaled = False
+  Visible = True
+  object BarLeftImage: TImage
+    Left = 0
+    Height = 27
+    Top = 64
+    Width = 97
+  end
+  object BarMiddleImage: TImage
+    Left = 88
+    Height = 27
+    Top = 64
+    Width = 25
+  end
+  object BarRightImage: TImage
+    Left = 112
+    Height = 27
+    Top = 64
+    Width = 97
+  end
+  object LogoImage: TImage
+    Left = 200
+    Height = 27
+    Hint = 'Access menu'
+    Top = 64
+    Width = 32
+    OnClick = LogoImageClick
+    OnDblClick = LogoImageDblClick
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line1RightScrollImage: TImage
+    Left = 16
+    Height = 16
+    Hint = 'Scroll line right.'
+    Top = 0
+    Width = 16
+    OnMouseDown = Line1RightScrollImageMouseDown
+    OnMouseUp = Line1RightScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line2RightScrollImage: TImage
+    Left = 16
+    Height = 16
+    Hint = 'Scroll line right.'
+    Top = 16
+    Width = 16
+    OnMouseDown = Line2RightScrollImageMouseDown
+    OnMouseUp = Line2RightScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line3RightScrollImage: TImage
+    Left = 16
+    Height = 16
+    Hint = 'Scroll line right.'
+    Top = 32
+    Width = 16
+    OnMouseDown = Line3RightScrollImageMouseDown
+    OnMouseUp = Line3RightScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line4RightScrollImage: TImage
+    Left = 16
+    Height = 16
+    Hint = 'Scroll line right.'
+    Top = 48
+    Width = 16
+    OnMouseDown = Line4RightScrollImageMouseDown
+    OnMouseUp = Line4RightScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line1LeftScrollImage: TImage
+    Left = 200
+    Height = 17
+    Hint = 'Scroll line left.'
+    Top = 0
+    Width = 16
+    OnMouseDown = Line1LeftScrollImageMouseDown
+    OnMouseUp = Line1LeftScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line2LeftScrollImage: TImage
+    Left = 200
+    Height = 16
+    Hint = 'Scroll line left.'
+    Top = 16
+    Width = 16
+    OnMouseDown = Line2LeftScrollImageMouseDown
+    OnMouseUp = Line2LeftScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line3LeftScrollImage: TImage
+    Left = 200
+    Height = 16
+    Hint = 'Scroll line left.'
+    Top = 32
+    Width = 16
+    OnMouseDown = Line3LeftScrollImageMouseDown
+    OnMouseUp = Line3LeftScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Line4LeftScrollImage: TImage
+    Left = 200
+    Height = 16
+    Hint = 'Scroll line left.'
+    Top = 48
+    Width = 16
+    OnMouseDown = Line4LeftScrollImageMouseDown
+    OnMouseUp = Line4LeftScrollImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object NextScreenImage: TImage
+    Left = 216
+    Height = 64
+    Hint = 'Next Screen.'
+    Top = 0
+    Width = 16
+    OnClick = NextScreenImageClick
+    OnMouseDown = NextScreenImageMouseDown
+    OnMouseUp = NextScreenImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object PreviousImage: TImage
+    Left = 0
+    Height = 64
+    Hint = 'Previous Screen.'
+    Top = 0
+    Width = 16
+    OnClick = PreviousImageClick
+    OnMouseDown = PreviousImageMouseDown
+    OnMouseUp = PreviousImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object SetupImage: TImage
+    Left = 10
+    Height = 16
+    Hint = 'Configure the display and/or screen content/layout.'
+    Top = 69
+    Width = 34
+    OnClick = SetupButtonClick
+    OnMouseDown = SetupImageMouseDown
+    OnMouseUp = SetupImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object HideImage: TImage
+    Left = 165
+    Height = 16
+    Hint = 'Disappear! Will appear as an icon in the system tray.'
+    Top = 69
+    Width = 32
+    OnClick = HideButtonClick
+    OnMouseDown = HideImageMouseDown
+    OnMouseUp = HideImageMouseUp
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object xLine2Panel: TPanel
+    Left = 32
+    Height = 17
+    Hint = 'Virtual display.'
+    Top = 16
+    Width = 161
+    Alignment = taLeftJustify
+    BevelOuter = bvNone
+    Color = clNone
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Fixedsys'
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    Visible = False
+  end
+  object xLine3Panel: TPanel
+    Left = 32
+    Height = 17
+    Hint = 'Virtual display.'
+    Top = 32
+    Width = 161
+    Alignment = taLeftJustify
+    BevelOuter = bvNone
+    Color = clNone
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Fixedsys'
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Visible = False
+  end
+  object xLine4Panel: TPanel
+    Left = 32
+    Height = 17
+    Hint = 'Virtual display.'
+    Top = 48
+    Width = 161
+    Alignment = taLeftJustify
+    BevelOuter = bvNone
+    Color = clNone
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Fixedsys'
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    Visible = False
+  end
+  object xLine1Panel: TPanel
+    Left = 32
+    Height = 17
+    Hint = 'Virtual display.'
+    Top = 0
+    Width = 161
+    Alignment = taLeftJustify
+    BevelOuter = bvNone
+    Caption = 'LCD Smartie'
+    Color = clNone
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Fixedsys'
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+    Visible = False
+  end
+  object ScreenNumberPanel: TPanel
+    Left = 84
+    Height = 17
+    Hint = 'Active theme number, Active screen Number'
+    Top = 72
+    Width = 33
+    BevelOuter = bvNone
+    Caption = '1 | 1'
+    Color = clNavy
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+  end
+  inline Line1LCDPanel: TLCDLineFrame
+    Left = 32
+    Height = 18
+    ClientHeight = 18
+    TabOrder = 4
+    DesignLeft = 1365
+    DesignTop = 338
+    inherited LCDPanel: TPanel
+      Height = 18
+      ClientHeight = 18
+      inherited PaintBox: TPaintBox
+        Height = 18
+        OnPaint = nil
+      end
+    end
+  end
+  inline Line2LCDPanel: TLCDLineFrame
+    Left = 32
+    Height = 18
+    Top = 16
+    ClientHeight = 18
+    TabOrder = 5
+    DesignLeft = 1365
+    DesignTop = 338
+    inherited LCDPanel: TPanel
+      Height = 18
+      ClientHeight = 18
+      inherited PaintBox: TPaintBox
+        Height = 18
+      end
+    end
+  end
+  inline Line4LCDPanel: TLCDLineFrame
+    Left = 32
+    Height = 18
+    Top = 48
+    ClientHeight = 18
+    TabOrder = 6
+    DesignLeft = 1365
+    DesignTop = 338
+    inherited LCDPanel: TPanel
+      Height = 18
+      ClientHeight = 18
+      inherited PaintBox: TPaintBox
+        Height = 18
+      end
+    end
+  end
+  inline Line3LCDPanel: TLCDLineFrame
+    Left = 32
+    Height = 18
+    Top = 32
+    ClientHeight = 18
+    TabOrder = 7
+    DesignLeft = 1365
+    DesignTop = 338
+    inherited LCDPanel: TPanel
+      Height = 18
+      ClientHeight = 18
+      inherited PaintBox: TPaintBox
+        Height = 18
+      end
+    end
+  end
+  object TimerRefresh: TTimer
+    Enabled = False
+    Interval = 200
+    OnTimer = TimerRefreshTimer
+    Left = 164
+    Top = 144
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    Left = 68
+    Top = 112
+    object ShowWindow1: TMenuItem
+      Caption = '&Show'
+      Default = True
+      OnClick = ShowWindow1Click
+    end
+    object Configure1: TMenuItem
+      Caption = 'S&etup'
+      OnClick = SetupButtonClick
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object Commands1: TMenuItem
+      Caption = 'C&ommands'
+      object BacklightOn1: TMenuItem
+        Caption = '&Backlight Off'
+        OnClick = BacklightOn1Click
+      end
+      object Freeze1: TMenuItem
+        Caption = '&Freeze'
+        OnClick = Freeze1Click
+      end
+      object NextTheme1: TMenuItem
+        Caption = '&Next Theme'
+        OnClick = NextTheme1Click
+      end
+      object LastTheme1: TMenuItem
+        Caption = '&Last Theme'
+        OnClick = LastTheme1Click
+      end
+      object Credits1: TMenuItem
+        Caption = 'C&redits'
+        OnClick = Credits1Click
+      end
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object SavePosition: TMenuItem
+      Caption = 'S&ave Position'
+      OnClick = SavePositionClick
+    end
+    object Close1: TMenuItem
+      Caption = '&Close'
+      OnClick = Close1Click
+    end
+  end
+  object LeftManualScrollTimer: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = LeftManualScrollTimerTimer
+    Left = 68
+    Top = 144
+  end
+  object RightManualScrollTimer: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = RightManualScrollTimerTimer
+    Left = 100
+    Top = 144
+  end
+  object NextScreenTimer: TTimer
+    Enabled = False
+    OnTimer = NextScreenTimerTimer
+    Left = 132
+    Top = 144
+  end
+  object ActionsTimer: TTimer
+    Enabled = False
+    Interval = 250
+    OnTimer = ActionsTimerTimer
+    Left = 4
+    Top = 144
+  end
+  object TransitionTimer: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = TransitionTimerTimer
+    Left = 132
+    Top = 112
+  end
+  object ScrollFlashTimer: TTimer
+    Enabled = False
+    OnTimer = ScrollFlashTimerTimer
+    Left = 36
+    Top = 144
+  end
+  object IdTCPServer1: TIdTCPServer
+    Bindings = <>
+    DefaultPort = 8080
+    Left = 164
+    Top = 112
+  end
+  object IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL
+    SSLOptions.Mode = sslmUnassigned
+    SSLOptions.VerifyMode = []
+    SSLOptions.VerifyDepth = 0
+    Left = 192
+    Top = 112
+  end
+  object TrayIcon1: TTrayIcon
+    PopUpMenu = PopupMenu1
+    Icon.Data = {
+      BE0800000000010001002020000000000000A808000016000000280000002000
+      0000400000000100080000000000800400000000000000000000000100000000
+      0000000000000800000000080000080800000010000000000800000808000808
+      0800000010000800100000100800000C10000018100000001800000818000000
+      2100100000001800000021000000100800001808000010100000181000001002
+      130029000000230A0000310800003908000025140C0029230B00391000004529
+      0800000029000000310000003900001336000D153600251C4300332B39004428
+      3B0010204C0018374A000D2E54001123730029294E00332B4F00393356003931
+      6B003D3D29002B394F001C4656002F3E58004239350055532C004E3B49005657
+      440016477E00295077003F3F7000325D76004C476300454078004A677B00487D
+      87007B390500833F160065413100813927008E4F0A007E741D007B4A31007B69
+      2B009C5D10009E572A009C731E00B27722009C842000B1841C00C5840800C381
+      2700654C3F00645A53006B694C006F6F5700625A6B005F5F7E00646F67005E76
+      7E00834345009A73410091894100B3843F0077795800737F7B009F7A53008680
+      7600B1900000B18F1300A4902200B78E1C00CA8C0000CE910800C58C1B00C99A
+      150096963E00B3903F00739A78009A977100C08C2B00C2992D00BF974600C3A1
+      7000D6940000DA981200D4962500E1A22600DEA52900D2983400D1944500DAA3
+      4300D3A14F00D19F5F00E1A85500E6AD6500E4AF6B00DAA47800E0BB7100EDBD
+      80000833A4000E439A001831BD001047BD00484AA2003940B6002641C800443F
+      C5001B60AF000E76B5003562B7003682AC00525AAC004E5EBE004E78A300576D
+      BA000C41D6002137DA002939D6002339E9002F3BD6003139E700373DE0004439
+      DB000D4FD300254BDC00185ADE001F74E6003E4FCE00354DE3004156E3004376
+      D90008A5C000209EC50010B7C50023BEC5004C96A40050B0B40045A2CA0041B7
+      CA0025ABE1002AC4D9004CC0D00048BFE00010CED60029D4E10037D2E0004CD6
+      E50015B7EF002BA8F9000CCAF70025C9FA0036A7FF0041BBFB0031C8F70043C5
+      F7001ED8F40022E6F50031D6F90034E1F80042CEEF004ACEFB0044D6F5004BDF
+      FC006756B9005B4ED6006667AE00677EA60061B5BD0060BCD10060C3E1005DC3
+      EF007E76A400799496008390BF007BBBC700BFB19400A4B3CC00E1BA9100F0B9
+      9C0077CAC1006CCECE0062D0DE0073CADE0065CEEC0064DCEA005AD6F90064D8
+      FB008EC8AD008DCCCA0090CEDC008AD2ED00DED0A200F8D19400B0CEE600F0CE
+      B3006BE2ED0062EDFF007BE5EF0081EFFF0097E1D30098E8ED008CFCFF00A9FF
+      FF00EDE5B600D6F0DC00C3F2FB00ECECFF00C5FBFF00D6FCFF00E2FBFF00EFF7
+      FF00FBE2AD00FDEAC300FFF4D000FFFFD600FFEBDE00FFFFDE00FFFCE900F7F7
+      F700FFF7F700FBEFFF00F7F7FF00FFF7FF00EFFFFF00F7FFFF00FFFFF700FFFF
+      FF0094999D9E9D86809FBDB3BBBDE3E0E6D2D2D5ABC53B0C3747434343585850
+      34C99691939D9D94809FB7B6BABCE0E6E3E3AAD5D3D13F303541434958585842
+      34339491959595968288B5B5BDBCBFAAE3E2E6D2A6E4CD351F47404144464950
+      362C8292959195978689C7BDD6B7D6E1AFE6E6D1E4D9D85A4549484440404358
+      42338292959591959D38A8C7C7BDBFAFE1D5E3E5EA565C476962634D48484143
+      422C9C94879797958681C5DBC7D6BCBCD5D1E7E76A515269596D6D67634F4941
+      4236C18787C197918621082020BDBCE2080202E96A1414101C45616060756C49
+      42C8C1C1849797869C20080D0FD6D70D0E0202045C101216161D4C6760665B4B
+      595F2FC087859D83810F06E2ABC70F0ED9D3DA045C011C4A69191E6367636C5B
+      5B502284848D8083380D06AFAEE22008D3A7E2E45304196E4B1A197572766E4F
+      595E2A2B388F8D888A0806AFADD60F0EE2BDAFD96A0414754B1A1975777E7C76
+      5B5E2839283DDE9FDB0D0EA7BAAE0F0ED3AAD204C904034A791A1A787B7A7EDD
+      7E59293C2E2FCAEAD30D08ABB6BFAF0B0C0A0404D8050615151F6C78687B7FDD
+      F0CE3F23543625CDDA0D0FD6B3B9A9AF040404D0D9040404154A746D6E787EDD
+      DFF3A4323236263BDADBD4B6B2B2B2B9AEAAD1D5C46A5268626771637A7B7DCF
+      DFDFC43F235426313FD3ABBAB0B8B9ACB9ACAEAFD1D83568606764726E797DCF
+      CFE8CBC924513C2D2C8ED4BDB3A9ACADB9A2ADAFA7E46A456261647474767DCE
+      CEDCC4C333332E2E2C8E9FA8B7BABAA9ACBBBBAED7D06A45686171647376797E
+      6FDCAAD057323C3C2E8E8889A8BDB5B3B0B6B0A8D7C4D86A4560646571727578
+      7ECCA3DBCB24332C2FC28A8398B1B4B5B5B3B6B5C7CBE96B6862677065716D77
+      7ECEAEA7D03233313CC09C9A98839B9BB4B4B1B5C7C5CB5C4762744E4E67727A
+      7A7DE1A7D0A4312E2FC28D99999A989A9A9B9BA18BA43330475A6C75664E7276
+      7C6FBEAAC4CB29313AC0C19C999C85838899998181392C2630595B4B754D4A6C
+      5B6F0F070CCB330E25C284C19C228D218D9C9F223821C32611505E1E5B4C1F5E
+      1E1AE6E7EC0A3EEF0D3DCA8584EE0DEF208F8FEE08EE0D54F71950F61859F612
+      FEF5C6CBCBEE05EF0D2E20C28CF705FD050F20EF0BEF0556F80136FE115EF611
+      FE19DB0B00EA0EFF052DEB0F55FD01FEFDFAEBEF05FD0017F70034FF016BF610
+      F61609E7ED07C9F90505FB0D55FF00FF0855C8FC08FDFDFE005D36FF015FF615
+      F2F3E70AC9DAC9FB01FF17EB0DFA08EB0D550FEF08EE00CDFE0855FB0954F816
+      F519E6040206C9F710FF05EF0FEB20C2EB0FED0FC3EF0508EF0D00F917250153
+      F31DA3E7ECEA0636F8123625EB2284C19CED228D8FEEEFEB0FC8EBF9F917FB19
+      F3F2A3D1A4E45D1D5151273A84C2C09E9E8D8D8D8D8FCADEDECD3DC854272742
+      4759000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000
+    }
+    Visible = True
+    OnDblClick = ShowWindow1Click
+    Left = 40
+    Top = 112
+  end
+  object WinampCtrl1: TWinampCtrl
+    FreeLists = True
+    WinampLocation = 'C:\Program Files\Winamp\winamp.exe'
+    Left = 4
+    Top = 112
+  end
+  object ExceptionLogger1: TExceptionLogger
+    LogFileName = 'Debug.log'
+    MaxCallStackDepth = 60
+    Left = 100
+    Top = 112
+  end
+  object IdAntiFreeze1: TIdAntiFreeze
+    Left = 192
+    Top = 144
+  end
+end

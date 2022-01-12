@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharpplugin", "csharpplugin.csproj", "{821B05CC-23DE-41D1-9DFA-3807BF51A088}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{821B05CC-23DE-41D1-9DFA-3807BF51A088}.Debug.ActiveCfg = Debug|.NET
+		{821B05CC-23DE-41D1-9DFA-3807BF51A088}.Debug.Build.0 = Debug|.NET
+		{821B05CC-23DE-41D1-9DFA-3807BF51A088}.Release.ActiveCfg = Release|.NET
+		{821B05CC-23DE-41D1-9DFA-3807BF51A088}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

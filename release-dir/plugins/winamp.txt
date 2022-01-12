@@ -1,0 +1,87 @@
+NB: The dll check interval and refresh interval are set very low - this is to enable the demo config to give the best possible spectrum analyzer graph. But these settings may be cause too much information to be sent to some types of display - if you have problems, then raise the intervals until the problem is resolved.
+
+Changes
+=======
+v1.0
+	- Alpha2 released as v1.0
+Alpha2
+	- Override refresh speed in 5.3 beta 4
+Alpha1
+	- Initial release
+
+Copiare il file : winamp_lcdsmartie.dll sotto plugin di winamp
+
+PARAMETRI:
+
+Text01="$dll(winamp,1,1x8,0) 1 Line"
+Text02="$Fill(8) Graph"
+Text03="- $WinampTitle -"
+Text04="$WinampPosition(16)"
+
+Text01="$dll(winamp,1,2x8,0) 2 Line"
+Text02="$dll(winamp,2,0,0) Graph"
+Text03="- $WinampTitle -"
+Text04="$WinampPosition(20)"
+
+Text01="$dll(winamp,1,3x8,0) 3 Line"
+Text02="$dll(winamp,2,0,0) Graph"
+Text03="$dll(winamp,3,0,0)"
+Text04="- $WinampTitle -"
+
+Text01="$dll(winamp,1,4x8,0) 4 Line"
+Text02="$dll(winamp,2,0,0) Graph"
+Text03="$dll(winamp,3,0,0)"
+Text04="$dll(winamp,4,0,0)"
+
+Text01="$dll(winamp,1,1x8,u#99) Tiny"
+Text02="A 40 bar spectrum analyzer graph. "
+
+Text01="$dll(winamp,1,1x1,u#99) Very Tiny"
+Text02="A 8 bar tiny graph."
+
+Text01="$dll(winamp,1,1x8,d) 1 Down Line"
+
+Text01="$dll(winamp,1,2x8,d) 2 Down Line"
+Text02="$dll(winamp,2,0,0)"
+
+Text01="$dll(winamp,1,4x8,l) 4 Left Line"
+Text02="$dll(winamp,2,0,0)"
+Text03="$dll(winamp,3,0,0)"
+Text04="$dll(winamp,4,0,0)"
+
+Text01="$dll(winamp,1,4x8,r) 4 Right Line"
+Text02="$dll(winamp,2,0,0)"
+Text03="$dll(winamp,3,0,0)"
+Text04="$dll(winamp,4,0,0)"
+
+Text01="1:$dll(winamp,1,1x14,0)"
+
+Text01="2:$dll(winamp,1,2x14,0)"
+Text02="  $dll(winamp,2,0,0)"
+
+Text01="3:$dll(winamp,1,3x14,0)"
+Text02="  $dll(winamp,2,0,0)"
+Text03="  $dll(winamp,3,0,0)"
+
+Text01="4:$dll(winamp,1,4x14,0)"
+Text02="  $dll(winamp,2,0,0)"
+Text03="  $dll(winamp,3,0,0)"
+Text04="  $dll(winamp,4,0,0)"
+
+Text01="$dll(winamp,1,2x16,u#5)"
+Text02="$dll(winamp,2,0,0)"
+
+Text01="$dll(winamp,1,2x16,u#9#L)"
+Text02="$dll(winamp,2,0,0)"
+
+Text01="$dll(winamp,1,2x16,u#1#FWl#80#20)"
+Text02="$dll(winamp,2,0,0)"
+
+Text01="$dll(winamp,1,4x20,u#1#WFl#50#150)"
+Text02="$dll(winamp,2,0,0)"
+Text03="$dll(winamp,3,0,0)"
+Text04="$dll(winamp,4,0,0)"
+
+Text01="$dll(winamp,1,2x16,u#1#FwL#80#20)"
+Text02="$dll(winamp,2,0,0)"
+

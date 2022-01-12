@@ -1,0 +1,50 @@
+The Demo.dll shipped with the LCD smartie program has some useful functions you can use...
+Try to play with it its great. Special with math functions that smartie doesn't support in current version.
+usage is
+$dll(demo.dll,5,param1,param2) where "demo.dll" is the filename, 5 is the number of function you want to call, param1 is the first parameter and param2 is the second parameter you send to dll.
+
+
+A list with function discovered follows:
+
+1=add
+example: $dll(demo.dll,1,44,192)
+result:=236
+
+2=subtrack
+example: $dll(demo.dll,2,44,192)
+result:=-148
+
+3=multiply
+example: $dll(demo.dll,3,44,192)
+result:=8448
+
+4=divide
+example: $dll(demo.dll,4,44,192)
+result:=0.23
+
+5=display as par1par2
+example: $dll(demo.dll,5,44,192)
+result:=19244
+
+6=diplay time
+example: $dll(demo.dll,6,44,192)
+result:=2:07:32 pm
+
+7=display credits screen
+example: $dll(demo.dll,7,44,192)
+result:=BasieP Ruled
+
+8=display non character text
+example: $dll(demo.dll,8,LCD SMARTie,192)
+result:=|CD 5|\/|4R7i3
+
+
+Function 9:
+9 is for converting the output from $bar so that _ and the full block can be changed to other characters (such as custom defined characters...)
+
+Usage is: $dll(demo,9,[string],[char1][char2])
+example: $dll(demo,9,$Bar($CPUUsage%,100,10),AB)
+This would cause a bar graph to be displayed but instead of _ a B will appear, and instead of a full block a A will appear. This can be used with other commands than $Bar.
+
+Function 10:
+10 seems to be doing ( parameter1 * 1.8 ) + 32 - So may be good for converting from degrees Celcius to degrees Fahrenheit. 

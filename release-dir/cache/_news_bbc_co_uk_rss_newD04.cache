@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet title="XSL_formatting" type="text/xsl" href="/shared/bsp/xsl/rss/nolsol.xsl"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title><![CDATA[BBC News - World]]></title>
+        <description><![CDATA[BBC News - World]]></description>
+        <link>https://www.bbc.co.uk/news/</link>
+        <image>
+            <url>https://news.bbcimg.co.uk/nol/shared/img/bbc_news_120x60.gif</url>
+            <title>BBC News - World</title>
+            <link>https://www.bbc.co.uk/news/</link>
+        </image>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Tue, 28 Dec 2021 12:17:04 GMT</lastBuildDate>
+        <copyright><![CDATA[Copyright: (C) British Broadcasting Corporation, see http://news.bbc.co.uk/2/hi/help/rss/4498287.stm for terms and conditions of reuse.]]></copyright>
+        <language><![CDATA[en-gb]]></language>
+        <ttl>15</ttl>
+        <item>
+            <title><![CDATA[Covid: US halves isolation time for asymptomatic infection]]></title>
+            <description><![CDATA[The guideline for asymptomatic cases is expected to ease disruptions caused by staff shortages.]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-59806040?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-59806040</guid>
+            <pubDate>Tue, 28 Dec 2021 11:05:30 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Covid: France tightens restrictions amid Omicron surge]]></title>
+            <description><![CDATA[Germany and Greece also toughen measures in a bid to tackle infections amid fears about Omicron.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-59805829?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-59805829</guid>
+            <pubDate>Tue, 28 Dec 2021 08:20:10 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[India blocks foreign funding for Mother Teresa charity]]></title>
+            <description><![CDATA[Hindu hardliners have long accused the Catholic charity of trying to convert people to Christianity.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-59803771?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-59803771</guid>
+            <pubDate>Mon, 27 Dec 2021 22:05:23 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Egyptian pharaoh's mummy digitally unwrapped for first time]]></title>
+            <description><![CDATA[CT scans allowed archaeologists to study Amenhotep I's body and learn about his death and burial.]]></description>
+            <link>https://www.bbc.co.uk/news/world-middle-east-59808883?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-middle-east-59808883</guid>
+            <pubDate>Tue, 28 Dec 2021 11:43:56 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Elon Musk criticised after China space complaint to UN]]></title>
+            <description><![CDATA[The SpaceX boss is attacked on Chinese social media after the complaint was made public.]]></description>
+            <link>https://www.bbc.co.uk/news/business-59806499?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-59806499</guid>
+            <pubDate>Tue, 28 Dec 2021 08:13:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Snow buries north and west Japan]]></title>
+            <description><![CDATA[The snow has meant grounded flights and stranded travellers as people are told to stay indoors.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-59806939?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-59806939</guid>
+            <pubDate>Tue, 28 Dec 2021 07:55:29 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Austria's Innsbruck airport denies 110 Britons entry over new Covid rules]]></title>
+            <description><![CDATA[Innsbruck airport in Austria refused to let in tourists caught out by updated restrictions.]]></description>
+            <link>https://www.bbc.co.uk/news/world-europe-59808620?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-europe-59808620</guid>
+            <pubDate>Tue, 28 Dec 2021 10:23:49 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Paing Takhon: Myanmar celebrity gets three years in jail for mass protests]]></title>
+            <description><![CDATA[Paing Takhon, who has millions of fans, took part in protests against a military coup.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-59807119?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-59807119</guid>
+            <pubDate>Tue, 28 Dec 2021 04:40:40 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Alexa tells 10-year-old girl to put penny in plug socket]]></title>
+            <description><![CDATA[Amazon has fixed its voice assistant so that it will not suggest the dangerous ?challenge? again.]]></description>
+            <link>https://www.bbc.co.uk/news/technology-59810383?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/technology-59810383</guid>
+            <pubDate>Tue, 28 Dec 2021 11:56:27 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Australia: Hundreds given false Covid results in Sydney lab error]]></title>
+            <description><![CDATA[At least 886 people were told they did not have Covid, when they in fact had tested positive.]]></description>
+            <link>https://www.bbc.co.uk/news/world-australia-59752091?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-australia-59752091</guid>
+            <pubDate>Tue, 28 Dec 2021 06:04:49 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[US animal shelter shocked after 800 parakeets handed over]]></title>
+            <description><![CDATA[A Detroit animal shelter said the birds were handed over in a "very unhealthy situation".]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-59806039?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-59806039</guid>
+            <pubDate>Mon, 27 Dec 2021 22:19:29 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Crocodiles turn on humans amid Iran water crisis]]></title>
+            <description><![CDATA[The creatures are attacking as their habitats shrink, a grim side-effect of Iran's water shortages.]]></description>
+            <link>https://www.bbc.co.uk/news/world-middle-east-59571711?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-middle-east-59571711</guid>
+            <pubDate>Tue, 28 Dec 2021 00:05:33 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The African nation aiming to be a hydrogen superpower]]></title>
+            <description><![CDATA[Namibia wants to use its abundance of sunshine and wind power to make and export hydrogen.]]></description>
+            <link>https://www.bbc.co.uk/news/business-59722297?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/business-59722297</guid>
+            <pubDate>Tue, 28 Dec 2021 00:11:31 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[What a Greek tragedy teaches us about modern migration]]></title>
+            <description><![CDATA[A production of Antigone seeks to overturn prejudices about Africans arriving in Sicily.]]></description>
+            <link>https://www.bbc.co.uk/news/world-africa-59701738?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-africa-59701738</guid>
+            <pubDate>Tue, 28 Dec 2021 00:10:22 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[?The doctors came and I had to tell my father he was dying?]]></title>
+            <description><![CDATA[Is it always appropriate for relatives to interpret for deaf loved ones?]]></description>
+            <link>https://www.bbc.co.uk/news/stories-59733533?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/stories-59733533</guid>
+            <pubDate>Tue, 28 Dec 2021 00:04:46 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[83 movie: Bollywood relives India?s epic cricket triumph]]></title>
+            <description><![CDATA[A Bollywood ode to India's 1983 cricket world cup win recreates one of the greatest upsets in sports history.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-59731621?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-59731621</guid>
+            <pubDate>Tue, 28 Dec 2021 00:13:07 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Covid-19: India's unwinnable battle against spitting]]></title>
+            <description><![CDATA[The pandemic briefly renewed efforts to curb an infamous Indian habit - spitting in public.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-india-51908404?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-india-51908404</guid>
+            <pubDate>Mon, 27 Dec 2021 00:00:09 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA['I'm Jewish and black - where do I fit in?']]></title>
+            <description><![CDATA[Black and Jewish journalist Nadine Batchelor-Hunt travels to Israel to meet the Ethiopian community and explore this dual identity.]]></description>
+            <link>https://www.bbc.co.uk/news/uk-59748260?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/uk-59748260</guid>
+            <pubDate>Mon, 27 Dec 2021 00:06:06 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Afghanistan: Children in Kabul working for a piece of bread]]></title>
+            <description><![CDATA[More and more Afghan children are having to work to support their families, amidst an economic collapse.]]></description>
+            <link>https://www.bbc.co.uk/news/world-asia-59761535?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-asia-59761535</guid>
+            <pubDate>Tue, 28 Dec 2021 00:01:01 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Brazilian town floods after two dams collapse]]></title>
+            <description><![CDATA[People in the town of Itabuna can be seen using inflatable rafts and canoes to get from house to house.]]></description>
+            <link>https://www.bbc.co.uk/news/world-latin-america-59801025?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-latin-america-59801025</guid>
+            <pubDate>Mon, 27 Dec 2021 09:48:38 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Archbishop Desmond Tutu: Looking back at his life and legacy]]></title>
+            <description><![CDATA[The BBC's Nomsa Maseko looks back at the life of Archbishop Desmond Tutu, who has died aged 90.]]></description>
+            <link>https://www.bbc.co.uk/news/world-59793776?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-59793776</guid>
+            <pubDate>Sun, 26 Dec 2021 07:28:59 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Desmond Tutu death: South Africans remember anti-apartheid leader]]></title>
+            <description><![CDATA[The archbishop, who was a driving force in the anti-apartheid movement, has died aged 90.]]></description>
+            <link>https://www.bbc.co.uk/news/world-africa-59796716?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-africa-59796716</guid>
+            <pubDate>Sun, 26 Dec 2021 15:57:48 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Demi Skipper plans to keep trading after hairpin-to-house swap]]></title>
+            <description><![CDATA[TikToker Demi Skipper made headlines when she successfully traded items until she got a house.]]></description>
+            <link>https://www.bbc.co.uk/news/world-us-canada-59762810?at_medium=RSS&amp;at_campaign=KARANGA</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/news/world-us-canada-59762810</guid>
+            <pubDate>Mon, 27 Dec 2021 00:00:44 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

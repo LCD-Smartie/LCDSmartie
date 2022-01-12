@@ -1,0 +1,35 @@
+Display from https://www.buydisplay.com/character-display/character-display-module?resolution=144
+Cheap Arduino pro micro clones can be found on ebay
+Back of display
+
+------------------------------------------------------------
+|                                                           |
+| 17                                                   2 1  |
+| 18                                                   4 3  |
+|                                                      6 5  |
+|                                                      8 7  |
+|                                                     10 9  |
+|                                                     12 11 |
+|                                                     14 13 |
+|                                                     16 15 |
+|___________________________________________________________|
+Disp  Name  Arduino Pin
+ 1    DB7    2
+ 2    DB6    3
+ 3    DB5    4
+ 4    DB4    5
+ 5    DB3    6
+ 6    DB2    7
+ 7    DB1    8
+ 8    DB0    9
+ 9    E1     16
+ 10   R/W    14
+ 11   RS     15
+ 12   VEE    GND
+ 13   VSS    GND
+ 14   VCC    +5
+ 15   E2     10
+ 16   NC
+ 17   LED_A  +5
+ 18   LED_K  GND
+ 

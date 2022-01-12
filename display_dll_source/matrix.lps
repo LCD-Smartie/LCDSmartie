@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Release"/>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="matrix.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="521"/>
+        <CursorPos X="6" Y="533"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="SERPORT.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="UMyThread.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="3"/>
+        <CursorPos X="21" Y="3"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\UDataNetwork.pas"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="260"/>
+        <CursorPos X="99" Y="291"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit3>
+    </Units>
+    <OtherDefines Count="5">
+      <Define0 Value="Borland"/>
+      <Define1 Value="Ver150"/>
+      <Define2 Value="Delphi7"/>
+      <Define3 Value="Compiler6_Up"/>
+      <Define4 Value="PUREPASCAL"/>
+    </OtherDefines>
+    <JumpHistory Count="7" HistoryIndex="6">
+      <Position1>
+        <Filename Value="SERPORT.pas"/>
+      </Position1>
+      <Position2>
+        <Filename Value="UMyThread.pas"/>
+        <Caret Line="16" Column="5"/>
+      </Position2>
+      <Position3>
+        <Filename Value="UMyThread.pas"/>
+        <Caret Line="3" Column="21"/>
+      </Position3>
+      <Position4>
+        <Filename Value="matrix.lpr"/>
+        <Caret Line="534" Column="46" TopLine="526"/>
+      </Position4>
+      <Position5>
+        <Filename Value="matrix.lpr"/>
+        <Caret Line="790" Column="32" TopLine="768"/>
+      </Position5>
+      <Position6>
+        <Filename Value="matrix.lpr"/>
+        <Caret Line="532" Column="3" TopLine="510"/>
+      </Position6>
+      <Position7>
+        <Filename Value="matrix.lpr"/>
+        <Caret Line="32" Column="3" TopLine="10"/>
+      </Position7>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>
