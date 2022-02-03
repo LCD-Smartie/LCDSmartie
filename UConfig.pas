@@ -204,7 +204,7 @@ type
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
     property width: Integer read P_width;
     property height: Integer read P_height;
-    property filename: String read sFileName;
+    property filename: String read sFileName write sFileName;
     constructor Create(filename: String);
   end;
 
@@ -235,7 +235,12 @@ var
   bResult1: Boolean;
 begin
   bResult1 := false;
+  {$IFNDEF STANDALONESETUP}
   if (FileExists(ExtractFilePath(Application.EXEName) + sFileName)) then
+  {$ELSE}
+  if (FileExists(sFileName)) then
+  {$ENDIF}
+
     bResult1 := loadINI;
   result := bResult1;
 end;
@@ -257,8 +262,12 @@ begin
   try
     // We can't use the faster TMemINIFile - because it leaves quoted strings
     // with their quotes...
+    {$IFNDEF STANDALONESETUP}
     initfile := TINIFile.Create(ExtractFilePath(Application.EXEName) +
       sFileName);
+    {$ELSE}
+    initfile := TINIFile.Create(sFileName);
+    {$ENDIF}
   except
     result := false;
     Exit;
@@ -481,8 +490,12 @@ var
   ActionsCount, MailCount, ScreenCount, LineCount: Integer;
   sPrefix: String;
 begin
+  {$IFNDEF STANDALONESETUP}
   initfile := TMemINIFile.Create(ExtractFilePath(Application.EXEName) +
     sFileName);
+  {$ELSE}
+  initfile := TMemINIFile.Create(sFileName);
+  {$ENDIF}
 
   initfile.WriteString('Versions', 'ConfigFileFormat',
     sMyConfigFileFormatVersion);

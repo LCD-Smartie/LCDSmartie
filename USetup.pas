@@ -28,7 +28,7 @@ uses
   Commctrl,
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
-  ExtDlgs, EditBtn, SpinEx, UExceptionLogger;
+  ExtDlgs, SpinEx;
 
 const
   NoVariable = 'Variable: ';
@@ -43,11 +43,28 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
+    BitBtn4: TBitBtn;
+    CenterLine1CheckBox: TCheckBox;
+    CenterLine2CheckBox: TCheckBox;
+    CenterLine3CheckBox: TCheckBox;
+    CenterLine4CheckBox: TCheckBox;
     ComPortsButton: TButton;
+    ContinueLine1CheckBox: TCheckBox;
+    ContinueLine2CheckBox: TCheckBox;
+    ContinueLine3CheckBox: TCheckBox;
     CopyToScreenComboBox: TComboBox;
     DLLCheckIntervalSpinEdit: TSpinEdit;
-    ExceptionLogger1: TExceptionLogger;
+    DontScrollLine1CheckBox: TCheckBox;
+    DontScrollLine2CheckBox: TCheckBox;
+    DontScrollLine3CheckBox: TCheckBox;
+    DontScrollLine4CheckBox: TCheckBox;
+    GroupBox2: TGroupBox;
+    GroupBox4: TGroupBox;
+    GroupBox5: TGroupBox;
     Label24: TLabel;
+    Label4: TLabel;
+    Label44: TLabel;
+    Label51: TLabel;
     Label58: TLabel;
     Label7: TLabel;
     Label8: TLabel;
@@ -61,6 +78,7 @@ type
     Line4EditButton: TSpeedButton;
     Line4MemoEdit: TMemo;
     MoveToScreenComboBox: TComboBox;
+    OpenDialog3: TOpenDialog;
     RandomizeScreensCheckBox: TCheckBox;
     StayOnTopCheckBox: TCheckBox;
     SwapWithScreenComboBox: TComboBox;
@@ -123,31 +141,7 @@ type
     ScreenSettingsGroupBox: TGroupBox;
     Label5: TLabel;
     Label43: TLabel;
-    Label44: TLabel;
-    Label45: TLabel;
-    Label47: TLabel;
-    Label46: TLabel;
-    Label51: TLabel;
-    Label52: TLabel;
-    Label53: TLabel;
-    Label54: TLabel;
-    Label4: TLabel;
-    Label17: TLabel;
     Label18: TLabel;
-    DontScrollLine1CheckBox: TCheckBox;
-    DontScrollLine2CheckBox: TCheckBox;
-    DontScrollLine3CheckBox: TCheckBox;
-    DontScrollLine4CheckBox: TCheckBox;
-    GroupBox4: TGroupBox;
-    ContinueLine1CheckBox: TCheckBox;
-    ContinueLine2CheckBox: TCheckBox;
-    ContinueLine3CheckBox: TCheckBox;
-    GroupBox5: TGroupBox;
-    CenterLine1CheckBox: TCheckBox;
-    CenterLine2CheckBox: TCheckBox;
-    CenterLine3CheckBox: TCheckBox;
-    CenterLine4CheckBox: TCheckBox;
-    GroupBox6: TGroupBox;
     ThemeNumberSpinEdit: TSpinEdit;
     ProgramSettingsGroupBox: TGroupBox;
     Label1: TLabel;
@@ -303,6 +297,7 @@ type
     procedure ActionsStringGridSelectEditor(Sender: TObject; aCol,
       aRow: Integer; var Editor: TWinControl);
     procedure ActionsStringGridSelection(Sender: TObject; aCol, aRow: Integer);
+    procedure BitBtn4Click(Sender: TObject);
     procedure ComPortsButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LCDSizeComboBoxChange(Sender: TObject);
@@ -331,6 +326,7 @@ type
     procedure NetworkStatsListBoxClick(Sender: TObject);
     procedure FoldingAtHomeListBoxClick(Sender: TObject);
     procedure ApplyButtonClick(Sender: TObject);
+    procedure SaveAsButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure MainPageControlChange(Sender: TObject);
@@ -390,10 +386,19 @@ type
 
   procedure UpdateSetupForm(cKey : char);
 
+{$IFDEF STANDALONESETUP}
+var
+  SetupForm: TSetupForm;
+{$ENDIF}
+
 implementation
 uses
   Windows, ShellApi, graphics, sysutils,
-  UMain, UConfig, UDataEmail, UDataNetwork, UDataWinamp,
+{$IFNDEF STANDALONESETUP}
+  UMain,
+  UDataEmail,
+{$ENDIF}
+  UConfig,  UDataNetwork, UDataWinamp,
   UIconUtils, UEditLine, IpRtrMib, IpHlpApi, lazutf8, registry;
 
 {$R *.lfm}
@@ -439,7 +444,48 @@ var
   WinampStat : TWinampStat;
   i : Integer;
   ActOpr : string;
+  hConfig: longint;
+  ConfigFileName: String;
 begin
+  {$IFDEF STANDALONESETUP}
+  SetupForm.BorderIcons := [biSystemMenu,biMinimize];
+  BitBtn1.Caption := '&Save';
+  BitBtn1.Hint := 'Save configuration';
+  BitBtn2.Caption := '&Exit';
+  BitBtn2.Kind := bkClose;
+  BitBtn3.Caption := 'S&ave as';
+  BitBtn3.Hint := 'Save under a different filename';
+  BitBtn3.OnClick := SaveAsButtonClick;
+  BitBtn4.Visible := true;
+  OpenDialog3.Execute;
+  if (OpenDialog3.FileName = '')  then
+    // Brute force as calling Application.terminate would execute the rest of this procedure first
+    exitprocess(1);
+
+    ConfigFileName := OpenDialog3.Filename;
+    config := TConfig.Create(ConfigFileName);
+    Caption := ConfigFileName;
+
+    if (config.load() = false) then
+    begin
+      if FileExists(ConfigFileName) then
+      begin
+        showmessage('Fatal Error:  Failed to load configuration ('+ConfigFileName+')');
+        exitprocess(1);
+      end;
+      hConfig := FileCreate(ConfigFileName); // create empty config
+      If hConfig=-1 then
+      begin
+        FileClose(hConfig);
+        showmessage('Default configuration ('+ConfigFileName+') could not be created');
+        exitprocess(1);
+      end;
+      FileClose(hConfig);
+      config.load(); // Load default values for empty config
+      config.save(); // save default values
+    end;
+  {$ENDIF}
+
   SetupForm.Top := config.SettingsFormPosTop;
   SetupForm.Left := config.SettingsFormPosLeft;
 
@@ -482,9 +528,12 @@ begin
   ScreenSpinEdit.MaxValue := MaxScreens;
 
   // load curent screen into setup form
+  {$IFNDEF STANDALONESETUP}
   ScreenSpinEdit.Value := activeScreen;
   LoadScreen(activeScreen);
-
+  {$ELSE}
+  LoadScreen(1);
+  {$ENDIF}
   ProgramRefreshIntervalSpinEdit.Value := config.refreshRate;
   WinampLocationEdit.text := config.winampLocation;
   ColorSchemeComboBox.itemindex := config.colorOption;
@@ -700,6 +749,11 @@ begin
     ActionsStringGrid.Options:=ActionsStringGrid.Options+[goEditing];
 end;
 
+procedure TSetupForm.BitBtn4Click(Sender: TObject);
+begin
+  FormShow(Sender);
+end;
+
 //////////// LIST COM PORTS BUTTON ///////////////////
 
 procedure TSetupForm.ComPortsButtonClick(Sender: TObject);
@@ -831,8 +885,9 @@ begin
   config.screen[scr].line[2].noscroll := DontScrollLine2CheckBox.checked;
   config.screen[scr].line[3].noscroll := DontScrollLine3CheckBox.checked;
   config.screen[scr].line[4].noscroll := DontScrollLine4CheckBox.checked;
+{$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.ResetScrollPositions();
-
+{$ENDIF}
   config.screen[scr].line[1].contNextLine := ContinueLine1CheckBox.checked;
   config.screen[scr].line[2].contNextLine := ContinueLine2CheckBox.checked;
   config.screen[scr].line[3].contNextLine := ContinueLine3CheckBox.checked;
@@ -931,9 +986,10 @@ begin
   except
     CurrentScreen := 1;
   end;
-
   LoadScreen(CurrentScreen);
+{$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.ChangeScreen(CurrentScreen);
+{$ENDIF}
 end;
 
 procedure TSetupForm.WinampListBoxClick(Sender: TObject);
@@ -1252,11 +1308,11 @@ begin
   EmailSSLEdit.text := config.pop[CurrentlyShownEmailAccount + 1].port_ssl;
 
   if EmailMessageCountRadioButton.Checked then
-  VariableEdit.Text := EmailCountKey+IntToStr(CurrentlyShownEmailAccount+1)+EmailKeyPostfix
+  VariableEdit.Text := '$Email('+IntToStr(CurrentlyShownEmailAccount+1)+')'
   else if EmailLastSubjectRadioButton.Checked then
-  VariableEdit.Text := EmailSubjectKey+IntToStr(CurrentlyShownEmailAccount+1)+EmailKeyPostfix
+  VariableEdit.Text := '$EmailSub('+IntToStr(CurrentlyShownEmailAccount+1)+')'
   else if EmailLastFromRadioButton.Checked then
-  VariableEdit.Text := EmailFromKey+IntToStr(CurrentlyShownEmailAccount+1)+EmailKeyPostfix;
+  VariableEdit.Text := '$EmailFrom('+IntToStr(CurrentlyShownEmailAccount+1)+')';
 
   if not (VariableEdit.Text = NoVariable) then
     FocusToInputField();
@@ -1498,8 +1554,9 @@ begin
 
    if (config.DisplayDLLParameters <> ParametersEdit.Text) then ReinitLCD := true;
    if (config.DisplayDLLName <> DisplayPluginList.Text) then ReinitLCD := true;
-
+{$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.WinampCtrl1.WinampLocation := WinampLocationEdit.text;
+{$ENDIF}
   config.winampLocation := WinampLocationEdit.text;
   config.refreshRate := ProgramRefreshIntervalSpinEdit.Value;
   config.setiEmail := SetiAtHomeEmailEdit.text;
@@ -1532,9 +1589,9 @@ begin
 
   if (config.DisplayDLLName = 'None') then
     config.DisplayDLLName := '';
-
+{$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.SetupAutoStart();
-
+{$ENDIF}
   // Check if Com settings have changed.
   config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].server := EmailServerEdit.text;
   config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].user := EmailLoginEdit.text;
@@ -1548,20 +1605,22 @@ begin
   config.httpProxyPort := StrToInt(WebProxyPortEdit.text);
 
   SaveScreen(ScreenSpinEdit.Value);
+  {$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.ScrollFlashTimer.interval := config.scrollPeriod;
   LCDSmartieDisplayForm.Data.RefreshDataThreads;
-
+  {$ENDIF}
   config.LastTabIndex := LeftPageControl.ActivePageIndex;
   if config.sSkinPath <> SkinPath.Text then ReloadSkin := true;
   if config.sTrayIcon <> TrayIcon.Text then ReloadSkin := true;
   config.sSkinPath :=  SkinPath.Text;
   config.sTrayIcon := TrayIcon.Text;
+  {$IFNDEF STANDALONESETUP}
   if ReloadSkin then
   begin
     LCDSmartieDisplayForm.LoadSkin();
     LCDSmartieDisplayForm.LoadColors();
   end;
-
+  {$ENDIF}
   config.EnableRemoteSend := EnableRemoteSendCheckBox.Checked;
   config.RemoteSendBindIP := RemoteSendBindIPEdit.Text;
   config.RemoteSendPort := RemoteSendPortEdit.Text;
@@ -1572,13 +1631,13 @@ begin
   config.SettingsFormPosLeft := SetupForm.Left;
   config.ActionsTimer := ActionsTimerSpinEdit.Value;
   config.save();
-
+  {$IFNDEF STANDALONESETUP}
   if ReinitLCD = true then
- begin
+  begin
     LCDSmartieDisplayForm.ReInitLCD();
   end;
-
   LCDSmartieDisplayForm.ShowTrueLCD := Config.EmulateLCD;
+  {$ENDIF}
 end;
 
 // ok has been pressed.
@@ -1587,12 +1646,23 @@ begin
   ApplyButtonClick(Sender);
 end;
 
+procedure TSetupForm.SaveAsButtonClick(Sender: TObject);
+begin
+  OpenDialog3.Filename := ExtractFileName(OpenDialog3.Filename);
+  OpenDialog3.Execute;
+  config.filename := OpenDialog3.Filename;
+  ApplyButtonClick(Sender);
+  SetupForm.Caption := config.filename;
+end;
+
 procedure TSetupForm.FormCreate(Sender: TObject);
 var
   pathssl :string;
 begin
+  {$IFDEF STANDALONESETUP}
+  SetupForm.BorderStyle := bsSingle;
+  {$ENDIF}
   pathssl := ExtractFilePath(ParamStr(0))+'openssl\';
-
  // check if ssl dll exists , if not block the ssl edit !!!
   if not fileExists(pathssl+'libeay32.dll') or
      not fileExists(pathssl+'ssleay32.dll') then EmailSSLEdit.Enabled :=False ;
@@ -1724,12 +1794,16 @@ end;
 
 procedure TSetupForm.ContrastTrackBarChange(Sender: TObject);
 begin
+  {$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.lcd.setContrast(ContrastTrackBar.position);
+  {$ENDIF}
 end;
 
 procedure TSetupForm.BrightnessTrackBarChange(Sender: TObject);
 begin
+  {$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.lcd.setBrightness(BrightnessTrackBar.position);
+  {$ENDIF}
 end;
 
  /////// SHUTDOWN MESSAGE EDIT ///////////////

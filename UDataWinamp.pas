@@ -59,7 +59,11 @@ procedure ResolveWinampVariables(var Line: string);
 implementation
 
 uses
-  SysUtils,UMain,UUtils;
+  SysUtils,
+  {$IFNDEF STANDALONESETUP}
+  UMain,
+  {$ENDIF}
+  UUtils;
 
 procedure ResolveWinampVariables(var Line: string);
 var
@@ -74,7 +78,7 @@ var
   numArgs: Cardinal;
 begin
   if pos(WinampKey, line) = 0 then exit;
-
+  {$IFNDEF STANDALONESETUP}
   trackLength := LCDSmartieDisplayForm.winampctrl1.TrackLength;
   trackPosition := LCDSmartieDisplayForm.winampctrl1.TrackPosition;
   if (trackLength < 0) then trackLength := 0;
@@ -120,7 +124,7 @@ begin
           [rfReplaceAll]);
     end;
   end;
-
+ {$ENDIF}
   while decodeArgs(line, WinampPositionKey, maxArgs, args, prefix, postfix,
     numargs) do
   begin
@@ -348,7 +352,7 @@ begin
     line := StringReplace(line, WinampLengthKey, IntToStr(trackLength),
       [rfReplaceAll]);
   end;
-
+  {$IFNDEF STANDALONESETUP}
   if pos(WinampTracknrKey, line) <> 0 then
   begin
     line := StringReplace(line, WinampTracknrKey,
@@ -359,6 +363,7 @@ begin
     line := StringReplace(line, WinampTotalTracksKey,
       IntToStr(LCDSmartieDisplayForm.winampctrl1.GetListCount), [rfReplaceAll]);
   end;
+  {$ENDIF}
 end;
 
 

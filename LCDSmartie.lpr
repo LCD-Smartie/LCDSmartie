@@ -6,7 +6,7 @@ uses
   {madExcept,
   madLinkDisAsm,}
   Forms, Interfaces,
-  UMain in 'UMain.pas' {LCDSmartieDisplayForm};
+  UMain  {LCDSmartieDisplayForm};
 
 {$R *.res}
 

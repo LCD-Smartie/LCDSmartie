@@ -1,16 +1,16 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 1093
-  Height = 198
+  Left = 1094
+  Height = 91
   Top = 248
-  Width = 243
+  Width = 240
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
   Anchors = []
   BorderIcons = [biSystemMenu]
   BorderStyle = bsToolWindow
   Caption = 'LCD Smartie x.x.x.x'
-  ClientHeight = 198
-  ClientWidth = 243
+  ClientHeight = 91
+  ClientWidth = 240
   Color = clBtnFace
   DoubleBuffered = True
   Font.CharSet = ANSI_CHARSET
@@ -48,7 +48,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Width = 97
   end
   object LogoImage: TImage
-    Left = 200
+    Left = 208
     Height = 27
     Hint = 'Access menu'
     Top = 64
@@ -103,7 +103,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ShowHint = True
   end
   object Line1LeftScrollImage: TImage
-    Left = 200
+    Left = 208
     Height = 17
     Hint = 'Scroll line left.'
     Top = 0
@@ -114,7 +114,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ShowHint = True
   end
   object Line2LeftScrollImage: TImage
-    Left = 200
+    Left = 208
     Height = 16
     Hint = 'Scroll line left.'
     Top = 16
@@ -125,7 +125,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ShowHint = True
   end
   object Line3LeftScrollImage: TImage
-    Left = 200
+    Left = 208
     Height = 16
     Hint = 'Scroll line left.'
     Top = 32
@@ -136,7 +136,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ShowHint = True
   end
   object Line4LeftScrollImage: TImage
-    Left = 200
+    Left = 208
     Height = 16
     Hint = 'Scroll line left.'
     Top = 48
@@ -147,7 +147,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ShowHint = True
   end
   object NextScreenImage: TImage
-    Left = 216
+    Left = 224
     Height = 64
     Hint = 'Next Screen.'
     Top = 0
@@ -362,13 +362,13 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Enabled = False
     Interval = 200
     OnTimer = TimerRefreshTimer
-    Left = 164
-    Top = 144
+    Left = 168
+    Top = 92
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
-    Left = 68
-    Top = 112
+    Left = 56
+    Top = 120
     object ShowWindow1: TMenuItem
       Caption = '&Show'
       Default = True
@@ -420,54 +420,53 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Enabled = False
     Interval = 50
     OnTimer = LeftManualScrollTimerTimer
-    Left = 68
-    Top = 144
+    Left = 56
+    Top = 92
   end
   object RightManualScrollTimer: TTimer
     Enabled = False
     Interval = 50
     OnTimer = RightManualScrollTimerTimer
-    Left = 100
-    Top = 144
+    Left = 112
+    Top = 92
   end
   object NextScreenTimer: TTimer
     Enabled = False
     OnTimer = NextScreenTimerTimer
-    Left = 132
-    Top = 144
+    Left = 140
+    Top = 92
   end
   object ActionsTimer: TTimer
     Enabled = False
     Interval = 250
     OnTimer = ActionsTimerTimer
-    Left = 4
-    Top = 144
+    Top = 92
   end
   object TransitionTimer: TTimer
     Enabled = False
     Interval = 10
     OnTimer = TransitionTimerTimer
-    Left = 132
-    Top = 112
+    Left = 84
+    Top = 92
   end
   object ScrollFlashTimer: TTimer
     Enabled = False
     OnTimer = ScrollFlashTimerTimer
-    Left = 36
-    Top = 144
+    Left = 28
+    Top = 92
   end
   object IdTCPServer1: TIdTCPServer
     Bindings = <>
     DefaultPort = 8080
-    Left = 164
-    Top = 112
+    Left = 112
+    Top = 120
   end
   object IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL
     SSLOptions.Mode = sslmUnassigned
     SSLOptions.VerifyMode = []
     SSLOptions.VerifyDepth = 0
-    Left = 192
-    Top = 112
+    Left = 140
+    Top = 120
   end
   object TrayIcon1: TTrayIcon
     PopUpMenu = PopupMenu1
@@ -546,23 +545,22 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     }
     Visible = True
     OnDblClick = ShowWindow1Click
-    Left = 40
-    Top = 112
+    Left = 84
+    Top = 120
   end
   object WinampCtrl1: TWinampCtrl
     FreeLists = True
     WinampLocation = 'C:\Program Files\Winamp\winamp.exe'
-    Left = 4
-    Top = 112
+    Left = 28
+    Top = 120
   end
   object ExceptionLogger1: TExceptionLogger
     LogFileName = 'Debug.log'
     MaxCallStackDepth = 60
-    Left = 100
-    Top = 112
+    Top = 120
   end
   object IdAntiFreeze1: TIdAntiFreeze
-    Left = 192
-    Top = 144
+    Left = 196
+    Top = 92
   end
 end

@@ -31,8 +31,11 @@ uses
   Messages, Menus, Graphics, WinampCtrl, ExtCtrls, Controls, StdCtrls, Buttons,
   Classes, Forms, USetup, UConfig, ULCD, UData, lcdline, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
-  IdGlobal, IdIOHandler, IdIOHandlerStack, IdAntiFreeze, IdSSLOpenSSLHeaders,
-  UExceptionLogger;
+  IdGlobal, IdIOHandler, IdIOHandlerStack, IdAntiFreeze, IdSSLOpenSSLHeaders
+  {$IFNDEF STANDALONESETUP}
+  , UExceptionLogger
+  {$ENDIF}
+  ;
 
   { TLCDSmartieDisplayForm }
 type
@@ -66,7 +69,9 @@ type
 
 
   TLCDSmartieDisplayForm = class(TForm)
+    {$IFNDEF STANDALONESETUP}
     ExceptionLogger1: TExceptionLogger;
+    {$ENDIF}
     IdAntiFreeze1: TIdAntiFreeze;
     SavePosition: TMenuItem;
     N1: TMenuItem;
@@ -283,9 +288,9 @@ SetupForm : tsetupform;
   ShowWindowFlag: Boolean;
   LastLine: array [1..4] of string;
 implementation
-
+{$IFNDEF STANDALONESETUP}
 {$R *.lfm}
-
+{$ENDIF}
 uses
   Windows,  Dialogs, ShellAPI, mmsystem, StrUtils,
   UCredits, ULCD_DLL, UUtils, lazutf8,
@@ -396,6 +401,8 @@ end;
 procedure TLCDSmartieDisplayForm.FormCreate(Sender: TObject);
 var
   hConfig: longint;
+  EXStyle: Long;
+AppHandle: THandle;
 begin
 
   // keep all ssl related stuff in a sub dir
@@ -459,8 +466,9 @@ begin
   InitLCD();
   ChangeScreen(1);
 
-  if not (config.bHideOnStartup) and (ShowWindowFlag) then
-    LCDSmartieDisplayForm.Show;
+  LCDSmartieDisplayForm.Visible:=true;
+  if (config.bHideOnStartup) or not (ShowWindowFlag)  then
+    ShowWindow1Click(Sender);
 
 // start sender server
   if config.EnableRemoteSend then
@@ -635,6 +643,7 @@ begin
   timerRefresh.Interval := 1; // make it short in case minimized has been selected.
   TrayIcon1.ShowIcon:=true;
 end;
+
 
 procedure TLCDSmartieDisplayForm.SavePositionClick(Sender: TObject);
 begin
@@ -855,6 +864,7 @@ begin
   end;
 end;
 
+
 procedure TLCDSmartieDisplayForm.ActionsTimerTimer(Sender: TObject);
 //ACTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 var
@@ -1045,15 +1055,8 @@ begin
       SetOnscreenBacklight();
     end;
 
-    if (config.alwaysOnTop)
-      then
-    begin
+    if (config.alwaysOnTop) then
       LCDSmartieDisplayForm.formStyle := fsStayOnTop;
-    end
-    else
-    begin
-      LCDSmartieDisplayForm.formStyle := fsNormal;
-    end;
 
     if (config.width <> iSavedWidth) or (config.EmulateLCD <> bSavedEmulateLCD) then
     begin

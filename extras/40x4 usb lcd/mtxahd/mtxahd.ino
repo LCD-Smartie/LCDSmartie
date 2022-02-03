@@ -6,7 +6,7 @@ const int numRows = 2;
 const int numCols = 40;
 
 // 40x4 has a controller for lines 1 and 2 and another for lines 3 and 4
-const int rs = 15, rw = 14, en1 = 16, en2 = 10, d0 = 9, d1 = 8, d2 = 7, d3 = 6, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+const int rs = 18, rw = 15, en1 = 14, en2 = 16, d0 = 9, d1 = 8, d2 = 7, d3 = 6, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd1(rs, rw, en1, d0, d1, d2, d3, d4, d5, d6, d7);
 LiquidCrystal lcd2(rs, rw, en2, d0, d1, d2, d3, d4, d5, d6, d7);
 
@@ -19,7 +19,8 @@ byte custompos;
 byte customchar[8];
 
 
-void setup() { 
+void setup() {
+  analogWrite(10,100); 
   Serial.begin(115200);
   // set up the LCD's number of rows and columns: 
   lcd1.begin(numCols, numRows);

@@ -6,6 +6,8 @@
 *.compiled
 *.or
 *.res
+fuo
+lib
 # ignore main exe
 release-dir\LCDSmartie.exe
 # ignore dll's only in these dirs as to not wipe out the openssl dll's 
@@ -13,8 +15,8 @@ release-dir\displays\*.dll
 release-dir\plugins\*.dll
 release-dir\plugins\*.cfg
 release-dir\plugins\*.txt
+release-dir\*.dll
 # dont keep anything in the cache that may have been created during testing
-release-dir\cache
 # private ssl stuff should never go in git
 release-dir\openssl\.rnd
 release-dir\openssl\cert.pem
@@ -23,3 +25,9 @@ release-dir\openssl\key.pem
 components\WinampCtrl
 # ignore lazarus backups
 backup
+cache
+*.bak
+*.lps
+*.cache
+*.log
+*.exe
