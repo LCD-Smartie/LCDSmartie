@@ -159,11 +159,7 @@ var
   Loop : integer;
   Index : integer;
   bAmpersand : boolean;
-begin                     // stupid utf8 to ascii crap
-  // this has to be duplicated a few times - replace multibyte utf-8
-  S := StringReplace(S,#226+#150+#136,#255,[rfReplaceAll]); // full Block
-  S := StringReplace(S,#194+#176,#176,[rfReplaceAll]); // Degree - hd44780 only has a square degree in 223 so this is a custom
-  S := StringReplace(S,#226+#128+#153,#39,[rfReplaceAll]); // Utf8 apostrophe
+begin
 
   fCaption := S;
   S := Copy(S+'                                        ', 1, fLineWidth);

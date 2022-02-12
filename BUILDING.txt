@@ -1,5 +1,4 @@
-Delphi Version
-==============
+
 This project is built using Lazarus https://www.lazarus-ide.org
 
 Required Components

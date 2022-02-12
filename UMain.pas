@@ -28,10 +28,10 @@ unit UMain;
 interface
 
 uses
-  Messages, Menus, Graphics, WinampCtrl, ExtCtrls, Controls, StdCtrls, Buttons,
+  Menus, Graphics, WinampCtrl, ExtCtrls, Controls, Buttons,
   Classes, Forms, USetup, UConfig, ULCD, UData, lcdline, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
-  IdGlobal, IdIOHandler, IdIOHandlerStack, IdAntiFreeze, IdSSLOpenSSLHeaders
+  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows
   {$IFNDEF STANDALONESETUP}
   , UExceptionLogger
   {$ENDIF}
@@ -62,17 +62,10 @@ type
     destructor Destroy; override;
   end;
 
-
-
-  TInitialWindowState = (NoChange, HideMainForm, TotalHideMainForm);
-
-
-
   TLCDSmartieDisplayForm = class(TForm)
     {$IFNDEF STANDALONESETUP}
     ExceptionLogger1: TExceptionLogger;
     {$ENDIF}
-    IdAntiFreeze1: TIdAntiFreeze;
     SavePosition: TMenuItem;
     N1: TMenuItem;
     NextScreenTimer: TTimer;
@@ -123,7 +116,6 @@ type
     Line3LCDPanel: TLCDLineFrame;
     IdTCPServer1: TIdTCPServer;
     IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL;
-
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SavePositionClick(Sender: TObject);
@@ -196,8 +188,6 @@ type
     procedure NextScreenImageClick(Sender: TObject);
     procedure TransitionTimerTimer(Sender: TObject);
     procedure ScrollFlashTimerTimer(Sender: TObject);
-    procedure WMQueryEndSession (var M: TWMQueryEndSession); message WM_QUERYENDSESSION;
-    procedure WMPowerBroadcast (var M: TMessage); message WM_POWERBROADCAST;
     procedure SetupButtonClick(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure LoadSkin;
@@ -257,9 +247,9 @@ type
     procedure FiniLCD(WriteShutdownMessage : boolean);
     procedure ResizeHeight;
     procedure ResizeWidth;
-
     procedure ProcessCommandLineParams;
     procedure AssignOnscreenDisplay(TrueLCD : boolean);
+    procedure OnEndSession(Sender:Tobject);
   public
     doesflash: Boolean;
     lcd: TLCD;
@@ -277,7 +267,8 @@ type
   function GetFmtFileVersion(const FileName: String = '';  const Fmt: String = '%d.%d.%d.%d'): String;
 
 var
-SetupForm : tsetupform;
+  PrevWndProc: WNDPROC;
+  SetupForm : tsetupform;
   activeScreen : Integer;
   LCDSmartieDisplayForm: TLCDSmartieDisplayForm;
   bTerminating: Boolean;
@@ -286,16 +277,48 @@ SetupForm : tsetupform;
   OurVersRel : integer;
   OurVersBuild : integer;
   ShowWindowFlag: Boolean;
-  LastLine: array [1..4] of string;
+  LastLineLCD: array [1..4] of string;
 implementation
 {$IFNDEF STANDALONESETUP}
 {$R *.lfm}
 {$ENDIF}
 uses
-  Windows,  Dialogs, ShellAPI, mmsystem, StrUtils,
+  Dialogs, ShellAPI, mmsystem, StrUtils,
   UCredits, ULCD_DLL, UUtils, lazutf8,
   FONTMGR, UIconUtils, InterfaceBase, Win32Int;
 
+// message handler
+// lazarus only supports passing certain messages so we have to implement our own handler
+function WndCallback(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam):LRESULT; stdcall;
+const
+  PBT_APMSUSPEND = 4;
+  PBT_APMSTANDBY = 5;
+  PBT_APMRESUMECRITICAL = 6;
+  PBT_APMRESUMESUSPEND = 7;
+  PBT_APMRESUMESTANDBY = 8;
+  PBT_APMRESUMEAUTOMATIC = $012;
+begin
+
+  // wake up from hibernate / suspend
+  if (wParam = PBT_APMRESUMEAUTOMATIC) or
+     (wParam = PBT_APMRESUMECRITICAL) or
+     (wParam = PBT_APMRESUMESTANDBY) or
+     (wParam = PBT_APMRESUMESUSPEND)
+    then
+    begin
+      LCDSmartieDisplayForm.ReInitLCD();
+    end
+  else
+    // time to go to sleep
+    if (wParam = PBT_APMSUSPEND) or
+       (wParam = PBT_APMSTANDBY) then
+    begin
+      LCDSmartieDisplayForm.FiniLCD(true);
+      LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
+    end;
+
+  result:= CallWindowProc(PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
+end;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -359,11 +382,15 @@ begin
     (fOwner^ as TPanel).Font.Color := Value;
 end;
 
+procedure TLCDSmartieDisplayForm.OnEndSession(Sender: Tobject);
+begin
+  close;
+end;
+
 procedure TLCDSmartieDisplayForm.AssignOnscreenDisplay(TrueLCD : boolean);
 var
   Loop : byte;
 begin
-
   if assigned(ScreenLCD[1]) and (ScreenLCD[1].fTrueLCD = TrueLCD) then exit;
   for Loop := 1 to MaxLines do begin
     if assigned(ScreenLCD[Loop]) then begin
@@ -387,7 +414,6 @@ begin
   ScreenLCD[3].visible := config.height > 2;
   ScreenLCD[4].visible := config.height > 3;
   SetOnscreenBacklight;
-
 end;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -401,9 +427,10 @@ end;
 procedure TLCDSmartieDisplayForm.FormCreate(Sender: TObject);
 var
   hConfig: longint;
-  EXStyle: Long;
-AppHandle: THandle;
 begin
+
+  application.OnEndSession:=OnEndSession; // lazarus has support for this message
+  PrevWndProc:= Windows.WNDPROC(SetWindowLongPtr(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback))); // message handler
 
   // keep all ssl related stuff in a sub dir
   IdOpenSSLSetLibPath('.\openssl\');
@@ -639,11 +666,10 @@ begin
   LCDSmartieDisplayForm.Top  := config.MainFormPosTop;
   LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
 
-  timerRefresh.Interval := 0; // reset timer
+//  timerRefresh.Interval := 0; // reset timer
   timerRefresh.Interval := 1; // make it short in case minimized has been selected.
   TrayIcon1.ShowIcon:=true;
 end;
-
 
 procedure TLCDSmartieDisplayForm.SavePositionClick(Sender: TObject);
 begin
@@ -787,48 +813,6 @@ begin
   end;
 end;
 
-procedure TLCDSmartieDisplayForm.WMQueryEndSession (var M: TWMQueryEndSession);
-begin
-  inherited;
-  LCDSmartieDisplayForm.Close;
-end;
-
-//
-// Good article on Power related OS events
-// http://www.codeproject.com/KB/system/OSEvents.aspx
-//
-procedure TLCDSmartieDisplayForm.WMPowerBroadcast (var M: TMessage);
-const
-
-  PBT_APMSUSPEND = 4;
-  PBT_APMSTANDBY = 5;
-
-  PBT_APMRESUMECRITICAL = 6;
-  PBT_APMRESUMESUSPEND = 7;
-  PBT_APMRESUMESTANDBY = 8;
-  PBT_APMRESUMEAUTOMATIC = $012;
-
-begin
-// wake up from hibernate / suspend
-  if (M.WParam = PBT_APMRESUMEAUTOMATIC) or
-     (M.WParam = PBT_APMRESUMECRITICAL) or
-     (M.WParam = PBT_APMRESUMESTANDBY) or
-     (M.WParam = PBT_APMRESUMESUSPEND)
-    then
-    begin
-      ReInitLCD();
-    end
-  else
-// time to go to sleep
-    if (M.WParam = PBT_APMSUSPEND) or
-       (M.WParam = PBT_APMSTANDBY) then
-    begin
-      FiniLCD(true);
-      Lcd := TLCD.Create(); // replace with a dummy driver.
-    end;
-end;
-
-
 procedure TLCDSmartieDisplayForm.PopupMenu1Popup(Sender: TObject);
 begin
   if Visible then
@@ -852,7 +836,7 @@ end;
 
 procedure TLCDSmartieDisplayForm.ScrollFlashTimerTimer(Sender: TObject);
 begin
-  ScrollFlashTimer.Interval := 0;
+ // ScrollFlashTimer.Interval := 0;
   ScrollFlashTimer.Interval := config.scrollPeriod;
   canscroll := true;
   Inc(flashdelay);
@@ -884,9 +868,7 @@ begin
     data.cLastKeyPressed := cKey;
   end;
 
-
   if assigned(SetupForm) then exit;
-
 
   //
   // Work out the state of each action condition.
@@ -1141,37 +1123,43 @@ begin
     end;
 
     // calculate scroll positions
+
     for counter := 1 to config.height do
     begin
       if (not config.screen[activeScreen].line[counter].noscroll) then
-        ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, scrollcount))
+      begin
+        tmpline[counter] := EscapeAmp(scroll(parsedLine[counter], counter, scrollcount));
+        if (tmpline[counter] <> ScreenLCD[counter].Caption) then
+          ScreenLCD[counter].Caption := tmpline[counter];
+      end
       else
-        if (scrollPos[counter]>1) then     // maintain manual scroll postion
-          ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, 0))
+        if (scrollPos[counter]>1) then // maintain manual scroll postion
+        begin
+          tmpline[counter] := EscapeAmp(scroll(parsedLine[counter], counter, 0));
+          if (tmpline[counter] <> ScreenLCD[counter].Caption) then
+            ScreenLCD[counter].Caption := tmpline[counter]
+        end
         else
-          ScreenLCD[counter].Caption := EscapeAmp(copy(parsedLine[counter], 1, config.width));
+        begin
+          tmpline[counter] := EscapeAmp(copy(parsedLine[counter], 1, config.width));
+          if (tmpline[counter] <> ScreenLCD[counter].Caption) then
+            ScreenLCD[counter].Caption := tmpline[counter];
+        end;
     end;
-
   end
   else
   begin          // TransitionTimer.Enabled = true
     DoTransitions();
   end;
 
-
   for h := 1 to config.height do
   begin
+    tmpline[h] := ScreenLCD[h].Caption;
+    tmpline[h] := copy(UnescapeAmp(tmpline[h]) + '                                        ', 1, config.width);
 
-      tmpline[h] := ScreenLCD[h].Caption;
-      tmpline[h] := StringReplace(tmpline[h],#226+#150+#136,#255,[rfReplaceAll]); // full Block
-      tmpline[h] := StringReplace(tmpline[h],#194+#176,#176,[rfReplaceAll]); // Degree - hd44780 only has a square degree in 223 so this is a custom
-      tmpline[h] := StringReplace(tmpline[h],#226+#128+#153,#39,[rfReplaceAll]); // Utf8 apostrophe
-
-      tmpline[h] := copy(UnescapeAmp(tmpline[h]) + '                                        ', 1, config.width);
-
-    if tmpline[h] <> LastLine[h] then
+    if tmpline[h] <> LastLineLCD[h] then
     begin
-      LastLine[h] := tmpline[h];
+      LastLineLCD[h] := tmpline[h];
       Lcd.setPosition(1, h);
       Lcd.write(tmpline[h]);
     end;
@@ -1580,7 +1568,6 @@ procedure TLCDSmartieDisplayForm.FiniLCD(WriteShutdownMessage : boolean);
 var
   h,x : integer;
   row : string;
-  //i: cardinal;
 begin
 
   timerRefresh.enabled := false;  // stop updates to lcd
@@ -1591,9 +1578,7 @@ begin
 
         for h := 1 to config.Height do
           begin
-            row := Config.ShutdownMessage[h];
-            // filter & replace chars
-            row := StringReplace(row,#226+#150+#136,#255,[rfReplaceAll]); // full block
+            row := Data.change(Config.ShutdownMessage[h], h, true); // now we can use variables in shutdown message
 
             for x := length(row)+1 to config.Width do
               row := row + ' ';
@@ -1601,13 +1586,6 @@ begin
             Lcd.setPosition(1, h);
             Lcd.write(row);
             Sleep(20);
-
-            {for i:= 1 to Length(row) do
-            begin
-              Lcd.write(row[i]);
-              Sleep(1);
-            end;
-            }
           end;
           Lcd.setbacklight(false);
       end;
@@ -2585,7 +2563,6 @@ begin
          strm := TIdMemoryBufferStream.Create(PAnsiChar(inttostr(loop)+screenLCD[Loop].caption), Length(inttostr(loop)+screenLCD[Loop].caption));
          AContext.Connection.IOHandler.LargeStream := False;
          AContext.Connection.IOHandler.write(strm, 0, True);
-      //   AContext.Connection.IOHandler.write(#13#10);
       end;
       sleep(250); // slow down execution
     end;

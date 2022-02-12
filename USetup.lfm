@@ -1,9 +1,8 @@
 object SetupForm: TSetupForm
-  Left = 701
+  Left = 512
   Height = 454
-  Top = 99
+  Top = 173
   Width = 828
-  ActiveControl = LeftPageControl
   Anchors = []
   BorderIcons = []
   BorderStyle = bsDialog
@@ -22,13 +21,1618 @@ object SetupForm: TSetupForm
   ParentDoubleBuffered = False
   Position = poScreenCenter
   LCLVersion = '2.2.0.4'
+  object MainPageControl: TPageControl
+    Left = 264
+    Height = 416
+    Top = 0
+    Width = 560
+    TabStop = False
+    ActivePage = ScreensTabSheet
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    ParentFont = False
+    TabIndex = 0
+    TabOrder = 7
+    OnChange = MainPageControlChange
+    object ScreensTabSheet: TTabSheet
+      Caption = 'Screens'
+      ClientHeight = 390
+      ClientWidth = 552
+      object ScreenSettingsGroupBox: TGroupBox
+        Left = 3
+        Height = 216
+        Top = 168
+        Width = 541
+        Caption = 'Screens settings'
+        ClientHeight = 198
+        ClientWidth = 537
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentBidiMode = False
+        ParentFont = False
+        TabOrder = 2
+        object Label5: TLabel
+          Left = 16
+          Height = 26
+          Top = 32
+          Width = 26
+          Caption = 'Show'#13#10'time:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          WordWrap = True
+        end
+        object Label43: TLabel
+          Left = 101
+          Height = 13
+          Top = 40
+          Width = 24
+          Caption = '(sec)'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object Label18: TLabel
+          Left = 104
+          Height = 13
+          Top = 8
+          Width = 36
+          Caption = 'Theme:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object ScreenLabel: TLabel
+          Left = 8
+          Height = 13
+          Top = 8
+          Width = 37
+          Caption = 'Screen:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object Label60: TLabel
+          Left = 207
+          Height = 13
+          Top = 0
+          Width = 77
+          Caption = 'Transition &style:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object Label61: TLabel
+          Left = 210
+          Height = 13
+          Top = 36
+          Width = 74
+          Caption = 'Transition time:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object Label62: TLabel
+          Left = 341
+          Height = 13
+          Top = 36
+          Width = 49
+          Caption = '(1/10 sec)'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object ThemeNumberSpinEdit: TSpinEdit
+          Left = 144
+          Height = 21
+          Top = 8
+          Width = 41
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxValue = 10
+          MinValue = 1
+          ParentFont = False
+          TabOrder = 2
+          Value = 1
+        end
+        object StickyCheckbox: TCheckBox
+          Left = 133
+          Height = 19
+          Hint = 'Don''t automatically change from this screen.'
+          Top = 46
+          Width = 48
+          Caption = 'Sticky'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnClick = StickyCheckboxClick
+          ParentFont = False
+          ParentShowHint = False
+          ParentBidiMode = False
+          ShowHint = True
+          TabOrder = 4
+        end
+        object ScreenEnabledCheckBox: TCheckBox
+          Left = 133
+          Height = 19
+          Hint = 'Show this screen automatically'
+          Top = 30
+          Width = 58
+          Caption = 'Enabled'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+        end
+        object TimeToShowSpinEdit: TSpinEdit
+          Left = 50
+          Height = 21
+          Hint = 'How long the screen should be shown for before moving to the next.'
+          Top = 36
+          Width = 41
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxValue = 99
+          MinValue = 1
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 3
+          Value = 3
+        end
+        object ScreenSpinEdit: TSpinEdit
+          Left = 50
+          Height = 21
+          Top = 8
+          Width = 41
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxValue = 20
+          MinValue = 1
+          OnChange = ScreenSpinEditChange
+          ParentFont = False
+          TabOrder = 0
+          Value = 1
+        end
+        object CopyToScreenButton: TButton
+          Left = 8
+          Height = 25
+          Hint = 'Copy this screen to another screen leaving this screen intact. CAUTION: Changes remain in  memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
+          Top = 166
+          Width = 75
+          Caption = 'Copy to'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnClick = CopyToScreenButtonClick
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 5
+        end
+        object MoveToScreenButton: TButton
+          Left = 134
+          Height = 25
+          Hint = 'Move this screen to another screen leaving this one blank. CAUTION: Changes remain in  memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
+          Top = 166
+          Width = 75
+          Caption = 'Move to'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnClick = MoveToScreenButtonClick
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 6
+        end
+        object SwapWithScreenButton: TButton
+          Left = 260
+          Height = 25
+          Hint = 'Swap this screen with another screen. CAUTION: Changes remain in memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
+          Top = 166
+          Width = 75
+          Caption = 'Swap with'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnClick = SwapWithScreenButtonClick
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 7
+        end
+        object TransitionStyleComboBox: TComboBox
+          Left = 290
+          Height = 21
+          Top = 0
+          Width = 95
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ItemHeight = 13
+          Items.Strings = (
+            'None'
+            'Left->Right'
+            'Right->Left'
+            'Top->Bottom'
+            'Bottom->Top'
+            'Random chars'
+            'Contrast fade light'
+          )
+          ParentFont = False
+          Style = csDropDownList
+          TabOrder = 8
+        end
+        object TransitionTimeSpinEdit: TSpinEdit
+          Left = 290
+          Height = 21
+          Top = 36
+          Width = 45
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxValue = 99
+          MinValue = 1
+          ParentFont = False
+          TabOrder = 9
+          Value = 1
+        end
+        object Line1EditButton: TSpeedButton
+          Left = 360
+          Height = 23
+          Top = 64
+          Width = 23
+          Caption = '. . .'
+          OnClick = LineEditClick
+        end
+        object Line2EditButton: TSpeedButton
+          Left = 360
+          Height = 23
+          Top = 87
+          Width = 23
+          Caption = '. . .'
+          OnClick = LineEditClick
+        end
+        object Line3EditButton: TSpeedButton
+          Left = 360
+          Height = 23
+          Top = 110
+          Width = 23
+          Caption = '. . .'
+          OnClick = LineEditClick
+        end
+        object Line4EditButton: TSpeedButton
+          Left = 360
+          Height = 23
+          Top = 133
+          Width = 23
+          Caption = '. . .'
+          OnClick = LineEditClick
+        end
+        object Line1MemoEdit: TMemo
+          Left = 8
+          Height = 23
+          Top = 64
+          Width = 344
+          Font.Height = 19
+          Font.Name = 'Fixedsys'
+          OnEnter = LineEditEnter
+          ParentFont = False
+          TabOrder = 10
+          WantReturns = False
+          WordWrap = False
+        end
+        object Line2MemoEdit: TMemo
+          Left = 8
+          Height = 23
+          Top = 87
+          Width = 344
+          Font.Height = 19
+          Font.Name = 'Fixedsys'
+          OnEnter = LineEditEnter
+          ParentFont = False
+          TabOrder = 11
+          WantReturns = False
+          WordWrap = False
+        end
+        object Line3MemoEdit: TMemo
+          Left = 8
+          Height = 23
+          Top = 110
+          Width = 344
+          Font.Height = 19
+          Font.Name = 'Fixedsys'
+          OnEnter = LineEditEnter
+          ParentFont = False
+          TabOrder = 12
+          WantReturns = False
+          WordWrap = False
+        end
+        object Line4MemoEdit: TMemo
+          Left = 8
+          Height = 23
+          Top = 133
+          Width = 344
+          Constraints.MinHeight = 23
+          Font.Height = 19
+          Font.Name = 'Fixedsys'
+          OnEnter = LineEditEnter
+          ParentFont = False
+          TabOrder = 13
+          WantReturns = False
+          WordWrap = False
+        end
+        object CopyToScreenComboBox: TComboBox
+          Left = 84
+          Height = 21
+          Top = 168
+          Width = 49
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ItemHeight = 13
+          OnChange = ScreenSpinEditChange
+          ParentFont = False
+          TabOrder = 14
+        end
+        object MoveToScreenComboBox: TComboBox
+          Left = 210
+          Height = 21
+          Top = 168
+          Width = 49
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ItemHeight = 13
+          OnChange = ScreenSpinEditChange
+          ParentFont = False
+          TabOrder = 15
+        end
+        object SwapWithScreenComboBox: TComboBox
+          Left = 336
+          Height = 21
+          Top = 168
+          Width = 49
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ItemHeight = 13
+          OnChange = ScreenSpinEditChange
+          ParentFont = False
+          TabOrder = 16
+        end
+        object GroupBox2: TGroupBox
+          Left = 392
+          Height = 168
+          Top = -8
+          Width = 48
+          ClientHeight = 150
+          ClientWidth = 44
+          TabOrder = 17
+          object Label44: TLabel
+            Left = 8
+            Height = 52
+            Top = -2
+            Width = 25
+            Alignment = taCenter
+            Caption = 'Don''t scroll this line'
+            Constraints.MaxWidth = 26
+            Font.CharSet = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            ParentFont = False
+            WordWrap = True
+          end
+          object DontScrollLine1CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Don''t scroll this line.'
+            Top = 59
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 0
+          end
+          object DontScrollLine2CheckBox: TCheckBox
+            Left = 14
+            Height = 19
+            Hint = 'Don''t scroll this line.'
+            Top = 82
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+          end
+          object DontScrollLine3CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Don''t scroll this line.'
+            Top = 105
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+          end
+          object DontScrollLine4CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Don''t scroll this line.'
+            Top = 128
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 3
+          end
+        end
+        object GroupBox4: TGroupBox
+          Left = 488
+          Height = 168
+          Top = -8
+          Width = 45
+          ClientHeight = 150
+          ClientWidth = 41
+          TabOrder = 18
+          object Label4: TLabel
+            Left = 3
+            Height = 26
+            Top = 0
+            Width = 36
+            Alignment = taCenter
+            Caption = 'Center text'
+            Constraints.MaxWidth = 36
+            Font.CharSet = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            ParentFont = False
+            WordWrap = True
+          end
+          object CenterLine1CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 59
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 0
+          end
+          object CenterLine2CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 82
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+          end
+          object CenterLine3CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 105
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+          end
+          object CenterLine4CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 128
+            Width = 23
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 3
+          end
+        end
+        object GroupBox5: TGroupBox
+          Left = 440
+          Height = 168
+          Top = -8
+          Width = 48
+          ClientHeight = 150
+          ClientWidth = 44
+          TabOrder = 19
+          object ContinueLine3CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
+            Top = 105
+            Width = 23
+            Caption = ' '
+            OnClick = ContinueLine3CheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 0
+          end
+          object ContinueLine2CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
+            Top = 82
+            Width = 23
+            Caption = ' '
+            OnClick = ContinueLine2CheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+          end
+          object ContinueLine1CheckBox: TCheckBox
+            Left = 13
+            Height = 19
+            Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
+            Top = 59
+            Width = 23
+            Caption = ' '
+            OnClick = ContinueLine1CheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+          end
+          object Label51: TLabel
+            Left = 8
+            Height = 52
+            Top = 0
+            Width = 28
+            Alignment = taCenter
+            Caption = 'Cont'' on next line'
+            Constraints.MaxWidth = 36
+            Font.CharSet = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            ParentFont = False
+            WordWrap = True
+          end
+        end
+      end
+      object ProgramSettingsGroupBox: TGroupBox
+        Left = 3
+        Height = 166
+        Top = 0
+        Width = 231
+        Caption = 'Program settings'
+        ClientHeight = 148
+        ClientWidth = 227
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        object Label1: TLabel
+          Left = 8
+          Height = 13
+          Top = 33
+          Width = 134
+          Caption = 'Scroll interval (milliseconds):'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object Label6: TLabel
+          Left = 8
+          Height = 13
+          Top = 55
+          Width = 68
+          Caption = 'Color scheme:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object Label59: TLabel
+          Left = 8
+          Height = 13
+          Top = 8
+          Width = 147
+          Caption = 'Refresh interval (milliseconds):'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+        object ColorSchemeComboBox: TComboBox
+          Left = 84
+          Height = 21
+          Hint = 'The colors used in the virtual display.'
+          Top = 50
+          Width = 134
+          Anchors = [akTop, akLeft, akRight]
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ItemHeight = 13
+          Items.Strings = (
+            'Green'
+            'Blue'
+            'Yellow'
+            'White'
+            'White on Blue'
+            'Custom for this skin'
+          )
+          OnChange = ColorSchemeComboBoxChange
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          Style = csDropDownList
+          TabOrder = 2
+        end
+        object ProgramRefreshIntervalSpinEdit: TSpinEdit
+          Left = 160
+          Height = 21
+          Hint = 'How often screen text is sent to display (in mSec).'
+          Top = 0
+          Width = 58
+          Anchors = [akTop, akRight]
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxValue = 1000
+          MinValue = 5
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          Value = 200
+        end
+        object ProgramScrollIntervalSpinEdit: TSpinEdit
+          Left = 160
+          Height = 21
+          Hint = 'How fast to scroll (in mSec). Should be greater than refresh interval.'
+          Top = 25
+          Width = 58
+          Anchors = [akTop, akRight]
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxValue = 50000
+          MinValue = 20
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          Value = 200
+        end
+        object EmulateLCDCheckbox: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 73
+          Width = 187
+          Caption = 'Emulate LCD  (more CPU intensive)'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 3
+        end
+        object StayOnTopCheckBox: TCheckBox
+          Left = 144
+          Height = 19
+          Top = 95
+          Width = 76
+          Caption = '&Stay on top'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 4
+        end
+        object RandomizeScreensCheckBox: TCheckBox
+          Left = 8
+          Height = 19
+          Hint = 'Rather than automatically selecting in sequence, chose them randomly.'
+          Top = 95
+          Width = 112
+          Caption = '&Randomize screens'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 5
+        end
+        object DLLCheckIntervalSpinEdit: TSpinEdit
+          Left = 173
+          Height = 21
+          Top = 118
+          Width = 49
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxValue = 1000
+          MinValue = 5
+          ParentFont = False
+          TabOrder = 6
+          Value = 200
+        end
+        object Label58: TLabel
+          Left = 8
+          Height = 13
+          Top = 126
+          Width = 156
+          Caption = 'DLL check interval (milliseconds):'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+        end
+      end
+      object DisplayGroup2: TGroupBox
+        Left = 240
+        Height = 166
+        Top = 0
+        Width = 304
+        Caption = 'Display settings'
+        ClientHeight = 148
+        ClientWidth = 300
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        object Panel1: TPanel
+          Left = 0
+          Height = 148
+          Top = 0
+          Width = 300
+          Align = alClient
+          BevelOuter = bvNone
+          BorderWidth = 3
+          ClientHeight = 148
+          ClientWidth = 300
+          TabOrder = 0
+          object DisplayPageControl: TPageControl
+            Left = 3
+            Height = 142
+            Top = 3
+            Width = 294
+            ActivePage = PluginTabsheet
+            Align = alClient
+            Font.CharSet = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            MultiLine = True
+            ParentFont = False
+            TabHeight = 16
+            TabIndex = 0
+            TabOrder = 0
+            TabPosition = tpLeft
+            Options = [nboMultiLine]
+            object PluginTabsheet: TTabSheet
+              Caption = 'Plugin'
+              ClientHeight = 134
+              ClientWidth = 270
+              object DisplayPluginsLabel: TLabel
+                Left = 8
+                Height = 13
+                Top = 8
+                Width = 81
+                Caption = 'Display Plugin:'
+                Font.CharSet = ANSI_CHARSET
+                Font.Color = clBlack
+                Font.Height = -11
+                Font.Name = 'Tahoma'
+                Font.Style = [fsBold]
+                ParentFont = False
+              end
+              object IDLabel: TLabel
+                Left = 8
+                Height = 13
+                Top = 32
+                Width = 63
+                Caption = 'DLL Identifier'
+                Font.CharSet = ANSI_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                ParentFont = False
+              end
+              object Label14: TLabel
+                Left = 8
+                Height = 13
+                Top = 48
+                Width = 116
+                Caption = 'Startup Parameters:'
+                Font.CharSet = ANSI_CHARSET
+                Font.Color = clBlack
+                Font.Height = -11
+                Font.Name = 'Tahoma'
+                Font.Style = [fsBold]
+                ParentFont = False
+              end
+              object UsageLabel: TLabel
+                Left = 8
+                Height = 13
+                Top = 83
+                Width = 30
+                Caption = 'Usage'
+              end
+              object DisplayPluginList: TComboBox
+                Left = 92
+                Height = 21
+                Top = 4
+                Width = 172
+                Anchors = [akTop, akLeft, akRight]
+                ItemHeight = 13
+                OnChange = DisplayPluginListChange
+                Style = csDropDownList
+                TabOrder = 0
+              end
+              object ParametersEdit: TEdit
+                Left = 8
+                Height = 21
+                Top = 60
+                Width = 256
+                Anchors = [akTop, akLeft, akRight]
+                TabOrder = 1
+                Text = 'ParametersEdit'
+              end
+              object ComPortsButton: TButton
+                Left = 196
+                Height = 25
+                Top = 107
+                Width = 75
+                Caption = 'COM ports'
+                OnClick = ComPortsButtonClick
+                TabOrder = 2
+              end
+            end
+            object ScreenTabsheet: TTabSheet
+              Caption = 'Screen'
+              ClientHeight = 134
+              ClientWidth = 270
+              ImageIndex = 1
+              object Label3: TLabel
+                Left = 143
+                Height = 13
+                Top = 7
+                Width = 44
+                Caption = 'LCD size:'
+                Font.CharSet = ANSI_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -11
+                Font.Name = 'Tahoma'
+                ParentFont = False
+              end
+              object LCDSizeComboBox: TComboBox
+                Left = 188
+                Height = 21
+                Hint = 'The size of your display in characters (lines X width). '
+                Top = 4
+                Width = 77
+                Font.CharSet = ANSI_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -11
+                Font.Name = 'Tahoma'
+                ItemHeight = 13
+                OnChange = LCDSizeComboBoxChange
+                ParentFont = False
+                ParentShowHint = False
+                ShowHint = True
+                Style = csDropDownList
+                TabOrder = 0
+              end
+              object GroupBox3: TGroupBox
+                Left = 8
+                Height = 49
+                Top = 28
+                Width = 258
+                Anchors = [akTop, akLeft, akRight]
+                Caption = 'Contrast'
+                ClientHeight = 31
+                ClientWidth = 254
+                Font.CharSet = ANSI_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -11
+                Font.Name = 'Tahoma'
+                Font.Style = [fsBold]
+                ParentFont = False
+                TabOrder = 1
+                object ContrastTrackBar: TTrackBar
+                  Left = 3
+                  Height = 25
+                  Top = 0
+                  Width = 247
+                  Frequency = 10
+                  Max = 254
+                  Min = 1
+                  OnChange = ContrastTrackBarChange
+                  PageSize = 10
+                  Position = 1
+                  ScalePos = trBottom
+                  TickMarks = tmTopLeft
+                  Anchors = [akTop, akLeft, akRight]
+                  TabOrder = 0
+                end
+              end
+              object GroupBox1: TGroupBox
+                Left = 8
+                Height = 49
+                Top = 80
+                Width = 258
+                Anchors = [akTop, akLeft, akRight]
+                Caption = 'Brightness'
+                ClientHeight = 31
+                ClientWidth = 254
+                Font.CharSet = ANSI_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -11
+                Font.Name = 'Tahoma'
+                Font.Style = [fsBold]
+                ParentFont = False
+                TabOrder = 2
+                object BrightnessTrackBar: TTrackBar
+                  Left = 3
+                  Height = 25
+                  Top = 0
+                  Width = 247
+                  Frequency = 10
+                  Max = 254
+                  Min = 1
+                  OnChange = BrightnessTrackBarChange
+                  Position = 1
+                  TickMarks = tmTopLeft
+                  Anchors = [akTop, akLeft, akRight]
+                  Color = clBtnFace
+                  ParentColor = False
+                  TabOrder = 0
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    object ActionsTabSheet: TTabSheet
+      Caption = 'Actions'
+      ClientHeight = 390
+      ClientWidth = 552
+      ImageIndex = 1
+      object ActionsStringGrid: TStringGrid
+        Left = 1
+        Height = 349
+        Hint = 'These actions are run on a timer'
+        Top = 0
+        Width = 568
+        ColCount = 0
+        DefaultColWidth = 77
+        DefaultRowHeight = 16
+        DoubleBuffered = True
+        FixedCols = 0
+        FixedRows = 0
+        Options = [goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowMoving, goColMoving, goEditing, goAutoAddRows, goRowSelect, goAlwaysShowEditor, goRelaxedRowSelect, goDblClickAutoSize, goFixedColSizing, goDontScrollPartCell, goCellHints, goAutoAddRowsSkipContentCheck, goRowHighlight]
+        ParentDoubleBuffered = False
+        ParentShowHint = False
+        RowCount = 0
+        ShowHint = True
+        TabOrder = 2
+        TitleStyle = tsStandard
+        OnSelectEditor = ActionsStringGridSelectEditor
+        OnSelection = ActionsStringGridSelection
+      end
+      object ActionAddButton: TButton
+        Left = 412
+        Height = 25
+        Hint = 'Add a new action'
+        Top = 360
+        Width = 75
+        Caption = 'New'
+        OnClick = ActionAddButtonClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+      end
+      object ActionDeleteButton: TButton
+        Left = 492
+        Height = 25
+        Hint = 'Delete selected action'
+        Top = 360
+        Width = 75
+        Caption = '&Delete'
+        OnClick = ActionDeleteButtonClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+      end
+      object Label24: TLabel
+        Left = 1
+        Height = 13
+        Top = 372
+        Width = 168
+        Caption = 'Actions timer interval(milliseconds):'
+      end
+      object ActionsTimerSpinEdit: TSpinEdit
+        Left = 170
+        Height = 21
+        Hint = 'A higher value will decrease CPU usage slightly but will cause more of a delay in button detection'
+        Top = 364
+        Width = 65
+        MaxValue = 2000
+        MinValue = 150
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        Value = 150
+      end
+    end
+    object StartupTabSheet: TTabSheet
+      Caption = 'Startup/Shutdown'
+      ClientHeight = 390
+      ClientWidth = 552
+      ImageIndex = 2
+      object GroupBox7: TGroupBox
+        Left = 8
+        Height = 81
+        Hint = 'These settings are for when starting with windows.'
+        Top = 16
+        Width = 201
+        Caption = 'Autostart'
+        ClientHeight = 63
+        ClientWidth = 197
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        object NoAutoStart: TRadioButton
+          Left = 8
+          Height = 19
+          Top = 0
+          Width = 160
+          Caption = 'Don''t autostart with windows'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 0
+        end
+        object AutoStart: TRadioButton
+          Left = 8
+          Height = 19
+          Top = 16
+          Width = 66
+          Caption = 'Autostart'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 1
+        end
+        object AutoStartHide: TRadioButton
+          Left = 8
+          Height = 19
+          Top = 32
+          Width = 180
+          Caption = 'Autostart hidden (in system tray)'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 2
+        end
+      end
+      object GroupBox8: TGroupBox
+        Left = 8
+        Height = 49
+        Hint = 'These settings are for when starting apply to all start methods (by hand or autostart).'
+        Top = 104
+        Width = 201
+        Caption = 'Start options'
+        ClientHeight = 31
+        ClientWidth = 197
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        object HideOnStartup: TCheckBox
+          Left = 8
+          Height = 19
+          Top = 8
+          Width = 115
+          Caption = 'Always start hidden'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 0
+        end
+      end
+      object ShutdownMessageGroup: TGroupBox
+        Left = 8
+        Height = 121
+        Hint = 'Custom message to be displayed when LCD Smartie is shut down.'
+        Top = 164
+        Width = 347
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'Shut down message'
+        ClientHeight = 103
+        ClientWidth = 343
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        object ShutdownEdit1: TMemo
+          Left = 8
+          Height = 23
+          Top = 0
+          Width = 328
+          Color = clWhite
+          Constraints.MinHeight = 23
+          DoubleBuffered = True
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = 18
+          Font.Name = 'Fixedsys'
+          OnEnter = ShutdownEditEnter
+          ParentDoubleBuffered = False
+          ParentFont = False
+          TabOrder = 0
+        end
+        object ShutdownEdit2: TMemo
+          Left = 8
+          Height = 23
+          Top = 24
+          Width = 328
+          Color = clWhite
+          Constraints.MinHeight = 23
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = 18
+          Font.Name = 'Fixedsys'
+          OnEnter = ShutdownEditEnter
+          ParentFont = False
+          TabOrder = 1
+        end
+        object ShutdownEdit3: TMemo
+          Left = 8
+          Height = 23
+          Top = 48
+          Width = 328
+          Constraints.MinHeight = 23
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = 18
+          Font.Name = 'Fixedsys'
+          OnEnter = ShutdownEditEnter
+          ParentFont = False
+          TabOrder = 2
+        end
+        object ShutdownEdit4: TMemo
+          Left = 8
+          Height = 23
+          Top = 72
+          Width = 328
+          Constraints.MinHeight = 23
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = 18
+          Font.Name = 'Fixedsys'
+          OnEnter = ShutdownEditEnter
+          ParentFont = False
+          TabOrder = 3
+        end
+      end
+    end
+    object MyTabSheet: TTabSheet
+      Caption = 'Miscellaneous'
+      ClientHeight = 390
+      ClientWidth = 552
+      ImageIndex = 3
+      object Label9: TLabel
+        Left = 5
+        Height = 13
+        Top = 61
+        Width = 50
+        Caption = 'Tray Icon:'
+      end
+      object TrayIconPreview32: TImage
+        Left = 261
+        Height = 32
+        Top = 74
+        Width = 32
+        AutoSize = True
+      end
+      object TrayIconBrowseButton: TSpeedButton
+        Left = 221
+        Height = 22
+        Hint = 'Click to choose the tray icon for this program instance.'
+        Top = 80
+        Width = 23
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000000000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
+          88888888888888888888000000000008888800333333333088880B0333333333
+          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
+          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
+          8008888888880888080888888888800088888888888888888888
+        }
+        OnClick = TrayIconBrowseButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object TrayIconPreview16: TImage
+        Left = 312
+        Height = 16
+        Top = 90
+        Width = 16
+        Anchors = [akLeft, akBottom]
+        AutoSize = True
+      end
+      object Label10: TLabel
+        Left = 5
+        Height = 13
+        Top = 5
+        Width = 48
+        Caption = 'Skin Path:'
+      end
+      object SkinPathBrowseButton: TSpeedButton
+        Left = 221
+        Height = 22
+        Hint = 'Click to choose skin path for this program instance.'
+        Top = 25
+        Width = 23
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000000000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
+          88888888888888888888000000000008888800333333333088880B0333333333
+          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
+          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
+          8008888888880888080888888888800088888888888888888888
+        }
+        OnClick = SkinPathBrowseButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object DistributedNetBrowseButton: TSpeedButton
+        Left = 221
+        Height = 22
+        Top = 137
+        Width = 23
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000000000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
+          88888888888888888888000000000008888800333333333088880B0333333333
+          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
+          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
+          8008888888880888080888888888800088888888888888888888
+        }
+        OnClick = DistributedNetBrowseButtonClick
+      end
+      object Label34: TLabel
+        Left = 5
+        Height = 13
+        Top = 119
+        Width = 107
+        Caption = 'Distributed.net logfile:'
+      end
+      object TrayIcon: TEdit
+        Left = 5
+        Height = 21
+        Top = 80
+        Width = 217
+        Color = clWhite
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        ParentFont = False
+        ParentShowHint = False
+        TabOrder = 1
+      end
+      object SkinPath: TEdit
+        Left = 5
+        Height = 21
+        Top = 24
+        Width = 217
+        Color = clWhite
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        ParentFont = False
+        ParentShowHint = False
+        TabOrder = 0
+      end
+      object DistributedNetLogfileEdit: TEdit
+        Left = 5
+        Height = 21
+        Top = 137
+        Width = 217
+        TabOrder = 2
+      end
+      object WebProxyPortEdit: TEdit
+        Left = 5
+        Height = 21
+        Hint = 'Web proxy port for web access (such as for Rss feeds).'
+        Top = 248
+        Width = 81
+        Anchors = [akTop, akRight]
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        MaxLength = 5
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+      end
+      object WebProxyServerEdit: TEdit
+        Left = 5
+        Height = 21
+        Hint = 'Web proxy for web access (such as for Rss feeds).'
+        Top = 193
+        Width = 118
+        Anchors = [akTop, akLeft, akRight]
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+      end
+      object Label7: TLabel
+        Left = 5
+        Height = 13
+        Top = 175
+        Width = 91
+        Caption = 'Web proxy server:'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        ParentFont = False
+      end
+      object Label8: TLabel
+        Left = 5
+        Height = 13
+        Top = 226
+        Width = 80
+        Caption = 'Web proxy port:'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        ParentFont = False
+      end
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'Remote Display'
+      ClientHeight = 390
+      ClientWidth = 552
+      ImageIndex = 4
+      object Label16: TLabel
+        Left = 20
+        Height = 13
+        Top = 80
+        Width = 68
+        Caption = 'Bind Listen IP:'
+      end
+      object Label19: TLabel
+        Left = 32
+        Height = 13
+        Top = 112
+        Width = 55
+        Caption = 'Listen port:'
+      end
+      object Label22: TLabel
+        Left = 32
+        Height = 13
+        Top = 208
+        Width = 89
+        Caption = 'Generate SSL key:'
+      end
+      object Label38: TLabel
+        Left = 8
+        Height = 13
+        Top = 8
+        Width = 219
+        Caption = 'Restart Smartie after changing these settings'
+      end
+      object Label39: TLabel
+        Left = 38
+        Height = 13
+        Top = 144
+        Width = 50
+        Caption = 'password:'
+      end
+      object Label42: TLabel
+        Left = 216
+        Height = 13
+        Top = 144
+        Width = 268
+        Caption = 'This will be sent plain text if Use SSL below isn''t checked'
+      end
+      object Label49: TLabel
+        Left = 80
+        Height = 56
+        Top = 240
+        Width = 312
+        AutoSize = False
+        Caption = 'There is no guarantee on the security of the server. Use at your own risk and beware of transmitting personal information in screen data'
+        WordWrap = True
+      end
+      object Label55: TLabel
+        Left = 8
+        Height = 16
+        Top = 240
+        Width = 59
+        Caption = 'Warning:'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object EnableRemoteSendCheckBox: TCheckBox
+        Left = 16
+        Height = 19
+        Hint = 'You can make this smartie send screens to another smartie instance to show on its screen. Use the $Sender variable in the misc. tab on the remote smartie'
+        Top = 40
+        Width = 208
+        Caption = 'Listen for incoming Smartie connections'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+      end
+      object RemoteSendBindIPEdit: TEdit
+        Left = 88
+        Height = 21
+        Hint = 'Listen on only this IP address. Leave blank to listen on all interfaces on this machine'
+        Top = 80
+        Width = 121
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+      end
+      object RemoteSendPortEdit: TEdit
+        Left = 88
+        Height = 21
+        Hint = 'Port to listen on. Default 6088. Make sure This is the same at the remote end'
+        Top = 112
+        Width = 121
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+      end
+      object RemoteSendUseSSLCheckBox: TCheckBox
+        Left = 32
+        Height = 19
+        Hint = 'Encrypt screen data sent by smartie'
+        Top = 176
+        Width = 58
+        Caption = 'Use SSL'
+        OnClick = RemoteSendUseSSLCheckBoxClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+      end
+      object RemoteSendGenerateCertKeyButton: TButton
+        Left = 122
+        Height = 25
+        Top = 200
+        Width = 81
+        Caption = 'Generate'
+        OnClick = RemoteSendGenerateCertKeyButtonClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+      end
+      object RemoteSendPasswordEdit: TEdit
+        Left = 88
+        Height = 21
+        Hint = 'Not so secure password. While it''s not super spy level security it will slow down any nasties trying to get in'
+        Top = 144
+        Width = 121
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+      end
+    end
+  end
   object LeftPageControl: TPageControl
     Left = 0
     Height = 453
     Top = 1
     Width = 265
     TabStop = False
-    ActivePage = WinampTabSheet
+    ActivePage = SysInfoTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -37,8 +1641,8 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 1
-    TabOrder = 3
+    TabIndex = 0
+    TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
     Options = [nboMultiLine]
@@ -196,15 +1800,6 @@ object SetupForm: TSetupForm
         ParentFont = False
         TabOrder = 1
         Value = 3
-      end
-      object LCDSmartieUpdateCheckBox: TCheckBox
-        Left = 2
-        Height = 19
-        Top = 320
-        Width = 169
-        Caption = 'Check for LCD Smartie updates'
-        TabOrder = 2
-        Visible = False
       end
     end
     object GameStatsTabSheet: TTabSheet
@@ -1182,7 +2777,7 @@ object SetupForm: TSetupForm
     Font.Name = 'MS Sans Serif'
     ParentFont = False
     TabStop = False
-    TabOrder = 2
+    TabOrder = 1
     Text = '[Variable]'
   end
   object InsertButton: TButton
@@ -1199,1625 +2794,7 @@ object SetupForm: TSetupForm
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 1
-  end
-  object MainPageControl: TPageControl
-    Left = 264
-    Height = 416
-    Top = 0
-    Width = 560
-    TabStop = False
-    ActivePage = ScreensTabSheet
-    Font.CharSet = ANSI_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    ParentFont = False
-    TabIndex = 0
     TabOrder = 0
-    OnChange = MainPageControlChange
-    object ScreensTabSheet: TTabSheet
-      Caption = 'Screens'
-      ClientHeight = 390
-      ClientWidth = 552
-      object ScreenSettingsGroupBox: TGroupBox
-        Left = 3
-        Height = 216
-        Top = 168
-        Width = 541
-        Caption = 'Screens settings'
-        ClientHeight = 198
-        ClientWidth = 537
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentBidiMode = False
-        ParentFont = False
-        TabOrder = 2
-        object Label5: TLabel
-          Left = 16
-          Height = 26
-          Top = 32
-          Width = 26
-          Caption = 'Show'#13#10'time:'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          WordWrap = True
-        end
-        object Label43: TLabel
-          Left = 101
-          Height = 13
-          Top = 40
-          Width = 24
-          Caption = '(sec)'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object Label18: TLabel
-          Left = 104
-          Height = 13
-          Top = 8
-          Width = 36
-          Caption = 'Theme:'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object ScreenLabel: TLabel
-          Left = 8
-          Height = 13
-          Top = 8
-          Width = 37
-          Caption = 'Screen:'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object Label60: TLabel
-          Left = 207
-          Height = 13
-          Top = 0
-          Width = 77
-          Caption = 'Transition &style:'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object Label61: TLabel
-          Left = 210
-          Height = 13
-          Top = 36
-          Width = 74
-          Caption = 'Transition time:'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object Label62: TLabel
-          Left = 341
-          Height = 13
-          Top = 36
-          Width = 49
-          Caption = '(1/10 sec)'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object ThemeNumberSpinEdit: TSpinEdit
-          Left = 144
-          Height = 21
-          Top = 8
-          Width = 41
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          MaxValue = 10
-          MinValue = 1
-          ParentFont = False
-          TabOrder = 2
-          Value = 1
-        end
-        object StickyCheckbox: TCheckBox
-          Left = 133
-          Height = 19
-          Hint = 'Don''t automatically change from this screen.'
-          Top = 46
-          Width = 48
-          Caption = 'Sticky'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          OnClick = StickyCheckboxClick
-          ParentFont = False
-          ParentShowHint = False
-          ParentBidiMode = False
-          ShowHint = True
-          TabOrder = 4
-        end
-        object ScreenEnabledCheckBox: TCheckBox
-          Left = 133
-          Height = 19
-          Hint = 'Show this screen automatically'
-          Top = 30
-          Width = 58
-          Caption = 'Enabled'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 1
-        end
-        object TimeToShowSpinEdit: TSpinEdit
-          Left = 50
-          Height = 21
-          Hint = 'How long the screen should be shown for before moving to the next.'
-          Top = 36
-          Width = 41
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          MaxValue = 99
-          MinValue = 1
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 3
-          Value = 3
-        end
-        object ScreenSpinEdit: TSpinEdit
-          Left = 50
-          Height = 21
-          Top = 8
-          Width = 41
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          MaxValue = 20
-          MinValue = 1
-          OnChange = ScreenSpinEditChange
-          ParentFont = False
-          TabOrder = 0
-          Value = 1
-        end
-        object CopyToScreenButton: TButton
-          Left = 8
-          Height = 25
-          Hint = 'Copy this screen to another screen leaving this screen intact. CAUTION: Changes remain in  memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
-          Top = 166
-          Width = 75
-          Caption = 'Copy to'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          OnClick = CopyToScreenButtonClick
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 5
-        end
-        object MoveToScreenButton: TButton
-          Left = 134
-          Height = 25
-          Hint = 'Move this screen to another screen leaving this one blank. CAUTION: Changes remain in  memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
-          Top = 166
-          Width = 75
-          Caption = 'Move to'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          OnClick = MoveToScreenButtonClick
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 6
-        end
-        object SwapWithScreenButton: TButton
-          Left = 260
-          Height = 25
-          Hint = 'Swap this screen with another screen. CAUTION: Changes remain in memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
-          Top = 166
-          Width = 75
-          Caption = 'Swap with'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          OnClick = SwapWithScreenButtonClick
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 7
-        end
-        object TransitionStyleComboBox: TComboBox
-          Left = 290
-          Height = 21
-          Top = 0
-          Width = 95
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          Items.Strings = (
-            'None'
-            'Left->Right'
-            'Right->Left'
-            'Top->Bottom'
-            'Bottom->Top'
-            'Random chars'
-            'Contrast fade light'
-          )
-          ParentFont = False
-          Style = csDropDownList
-          TabOrder = 8
-        end
-        object TransitionTimeSpinEdit: TSpinEdit
-          Left = 290
-          Height = 21
-          Top = 36
-          Width = 45
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          MaxValue = 99
-          MinValue = 1
-          ParentFont = False
-          TabOrder = 9
-          Value = 1
-        end
-        object Line1EditButton: TSpeedButton
-          Left = 360
-          Height = 23
-          Top = 64
-          Width = 23
-          Caption = '. . .'
-          OnClick = LineEditClick
-        end
-        object Line2EditButton: TSpeedButton
-          Left = 360
-          Height = 23
-          Top = 87
-          Width = 23
-          Caption = '. . .'
-          OnClick = LineEditClick
-        end
-        object Line3EditButton: TSpeedButton
-          Left = 360
-          Height = 23
-          Top = 110
-          Width = 23
-          Caption = '. . .'
-          OnClick = LineEditClick
-        end
-        object Line4EditButton: TSpeedButton
-          Left = 360
-          Height = 23
-          Top = 133
-          Width = 23
-          Caption = '. . .'
-          OnClick = LineEditClick
-        end
-        object Line1MemoEdit: TMemo
-          Left = 8
-          Height = 23
-          Top = 64
-          Width = 344
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
-          OnEnter = Line1MemoEditEnter
-          OnKeyDown = Line1MemoEditKeyDown
-          ParentFont = False
-          TabOrder = 10
-          WantReturns = False
-          WordWrap = False
-        end
-        object Line2MemoEdit: TMemo
-          Left = 8
-          Height = 23
-          Top = 87
-          Width = 344
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
-          OnEnter = Line2MemoEditEnter
-          OnKeyDown = Line2MemoEditKeyDown
-          ParentFont = False
-          TabOrder = 11
-          WantReturns = False
-          WordWrap = False
-        end
-        object Line3MemoEdit: TMemo
-          Left = 8
-          Height = 23
-          Top = 110
-          Width = 344
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
-          OnEnter = Line3MemoEditEnter
-          OnKeyDown = Line3MemoEditKeyDown
-          ParentFont = False
-          TabOrder = 12
-          WantReturns = False
-          WordWrap = False
-        end
-        object Line4MemoEdit: TMemo
-          Left = 8
-          Height = 23
-          Top = 133
-          Width = 344
-          Constraints.MinHeight = 23
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
-          OnEnter = Line4MemoEditEnter
-          OnKeyDown = Line4MemoEditKeyDown
-          ParentFont = False
-          TabOrder = 13
-          WantReturns = False
-          WordWrap = False
-        end
-        object CopyToScreenComboBox: TComboBox
-          Left = 84
-          Height = 21
-          Top = 168
-          Width = 49
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          OnChange = ScreenSpinEditChange
-          ParentFont = False
-          TabOrder = 14
-        end
-        object MoveToScreenComboBox: TComboBox
-          Left = 210
-          Height = 21
-          Top = 168
-          Width = 49
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          OnChange = ScreenSpinEditChange
-          ParentFont = False
-          TabOrder = 15
-        end
-        object SwapWithScreenComboBox: TComboBox
-          Left = 336
-          Height = 21
-          Top = 168
-          Width = 49
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          OnChange = ScreenSpinEditChange
-          ParentFont = False
-          TabOrder = 16
-        end
-        object GroupBox2: TGroupBox
-          Left = 392
-          Height = 168
-          Top = -8
-          Width = 48
-          ClientHeight = 150
-          ClientWidth = 44
-          TabOrder = 17
-          object Label44: TLabel
-            Left = 8
-            Height = 52
-            Top = -2
-            Width = 25
-            Alignment = taCenter
-            Caption = 'Don''t scroll this line'
-            Constraints.MaxWidth = 26
-            Font.CharSet = ANSI_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            ParentFont = False
-            WordWrap = True
-          end
-          object DontScrollLine1CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Don''t scroll this line.'
-            Top = 59
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 0
-          end
-          object DontScrollLine2CheckBox: TCheckBox
-            Left = 14
-            Height = 19
-            Hint = 'Don''t scroll this line.'
-            Top = 82
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 1
-          end
-          object DontScrollLine3CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Don''t scroll this line.'
-            Top = 105
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 2
-          end
-          object DontScrollLine4CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Don''t scroll this line.'
-            Top = 128
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 3
-          end
-        end
-        object GroupBox4: TGroupBox
-          Left = 488
-          Height = 168
-          Top = -8
-          Width = 45
-          ClientHeight = 150
-          ClientWidth = 41
-          TabOrder = 18
-          object Label4: TLabel
-            Left = 3
-            Height = 26
-            Top = 0
-            Width = 36
-            Alignment = taCenter
-            Caption = 'Center text'
-            Constraints.MaxWidth = 36
-            Font.CharSet = ANSI_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            ParentFont = False
-            WordWrap = True
-          end
-          object CenterLine1CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Center the text in this line (if it''s shorter than a full line).'
-            Top = 57
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 0
-          end
-          object CenterLine2CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Center the text in this line (if it''s shorter than a full line).'
-            Top = 80
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 1
-          end
-          object CenterLine3CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Center the text in this line (if it''s shorter than a full line).'
-            Top = 103
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 2
-          end
-          object CenterLine4CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Center the text in this line (if it''s shorter than a full line).'
-            Top = 126
-            Width = 23
-            Caption = ' '
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 3
-          end
-        end
-        object GroupBox5: TGroupBox
-          Left = 440
-          Height = 168
-          Top = -8
-          Width = 48
-          ClientHeight = 150
-          ClientWidth = 44
-          TabOrder = 19
-          object ContinueLine3CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
-            Top = 105
-            Width = 23
-            Caption = ' '
-            OnClick = ContinueLine3CheckBoxClick
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 0
-          end
-          object ContinueLine2CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
-            Top = 82
-            Width = 23
-            Caption = ' '
-            OnClick = ContinueLine2CheckBoxClick
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 1
-          end
-          object ContinueLine1CheckBox: TCheckBox
-            Left = 13
-            Height = 19
-            Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
-            Top = 59
-            Width = 23
-            Caption = ' '
-            OnClick = ContinueLine1CheckBoxClick
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 2
-          end
-          object Label51: TLabel
-            Left = 8
-            Height = 52
-            Top = 0
-            Width = 28
-            Alignment = taCenter
-            Caption = 'Cont'' on next line'
-            Constraints.MaxWidth = 36
-            Font.CharSet = ANSI_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            ParentFont = False
-            WordWrap = True
-          end
-        end
-      end
-      object ProgramSettingsGroupBox: TGroupBox
-        Left = 3
-        Height = 166
-        Top = 0
-        Width = 231
-        Caption = 'Program settings'
-        ClientHeight = 148
-        ClientWidth = 227
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 0
-        object Label1: TLabel
-          Left = 8
-          Height = 13
-          Top = 33
-          Width = 134
-          Caption = 'Scroll interval (milliseconds):'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object Label6: TLabel
-          Left = 8
-          Height = 13
-          Top = 55
-          Width = 68
-          Caption = 'Color scheme:'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object Label59: TLabel
-          Left = 8
-          Height = 13
-          Top = 8
-          Width = 147
-          Caption = 'Refresh interval (milliseconds):'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-        object ColorSchemeComboBox: TComboBox
-          Left = 84
-          Height = 21
-          Hint = 'The colors used in the virtual display.'
-          Top = 50
-          Width = 134
-          Anchors = [akTop, akLeft, akRight]
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          Items.Strings = (
-            'Green'
-            'Blue'
-            'Yellow'
-            'White'
-            'White on Blue'
-            'Custom for this skin'
-          )
-          OnChange = ColorSchemeComboBoxChange
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          Style = csDropDownList
-          TabOrder = 2
-        end
-        object ProgramRefreshIntervalSpinEdit: TSpinEdit
-          Left = 160
-          Height = 21
-          Hint = 'How often screen text is sent to display (in mSec).'
-          Top = 0
-          Width = 58
-          Anchors = [akTop, akRight]
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          MaxValue = 1000
-          MinValue = 5
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 0
-          Value = 200
-        end
-        object ProgramScrollIntervalSpinEdit: TSpinEdit
-          Left = 160
-          Height = 21
-          Hint = 'How fast to scroll (in mSec). Should be greater than refresh interval.'
-          Top = 25
-          Width = 58
-          Anchors = [akTop, akRight]
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          MaxValue = 50000
-          MinValue = 20
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 1
-          Value = 200
-        end
-        object EmulateLCDCheckbox: TCheckBox
-          Left = 8
-          Height = 19
-          Top = 73
-          Width = 187
-          Caption = 'Emulate LCD  (more CPU intensive)'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          TabOrder = 3
-        end
-        object StayOnTopCheckBox: TCheckBox
-          Left = 144
-          Height = 19
-          Top = 95
-          Width = 76
-          Caption = '&Stay on top'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          TabOrder = 4
-        end
-        object RandomizeScreensCheckBox: TCheckBox
-          Left = 8
-          Height = 19
-          Hint = 'Rather than automatically selecting in sequence, chose them randomly.'
-          Top = 95
-          Width = 112
-          Caption = '&Randomize screens'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 5
-        end
-        object DLLCheckIntervalSpinEdit: TSpinEdit
-          Left = 173
-          Height = 21
-          Top = 118
-          Width = 49
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          MaxValue = 1000
-          MinValue = 5
-          ParentFont = False
-          TabOrder = 6
-          Value = 200
-        end
-        object Label58: TLabel
-          Left = 8
-          Height = 13
-          Top = 126
-          Width = 156
-          Caption = 'DLL check interval (milliseconds):'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-        end
-      end
-      object DisplayGroup2: TGroupBox
-        Left = 240
-        Height = 166
-        Top = 0
-        Width = 304
-        Caption = 'Display settings'
-        ClientHeight = 148
-        ClientWidth = 300
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 1
-        object Panel1: TPanel
-          Left = 0
-          Height = 148
-          Top = 0
-          Width = 300
-          Align = alClient
-          BevelOuter = bvNone
-          BorderWidth = 3
-          ClientHeight = 148
-          ClientWidth = 300
-          TabOrder = 0
-          object DisplayPageControl: TPageControl
-            Left = 3
-            Height = 142
-            Top = 3
-            Width = 294
-            ActivePage = ScreenTabsheet
-            Align = alClient
-            Font.CharSet = ANSI_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            MultiLine = True
-            ParentFont = False
-            TabHeight = 16
-            TabIndex = 1
-            TabOrder = 0
-            TabPosition = tpLeft
-            Options = [nboMultiLine]
-            object PluginTabsheet: TTabSheet
-              Caption = 'Plugin'
-              ClientHeight = 134
-              ClientWidth = 270
-              object DisplayPluginsLabel: TLabel
-                Left = 8
-                Height = 13
-                Top = 8
-                Width = 81
-                Caption = 'Display Plugin:'
-                Font.CharSet = ANSI_CHARSET
-                Font.Color = clBlack
-                Font.Height = -11
-                Font.Name = 'Tahoma'
-                Font.Style = [fsBold]
-                ParentFont = False
-              end
-              object IDLabel: TLabel
-                Left = 8
-                Height = 13
-                Top = 32
-                Width = 63
-                Caption = 'DLL Identifier'
-                Font.CharSet = ANSI_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -11
-                Font.Name = 'MS Sans Serif'
-                ParentFont = False
-              end
-              object Label14: TLabel
-                Left = 8
-                Height = 13
-                Top = 48
-                Width = 116
-                Caption = 'Startup Parameters:'
-                Font.CharSet = ANSI_CHARSET
-                Font.Color = clBlack
-                Font.Height = -11
-                Font.Name = 'Tahoma'
-                Font.Style = [fsBold]
-                ParentFont = False
-              end
-              object UsageLabel: TLabel
-                Left = 8
-                Height = 13
-                Top = 83
-                Width = 30
-                Caption = 'Usage'
-              end
-              object DisplayPluginList: TComboBox
-                Left = 92
-                Height = 21
-                Top = 4
-                Width = 172
-                Anchors = [akTop, akLeft, akRight]
-                ItemHeight = 13
-                OnChange = DisplayPluginListChange
-                Style = csDropDownList
-                TabOrder = 0
-              end
-              object ParametersEdit: TEdit
-                Left = 8
-                Height = 21
-                Top = 60
-                Width = 256
-                Anchors = [akTop, akLeft, akRight]
-                TabOrder = 1
-                Text = 'ParametersEdit'
-              end
-              object ComPortsButton: TButton
-                Left = 196
-                Height = 25
-                Top = 107
-                Width = 75
-                Caption = 'COM ports'
-                OnClick = ComPortsButtonClick
-                TabOrder = 2
-              end
-            end
-            object ScreenTabsheet: TTabSheet
-              Caption = 'Screen'
-              ClientHeight = 134
-              ClientWidth = 270
-              ImageIndex = 1
-              object Label3: TLabel
-                Left = 143
-                Height = 13
-                Top = 7
-                Width = 44
-                Caption = 'LCD size:'
-                Font.CharSet = ANSI_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -11
-                Font.Name = 'Tahoma'
-                ParentFont = False
-              end
-              object LCDSizeComboBox: TComboBox
-                Left = 188
-                Height = 21
-                Hint = 'The size of your display in characters (lines X width). '
-                Top = 4
-                Width = 77
-                Font.CharSet = ANSI_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -11
-                Font.Name = 'Tahoma'
-                ItemHeight = 13
-                OnChange = LCDSizeComboBoxChange
-                ParentFont = False
-                ParentShowHint = False
-                ShowHint = True
-                Style = csDropDownList
-                TabOrder = 0
-              end
-              object GroupBox3: TGroupBox
-                Left = 8
-                Height = 49
-                Top = 28
-                Width = 258
-                Anchors = [akTop, akLeft, akRight]
-                Caption = 'Contrast'
-                ClientHeight = 31
-                ClientWidth = 254
-                Font.CharSet = ANSI_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -11
-                Font.Name = 'Tahoma'
-                Font.Style = [fsBold]
-                ParentFont = False
-                TabOrder = 1
-                object ContrastTrackBar: TTrackBar
-                  Left = 3
-                  Height = 25
-                  Top = 0
-                  Width = 247
-                  Frequency = 10
-                  Max = 254
-                  Min = 1
-                  OnChange = ContrastTrackBarChange
-                  PageSize = 10
-                  Position = 1
-                  ScalePos = trBottom
-                  TickMarks = tmTopLeft
-                  Anchors = [akTop, akLeft, akRight]
-                  TabOrder = 0
-                end
-              end
-              object GroupBox1: TGroupBox
-                Left = 8
-                Height = 49
-                Top = 80
-                Width = 258
-                Anchors = [akTop, akLeft, akRight]
-                Caption = 'Brightness'
-                ClientHeight = 31
-                ClientWidth = 254
-                Font.CharSet = ANSI_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -11
-                Font.Name = 'Tahoma'
-                Font.Style = [fsBold]
-                ParentFont = False
-                TabOrder = 2
-                object BrightnessTrackBar: TTrackBar
-                  Left = 3
-                  Height = 25
-                  Top = 0
-                  Width = 247
-                  Frequency = 10
-                  Max = 254
-                  Min = 1
-                  OnChange = BrightnessTrackBarChange
-                  Position = 1
-                  TickMarks = tmTopLeft
-                  Anchors = [akTop, akLeft, akRight]
-                  Color = clBtnFace
-                  ParentColor = False
-                  TabOrder = 0
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-    object ActionsTabSheet: TTabSheet
-      Caption = 'Actions'
-      ClientHeight = 390
-      ClientWidth = 552
-      ImageIndex = 1
-      object ActionsStringGrid: TStringGrid
-        Left = 1
-        Height = 349
-        Hint = 'These actions are run on a timer'
-        Top = 0
-        Width = 568
-        ColCount = 0
-        DefaultColWidth = 77
-        DefaultRowHeight = 16
-        DoubleBuffered = True
-        FixedCols = 0
-        FixedRows = 0
-        Options = [goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowMoving, goColMoving, goEditing, goAutoAddRows, goRowSelect, goAlwaysShowEditor, goRelaxedRowSelect, goDblClickAutoSize, goFixedColSizing, goDontScrollPartCell, goCellHints, goAutoAddRowsSkipContentCheck, goRowHighlight]
-        ParentDoubleBuffered = False
-        ParentShowHint = False
-        RowCount = 0
-        ShowHint = True
-        TabOrder = 2
-        TitleStyle = tsStandard
-        OnSelectEditor = ActionsStringGridSelectEditor
-        OnSelection = ActionsStringGridSelection
-      end
-      object ActionAddButton: TButton
-        Left = 412
-        Height = 25
-        Hint = 'Add a new action'
-        Top = 360
-        Width = 75
-        Caption = 'New'
-        OnClick = ActionAddButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 1
-      end
-      object ActionDeleteButton: TButton
-        Left = 492
-        Height = 25
-        Hint = 'Delete selected action'
-        Top = 360
-        Width = 75
-        Caption = '&Delete'
-        OnClick = ActionDeleteButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-      end
-      object Label24: TLabel
-        Left = 1
-        Height = 13
-        Top = 372
-        Width = 168
-        Caption = 'Actions timer interval(milliseconds):'
-      end
-      object ActionsTimerSpinEdit: TSpinEdit
-        Left = 170
-        Height = 21
-        Hint = 'A higher value will decrease CPU usage slightly but will cause more of a delay in button detection'
-        Top = 364
-        Width = 65
-        MaxValue = 2000
-        MinValue = 150
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 3
-        Value = 150
-      end
-    end
-    object StartupTabSheet: TTabSheet
-      Caption = 'Startup/Shutdown'
-      ClientHeight = 390
-      ClientWidth = 552
-      ImageIndex = 2
-      object GroupBox7: TGroupBox
-        Left = 8
-        Height = 81
-        Hint = 'These settings are for when starting with windows.'
-        Top = 16
-        Width = 201
-        Caption = 'Autostart'
-        ClientHeight = 63
-        ClientWidth = 197
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-        object NoAutoStart: TRadioButton
-          Left = 8
-          Height = 19
-          Top = 0
-          Width = 160
-          Caption = 'Don''t autostart with windows'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          TabOrder = 0
-        end
-        object AutoStart: TRadioButton
-          Left = 8
-          Height = 19
-          Top = 16
-          Width = 66
-          Caption = 'Autostart'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          TabOrder = 1
-        end
-        object AutoStartHide: TRadioButton
-          Left = 8
-          Height = 19
-          Top = 32
-          Width = 180
-          Caption = 'Autostart hidden (in system tray)'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          TabOrder = 2
-        end
-      end
-      object GroupBox8: TGroupBox
-        Left = 8
-        Height = 49
-        Hint = 'These settings are for when starting apply to all start methods (by hand or autostart).'
-        Top = 104
-        Width = 201
-        Caption = 'Start options'
-        ClientHeight = 31
-        ClientWidth = 197
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 1
-        object HideOnStartup: TCheckBox
-          Left = 8
-          Height = 19
-          Top = 8
-          Width = 115
-          Caption = 'Always start hidden'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          TabOrder = 0
-        end
-      end
-      object ShutdownMessageGroup: TGroupBox
-        Left = 8
-        Height = 121
-        Hint = 'Custom message to be displayed when LCD Smartie is shut down.'
-        Top = 164
-        Width = 347
-        Anchors = [akTop, akLeft, akRight]
-        Caption = 'Shut down message'
-        ClientHeight = 103
-        ClientWidth = 343
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 2
-        object ShutdownEdit1: TEdit
-          Left = 8
-          Height = 23
-          Top = 0
-          Width = 328
-          Color = clWhite
-          Constraints.MinHeight = 23
-          DoubleBuffered = True
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = 18
-          Font.Name = 'Fixedsys'
-          OnEnter = ShutdownEditEnter
-          OnKeyDown = ShutdownEdit1KeyDown
-          ParentDoubleBuffered = False
-          ParentFont = False
-          TabOrder = 0
-          Text = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        end
-        object ShutdownEdit2: TEdit
-          Left = 8
-          Height = 23
-          Top = 24
-          Width = 328
-          Color = clWhite
-          Constraints.MinHeight = 23
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = 18
-          Font.Name = 'Fixedsys'
-          OnEnter = ShutdownEditEnter
-          OnKeyDown = ShutdownEdit2KeyDown
-          ParentFont = False
-          TabOrder = 1
-          Text = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        end
-        object ShutdownEdit3: TEdit
-          Left = 8
-          Height = 23
-          Top = 48
-          Width = 328
-          Constraints.MinHeight = 23
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = 18
-          Font.Name = 'Fixedsys'
-          OnEnter = ShutdownEditEnter
-          OnKeyDown = ShutdownEdit3KeyDown
-          ParentFont = False
-          TabOrder = 2
-          Text = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        end
-        object ShutdownEdit4: TEdit
-          Left = 8
-          Height = 23
-          Top = 72
-          Width = 328
-          Constraints.MinHeight = 23
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = 18
-          Font.Name = 'Fixedsys'
-          OnEnter = ShutdownEditEnter
-          OnKeyDown = ShutdownEdit4KeyDown
-          ParentFont = False
-          TabOrder = 3
-          Text = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-        end
-      end
-    end
-    object MyTabSheet: TTabSheet
-      Caption = 'Miscellaneous'
-      ClientHeight = 390
-      ClientWidth = 552
-      ImageIndex = 3
-      object Label9: TLabel
-        Left = 5
-        Height = 13
-        Top = 61
-        Width = 50
-        Caption = 'Tray Icon:'
-      end
-      object TrayIconPreview32: TImage
-        Left = 261
-        Height = 32
-        Top = 74
-        Width = 32
-        AutoSize = True
-      end
-      object TrayIconBrowseButton: TSpeedButton
-        Left = 221
-        Height = 22
-        Hint = 'Click to choose the tray icon for this program instance.'
-        Top = 80
-        Width = 23
-        Glyph.Data = {
-          F6000000424DF600000000000000760000002800000010000000100000000100
-          0400000000008000000000000000000000001000000000000000000000000000
-          8000008000000080800080000000800080008080000080808000C0C0C0000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
-          88888888888888888888000000000008888800333333333088880B0333333333
-          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
-          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
-          8008888888880888080888888888800088888888888888888888
-        }
-        OnClick = TrayIconBrowseButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object TrayIconPreview16: TImage
-        Left = 312
-        Height = 16
-        Top = 90
-        Width = 16
-        Anchors = [akLeft, akBottom]
-        AutoSize = True
-      end
-      object Label10: TLabel
-        Left = 5
-        Height = 13
-        Top = 5
-        Width = 48
-        Caption = 'Skin Path:'
-      end
-      object SkinPathBrowseButton: TSpeedButton
-        Left = 221
-        Height = 22
-        Hint = 'Click to choose skin path for this program instance.'
-        Top = 25
-        Width = 23
-        Glyph.Data = {
-          F6000000424DF600000000000000760000002800000010000000100000000100
-          0400000000008000000000000000000000001000000000000000000000000000
-          8000008000000080800080000000800080008080000080808000C0C0C0000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
-          88888888888888888888000000000008888800333333333088880B0333333333
-          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
-          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
-          8008888888880888080888888888800088888888888888888888
-        }
-        OnClick = SkinPathBrowseButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object DistributedNetBrowseButton: TSpeedButton
-        Left = 221
-        Height = 22
-        Top = 137
-        Width = 23
-        Glyph.Data = {
-          F6000000424DF600000000000000760000002800000010000000100000000100
-          0400000000008000000000000000000000001000000000000000000000000000
-          8000008000000080800080000000800080008080000080808000C0C0C0000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
-          88888888888888888888000000000008888800333333333088880B0333333333
-          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
-          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
-          8008888888880888080888888888800088888888888888888888
-        }
-        OnClick = DistributedNetBrowseButtonClick
-      end
-      object Label34: TLabel
-        Left = 5
-        Height = 13
-        Top = 119
-        Width = 107
-        Caption = 'Distributed.net logfile:'
-      end
-      object TrayIcon: TEdit
-        Left = 5
-        Height = 21
-        Top = 80
-        Width = 217
-        Color = clWhite
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-        ParentShowHint = False
-        TabOrder = 1
-      end
-      object SkinPath: TEdit
-        Left = 5
-        Height = 21
-        Top = 24
-        Width = 217
-        Color = clWhite
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-        ParentShowHint = False
-        TabOrder = 0
-      end
-      object DistributedNetLogfileEdit: TEdit
-        Left = 5
-        Height = 21
-        Top = 137
-        Width = 217
-        TabOrder = 2
-      end
-      object WebProxyPortEdit: TEdit
-        Left = -15
-        Height = 21
-        Hint = 'Web proxy port for web access (such as for Rss feeds).'
-        Top = 247
-        Width = 81
-        Anchors = [akTop, akRight]
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        MaxLength = 5
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 3
-        Text = '0'
-      end
-      object WebProxyServerEdit: TEdit
-        Left = 5
-        Height = 21
-        Hint = 'Web proxy for web access (such as for Rss feeds).'
-        Top = 193
-        Width = 118
-        Anchors = [akTop, akLeft, akRight]
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 4
-      end
-      object Label7: TLabel
-        Left = 5
-        Height = 13
-        Top = 175
-        Width = 91
-        Caption = 'Web proxy server:'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-      end
-      object Label8: TLabel
-        Left = 5
-        Height = 13
-        Top = 226
-        Width = 80
-        Caption = 'Web proxy port:'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-      end
-    end
-    object TabSheet1: TTabSheet
-      Caption = 'Remote Display'
-      ClientHeight = 390
-      ClientWidth = 552
-      ImageIndex = 4
-      object Label16: TLabel
-        Left = 20
-        Height = 13
-        Top = 80
-        Width = 68
-        Caption = 'Bind Listen IP:'
-      end
-      object Label19: TLabel
-        Left = 32
-        Height = 13
-        Top = 112
-        Width = 55
-        Caption = 'Listen port:'
-      end
-      object Label22: TLabel
-        Left = 32
-        Height = 13
-        Top = 208
-        Width = 89
-        Caption = 'Generate SSL key:'
-      end
-      object Label38: TLabel
-        Left = 8
-        Height = 13
-        Top = 8
-        Width = 219
-        Caption = 'Restart Smartie after changing these settings'
-      end
-      object Label39: TLabel
-        Left = 38
-        Height = 13
-        Top = 144
-        Width = 50
-        Caption = 'password:'
-      end
-      object Label42: TLabel
-        Left = 216
-        Height = 13
-        Top = 144
-        Width = 268
-        Caption = 'This will be sent plain text if Use SSL below isn''t checked'
-      end
-      object Label49: TLabel
-        Left = 80
-        Height = 56
-        Top = 240
-        Width = 312
-        AutoSize = False
-        Caption = 'There is no guarantee on the security of the server. Use at your own risk and beware of transmitting personal information in screen data'
-        WordWrap = True
-      end
-      object Label55: TLabel
-        Left = 8
-        Height = 16
-        Top = 240
-        Width = 59
-        Caption = 'Warning:'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object EnableRemoteSendCheckBox: TCheckBox
-        Left = 16
-        Height = 19
-        Hint = 'You can make this smartie send screens to another smartie instance to show on its screen. Use the $Sender variable in the misc. tab on the remote smartie'
-        Top = 40
-        Width = 208
-        Caption = 'Listen for incoming Smartie connections'
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-      end
-      object RemoteSendBindIPEdit: TEdit
-        Left = 88
-        Height = 21
-        Hint = 'Listen on only this IP address. Leave blank to listen on all interfaces on this machine'
-        Top = 80
-        Width = 121
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 1
-      end
-      object RemoteSendPortEdit: TEdit
-        Left = 88
-        Height = 21
-        Hint = 'Port to listen on. Default 6088. Make sure This is the same at the remote end'
-        Top = 112
-        Width = 121
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 2
-      end
-      object RemoteSendUseSSLCheckBox: TCheckBox
-        Left = 32
-        Height = 19
-        Hint = 'Encrypt screen data sent by smartie'
-        Top = 176
-        Width = 58
-        Caption = 'Use SSL'
-        OnClick = RemoteSendUseSSLCheckBoxClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 3
-      end
-      object RemoteSendGenerateCertKeyButton: TButton
-        Left = 122
-        Height = 25
-        Top = 200
-        Width = 81
-        Caption = 'Generate'
-        OnClick = RemoteSendGenerateCertKeyButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 4
-      end
-      object RemoteSendPasswordEdit: TEdit
-        Left = 88
-        Height = 21
-        Hint = 'Not so secure password. While it''s not super spy level security it will slow down any nasties trying to get in'
-        Top = 144
-        Width = 121
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 5
-      end
-    end
   end
   object BitBtn1: TBitBtn
     Left = 584
@@ -2831,7 +2808,7 @@ object SetupForm: TSetupForm
     OnClick = OKButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 2
   end
   object BitBtn2: TBitBtn
     Left = 664
@@ -2845,7 +2822,7 @@ object SetupForm: TSetupForm
     ModalResult = 2
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 3
   end
   object BitBtn3: TBitBtn
     Left = 744
@@ -2858,7 +2835,7 @@ object SetupForm: TSetupForm
     OnClick = ApplyButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 4
   end
   object BitBtn4: TBitBtn
     Left = 504
@@ -2868,7 +2845,7 @@ object SetupForm: TSetupForm
     Caption = '&Load'
     Kind = bkRetry
     OnClick = BitBtn4Click
-    TabOrder = 7
+    TabOrder = 5
     Visible = False
   end
   object OpenDialog2: TOpenDialog
@@ -2891,7 +2868,7 @@ object SetupForm: TSetupForm
     Title = 'Choose Icon for Tray Area'
     DefaultExt = '.ico'
     Filter = 'Icons (*.ico)|*.ico'
-    Options = [ofHideReadOnly, ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofNoNetworkButton, ofEnableSizing]
+    Options = [ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofNoNetworkButton, ofEnableSizing]
     OnFolderChange = OpeIcoFolderChange
     Left = 272
     Top = 416

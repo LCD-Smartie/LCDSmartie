@@ -39,197 +39,21 @@ type
   TCheckBoxArray = array of TCheckBox; // for custom character editor
 
   TSetupForm = class(TForm)
+    ActionAddButton: TButton;
+    ActionDeleteButton: TButton;
+    ActionsStringGrid: TStringGrid;
+    ActionsTabSheet: TTabSheet;
     ActionsTimerSpinEdit: TSpinEdit;
+    AutoStart: TRadioButton;
+    AutoStartHide: TRadioButton;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
-    CenterLine1CheckBox: TCheckBox;
-    CenterLine2CheckBox: TCheckBox;
-    CenterLine3CheckBox: TCheckBox;
-    CenterLine4CheckBox: TCheckBox;
-    ComPortsButton: TButton;
-    ContinueLine1CheckBox: TCheckBox;
-    ContinueLine2CheckBox: TCheckBox;
-    ContinueLine3CheckBox: TCheckBox;
-    CopyToScreenComboBox: TComboBox;
-    DLLCheckIntervalSpinEdit: TSpinEdit;
-    DontScrollLine1CheckBox: TCheckBox;
-    DontScrollLine2CheckBox: TCheckBox;
-    DontScrollLine3CheckBox: TCheckBox;
-    DontScrollLine4CheckBox: TCheckBox;
-    GroupBox2: TGroupBox;
-    GroupBox4: TGroupBox;
-    GroupBox5: TGroupBox;
-    Label24: TLabel;
-    Label4: TLabel;
-    Label44: TLabel;
-    Label51: TLabel;
-    Label58: TLabel;
-    Label7: TLabel;
-    Label8: TLabel;
-    Line1MemoEdit: TMemo;
-    LeftPageControl: TPageControl;
-    Line2MemoEdit: TMemo;
-    Line3MemoEdit: TMemo;
-    Line1EditButton: TSpeedButton;
-    Line2EditButton: TSpeedButton;
-    Line3EditButton: TSpeedButton;
-    Line4EditButton: TSpeedButton;
-    Line4MemoEdit: TMemo;
-    MoveToScreenComboBox: TComboBox;
-    OpenDialog3: TOpenDialog;
-    RandomizeScreensCheckBox: TCheckBox;
-    StayOnTopCheckBox: TCheckBox;
-    SwapWithScreenComboBox: TComboBox;
-    WebProxyPortEdit: TEdit;
-    WebProxyServerEdit: TEdit;
-    WinampTabSheet: TTabSheet;
-    SysInfoTabSheet: TTabSheet;
-    GameStatsTabSheet: TTabSheet;
-    InternetTabSheet: TTabSheet;
-    MiscTabSheet: TTabSheet;
-    MiscListBox: TListBox;
-    InternetListBox: TListBox;
-    SysInfoListBox: TListBox;
-    WinampListBox: TListBox;
-    VariableEdit: TEdit;
-    GameServerEdit: TEdit;
-    Label11: TLabel;
-    Label12: TLabel;
-    Label13: TLabel;
-    Label15: TLabel;
-    QStatLabel: TLabel;
-    OpenDialog2: TOpenDialog;
-    GameTypeComboBox: TComboBox;
-    InsertButton: TButton;
-    InternetRefreshTimeSpinEdit: TSpinEdit;
-    Label36: TLabel;
-    GamestatsRefreshTimeSpinEdit: TSpinEdit;
-    Label37: TLabel;
-    Label35: TLabel;
-    Label40: TLabel;
-    SetiAtHomeTabSheet: TTabSheet;
-    SetiAtHomeListBox: TListBox;
-    SetiAtHomeEmailEdit: TEdit;
-    Label41: TLabel;
-    EmailTabSheet: TTabSheet;
-    Label31: TLabel;
-    Label32: TLabel;
-    Label33: TLabel;
-    EmailPasswordEdit: TEdit;
-    EmailLoginEdit: TEdit;
-    EmailServerEdit: TEdit;
-    EmailCheckTimeSpinEdit: TSpinEdit;
-    Label48: TLabel;
-    EmailAccountComboBox: TComboBox;
-    Label50: TLabel;
-    OpenDialog1: TOpenDialog;
-    WinampLocationEdit: TEdit;
-    WinampLocationBrowseButton: TSpeedButton;
-    WinampLocationLabel: TLabel;
-    GamestatsListBox: TListBox;
-    NetworkStatsTabSheet: TTabSheet;
-    NetworkStatsListBox: TListBox;
-    FoldingAtHomeTabSheet: TTabSheet;
-    FoldingAtHomeEmailEdit: TEdit;
-    FoldingAtHomeListBox: TListBox;
-    Label23: TLabel;
-    MainPageControl: TPageControl;
-    ScreensTabSheet: TTabSheet;
-    ActionsTabSheet: TTabSheet;
-    ScreenSettingsGroupBox: TGroupBox;
-    Label5: TLabel;
-    Label43: TLabel;
-    Label18: TLabel;
-    ThemeNumberSpinEdit: TSpinEdit;
-    ProgramSettingsGroupBox: TGroupBox;
-    Label1: TLabel;
-    ProgramRefreshIntervalSpinEdit: TSpinEdit;
-    ScreenEnabledCheckBox: TCheckBox;
-    TimeToShowSpinEdit: TSpinEdit;
-    ActionsStringGrid: TStringGrid;
-    ActionAddButton: TButton;
-    ActionDeleteButton: TButton;
-    LCDSmartieUpdateCheckBox: TCheckBox;
-    LCDFeaturesTabSheet: TTabSheet;
-    ButtonsListBox: TListBox;
-    Label27: TLabel;
-    Label29: TLabel;
-    LastKeyPressedEdit: TEdit;
-    Label56: TLabel;
-    Label30: TLabel;
-    Label57: TLabel;
-    Label6: TLabel;
-    ProgramScrollIntervalSpinEdit: TSpinEdit;
-    Label59: TLabel;
-    Label28: TLabel;
-    StickyCheckbox: TCheckBox;
-    StartupTabSheet: TTabSheet;
-    GroupBox7: TGroupBox;
-    NoAutoStart: TRadioButton;
-    AutoStart: TRadioButton;
-    AutoStartHide: TRadioButton;
-    GroupBox8: TGroupBox;
-    HideOnStartup: TCheckBox;
-    ColorSchemeComboBox: TComboBox;
-    ScreenLabel: TLabel;
-    ScreenSpinEdit: TSpinEdit;
-    DisplayGroup2: TGroupBox;
-    Panel1: TPanel;
-    DisplayPageControl: TPageControl;
-    PluginTabsheet: TTabSheet;
-    DisplayPluginsLabel: TLabel;
-    IDLabel: TLabel;
-    Label14: TLabel;
-    UsageLabel: TLabel;
-    DisplayPluginList: TComboBox;
-    ParametersEdit: TEdit;
-    ScreenTabsheet: TTabSheet;
-    Label3: TLabel;
-    LCDSizeComboBox: TComboBox;
-    GroupBox3: TGroupBox;
-    ContrastTrackBar: TTrackBar;
-    GroupBox1: TGroupBox;
     BrightnessTrackBar: TTrackBar;
-    EmailSSLEdit: TEdit;
-    Label2: TLabel;
-    EmulateLCDCheckbox: TCheckBox;
-    ShutdownMessageGroup: TGroupBox;
-    ShutdownEdit1: TEdit;
-    ShutdownEdit2: TEdit;
-    ShutdownEdit3: TEdit;
-    ShutdownEdit4: TEdit;
-    MyTabSheet: TTabSheet;
-    TrayIcon: TEdit;
-    Label9: TLabel;
-    TrayIconPreview32: TImage;
-    OpenIco: TOpenPictureDialog;
-    TrayIconBrowseButton: TSpeedButton;
-    TrayIconPreview16: TImage;
-    Label10: TLabel;
-    SkinPath: TEdit;
-    SkinPathBrowseButton: TSpeedButton;
-    DistributedNetLogfileEdit: TEdit;
-    DistributedNetBrowseButton: TSpeedButton;
-    Label34: TLabel;
-    PluginsTabSheet: TTabSheet;
-    PluginListBox: TFileListBox;
     Btn_PluginRefresh: TButton;
-    CCharTabSheet: TTabSheet;
-    CreateCCharLocSpinEdit: TSpinEdit;
-    CreateCCharRadioButton: TRadioButton;
-    Label20: TLabel;
-    Panel2: TPanel;
+    ButtonsListBox: TListBox;
     CCharCheckBox1: TCheckBox;
-    CCharCheckBox2: TCheckBox;
-    CCharCheckBox3: TCheckBox;
-    CCharCheckBox4: TCheckBox;
-    CCharCheckBox5: TCheckBox;
-    CCharCheckBox6: TCheckBox;
-    CCharCheckBox7: TCheckBox;
-    CCharCheckBox8: TCheckBox;
-    CCharCheckBox9: TCheckBox;
     CCharCheckBox10: TCheckBox;
     CCharCheckBox11: TCheckBox;
     CCharCheckBox12: TCheckBox;
@@ -240,6 +64,7 @@ type
     CCharCheckBox17: TCheckBox;
     CCharCheckBox18: TCheckBox;
     CCharCheckBox19: TCheckBox;
+    CCharCheckBox2: TCheckBox;
     CCharCheckBox20: TCheckBox;
     CCharCheckBox21: TCheckBox;
     CCharCheckBox22: TCheckBox;
@@ -250,6 +75,7 @@ type
     CCharCheckBox27: TCheckBox;
     CCharCheckBox28: TCheckBox;
     CCharCheckBox29: TCheckBox;
+    CCharCheckBox3: TCheckBox;
     CCharCheckBox30: TCheckBox;
     CCharCheckBox31: TCheckBox;
     CCharCheckBox32: TCheckBox;
@@ -260,40 +86,212 @@ type
     CCharCheckBox37: TCheckBox;
     CCharCheckBox38: TCheckBox;
     CCharCheckBox39: TCheckBox;
+    CCharCheckBox4: TCheckBox;
     CCharCheckBox40: TCheckBox;
-    UseCCharRadioButton2: TRadioButton;
-    Label21: TLabel;
-    UseCCharLocSpinEdit: TSpinEdit;
-    NetworkStatsAdapterListButton: TButton;
-    EmailLastSubjectRadioButton: TRadioButton;
-    EmailLastFromRadioButton: TRadioButton;
-    EmailMessageCountRadioButton: TRadioButton;
+    CCharCheckBox5: TCheckBox;
+    CCharCheckBox6: TCheckBox;
+    CCharCheckBox7: TCheckBox;
+    CCharCheckBox8: TCheckBox;
+    CCharCheckBox9: TCheckBox;
+    CCharTabSheet: TTabSheet;
+    CenterLine1CheckBox: TCheckBox;
+    CenterLine2CheckBox: TCheckBox;
+    CenterLine3CheckBox: TCheckBox;
+    CenterLine4CheckBox: TCheckBox;
+    ColorSchemeComboBox: TComboBox;
+    ComPortsButton: TButton;
+    ContinueLine1CheckBox: TCheckBox;
+    ContinueLine2CheckBox: TCheckBox;
+    ContinueLine3CheckBox: TCheckBox;
+    ContrastTrackBar: TTrackBar;
     CopyToScreenButton: TButton;
-    MoveToScreenButton: TButton;
-    SwapWithScreenButton: TButton;
-    TabSheet1: TTabSheet;
+    CopyToScreenComboBox: TComboBox;
+    CreateCCharLocSpinEdit: TSpinEdit;
+    CreateCCharRadioButton: TRadioButton;
+    DisplayGroup2: TGroupBox;
+    DisplayPageControl: TPageControl;
+    DisplayPluginList: TComboBox;
+    DisplayPluginsLabel: TLabel;
+    DistributedNetBrowseButton: TSpeedButton;
+    DistributedNetLogfileEdit: TEdit;
+    DLLCheckIntervalSpinEdit: TSpinEdit;
+    DontScrollLine1CheckBox: TCheckBox;
+    DontScrollLine2CheckBox: TCheckBox;
+    DontScrollLine3CheckBox: TCheckBox;
+    DontScrollLine4CheckBox: TCheckBox;
+    EmailAccountComboBox: TComboBox;
+    EmailCheckTimeSpinEdit: TSpinEdit;
+    EmailLastFromRadioButton: TRadioButton;
+    EmailLastSubjectRadioButton: TRadioButton;
+    EmailLoginEdit: TEdit;
+    EmailMessageCountRadioButton: TRadioButton;
+    EmailPasswordEdit: TEdit;
+    EmailServerEdit: TEdit;
+    EmailSSLEdit: TEdit;
+    EmailTabSheet: TTabSheet;
+    EmulateLCDCheckbox: TCheckBox;
     EnableRemoteSendCheckBox: TCheckBox;
-    Label16: TLabel;
-    RemoteSendBindIPEdit: TEdit;
-    RemoteSendPortEdit: TEdit;
-    RemoteSendUseSSLCheckBox: TCheckBox;
-    RemoteSendGenerateCertKeyButton: TButton;
-    Label19: TLabel;
-    Label22: TLabel;
-    Label38: TLabel;
-    RemoteSendPasswordEdit: TEdit;
-    Label39: TLabel;
-    Label42: TLabel;
-    Label49: TLabel;
-    Label55: TLabel;
     FoldEnableCheckBox: TCheckBox;
-    SetiEnableCheckBox: TCheckBox;
-    TransitionStyleComboBox: TComboBox;
-    TransitionTimeSpinEdit: TSpinEdit;
+    FoldingAtHomeEmailEdit: TEdit;
+    FoldingAtHomeListBox: TListBox;
+    FoldingAtHomeTabSheet: TTabSheet;
+    GameServerEdit: TEdit;
+    GamestatsListBox: TListBox;
+    GamestatsRefreshTimeSpinEdit: TSpinEdit;
+    GameStatsTabSheet: TTabSheet;
+    GameTypeComboBox: TComboBox;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
+    GroupBox4: TGroupBox;
+    GroupBox5: TGroupBox;
+    GroupBox7: TGroupBox;
+    GroupBox8: TGroupBox;
+    HideOnStartup: TCheckBox;
+    IDLabel: TLabel;
+    InternetListBox: TListBox;
+    InternetRefreshTimeSpinEdit: TSpinEdit;
+    InternetTabSheet: TTabSheet;
+    Label1: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label2: TLabel;
+    Label20: TLabel;
+    Label21: TLabel;
+    Label22: TLabel;
+    Label23: TLabel;
+    Label24: TLabel;
+    Label27: TLabel;
+    Label28: TLabel;
+    Label29: TLabel;
+    Label3: TLabel;
+    Label30: TLabel;
+    Label31: TLabel;
+    Label32: TLabel;
+    Label33: TLabel;
+    Label34: TLabel;
+    Label35: TLabel;
+    Label36: TLabel;
+    Label37: TLabel;
+    Label38: TLabel;
+    Label39: TLabel;
+    Label4: TLabel;
+    Label40: TLabel;
+    Label41: TLabel;
+    Label42: TLabel;
+    Label43: TLabel;
+    Label44: TLabel;
+    Label48: TLabel;
+    Label49: TLabel;
+    Label5: TLabel;
+    Label50: TLabel;
+    Label51: TLabel;
+    Label55: TLabel;
+    Label56: TLabel;
+    Label57: TLabel;
+    Label58: TLabel;
+    Label59: TLabel;
+    Label6: TLabel;
     Label60: TLabel;
     Label61: TLabel;
     Label62: TLabel;
-
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    LastKeyPressedEdit: TEdit;
+    LCDFeaturesTabSheet: TTabSheet;
+    LCDSizeComboBox: TComboBox;
+    LeftPageControl: TPageControl;
+    Line1EditButton: TSpeedButton;
+    Line1MemoEdit: TMemo;
+    Line2EditButton: TSpeedButton;
+    Line2MemoEdit: TMemo;
+    Line3EditButton: TSpeedButton;
+    Line3MemoEdit: TMemo;
+    Line4EditButton: TSpeedButton;
+    Line4MemoEdit: TMemo;
+    MainPageControl: TPageControl;
+    MiscListBox: TListBox;
+    MiscTabSheet: TTabSheet;
+    MoveToScreenButton: TButton;
+    MoveToScreenComboBox: TComboBox;
+    MyTabSheet: TTabSheet;
+    NetworkStatsAdapterListButton: TButton;
+    NetworkStatsListBox: TListBox;
+    NetworkStatsTabSheet: TTabSheet;
+    NoAutoStart: TRadioButton;
+    OpenDialog3: TOpenDialog;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    ParametersEdit: TEdit;
+    PluginListBox: TFileListBox;
+    PluginsTabSheet: TTabSheet;
+    PluginTabsheet: TTabSheet;
+    ProgramRefreshIntervalSpinEdit: TSpinEdit;
+    ProgramScrollIntervalSpinEdit: TSpinEdit;
+    ProgramSettingsGroupBox: TGroupBox;
+    QStatLabel: TLabel;
+    RandomizeScreensCheckBox: TCheckBox;
+    RemoteSendBindIPEdit: TEdit;
+    RemoteSendGenerateCertKeyButton: TButton;
+    RemoteSendPasswordEdit: TEdit;
+    RemoteSendPortEdit: TEdit;
+    RemoteSendUseSSLCheckBox: TCheckBox;
+    ScreenEnabledCheckBox: TCheckBox;
+    ScreenLabel: TLabel;
+    ScreenSettingsGroupBox: TGroupBox;
+    ScreenSpinEdit: TSpinEdit;
+    ScreensTabSheet: TTabSheet;
+    ScreenTabsheet: TTabSheet;
+    SetiAtHomeEmailEdit: TEdit;
+    SetiAtHomeListBox: TListBox;
+    SetiAtHomeTabSheet: TTabSheet;
+    SetiEnableCheckBox: TCheckBox;
+    ShutdownEdit1: TMemo;
+    ShutdownEdit2: TMemo;
+    ShutdownEdit3: TMemo;
+    ShutdownEdit4: TMemo;
+    ShutdownMessageGroup: TGroupBox;
+    SkinPath: TEdit;
+    SkinPathBrowseButton: TSpeedButton;
+    StartupTabSheet: TTabSheet;
+    StayOnTopCheckBox: TCheckBox;
+    StickyCheckbox: TCheckBox;
+    SwapWithScreenButton: TButton;
+    SwapWithScreenComboBox: TComboBox;
+    SysInfoListBox: TListBox;
+    SysInfoTabSheet: TTabSheet;
+    TabSheet1: TTabSheet;
+    ThemeNumberSpinEdit: TSpinEdit;
+    TimeToShowSpinEdit: TSpinEdit;
+    TransitionStyleComboBox: TComboBox;
+    TransitionTimeSpinEdit: TSpinEdit;
+    TrayIcon: TEdit;
+    TrayIconBrowseButton: TSpeedButton;
+    TrayIconPreview16: TImage;
+    TrayIconPreview32: TImage;
+    UsageLabel: TLabel;
+    UseCCharLocSpinEdit: TSpinEdit;
+    UseCCharRadioButton2: TRadioButton;
+    VariableEdit: TEdit;
+    OpenDialog2: TOpenDialog;
+    InsertButton: TButton;
+    OpenDialog1: TOpenDialog;
+    OpenIco: TOpenPictureDialog;
+    WebProxyPortEdit: TEdit;
+    WebProxyServerEdit: TEdit;
+    WinampListBox: TListBox;
+    WinampLocationBrowseButton: TSpeedButton;
+    WinampLocationEdit: TEdit;
+    WinampLocationLabel: TLabel;
+    WinampTabSheet: TTabSheet;
     procedure ActionsStringGridSelectEditor(Sender: TObject; aCol,
       aRow: Integer; var Editor: TWinControl);
     procedure ActionsStringGridSelection(Sender: TObject; aCol, aRow: Integer);
@@ -301,7 +299,6 @@ type
     procedure ComPortsButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LCDSizeComboBoxChange(Sender: TObject);
-    procedure PluginTabsheetShow(Sender: TObject);
     procedure ScreenSpinEditChange(Sender: TObject);
     procedure WinampListBoxClick(Sender: TObject);
     procedure InsertButtonClick(Sender: TObject);
@@ -319,10 +316,7 @@ type
     procedure ContinueLine3CheckBoxClick(Sender: TObject);
     procedure WinampLocationBrowseButtonClick(Sender: TObject);
     procedure GamestatsListBoxClick(Sender: TObject);
-    procedure Line1MemoEditEnter(Sender: TObject);
-    procedure Line2MemoEditEnter(Sender: TObject);
-    procedure Line3MemoEditEnter(Sender: TObject);
-    procedure Line4MemoEditEnter(Sender: TObject);
+    procedure LineEditEnter(Sender: TObject);
     procedure NetworkStatsListBoxClick(Sender: TObject);
     procedure FoldingAtHomeListBoxClick(Sender: TObject);
     procedure ApplyButtonClick(Sender: TObject);
@@ -333,14 +327,6 @@ type
     procedure ActionAddButtonClick(Sender: TObject);
     procedure ActionDeleteButtonClick(Sender: TObject);
     procedure ButtonsListBoxClick(Sender: TObject);
-    procedure Line4MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-      TShiftState);
-    procedure Line1MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-      TShiftState);
-    procedure Line2MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-      TShiftState);
-    procedure Line3MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-      TShiftState);
     procedure StickyCheckboxClick(Sender: TObject);
     procedure ColorSchemeComboBoxChange(Sender: TObject);
     procedure DisplayPluginListChange(Sender: TObject);
@@ -350,16 +336,8 @@ type
     procedure PluginListBoxDblClick(Sender: TObject);
     procedure PluginListBoxClick(Sender: TObject);
     procedure ShutdownEditEnter(Sender: TObject);
-
-    procedure ShutdownEdit1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ShutdownEdit2KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ShutdownEdit3KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ShutdownEdit4KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-
     procedure TrayIconBrowseButtonClick(Sender: TObject);
-
     procedure DrawPreviewIcons(const sIconFileName: string);
-
     procedure SkinPathBrowseButtonClick(Sender: TObject);
     procedure LineEditClick(Sender: TObject);
     procedure OpeIcoFolderChange(Sender: TObject);
@@ -376,6 +354,7 @@ type
   private
     DLLPath : string;
     setupbutton: Integer;
+    shdownmessagebutton: integer;
     CurrentlyShownEmailAccount: Integer;
     CurrentScreen: Integer;
     Procedure FocusToInputField;
@@ -396,7 +375,6 @@ uses
   Windows, ShellApi, graphics, sysutils,
 {$IFNDEF STANDALONESETUP}
   UMain,
-  UDataEmail,
 {$ENDIF}
   UConfig,  UDataNetwork, UDataWinamp,
   UIconUtils, UEditLine, IpRtrMib, IpHlpApi, lazutf8, registry;
@@ -503,7 +481,7 @@ begin
   ActionsStringGrid.ColWidths[2] := 40;
   ActionsStringGrid.ColWidths[3] := 46;
   ActionsStringGrid.ColWidths[4] := 36;
-  ActionsStringGrid.ColWidths[5] := 196;
+  ActionsStringGrid.ColWidths[5] := 186;
   // Populate the grid
   for i := 1 to config.totalactions do
   begin
@@ -618,7 +596,6 @@ begin
   RandomizeScreensCheckBox.checked := config.randomScreens;
   GamestatsRefreshTimeSpinEdit.Value := config.gameRefresh;
   FoldingAtHomeEmailEdit.text := config.foldUserid;
-  LCDSmartieUpdateCheckBox.checked := config.checkUpdates;
 
   EnableRemoteSendCheckBox.Checked := config.EnableRemoteSend;
   RemoteSendBindIPEdit.Text := config.RemoteSendBindIP;
@@ -796,6 +773,9 @@ begin
     Line2MemoEdit.Visible := false;
     Line3MemoEdit.Visible := false;
     Line4MemoEdit.Visible := false;
+    Line2EditButton.Visible := false;
+    Line3EditButton.Visible := false;
+    Line4EditButton.Visible := false;
     ShutdownEdit2.Visible := false;
     ShutdownEdit3.Visible := false;
     ShutdownEdit4.Visible := false;
@@ -815,6 +795,9 @@ begin
     ContinueLine2CheckBox.checked := false;
     Line3MemoEdit.Visible := false;
     Line4MemoEdit.Visible := false;
+    Line2EditButton.Visible := true;
+    Line3EditButton.Visible := false;
+    Line4EditButton.Visible := false;
     ShutdownEdit2.Visible := true;
     ShutdownEdit3.Visible := false;
     ShutdownEdit4.Visible := false;
@@ -833,6 +816,9 @@ begin
     if ContinueLine1CheckBox.checked = false then Line2MemoEdit.Visible := true;
     if ContinueLine2CheckBox.checked = false then Line3MemoEdit.Visible := true;
     if ContinueLine3CheckBox.checked = false then Line4MemoEdit.Visible := true;
+    Line2EditButton.Visible := true;
+    Line3EditButton.Visible := true;
+    Line4EditButton.Visible := true;
     ShutdownEdit2.Visible := true;
     ShutdownEdit3.Visible := true;
     ShutdownEdit4.Visible := true;
@@ -848,14 +834,7 @@ begin
   end;
 end;
 
-procedure TSetupForm.PluginTabsheetShow(Sender: TObject);
-begin
-
-end;
-
 procedure TSetupForm.SaveScreen(scr: Integer);
-var
-  y: Integer;
 begin
   if scr = 0 then Exit;
   config.screen[scr].line[1].text := Line1MemoEdit.text;
@@ -1069,7 +1048,6 @@ begin
           UTF8Length(Line2MemoEdit.Text));
         Line2MemoEdit.SetFocus;
         Line2MemoEdit.selstart := tempint + utf8length(VariableEdit.text);
-
       end
       else if (setupbutton = 3) and (Line3MemoEdit.enabled) and (Line3MemoEdit.visible) then
       begin
@@ -1110,6 +1088,45 @@ begin
         if pos('$MObutton', VariableEdit.Text) <> 0 then
           VariableEdit.Text := '$MObutton(' + LastKeyPressedEdit.text + ')';
          ActionsStringGrid.Cells[1, ActionsStringGrid.row] := VariableEdit.text;
+      end;
+    end
+    else if (StartupTabSheet.Visible) then // in startup/shutdown tab
+    begin
+      if (shdownmessagebutton = 2) and (ShutdownEdit2.enabled) then
+      begin
+        tempint := ShutdownEdit2.SelStart;
+        ShutdownEdit2.text := utf8copy(ShutdownEdit2.text, 1, ShutdownEdit2.SelStart) + VariableEdit.Text +
+          utf8copy(ShutdownEdit2.text, ShutdownEdit2.SelStart + 1 + ShutdownEdit2.SelLength,
+          UTF8Length(ShutdownEdit2.Text));
+        ShutdownEdit2.SetFocus;
+        ShutdownEdit2.selstart := tempint + utf8length(VariableEdit.text);
+      end
+      else if (shdownmessagebutton = 3) and (ShutdownEdit3.enabled) then
+      begin
+        tempint := ShutdownEdit3.SelStart;
+        ShutdownEdit3.text := utf8copy(ShutdownEdit3.text, 1, ShutdownEdit3.SelStart) + VariableEdit.Text +
+          utf8copy(ShutdownEdit3.text, ShutdownEdit3.SelStart + 1 + ShutdownEdit3.SelLength,
+          UTF8Length(ShutdownEdit3.Text));
+        ShutdownEdit3.SetFocus;
+        ShutdownEdit3.selstart := tempint + UTF8Length(VariableEdit.text);
+      end
+      else if (shdownmessagebutton = 4) and (ShutdownEdit4.enabled) then
+      begin
+        tempint := ShutdownEdit4.SelStart;
+        ShutdownEdit4.text := utf8copy(ShutdownEdit4.text, 1, ShutdownEdit4.SelStart) + VariableEdit.Text +
+          utf8copy(ShutdownEdit4.text, ShutdownEdit4.SelStart + 1 + ShutdownEdit4.SelLength,
+          UTF8Length(ShutdownEdit4.Text));
+        ShutdownEdit4.SetFocus;
+        ShutdownEdit4.selstart := tempint + UTF8Length(VariableEdit.text);
+      end
+      else if (ShutdownEdit1.enabled) then // default to line 1
+      begin
+        tempint := ShutdownEdit1.SelStart;
+        ShutdownEdit1.text := utf8copy(ShutdownEdit1.text, 1, tempint) + VariableEdit.Text +
+          utf8copy(ShutdownEdit1.text, tempint + 1 + ShutdownEdit1.SelLength,
+          UTF8Length(ShutdownEdit1.Text));
+        ShutdownEdit1.SetFocus;
+        ShutdownEdit1.selstart := tempint + UTF8Length(VariableEdit.text);
       end;
     end;
   end;
@@ -1424,56 +1441,45 @@ begin
     VariableEdit.Text := S;
 end;
 
-procedure TSetupForm.Line1MemoEditEnter(Sender: TObject);
+procedure TSetupForm.LineEditEnter(Sender: TObject);
 begin
-  GameServerEdit.text := config.gameServer[ScreenSpinEdit.Value, 1];
-  setupbutton := 1;
-  Line1MemoEdit.color := $00A1D7A4;
-  if Line2MemoEdit.enabled= true then Line2MemoEdit.color := clWhite
-  else Line2MemoEdit.color := $00BBBBFF;
-  if Line3MemoEdit.enabled= true then Line3MemoEdit.color := clWhite
-  else Line3MemoEdit.color := $00BBBBFF;
-  if Line4MemoEdit.enabled= true then Line4MemoEdit.color := clWhite
-  else Line4MemoEdit.color := $00BBBBFF;
-end;
 
-procedure TSetupForm.Line2MemoEditEnter(Sender: TObject);
-begin
-  GameServerEdit.text := config.gameServer[ScreenSpinEdit.Value, 2];
-  setupbutton := 2;
-  Line2MemoEdit.color := $00A1D7A4;
-  if Line1MemoEdit.enabled= true then Line1MemoEdit.color := clWhite
-  else Line1MemoEdit.color := $00BBBBFF;
-  if Line3MemoEdit.enabled= true then Line3MemoEdit.color := clWhite
-  else Line3MemoEdit.color := $00BBBBFF;
-  if Line4MemoEdit.enabled= true then Line4MemoEdit.color := clWhite
-  else Line4MemoEdit.color := $00BBBBFF;
-end;
+  if (Line1MemoEdit <> Sender) and Line1MemoEdit.Enabled = true then
+    Line1MemoEdit.color := clWhite
+  else
+    if Line1MemoEdit.Enabled = true then
+   begin
+      Line1MemoEdit.color := $00A1D7A4;
+      setupbutton := 1;
+    end;
 
-procedure TSetupForm.Line3MemoEditEnter(Sender: TObject);
-begin
-  GameServerEdit.text := config.gameServer[ScreenSpinEdit.Value, 3];
-  setupbutton := 3;
-  Line3MemoEdit.color := $00A1D7A4;
-  if Line2MemoEdit.enabled= true then Line2MemoEdit.color := clWhite
-  else Line2MemoEdit.color := $00BBBBFF;
-  if Line1MemoEdit.enabled= true then Line1MemoEdit.color := clWhite
-  else Line1MemoEdit.color := $00BBBBFF;
-  if Line4MemoEdit.enabled= true then Line4MemoEdit.color := clWhite
-  else Line4MemoEdit.color := $00BBBBFF;
-end;
+  if (Line2MemoEdit <> Sender) and Line2MemoEdit.Enabled = true then
+    Line2MemoEdit.color := clWhite
+  else
+    if Line2MemoEdit.Enabled = true then
+    begin
+      Line2MemoEdit.color := $00A1D7A4;
+      setupbutton := 2;
+    end;
 
-procedure TSetupForm.Line4MemoEditEnter(Sender: TObject);
-begin
-  GameServerEdit.text := config.gameServer[ScreenSpinEdit.Value, 4];
-  setupbutton := 4;
-  Line4MemoEdit.color := $00A1D7A4;
-  if Line2MemoEdit.enabled= true then Line2MemoEdit.color := clWhite
-  else Line2MemoEdit.color := $00BBBBFF;
-  if Line3MemoEdit.enabled= true then Line3MemoEdit.color := clWhite
-  else Line3MemoEdit.color := $00BBBBFF;
-  if Line1MemoEdit.enabled= true then Line1MemoEdit.color := clWhite
-  else Line1MemoEdit.color := $00BBBBFF;
+  if (Line3MemoEdit <> Sender) and Line3MemoEdit.Enabled = true then
+    Line3MemoEdit.color := clWhite
+  else
+    if Line3MemoEdit.Enabled = true then
+    begin
+      Line3MemoEdit.color := $00A1D7A4;
+      setupbutton := 3;
+    end;
+
+  if (Line4MemoEdit <> Sender) and Line4MemoEdit.Enabled = true then
+    Line4MemoEdit.color := clWhite
+  else
+    if Line4MemoEdit.Enabled = true then
+    begin
+      Line4MemoEdit.color := $00A1D7A4;
+      setupbutton := 4;
+    end;
+
 end;
 
 procedure TSetupForm.NetworkStatsListBoxClick(Sender: TObject);
@@ -1566,7 +1572,6 @@ begin
   config.newsRefresh := InternetRefreshTimeSpinEdit.Value;
   config.foldUserid := FoldingAtHomeEmailEdit.text;
   config.gameRefresh := GamestatsRefreshTimeSpinEdit.Value;
-  config.checkUpdates := LCDSmartieUpdateCheckBox.checked;
   config.colorOption := ColorSchemeComboBox.itemindex;
   config.distLog := DistributedNetLogfileEdit.text;
   config.dllPeriod := DLLCheckIntervalSpinEdit.value;
@@ -1592,17 +1597,15 @@ begin
 {$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.SetupAutoStart();
 {$ENDIF}
-  // Check if Com settings have changed.
+
   config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].server := EmailServerEdit.text;
   config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].user := EmailLoginEdit.text;
   config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].pword := EmailPasswordEdit.text;
   config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].port_ssl := EmailSSLEdit.text;
 
-
-
-  if (WebProxyPortEdit.text = '') then WebProxyPortEdit.text := '0';
+  if not (WebProxyPortEdit.text = '') then
+    config.httpProxyPort := StrToInt(WebProxyPortEdit.text);
   config.httpProxy := WebProxyServerEdit.text;
-  config.httpProxyPort := StrToInt(WebProxyPortEdit.text);
 
   SaveScreen(ScreenSpinEdit.Value);
   {$IFNDEF STANDALONESETUP}
@@ -1728,54 +1731,6 @@ begin
     FocusToInputField();
 end;
 
-procedure TSetupForm.Line1MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then
-  begin
-    // select bottom row
-    if (Line4MemoEdit.Enabled) and (Line4MemoEdit.Visible) then Line4MemoEdit.SetFocus
-    else if (Line3MemoEdit.Enabled) and (Line3MemoEdit.Visible) then Line3MemoEdit.SetFocus
-    else if (Line2MemoEdit.Enabled) and (Line2MemoEdit.Visible) then Line2MemoEdit.SetFocus;
-  end
-  else if ord(key) = VK_DOWN then
-  begin
-    // Select next row if used.
-    if (Line2MemoEdit.Enabled) and (Line2MemoEdit.Visible) then Line2MemoEdit.SetFocus;
-  end;
-end;
-
-procedure TSetupForm.Line2MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then Line1MemoEdit.SetFocus
-  else if ord(key) = VK_DOWN then
-  begin
-    // Select next row if used otherwise go to top.
-    if (Line3MemoEdit.Enabled) and (Line3MemoEdit.Visible) then Line3MemoEdit.SetFocus
-    else Line1MemoEdit.SetFocus;
-  end;
-end;
-
-procedure TSetupForm.Line3MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then Line2MemoEdit.SetFocus
-  else if ord(key) = VK_DOWN then
-  begin
-    // Select next row if used otherwise go to top.
-    if (Line4MemoEdit.Enabled) and (Line4MemoEdit.Visible) then Line4MemoEdit.SetFocus
-    else Line1MemoEdit.SetFocus;
-  end;
-end;
-
-procedure TSetupForm.Line4MemoEditKeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then Line3MemoEdit.SetFocus;
-  if ord(key) = VK_DOWN then Line1MemoEdit.SetFocus;
-end;
-
 procedure TSetupForm.StickyCheckboxClick(Sender: TObject);
 begin
   TimeToShowSpinEdit.enabled := not StickyCheckbox.checked;
@@ -1810,82 +1765,43 @@ end;
 
 procedure TSetupForm.ShutdownEditEnter(Sender: TObject);
 var
-  oEdit: TEdit;
+  oEdit: TMemo;
 begin
 
-  oEdit := Sender As TEdit;
+  oEdit := Sender As TMemo;
   oEdit.Color := $00A1D7A4;
 
   if (ShutdownEdit1 <> Sender) And ShutdownEdit1.Enabled = true then
     ShutdownEdit1.color := clWhite
   else
+  begin
     ShutdownEdit1.color := $00BBBBFF;
+    shdownmessagebutton := 1;
+  end;
 
   if (ShutdownEdit2 <> Sender) And ShutdownEdit2.enabled = true then
     ShutdownEdit2.color := clWhite
   else
+  begin
     ShutdownEdit2.color := $00BBBBFF;
+    shdownmessagebutton := 2;
+  end;
 
   if (ShutdownEdit3 <> Sender) And ShutdownEdit3.enabled = true then
     ShutdownEdit3.color := clWhite
   else
+  begin
     ShutdownEdit3.color := $00BBBBFF;
+    shdownmessagebutton := 3;
+  end;
 
   if (ShutdownEdit4 <> Sender) And ShutdownEdit4.enabled = true then
     ShutdownEdit4.color := clWhite
   else
+  begin
     ShutdownEdit4.color := $00BBBBFF;
-end;
-
-/////////////////////////////////////////////////////////////////
-//////////////////////////// KEYS ///////////////////////////////
-/////////////////////////////////////////////////////////////////
-procedure TSetupForm.ShutdownEdit1KeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then
-  begin
-    // select bottom row
-    if (ShutdownEdit4.Enabled) and (ShutdownEdit4.Visible) then ShutdownEdit4.SetFocus
-    else if (ShutdownEdit3.Enabled) and (ShutdownEdit3.Visible) then ShutdownEdit3.SetFocus
-    else if (ShutdownEdit2.Enabled) and (ShutdownEdit2.Visible) then ShutdownEdit2.SetFocus;
-  end
-  else if ord(key) = VK_DOWN then
-  begin
-    // Select next row if used.
-    if (ShutdownEdit2.Enabled) and (ShutdownEdit2.Visible) then ShutdownEdit2.SetFocus;
+    shdownmessagebutton := 4;
   end;
-end;
-
-procedure TSetupForm.ShutdownEdit2KeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then ShutdownEdit1.SetFocus
-  else if ord(key) = VK_DOWN then
-  begin
-    // Select next row if used otherwise go to top.
-    if (ShutdownEdit3.Enabled) and (ShutdownEdit3.Visible) then ShutdownEdit3.SetFocus
-    else ShutdownEdit1.SetFocus;
-  end;
-end;
-
-procedure TSetupForm.ShutdownEdit3KeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then ShutdownEdit2.SetFocus
-  else if ord(key) = VK_DOWN then
-  begin
-    // Select next row if used otherwise go to top.
-    if (ShutdownEdit4.Enabled) and (ShutdownEdit4.Visible) then ShutdownEdit4.SetFocus
-    else ShutdownEdit1.SetFocus;
-  end;
-end;
-
-procedure TSetupForm.ShutdownEdit4KeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  if ord(key) = VK_UP then ShutdownEdit3.SetFocus;
-  if ord(key) = VK_DOWN then ShutdownEdit1.SetFocus;
 end;
 
 /////////////////////////////////////////////////////////////////

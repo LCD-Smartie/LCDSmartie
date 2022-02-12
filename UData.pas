@@ -282,17 +282,18 @@ begin
   try
     for Loop := 0 to DataThreads.Count-1 do begin
       TDataThread(DataThreads[Loop]).ResolveVariables(Line);
-      if (Pos('$', line) = 0) then break;
+      if (Pos('$', line) = 0) then goto endChange;
     end;
 
-    if (Pos('$', line) = 0) then goto endChange;
     ResolvePluginVariables(line, qstattemp, bCacheResults);
+    if (Pos('$', line) = 0) then goto endChange;
     ResolveOtherVariables(Line);
     ResolveFileVariables(Line);
     if (Pos('$', line) = 0) then goto endChange;
     ResolveLCDFunctionVariables(Line);
     ResolveWinampVariables(line);
     ResolveTimeVariable(Line);
+    if (Pos('$', line) = 0) then goto endChange;
     ResolveStringFunctionVariables(Line);
 endChange:
   except
@@ -302,6 +303,10 @@ endChange:
 
   line := StringReplace(line, Chr($A), '', [rfReplaceAll]);
   line := StringReplace(line, Chr($D), '', [rfReplaceAll]);
+  line := StringReplace(line, #226+#150+#136, #255, [rfReplaceAll]); // full Block
+  line := StringReplace(line, #194+#176, #176, [rfReplaceAll]); // Degree - hd44780 only has a square degree in 223 so this is a custom
+  line := StringReplace(line, #226+#128+#153, #39, [rfReplaceAll]); // Utf8 apostrophe
+
   result := line;
 end;
 

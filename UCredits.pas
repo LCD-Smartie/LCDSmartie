@@ -82,18 +82,19 @@ end;
 
 procedure TCreditsForm.HTMLLabelClick(Sender: TObject);
 begin
-  ShellExecute(0, Nil, pchar('http://www.lcdsmartie.org/'), Nil, Nil,
+  ShellExecute(0, Nil, pchar('http://lcdsmartie.sourceforge.net'), Nil, Nil,
     SW_NORMAL);
 end;
 
 procedure TCreditsForm.ForumLabelClick(Sender: TObject);
 begin
-  ShellExecute(0, Nil, pchar('http://forums.lcdsmartie.org/'), Nil, Nil,
+  ShellExecute(0, Nil, pchar('http://lcdsmartie.org/phpBB3/'), Nil, Nil,
     SW_NORMAL);
 end;
 
 procedure TCreditsForm.FormCreate(Sender: TObject);
 begin
+  Image1.Picture.LoadFromFile('.\images\smartie53.bmp');
   CreditList := TStringList.Create;
   with CreditList do begin    // add core developers here in alpha order
     Add('Core Development:');

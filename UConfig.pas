@@ -363,7 +363,7 @@ begin
 
   httpProxy := initFile.ReadString('Communication Settings', 'HTTPProxy', '');
   httpProxyPort := initFile.ReadInteger('Communication Settings',
-    'HTTPProxyPort', 0);
+    'HTTPProxyPort', 8080);
   xremotehost := initFile.ReadString('Communication Settings', 'RemoteHost', 'localhost');
   DisplayDLLName := initFile.ReadString('Communication Settings', 'DisplayDLLName', '');
   DisplayDLLParameters := initFile.ReadString('Communication Settings', 'DisplayDLLParameters', 'COM1,9600,8,N,1');

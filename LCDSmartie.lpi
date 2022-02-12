@@ -297,9 +297,8 @@
       <Filename Value="release-dir\LCDSmartie.exe"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="components\WinampCtrl;components\indy 10\lib\Protocols;components\indy 10\lib\Core;components\indy 10\lib\System;$(ProjOutDir)"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
       <Libraries Value="components\WinampCtrl"/>
-      <OtherUnitFiles Value="components\WinampCtrl;components\indy 10\lib\Protocols;components\indy 10\lib\Core;components\indy 10\lib\System"/>
       <UnitOutputDirectory Value="fuo"/>
       <ObjectPath Value="components\CoolTrayIcon"/>
     </SearchPaths>
@@ -310,6 +309,7 @@
       </SyntaxOptions>
     </Parsing>
     <CodeGeneration>
+      <SmartLinkUnit Value="True"/>
       <TargetOS Value="win32"/>
       <Optimizations>
         <OptimizationLevel Value="2"/>
@@ -319,7 +319,9 @@
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="False"/>
+        <StripSymbols Value="True"/>
       </Debugging>
+      <LinkSmart Value="True"/>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
