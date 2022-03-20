@@ -1,30 +1,27 @@
 #include "stdafx.h"
-#include "DNBridge.h"
-
-#include <windows.h>
-#include <string.h>
-#include <_vcclrit.h>
-
-#using <mscorlib.dll>
+#include <msclr\auto_gcroot.h>
+#include <msclr\marshal_cppstd.h>
 
 using namespace System;
 using namespace System::Reflection;
 using namespace System::Text;
+using namespace System::Runtime::InteropServices;
+using namespace System::Collections::Generic;
 
 const int maxPlugins = 100;
 
-__gc struct plugin
+ ref struct plugin
 {
-	Assembly __gc *myAssembly;
-	Type __gc *myType;
-	Object __gc *myObject;
-	MethodInfo __gc *myMethods[];
+	static  Assembly^ myAssembly;
+	static Type^ myType;
+	Object^ myObject;
+	array <MethodInfo^>^ myMethods;
 };
 
-__gc class  globals {
+ref class  globals {
 public:
-	 static plugin *plugins __gc [];
-	 static int numPlugins = -1;
+	static array <plugin^>^ plugins = gcnew array<plugin^>(maxPlugins); ;
+	static int numPlugins = 0 ;
 };
 
 
@@ -33,36 +30,31 @@ extern "C"
 
 __declspec(dllexport) void __stdcall SmartieInit(void) 
 {
-    __crt_dll_initialize();
-	if (globals::numPlugins == -1)
-	{
-		globals::plugins = new plugin *[maxPlugins];
-		globals::numPlugins = 0;
-	}
+// nothing to init
 }
 
 __declspec(dllexport) char * __stdcall BridgeInit(const char *param1, int *id, int *minRefreshInterval) 
 {
-	String __gc *result = new String("");
+	String^ result = gcnew String("");
 
 	*id = -1;
 	*minRefreshInterval = 0;
 
-	if (globals::numPlugins >= 100)
+	if (globals::numPlugins >= maxPlugins)
 		result = "Too many dot net plugins.";
 	else 
 	{
 		try
 		{
-			plugin __gc *current = new plugin();
+			plugin^ current = gcnew plugin();
 		
-			String __gc *managed_param1 = new String(param1);    
-			String __gc *loadPath = String::Concat(S"plugins\\", managed_param1);
+			String^ managed_param1 = gcnew String(param1);    
+			String^ loadPath = String::Concat("plugins\\", managed_param1);
 
-			String __gc *classtype = managed_param1;
-			if (classtype->LastIndexOf(S".") != -1)
-				classtype = managed_param1->Substring(0, classtype->LastIndexOf(S"."));
-			classtype = classtype->Concat(classtype, S".LCDSmartie");
+			String^ classtype = managed_param1;
+			if (classtype->LastIndexOf(".") != -1)
+				classtype = managed_param1->Substring(0, classtype->LastIndexOf("."));
+			classtype = classtype->Concat(classtype, ".LCDSmartie");
 
 			current->myAssembly = Assembly::LoadFrom( loadPath );
 			if (current->myAssembly)
@@ -74,44 +66,43 @@ __declspec(dllexport) char * __stdcall BridgeInit(const char *param1, int *id, i
 
 					if (current->myObject)
 					{
-						current->myMethods = new MethodInfo*[20];
+						current->myMethods = gcnew array<MethodInfo^>(20) ;
 						bool found = false;
 
 						for (int iFunc=1; iFunc<=20; iFunc++) 
 						{
-							String __gc *function = String::Concat(S"function", iFunc.ToString());
+							String^ function = String::Concat("function", iFunc.ToString());
 							current->myMethods[iFunc-1] = current->myType->GetMethod(function);
 							if (current->myMethods[iFunc-1])
 								found = true;
 						}
 						
 						if (!found)
-							result = S"Class contains no Smartie methods!";
+							result = "Class contains no Smartie methods!";
 						else
 						{
-							MethodInfo __gc *minRefresh = current->myType->GetMethod("GetMinRefreshInterval");
+							MethodInfo^ minRefresh = current->myType->GetMethod("GetMinRefreshInterval");
 							if (minRefresh)
 							{
-								Object __gc *noargs[] = new Object*[0];
-								Object __gc *o = minRefresh->Invoke(current->myObject, noargs);
-								*minRefreshInterval = *dynamic_cast<__box Int32*>(o);
-
+								array <Object^>^ noargs = gcnew array<Object^>(0);
+								Object^ o = minRefresh->Invoke(current->myObject, noargs);
+								*minRefreshInterval = safe_cast<int>(o);
 							}
 
 							globals::plugins[globals::numPlugins++]=current;
 							*id = globals::numPlugins;
 						}
 					}
-					else result = S"Failed to create an instance";
+					else result = "Failed to create an instance";
 				}
-				else result = String::Concat(S"Plugin does not contain a type of ", classtype);
+				else result = String::Concat("Plugin does not contain a type of ", classtype);
 			}
-			else result = String::Concat(S"Failed to load ", loadPath);
-		} catch (Exception *e) {
+			else result = String::Concat("Failed to load ", loadPath);
+		} catch (Exception^ e) {
 			result = String::Concat("[Exception: ", e->Message);
 			if (e->InnerException) 
-				result = String::Concat(result, S": ", e->InnerException->Message);
-			result = String::Concat(result, S"]");
+				result = String::Concat(result, ": ", e->InnerException->Message);
+			result = String::Concat(result, "]");
 		}
 	}
 	
@@ -120,40 +111,10 @@ __declspec(dllexport) char * __stdcall BridgeInit(const char *param1, int *id, i
 	buffer[0] = 0;
 	if (result != "")
 	{
-		char tmp __gc[] = System::Text::Encoding::UTF8->GetBytes(result->ToCharArray());
-		char __pin *value = &tmp[0];
-			
-		strncpy(buffer, value, 1024);
+		std::string value = msclr::interop::marshal_as<std::string>(result);
+		strcpy_s(buffer, value.c_str());		
 	}
 	return buffer;
-}
-
-char *ConvertUtf8ToAnsi(char *input)
-{
-	unsigned int n, nn, nLength;
-	unsigned char *inputString = (unsigned char *)input;
-
-	nLength = strlen(input);
-	nn = 0;
-	for (n=0; n<nLength; n++)
-	{
-		if (inputString[n] > 127 && (n+1) < nLength)
-		{
-			if (inputString[n] == 194 || inputString[n] == 195)
-			{
-				inputString[nn] = 64 * (inputString[n] - 194)  + inputString[n+1];
-			}
-			n++;
-		}
-		else
-		{
-			inputString[nn] = inputString[n];
-		}
-		nn++;
-	}
-	if (nLength>0)
-		inputString[nn] = 0;
-	return input;
 }
 
 char *ConvertAnsiToUtf8(const char *input)
@@ -183,13 +144,13 @@ char *ConvertAnsiToUtf8(const char *input)
 __declspec(dllexport) char * __stdcall BridgeFunc(int iBridgeId, int iFunc, const char *param1, const char *param2)
 {
 	char *param;
-	UTF8Encoding* encoder = new UTF8Encoding();
+	UTF8Encoding^ encoder = gcnew UTF8Encoding();
 	param = ConvertAnsiToUtf8(param1);
-	String __gc *managed_param1 = new String(param, 0, strlen(param), encoder);
+	String^ managed_param1 = gcnew String(param, 0, strlen(param), encoder);
 	param = ConvertAnsiToUtf8(param2);
-	String __gc *managed_param2 = new String(param, 0, strlen(param), encoder);
-	String __gc *result = new String("");
-	plugin __gc *current = globals::plugins[iBridgeId - 1];
+	String^ managed_param2 = gcnew String(param, 0, strlen(param), encoder);
+	String^ result = gcnew String("");
+	plugin^ current = globals::plugins[iBridgeId - 1];
 
 	// 0 based array
 	iFunc--;
@@ -200,29 +161,26 @@ __declspec(dllexport) char * __stdcall BridgeFunc(int iBridgeId, int iFunc, cons
 			result = "[Dll: function not found]";
 		else
 		{
-			String __gc *args[] = new String*[2];
+			array<String^>^ args = gcnew array<String^>(2);
 			args[0] = managed_param1;
 			args[1] = managed_param2;
 
-			result = static_cast<String*>(current->myMethods[iFunc]->Invoke(current->myObject, args));
+			result = reinterpret_cast<String^>(current->myMethods[iFunc]->Invoke(current->myObject, args));
 		}
 
-	} catch (Exception *e) {
+	} catch (Exception^ e) {
 		result = String::Concat("[Exception: ", e->Message);
 		if (e->InnerException) 
-			result = String::Concat(result, S": ", e->InnerException->Message);
-		result = String::Concat(result, S"]");
+			result = String::Concat(result, ": ", e->InnerException->Message);
+		result = String::Concat(result, "]");
 	}
 
 	static char buffer[1024];
 	buffer[0] = 0;
 	if (result != "")
 	{
-		char tmp __gc[] = encoder->GetBytes(result->ToCharArray());
-		char __pin *value = &tmp[0];
-	
-		strncpy(buffer, value, 1024);
-		ConvertUtf8ToAnsi(buffer);
+		std::string value = msclr::interop::marshal_as<std::string>(result);
+		strcpy_s(buffer, value.c_str());
 	}
 	return buffer;
 }

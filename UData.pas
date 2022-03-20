@@ -29,7 +29,7 @@ unit UData;
 interface
 
 uses
-  Classes, SysUtils, UDataEmail;
+  Classes, SysUtils, UDataEmail,math;
 
 const
   iMaxPluginFuncs = 20;
@@ -108,8 +108,10 @@ implementation
 uses
   Windows, Forms, Dialogs, StrUtils, Winsock,
   UMain, UUtils, UConfig,
-  DataThread, UDataNetwork, UDataDisk, UDataGame, UDataMemory,
-  UDataCPU, UDataSeti, UDataFolding, UDataRSS, UDataDNet,
+  DataThread, UDataNetwork, UDataDisk, UDataGame, UDataSystem,
+  // cpu stuff doesn't work under 64 bit but libre hardware monitor
+  // provides the same and more functionality
+  {UDataCPU,} {UDataSeti,}  UDataFolding, UDataRSS, UDataDNet,
   UDataWinamp, UDataSender;
 
 
@@ -121,7 +123,8 @@ uses
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-
+var
+  dllmessage: string;
 constructor TData.Create;
 var
 //  status: Integer;
@@ -154,13 +157,13 @@ begin
   DataThread.Start;
   DataThreads.Add(DataThread);
 
-  DataThread := TMemoryDataThread.Create;
+  DataThread := TSystemDataThread.Create;
   DataThread.Start;
   DataThreads.Add(DataThread);
 
-  DataThread := TCPUDataThread.Create;
+{  DataThread := TCPUDataThread.Create;
   DataThread.Start;
-  DataThreads.Add(DataThread);
+  DataThreads.Add(DataThread);  }
     // seti is broken atm
 //  DataThread := TSetiDataThread.Create;
 //  DataThread.Start;
@@ -779,7 +782,8 @@ begin
         LoadPlugin(sLoadDllName);
       except
         on E: Exception do
-          showmessage('Load of plugin failed: ' + e.Message)
+          //showmessage('Load of plugin failed: ' + e.Message) // bloody annoying popup
+          dllmessage := e.Message; // save it here instead so we can print it out later
       end;
     end;
 
@@ -819,7 +823,7 @@ begin
       Result := '[Dll: function number out of range]';
   end
   else
-    Result := '[Dll: Can not load plugin]';
+    Result := '[Dll: Can not load plugin]' + dllmessage;
 end;
 
 procedure TData.LoadPlugin(sDllName: String; bDotNet: Boolean = false);
@@ -854,7 +858,7 @@ begin
   else
     sLibraryPath := 'plugins\' + sDllName;
 
-  dlls[uiDll].hDll := LoadLibrary(pchar(extractfilepath(application.exename) +
+  dlls[uiDll].hDll := safeLoadLibrary(pchar(extractfilepath(application.exename) +
     sLibraryPath));
 
   if (dlls[uiDll].hDll <> 0) then
@@ -881,7 +885,15 @@ begin
 
     if (bDotNet) then
     begin
+      // this to fix/work around a problem with lazarus and exceptions not being dealt with properly in DLLs
+      SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
+
+      {$IF Defined(CPUX86)}
       @bridgeInitFunc := getprocaddress(dlls[uiDll].hDll, PChar('_BridgeInit@12'));
+      {$ELSEIF Defined(CPUX64)}
+      @bridgeInitFunc := getprocaddress(dlls[uiDll].hDll, PChar('BridgeInit'));
+      {$IFEND}
+
       if (@bridgeInitFunc = nil) then
         raise Exception.Create('Could not init bridge');
 
@@ -899,8 +911,14 @@ begin
       if (minRefresh > 0) then
         dlls[uiDll].uiMinRefreshInterval := minRefresh;
 
+      {$IF Defined(CPUX86)}
       @dlls[uiDll].BridgeFunc := getprocaddress(dlls[uiDll].hDll,
         PChar('_BridgeFunc@16'));
+      {$ELSEIF Defined(CPUX64)}
+      @dlls[uiDll].BridgeFunc := getprocaddress(dlls[uiDll].hDll,
+        PChar('BridgeFunc'));
+      {$IFEND}
+
       if (@dlls[uiDll].BridgeFunc = nil) then
         raise Exception.Create('No Bridge function found.');
     end

@@ -2,8 +2,8 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="11"/>
-    <BuildModes Active="Release"/>
+    <Version Value="12"/>
+    <BuildModes Active="64 bit Release"/>
     <Units Count="4">
       <Unit0>
         <Filename Value="matrix.lpr"/>
@@ -80,7 +80,7 @@
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
-      <Modes Count="0" ActiveMode=""/>
+      <Modes ActiveMode=""/>
     </RunParams>
   </ProjectSession>
 </CONFIG>

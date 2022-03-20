@@ -8,26 +8,43 @@
 *.res
 fuo
 lib
+DNBridge/.vs
+DNBridge/x64
 # ignore main exe
-release-dir\LCDSmartie.exe
+release-dir/LCDSmartie.exe
 # ignore dll's only in these dirs as to not wipe out the openssl dll's 
-release-dir\displays\*.dll
-release-dir\plugins\*.dll
-release-dir\plugins\*.cfg
-release-dir\plugins\*.txt
-release-dir\*.dll
+release-dir/displays/*.dll
+release-dir/plugins/*.dll
+release-dir/plugins/*.cfg
+release-dir/plugins/*.txt
+release-dir/*.dll
+x64/release-dir/displays/*.dll
+x64/release-dir/plugins/*.dll
+x64/release-dir/plugins/*.cfg
+x64/release-dir/plugins/*.txt
+x64/release-dir/*.dll
 # dont keep anything in the cache that may have been created during testing
 # private ssl stuff should never go in git
-release-dir\openssl\.rnd
-release-dir\openssl\cert.pem
-release-dir\openssl\key.pem
+release-dir/openssl/.rnd
+release-dir/openssl/cert.pem
+release-dir/openssl/key.pem
 # ignore extracted components
-components\WinampCtrl
+components/WinampCtrl
 # ignore lazarus backups
 backup
-cache
 *.bak
 *.lps
 *.cache
 *.log
 *.exe
+
+*.lastbuildstate
+*.tlog
+*.pdb
+*.obj
+*.metagen
+*.dbg
+*.user
+*.pem
+x64/release-dir/openssl/.rnd
+*.sys

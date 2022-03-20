@@ -154,7 +154,6 @@ type
     alwaysOnTop: Boolean;
     httpProxy: String;
     httpProxyPort: Integer;
-    newsRefresh: Integer;
     randomScreens: Boolean;
     gameRefresh: Integer;
     foldUserid: String;
@@ -404,7 +403,6 @@ begin
   DLL_contrast := initFile.ReadInteger('General Settings', 'DLLContrast', 127);
   DLL_brightness := initFile.ReadInteger('General Settings', 'DLLBrightness',127);
 
-  newsRefresh := initFile.ReadInteger('General Settings', 'NewsRefresh', 120);
   randomScreens := initFile.ReadBool('General Settings', 'RandomScreens',
     false);
 
@@ -604,7 +602,6 @@ begin
   initFile.WriteInteger('General Settings', 'DLLContrast', DLL_contrast);
   initFile.WriteInteger('General Settings', 'DLLBrightness', DLL_brightness);
 
-  initFile.WriteInteger('General Settings', 'NewsRefresh', newsRefresh);
   initFile.WriteBool('General Settings', 'RandomScreens', randomScreens);
 
   initFile.WriteString('General Settings', 'FoldUserid', foldUserid);

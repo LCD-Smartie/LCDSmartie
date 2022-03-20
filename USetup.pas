@@ -150,7 +150,6 @@ type
     HideOnStartup: TCheckBox;
     IDLabel: TLabel;
     InternetListBox: TListBox;
-    InternetRefreshTimeSpinEdit: TSpinEdit;
     InternetTabSheet: TTabSheet;
     Label1: TLabel;
     Label10: TLabel;
@@ -160,6 +159,7 @@ type
     Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
+    Label17: TLabel;
     Label18: TLabel;
     Label19: TLabel;
     Label2: TLabel;
@@ -168,6 +168,8 @@ type
     Label22: TLabel;
     Label23: TLabel;
     Label24: TLabel;
+    Label25: TLabel;
+    Label26: TLabel;
     Label27: TLabel;
     Label28: TLabel;
     Label29: TLabel;
@@ -218,6 +220,7 @@ type
     Line4EditButton: TSpeedButton;
     Line4MemoEdit: TMemo;
     MainPageControl: TPageControl;
+    RssTMemoEdit: TMemo;
     MiscListBox: TListBox;
     MiscTabSheet: TTabSheet;
     MoveToScreenButton: TButton;
@@ -244,6 +247,7 @@ type
     RemoteSendPasswordEdit: TEdit;
     RemoteSendPortEdit: TEdit;
     RemoteSendUseSSLCheckBox: TCheckBox;
+    RssTypeComboBox: TComboBox;
     ScreenEnabledCheckBox: TCheckBox;
     ScreenLabel: TLabel;
     ScreenSettingsGroupBox: TGroupBox;
@@ -261,6 +265,8 @@ type
     ShutdownMessageGroup: TGroupBox;
     SkinPath: TEdit;
     SkinPathBrowseButton: TSpeedButton;
+    RssMaxFreqSpinedit: TSpinEdit;
+    RssItemNumSpinEdit: TSpinEdit;
     StartupTabSheet: TTabSheet;
     StayOnTopCheckBox: TCheckBox;
     StickyCheckbox: TCheckBox;
@@ -299,6 +305,7 @@ type
     procedure ComPortsButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LCDSizeComboBoxChange(Sender: TObject);
+    procedure RssPageChange(Sender: TObject);
     procedure ScreenSpinEditChange(Sender: TObject);
     procedure WinampListBoxClick(Sender: TObject);
     procedure InsertButtonClick(Sender: TObject);
@@ -592,7 +599,6 @@ begin
   DisplayPluginListChange(Sender);
   ParametersEdit.Text := config.DisplayDLLParameters; // set our original parameters back
 
-  InternetRefreshTimeSpinEdit.Value := config.newsRefresh;
   RandomizeScreensCheckBox.checked := config.randomScreens;
   GamestatsRefreshTimeSpinEdit.Value := config.gameRefresh;
   FoldingAtHomeEmailEdit.text := config.foldUserid;
@@ -831,6 +837,20 @@ begin
     CenterLine2CheckBox.visible := true;
     CenterLine3CheckBox.visible := true;
     CenterLine4CheckBox.visible := true;
+  end;
+end;
+
+procedure TSetupForm.RssPageChange(Sender: TObject);
+var
+  feeditem: string;
+begin
+  if RssTMemoEdit.text <> '' then begin
+    case RssTypeComboBox.ItemIndex of
+      0: feeditem := 't';
+      1: feeditem := 'd';
+      2: feeditem := 'b';
+    end;
+    VariableEdit.Text := '$Rss('+RssTMemoEdit.text+','+feeditem+','+inttostr(RssItemNumSpinEdit.Value)+','+inttostr(RssMaxFreqSpinedit.Value)+')';
   end;
 end;
 
@@ -1137,39 +1157,37 @@ begin
   case SysInfoListBox.itemindex of
     0 : VariableEdit.Text := '$SysUsername';
     1 : VariableEdit.Text := '$SysComputername';
-    2 : VariableEdit.Text := '$CPUType';
-    3 : VariableEdit.Text := '$CPUSpeed';
-    4 : VariableEdit.Text := '$CPUUsage%';
-    5 : VariableEdit.Text := '$Bar($CPUUsage%,100,10)';
-    6 : VariableEdit.Text := '$MemFree';
-    7 : VariableEdit.Text := '$MemUsed';
-    8 : VariableEdit.Text := '$MemTotal';
-    9 : VariableEdit.Text := '$MemF%';
-    10 : VariableEdit.Text := '$MemU%';
-    11 : VariableEdit.Text := '$Bar($MemFree,$MemTotal,10)';
-    12 : VariableEdit.Text := '$Bar($MemUsed,$MemTotal,10)';
-    13 : VariableEdit.Text := '$PageFree';
-    14 : VariableEdit.Text := '$PageUsed';
-    15 : VariableEdit.Text := '$PageTotal';
-    16 : VariableEdit.Text := '$PageF%';
-    17 : VariableEdit.Text := '$PageU%';
-    18 : VariableEdit.Text := '$Bar($PageFree,$PageTotal,10)';
-    19 : VariableEdit.Text := '$Bar($PageUsed,$PageTotal,10)';
-    20 : VariableEdit.Text := '$HDFree(C)';
-    21 : VariableEdit.Text := '$HDUsed(C)';
-    22 : VariableEdit.Text := '$HDTotal(C)';
-    23 : VariableEdit.Text := '$HDFreg(C)';
-    24 : VariableEdit.Text := '$HDUseg(C)';
-    25 : VariableEdit.Text := '$HDTotag(C)';
-    26 : VariableEdit.Text := '$HDF%(C)';
-    27 : VariableEdit.Text := '$HDU%(C)';
-    28 : VariableEdit.Text := '$Bar($HDFree(C),$HDTotal(C),10)';
-    29 : VariableEdit.Text := '$Bar($HDUsed(C),$HDTotal(C),10)';
-    30 : VariableEdit.Text := '$ScreenReso';
-    31 : VariableEdit.Text := '$SysSSActive';
-    32 : VariableEdit.Text := '$SysFSGameActive';
-    33 : VariableEdit.Text := '$SysFSAppActive';
-    34 : VariableEdit.Text := '$SysAppActive(LCDSmartie.exe)';
+    2 : VariableEdit.Text := '$SysUptime';
+    3 : VariableEdit.Text := '$SysUptims';
+    4 : VariableEdit.Text := '$MemFree';
+    5 : VariableEdit.Text := '$MemUsed';
+    6 : VariableEdit.Text := '$MemTotal';
+    7 : VariableEdit.Text := '$MemF%';
+    8 : VariableEdit.Text := '$MemU%';
+    9 : VariableEdit.Text := '$Bar($MemFree,$MemTotal,10)';
+    10 : VariableEdit.Text := '$Bar($MemUsed,$MemTotal,10)';
+    11 : VariableEdit.Text := '$PageFree';
+    12 : VariableEdit.Text := '$PageUsed';
+    13 : VariableEdit.Text := '$PageTotal';
+    14 : VariableEdit.Text := '$PageF%';
+    15 : VariableEdit.Text := '$PageU%';
+    16 : VariableEdit.Text := '$Bar($PageFree,$PageTotal,10)';
+    17 : VariableEdit.Text := '$Bar($PageUsed,$PageTotal,10)';
+    18 : VariableEdit.Text := '$HDFree(C)';
+    19 : VariableEdit.Text := '$HDUsed(C)';
+    20 : VariableEdit.Text := '$HDTotal(C)';
+    21 : VariableEdit.Text := '$HDFreg(C)';
+    22 : VariableEdit.Text := '$HDUseg(C)';
+    23 : VariableEdit.Text := '$HDTotag(C)';
+    24 : VariableEdit.Text := '$HDF%(C)';
+    25 : VariableEdit.Text := '$HDU%(C)';
+    26 : VariableEdit.Text := '$Bar($HDFree(C),$HDTotal(C),10)';
+    27 : VariableEdit.Text := '$Bar($HDUsed(C),$HDTotal(C),10)';
+    28 : VariableEdit.Text := '$ScreenReso';
+    29 : VariableEdit.Text := '$SysSSActive';
+    30 : VariableEdit.Text := '$SysFSGameActive';
+    31 : VariableEdit.Text := '$SysFSAppActive';
+    32 : VariableEdit.Text := '$SysAppActive(LCDSmartie.exe)';
     else VariableEdit.Text := NoVariable;
   end; // case
 
@@ -1214,24 +1232,22 @@ begin
     0 : VariableEdit.Text := '$DnetSpeed';
     1 : VariableEdit.Text := '$DnetDone';
     2 : VariableEdit.Text := '$Time(d mmmm yyyy hh: nn: ss)';
-    3 : VariableEdit.Text := '$UpTime';
-    4 : VariableEdit.Text := '$UpTims';
-    5 : VariableEdit.Text := '°';
-    6 : VariableEdit.Text := '█';
-    7 : VariableEdit.Text := '$Chr(20)';
-    8 : VariableEdit.Text := '$File(C:\file.txt,1)';
-    9 : VariableEdit.Text := '$LogFile(C:\file.log,0)';
-    10 : VariableEdit.Text := '$dll(demo.dll,5,param1,param2)';
-    11 : VariableEdit.Text := '$Count(101#$CPUSpeed#4)';
-    12 : VariableEdit.Text := '$Bar(30,100,20)';
-    13 : VariableEdit.Text := '$Right(ins variable(s) here,$3%)';
-    14 : VariableEdit.Text := '$Fill(10)';
-    15 : VariableEdit.Text := '$Flash(insert text here$)$';
-    16 : VariableEdit.Text := '$CustomChar(1, 31, 31, 31, 31, 31, 31, 31, 31)';
-    17 : VariableEdit.Text := '$Rss(URL,t|d|b,ITEM#,MAXFREQHRS)';
-    18 : VariableEdit.Text := '$Center(text here,15)';
-    19 : VariableEdit.Text := '$ScreenChanged';
-    20 : VariableEdit.Text := '$Sender(127.0.0.10,6088,password1234,1,1)';
+    3 : VariableEdit.Text := '°';
+    4 : VariableEdit.Text := '█';
+    5 : VariableEdit.Text := '$Chr(20)';
+    6 : VariableEdit.Text := '$File(C:\file.txt,1)';
+    7 : VariableEdit.Text := '$LogFile(C:\file.log,0)';
+    8 : VariableEdit.Text := '$dll(demo.dll,5,param1,param2)';
+    9 : VariableEdit.Text := '$Count(101#$CPUSpeed#4)';
+    10 : VariableEdit.Text := '$Bar(30,100,20)';
+    11 : VariableEdit.Text := '$Right(ins variable(s) here,$3%)';
+    12 : VariableEdit.Text := '$Fill(10)';
+    13 : VariableEdit.Text := '$Flash(insert text here$)$';
+    14 : VariableEdit.Text := '$CustomChar(1, 31, 31, 31, 31, 31, 31, 31, 31)';
+    15 : VariableEdit.Text := '$Rss(URL,t|d|b,ITEM#,MAXFREQHRS)';
+    16 : VariableEdit.Text := '$Center(text here,15)';
+    17 : VariableEdit.Text := '$ScreenChanged';
+    18 : VariableEdit.Text := '$Sender(127.0.0.10,6088,password1234,1,1)';
     else VariableEdit.Text := NoVariable;
   end; // case
 
@@ -1569,7 +1585,6 @@ begin
 
   config.ScreenSize := LCDSizeComboBox.itemindex + 1;
   config.randomScreens := RandomizeScreensCheckBox.checked;
-  config.newsRefresh := InternetRefreshTimeSpinEdit.Value;
   config.foldUserid := FoldingAtHomeEmailEdit.text;
   config.gameRefresh := GamestatsRefreshTimeSpinEdit.Value;
   config.colorOption := ColorSchemeComboBox.itemindex;
@@ -1822,7 +1837,7 @@ procedure TSetupForm.PluginListBoxDblClick(Sender: TObject);
 var
   plugin_name :string;
 begin
-  plugin_name := Lowercase(ExtractFileName(PluginListBox.FileName));
+  plugin_name := ExtractFileName(PluginListBox.FileName);
   plugin_name := copy(plugin_name,0,Length(plugin_name)-4)+'.txt';
   if FileExists(ExtractFilePath(ParamStr(0))+'plugins\'+plugin_name) then
     ShellExecute(0, Nil, pchar(plugin_name), Nil, Nil, SW_NORMAL)
@@ -1833,7 +1848,7 @@ end;
 
 procedure TSetupForm.PluginListBoxClick(Sender: TObject);
 begin
-  VariableEdit.text := '$dll('+Lowercase(ExtractFileName(PluginListBox.FileName))+',1,0,0)';
+  VariableEdit.text := '$dll('+ExtractFileName(PluginListBox.FileName)+',1,0,0)';
 end;
 
 /////////////////////////////////////////////////////////////////

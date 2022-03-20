@@ -280,7 +280,7 @@ begin
         pszFileName.Save(PWChar(FullPath), False);
     end;
   finally
-    R.Free;
+    //R.Free; // something else wrong with lazarus. causes exeption on free
   end;
 end;
 

@@ -29,7 +29,7 @@ uses
 
 constructor TFoldingDataThread.Create;
 begin
-  inherited Create(config.newsRefresh*60000);
+  inherited Create(60000);
 end;
 
 destructor TFoldingDataThread.Destroy;

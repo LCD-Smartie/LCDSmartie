@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, ImgList;
+  Dialogs, ExtCtrls, ImgList;
 
 const
   MaxWidth = 40;

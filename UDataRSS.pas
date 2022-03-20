@@ -43,7 +43,7 @@ uses
 
 constructor TRSSDataThread.Create;
 begin
-  inherited Create(config.newsRefresh*60000);
+  inherited Create(60000); // check every minute
 end;
 
 destructor TRSSDataThread.Destroy;
@@ -159,10 +159,7 @@ begin
   //
   // Fetch the RSS data
   //
-
-  // Use newRefresh as a maxfreq if none given - this is mostly in case
-  // the application is stopped and started quickly.
-  if (maxfreq = 0) then maxfreq := config.newsRefresh;
+  if (maxfreq = 0) then maxfreq := 1;
   RSSFileName := getUrl(Url, maxfreq);
   if (Terminated) then raise EExiting.Create('');
 

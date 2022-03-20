@@ -1,14 +1,14 @@
 object SetupForm: TSetupForm
-  Left = 512
+  Left = 359
   Height = 454
-  Top = 173
-  Width = 828
+  Top = 328
+  Width = 827
   Anchors = []
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'LCD Smartie 5.x Setup'
   ClientHeight = 454
-  ClientWidth = 828
+  ClientWidth = 827
   Color = clBtnFace
   DoubleBuffered = True
   Font.CharSet = ANSI_CHARSET
@@ -1632,7 +1632,7 @@ object SetupForm: TSetupForm
     Top = 1
     Width = 265
     TabStop = False
-    ActivePage = SysInfoTabSheet
+    ActivePage = InternetTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1641,7 +1641,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -1659,10 +1659,8 @@ object SetupForm: TSetupForm
         Items.Strings = (
           'Username'
           'Computername'
-          'CPU Type'
-          'CPU Speed'
-          'CPU usage (%)'
-          'CPU usage Bar (length)'
+          'Uptime'
+          'Uptime Short'
           'Free Memory'
           'Used Memory'
           'Total Memory'
@@ -1751,16 +1749,9 @@ object SetupForm: TSetupForm
       ClientHeight = 445
       ClientWidth = 217
       ImageIndex = 5
-      object Label36: TLabel
-        Left = 8
-        Height = 13
-        Top = 284
-        Width = 97
-        Caption = 'Refresh time (mins):'
-      end
       object InternetListBox: TListBox
         Left = 0
-        Height = 265
+        Height = 216
         Top = 0
         Width = 209
         Items.Strings = (
@@ -1786,20 +1777,79 @@ object SetupForm: TSetupForm
         OnDblClick = InsertButtonClick
         TabOrder = 0
       end
-      object InternetRefreshTimeSpinEdit: TSpinEdit
-        Left = 120
-        Height = 21
-        Top = 280
-        Width = 55
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        MaxValue = 10080
-        MinValue = 1
-        ParentFont = False
+      object RssTMemoEdit: TMemo
+        Left = 0
+        Height = 24
+        Top = 240
+        Width = 209
+        OnChange = RssPageChange
         TabOrder = 1
-        Value = 3
+        WantReturns = False
+        WordWrap = False
+      end
+      object RssMaxFreqSpinedit: TSpinEdit
+        Left = 96
+        Height = 21
+        Top = 336
+        Width = 50
+        MaxValue = 24
+        MinValue = 1
+        OnChange = RssPageChange
+        TabOrder = 2
+        Value = 1
+      end
+      object RssItemNumSpinEdit: TSpinEdit
+        Left = 96
+        Height = 21
+        Top = 304
+        Width = 50
+        MaxValue = 100
+        OnChange = RssPageChange
+        TabOrder = 3
+      end
+      object Label17: TLabel
+        Left = 48
+        Height = 13
+        Top = 280
+        Width = 28
+        Caption = 'Type:'
+      end
+      object Label25: TLabel
+        Left = 39
+        Height = 13
+        Top = 312
+        Width = 37
+        Caption = 'Item #:'
+      end
+      object Label26: TLabel
+        Left = 27
+        Height = 13
+        Top = 344
+        Width = 49
+        Caption = 'Max Freq:'
+      end
+      object Label36: TLabel
+        Left = 0
+        Height = 13
+        Top = 224
+        Width = 39
+        Caption = 'RSS Url:'
+      end
+      object RssTypeComboBox: TComboBox
+        Left = 96
+        Height = 21
+        Top = 272
+        Width = 50
+        ItemHeight = 13
+        ItemIndex = 0
+        Items.Strings = (
+          'Title'
+          'Desc'
+          'Both'
+        )
+        OnChange = RssPageChange
+        TabOrder = 4
+        Text = 'Title'
       end
     end
     object GameStatsTabSheet: TTabSheet
@@ -2236,8 +2286,6 @@ object SetupForm: TSetupForm
           'Distributed.net RC5/OGR speed'
           'Distributed.net RC5/OGR done'
           'DateTime'
-          'Uptime long (wks, dys, hrs, min, sec)'
-          'Uptime short (days, hours, minutes)'
           'Degree symbol (°)'
           'Block (█)'
           '$Chr(20)'
