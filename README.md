@@ -9,7 +9,6 @@ To support less common applications LCD Smartie uses a powerful plugin system.
 
 ### This project has been ported to Lazarus (https://www.lazarus-ide.org)
 ### It is a Work in Progress
-It has to be built with the 32 bit ide as the 64 bit fpc chokes on some of the old code
 
 ### About This Repo
 After having no updates for a little over 10 years and very little activity on the lcd smartie forums it seems that the original project has been abandoned by its developers.
@@ -22,6 +21,13 @@ While there is much information on the lcd smartie forums, any issues with this 
 - There may/will be bugs
 
 ### Done this log
+- Major re-write of dnbridge.dll to compile under VS2022
+- Added 64bit target but CPU detection code is not 64bit compatible so it has had to go. There are plugins which can provide the same info though
+- Can now use variables in shutdown message
+- Fixed broadcast message handler for shutdown and logoff message screen
+- Reduced some CPU usage in virtual screen update and actions processing
+- Fixed a couple of issues with startup hiding and always on top.
+- Added a new project to have a stand alone config editor
 - ported winampctrl to lazarus
 - removed dependancy on cooltrayicon - lazarus has its own tray icon package
 - Fixed half screen issue when switching lcd emulation mode
