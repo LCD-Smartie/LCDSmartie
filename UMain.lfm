@@ -1,7 +1,7 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 1266
+  Left = 374
   Height = 91
-  Top = 480
+  Top = 195
   Width = 239
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False

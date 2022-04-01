@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 359
+  Left = 425
   Height = 454
-  Top = 328
+  Top = 297
   Width = 827
   Anchors = []
   BorderIcons = []
@@ -27,13 +27,13 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 560
     TabStop = False
-    ActivePage = ScreensTabSheet
+    ActivePage = MyTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -1490,6 +1490,23 @@ object SetupForm: TSetupForm
         Font.Name = 'Tahoma'
         ParentFont = False
       end
+      object Label45: TLabel
+        Left = 5
+        Height = 13
+        Top = 287
+        Width = 59
+        Caption = 'Custom Title'
+      end
+      object CustomTitleTIEdit1: TTIEdit
+        Left = 5
+        Height = 21
+        Hint = 'Customize the text shown in the main screen title bar. Leave blank to restore the default version text'
+        Top = 304
+        Width = 217
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+      end
     end
     object TabSheet1: TTabSheet
       Caption = 'Remote Display'
@@ -2389,7 +2406,7 @@ object SetupForm: TSetupForm
         Top = 0
         Width = 209
         Directory = '.'
-        ItemHeight = 0
+        ItemHeight = 13
         Mask = '*.dll'
         OnClick = PluginListBoxClick
         OnDblClick = PluginListBoxDblClick

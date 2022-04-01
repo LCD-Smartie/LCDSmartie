@@ -25,7 +25,6 @@ unit UData;
  *  $Revision: 1.73 $ $Date: 2007/01/04 11:37:03 $
  *****************************************************************************}
 
-
 interface
 
 uses
@@ -38,11 +37,23 @@ type
   TMyProc = function(param1: pchar; param2: pchar): Pchar; stdcall;
   TFiniProc = procedure(); stdcall;
   TBridgeProc = function(iBridgeId: Integer; iFunc: Integer; param1: pchar; param2: pchar): Pchar; stdcall;
+  {$IF Defined(CPUX64)}
+  TSharedMem=packed record
+    LibraryID: Integer;
+    LibraryPath: Array[1..255] of char;
+    LibraryFunc: Integer;
+    LibraryParam1: Array[1..2048] of char;
+    LibraryParam2: Array[1..2048] of char;
+    LibraryResult: Array[1..2048] of char;
+  end;
+  PTSharedMem=^TSharedMem;
+  {$IFEND}
 
   TDll = Record
     sName: String;
     hDll: HMODULE;
     bBridge: Boolean;
+    legacyDll: boolean;
     iBridgeId: Integer;
     functions: Array [1..iMaxPluginFuncs] of TMyProc;
     bridgeFunc: TBridgeProc;
@@ -106,6 +117,9 @@ type
 implementation
 
 uses
+  {$IF Defined(CPUX64)}
+  Process,
+  {$IFEND}
   Windows, Forms, Dialogs, StrUtils, Winsock,
   UMain, UUtils, UConfig,
   DataThread, UDataNetwork, UDataDisk, UDataGame, UDataSystem,
@@ -125,6 +139,15 @@ uses
 
 var
   dllmessage: string;
+  {$IF Defined(CPUX64)}
+  LegacySharedMem: PTSharedMem;
+  hMap: THandle;
+  hLegacyLoadLibraryRunning: THandle;
+  hLegacyLoadLibraryEvent: THandle;
+  hLegacyCallFunctionEvent: THandle;
+  hLegacyRecvEvent: THandle;
+  AProcess: TProcess;
+  {$IFEND}
 constructor TData.Create;
 var
 //  status: Integer;
@@ -190,6 +213,9 @@ function TData.CanExit: Boolean;
 var
   uiDll: Cardinal;
   Loop : longint;
+  {$IF Defined(CPUX64)}
+  waitresult:dword;
+  {$IFEND}
 begin
   for Loop := 0 to DataThreads.Count-1 do begin
     TDataThread(DataThreads[Loop]).Terminate;
@@ -199,6 +225,19 @@ begin
   for uiDll:=1 to uiTotalDlls do
   begin
     try
+      {$IF Defined(CPUX64)}
+      if dlls[uiDll-1].legacyDll then
+      begin
+        LegacySharedMem^.LibraryID := dlls[uiDll-1].iBridgeId;
+        LegacySharedMem^.LibraryFunc := 21;
+        setevent(hLegacyCallFunctionEvent);
+        waitresult := WaitForSingleObject(hLegacyRecvEvent,10000);
+        if (waitresult = WAIT_TIMEOUT) then
+          raise Exception.Create('Plugin '+dlls[uiDll-1].sName+'Legacy Plugin close library time out');
+        continue;
+      end;
+      {$IFEND}
+
       if (dlls[uiDll-1].hDll <> 0) then
       begin
         // call SmartieFini if it exists
@@ -796,7 +835,30 @@ end;
 
 function TData.CallPlugin(uiDll: Integer; iFunc: Integer;
                     const sParam1: String; const sParam2:String) : String;
+{$IF Defined(CPUX64)}
+var
+  waitresult: integer;
+{$IFEND}
 begin
+  {$IF Defined(CPUX64)}
+  if dlls[uiDll].legacyDll then
+  begin
+    LegacySharedMem^.LibraryID := dlls[uiDll].iBridgeId;
+    LegacySharedMem^.LibraryFunc := iFunc;
+    LegacySharedMem^.LibraryParam1 := sParam1;
+    LegacySharedMem^.LibraryParam2 := sParam2;
+    setevent(hLegacyCallFunctionEvent);
+    waitresult := WaitForSingleObject(hLegacyRecvEvent,10000);
+    if (waitresult = WAIT_TIMEOUT) then
+      result := 'Legacy plugin function timed out'
+    else
+    begin
+      result := strpas(@LegacySharedMem.LibraryResult[1]);
+    end;
+  end
+  else
+  {$IFEND}
+
   if (dlls[uiDll].hDll <> 0) then
   begin
     if (iFunc >= 0) and (iFunc <= iMaxPluginFuncs) then
@@ -841,6 +903,12 @@ var
   bFound: Boolean;
   sLibraryPath: String;
   sResult: String;
+  {$IF Defined(CPUX64)}
+  waitresult:dword;
+  GUID: TGUID;
+  ShMemID: string;
+  {$IFEND}
+
 begin
   bFound := false;
 
@@ -860,6 +928,60 @@ begin
 
   dlls[uiDll].hDll := safeLoadLibrary(pchar(extractfilepath(application.exename) +
     sLibraryPath));
+
+  {$IF Defined(CPUX64)}
+  if GetLastError = 193 then
+  begin
+    // this means were trying to load a 32bit dll in a 64bit program
+    dlls[uiDll].legacyDll := true;
+
+    if AProcess = nil then
+    begin
+      CreateGUID(GUID);
+      ShMemID := GUIDToString(GUID);
+
+      // create 8k shared memory
+      if  not ( hMap > 0) then
+        hMap := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, 8192, Pchar('Local\LCDSmartieLegacyPluginLoaderSM' + ShMemID));
+      // map memory window
+      if not (LegacySharedMem <> nil) then
+        LegacySharedMem := MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, 0);
+
+      // create event objects
+      if  not ( hLegacyLoadLibraryRunning > 0) then
+        hLegacyLoadLibraryRunning := CreateEvent(nil, FALSE, FALSE, Pchar('Local\LCDSmartieLegacyLoadLibraryRunning' + ShMemID));
+      if  not ( hLegacyLoadLibraryEvent > 0) then
+        hLegacyLoadLibraryEvent := CreateEvent(nil, FALSE, FALSE, Pchar('Local\LCDSmartieLegacyLoadLibraryEvent' + ShMemID));
+      if  not ( hLegacyCallFunctionEvent > 0) then
+        hLegacyCallFunctionEvent := CreateEvent(nil, FALSE, FALSE, Pchar('Local\LCDSmartieLegacyCallFunctionEvent' + ShMemID));
+      if  not ( hLegacyRecvEvent > 0) then
+        hLegacyRecvEvent := CreateEvent(nil, FALSE, FALSE, Pchar('Local\LCDSmartieLegacyRecvEvent' + ShMemID));
+
+      // launch wrapper non blocking tproccess
+      AProcess := TProcess.Create(nil);
+      AProcess.Executable:= 'LegacyLoader';
+      AProcess.Parameters.Add(ShMemID);
+      AProcess.Execute;
+      end;
+
+      // tell it to load this dll
+      LegacySharedMem^.LibraryPath := copy(extractfilepath(application.exename) + sLibraryPath,0,255);
+
+      // trigger load of the library. The loader will run SmartieInit and GetMinRefreshInterval functions if they exist
+      setevent(hLegacyLoadLibraryEvent);
+
+      waitresult := WaitForSingleObject(hLegacyRecvEvent,10000); // I would think and hope 10 secs is long enough to wait
+      if (waitresult = WAIT_TIMEOUT) then begin
+        Dec(uiTotalDlls);
+        raise Exception.Create('Legacy Plugin Load library time out' );
+      end;
+
+      // we can make use of the .net iBridgeId here
+      dlls[uiDll].iBridgeId := LegacySharedMem.LibraryID;
+      dlls[uiDll].uiMinRefreshInterval := strtoint(PChar(@LegacySharedMem.LibraryResult[1]));
+      Exit; // don't process any further. For speed plus its not neccessary
+    end;
+  {$IFEND}
 
   if (dlls[uiDll].hDll <> 0) then
   begin
@@ -962,9 +1084,7 @@ begin
     end;
   end
   else
-  begin
     raise Exception.Create('LoadLibrary failed with ' + ErrMsg(GetLastError));
-  end;
 end;
 
 end.

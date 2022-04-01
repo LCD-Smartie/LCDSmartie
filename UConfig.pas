@@ -124,7 +124,7 @@ type
     procedure saveINI;
     procedure SetScreenSize(con: Integer);
   public
-
+    MainFormCaption: string;
     MainFormPosTop: integer;
     MainFormPosLeft: integer;
     SettingsFormPosTop: integer;
@@ -277,7 +277,7 @@ begin
 //    'ConfigFileFormat', '1.0');
 //  sScreenTextSyntaxVersion := initfile.ReadString('Versions',
 //    'ScreenTextSyntax', '1.0');
-
+  MainFormCaption := initfile.ReadString('General Settings', 'MainFormCaption', '');
   MainFormPosTop := initfile.ReadInteger('General Settings', 'MainFormPosTop', 200);
   MainFormPosLeft := initfile.ReadInteger('General Settings', 'MainFormPosLeft', 200);
   SettingsFormPosTop := initfile.ReadInteger('General Settings', 'SettingsFormPosTop', 500);
@@ -500,6 +500,7 @@ begin
   initfile.WriteString('Versions', 'ScreenTextSyntax',
     sMyScreenTextSyntaxVersion);
 
+  initfile.WriteString('General Settings', 'MainFormCaption', MainFormCaption);
   initfile.WriteInteger('General Settings', 'MainFormPosTop', MainFormPosTop);
   initfile.WriteInteger('General Settings', 'MainFormPosLeft', MainFormPosLeft);
   initfile.WriteInteger('General Settings', 'SettingsFormPosTop', SettingsFormPosTop);

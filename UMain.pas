@@ -291,6 +291,7 @@ uses
 // lazarus only supports passing certain messages so we have to implement our own handler
 function WndCallback(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam):LRESULT; stdcall;
 const
+  WM_POWERBROADCAST = $218;
   PBT_APMSUSPEND = 4;
   PBT_APMSTANDBY = 5;
   PBT_APMRESUMECRITICAL = 6;
@@ -300,15 +301,15 @@ const
 begin
 
   // wake up from hibernate / suspend
+  if ( uMsg =  WM_POWERBROADCAST) then
+  begin
   if (wParam = PBT_APMRESUMEAUTOMATIC) or
      (wParam = PBT_APMRESUMECRITICAL) or
      (wParam = PBT_APMRESUMESTANDBY) or
      (wParam = PBT_APMRESUMESUSPEND)
     then
-    begin
       LCDSmartieDisplayForm.ReInitLCD();
-    end
-  else
+
     // time to go to sleep
     if (wParam = PBT_APMSUSPEND) or
        (wParam = PBT_APMSTANDBY) then
@@ -316,7 +317,7 @@ begin
       LCDSmartieDisplayForm.FiniLCD(true);
       LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
     end;
-
+   end;
   result:= CallWindowProc(PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
 end;
 
@@ -434,8 +435,6 @@ begin
 
   // keep all ssl related stuff in a sub dir
   IdOpenSSLSetLibPath('.\openssl\');
-  LCDSmartieDisplayForm.Caption := 'LCD Smartie ' + GetFmtFileVersion();
-  trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
 
   fillchar(ScreenLCD,sizeof(ScreenLCD),$00);
   bTerminating := false;
@@ -472,6 +471,12 @@ begin
       showmessage('Default configuration ('+ConfigFileName+') created')
   end;
 
+  if (Config.MainFormCaption = '') then
+    LCDSmartieDisplayForm.Caption := 'LCD Smartie ' + GetFmtFileVersion()
+  else
+    LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
+
+  trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
   ShowTrueLCD := Config.EmulateLCD;
 
   LoadSkin;
@@ -1247,6 +1252,12 @@ begin
     if (not config.screen[activeScreen].settings.bSticky) then
       LCDSmartieDisplayForm.NextScreenTimer.interval := config.screen[activeScreen].settings.showTime*1000;
 
+  if (Config.MainFormCaption = '') then
+    LCDSmartieDisplayForm.Caption := 'LCD Smartie ' + GetFmtFileVersion()
+  else
+    LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
+
+  trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
 end;
 
 procedure TLCDSmartieDisplayForm.HideButtonClick(Sender: TObject);

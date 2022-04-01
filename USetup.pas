@@ -28,7 +28,7 @@ uses
   Commctrl,
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
-  ExtDlgs, SpinEx;
+  ExtDlgs, SpinEx, RTTICtrls;
 
 const
   NoVariable = 'Variable: ';
@@ -190,6 +190,7 @@ type
     Label42: TLabel;
     Label43: TLabel;
     Label44: TLabel;
+    Label45: TLabel;
     Label48: TLabel;
     Label49: TLabel;
     Label5: TLabel;
@@ -276,6 +277,7 @@ type
     SysInfoTabSheet: TTabSheet;
     TabSheet1: TTabSheet;
     ThemeNumberSpinEdit: TSpinEdit;
+    CustomTitleTIEdit1: TTIEdit;
     TimeToShowSpinEdit: TSpinEdit;
     TransitionStyleComboBox: TComboBox;
     TransitionTimeSpinEdit: TSpinEdit;
@@ -471,6 +473,7 @@ begin
     end;
   {$ENDIF}
 
+  CustomTitleTIEdit1.Text := config.MainFormCaption;
   SetupForm.Top := config.SettingsFormPosTop;
   SetupForm.Left := config.SettingsFormPosLeft;
 
@@ -522,7 +525,6 @@ begin
   ProgramRefreshIntervalSpinEdit.Value := config.refreshRate;
   WinampLocationEdit.text := config.winampLocation;
   ColorSchemeComboBox.itemindex := config.colorOption;
-
   TrayIcon.Text := config.sTrayIcon;
   SkinPath.Text := config.sSkinPath;
   DrawPreviewIcons(TrayIcon.Text);
@@ -1645,6 +1647,7 @@ begin
   config.RemoteSendPassword := RemoteSendPasswordEdit.Text;
   config.RemoteSendUseSSL := RemoteSendUseSSLCheckBox.Checked;
 
+  Config.MainFormCaption := CustomTitleTIEdit1.Text;
   config.SettingsFormPosTop := SetupForm.Top;
   config.SettingsFormPosLeft := SetupForm.Left;
   config.ActionsTimer := ActionsTimerSpinEdit.Value;

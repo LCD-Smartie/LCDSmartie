@@ -113,26 +113,17 @@
             <Style Value="1"/>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
-              <IncludeAssertionCode Value="True"/>
               <UseAnsiStrings Value="False"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <Checks>
-              <IOChecks Value="True"/>
-              <RangeChecks Value="True"/>
-              <OverflowChecks Value="True"/>
-              <StackChecks Value="True"/>
-            </Checks>
-            <VerifyObjMethodCallValidity Value="True"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
           </CodeGeneration>
           <Linking>
             <Debugging>
               <DebugInfoType Value="dsDwarf2Set"/>
-              <TrashVariables Value="True"/>
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
@@ -174,22 +165,25 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item1>
       <Item2>
-        <PackageName Value="WinampCtrl7"/>
+        <PackageName Value="LazControls"/>
       </Item2>
       <Item3>
-        <PackageName Value="ExceptionLogger"/>
+        <PackageName Value="WinampCtrl7"/>
       </Item3>
       <Item4>
-        <PackageName Value="indylaz"/>
+        <PackageName Value="ExceptionLogger"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="indylaz"/>
       </Item5>
+      <Item6>
+        <PackageName Value="LCL"/>
+      </Item6>
     </RequiredPackages>
     <Units Count="20">
       <Unit0>
@@ -357,7 +351,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="5">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EIdOSSLCouldNotLoadSSLLibrary"/>
       </Item1>
@@ -368,11 +362,8 @@
         <Name Value="EIdSocketError"/>
       </Item3>
       <Item4>
-        <Name Value="Exception"/>
-      </Item4>
-      <Item5>
         <Name Value="EConvertError"/>
-      </Item5>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>
