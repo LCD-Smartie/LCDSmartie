@@ -2,26 +2,27 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="11"/>
-    <BuildModes Active="Release"/>
+    <Version Value="12"/>
+    <BuildModes Active="Release x64"/>
     <Units Count="2">
       <Unit0>
         <Filename Value="theatertek.lpr"/>
         <IsPartOfProject Value="True"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="TTINFO.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="TTINFOForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <CursorPos X="20" Y="9"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
     </Units>
     <OtherDefines Count="5">
@@ -50,8 +51,7 @@
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
-      <Modes Count="0" ActiveMode=""/>
+      <Modes ActiveMode=""/>
     </RunParams>
   </ProjectSession>
-  <SkipCheckLCLInterfaces Value="True"/>
 </CONFIG>

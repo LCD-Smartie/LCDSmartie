@@ -39,6 +39,8 @@ BF      0 = Can accept instruction      1 = Internal operation in progress
 ****************************************************************)
 unit HD44780OBJ;
 
+{$MODE Delphi}
+
 interface
 
 uses

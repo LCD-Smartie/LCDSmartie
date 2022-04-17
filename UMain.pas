@@ -476,6 +476,9 @@ begin
   else
     LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
 
+  if config.AppendConfigName then
+    LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + copy(config.filename, 0, length(config.filename) - 4);
+
   trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
   ShowTrueLCD := Config.EmulateLCD;
 
@@ -1256,6 +1259,9 @@ begin
     LCDSmartieDisplayForm.Caption := 'LCD Smartie ' + GetFmtFileVersion()
   else
     LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
+
+  if config.AppendConfigName then
+    LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + copy(config.filename, 0, length(config.filename) - 4);
 
   trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
 end;
@@ -2475,8 +2481,8 @@ begin
 
   if (config.filename <> 'config.ini') then
   begin
-    sParameters := sParameters + '-config '+config.filename;
-    sShortCutName := sShortCutName + config.filename;
+    sParameters := sParameters + '-config ' + '"' + config.filename + '"';
+    sShortCutName := sShortCutName + ' ' + copy(config.filename, 0, length(config.filename) - 4);
   end;
 
   bDelete := not (config.bAutoStart or config.bAutoStartHide);

@@ -1,15 +1,15 @@
-library FutabaVFD_LCD;
-// Futaba VFD - LCD emulator driver.
-// Based on HD44780 Parallel Display DLL
+library HD44780;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
   SysUtils,
   Windows;
 
 const
-  DLLProjectName = 'Futaba VFD - LCD emulators DLL';
+  DLLProjectName = 'HD44780 Parallel Display DLL';
   Version = 'v1.0';
 type
   pboolean = ^boolean;
@@ -51,7 +51,6 @@ type
       procedure setPosition(x, y: Integer);
       procedure write(str: String);
       procedure setbacklight(state: Boolean);
-      procedure setBrightness(level: Integer);
       constructor CreateParallel(const poortadres: Word; const width, heigth: Byte;
                                  const TimingMult : integer; const A1x16,AKS0073 : boolean);
       destructor Destroy; override;
@@ -307,45 +306,20 @@ begin
   else
     backlight := 0;
 
-  if state = True then
-    writectrl(All, OnOffCtrl or OODisplayOn)
-  else
-    writectrl(All, OnOffCtrl or OODisplayOff);
-
-  UsecDelay(uiDelayLong);
-end;
-
-procedure TLCD_HD.setBrightness(level: Integer);
-const
-  FuncSet = 32;
-  FSInterface8Bit = 16;
-  FSTwoLine = 8;
-  FSSmallFont = 0;
-  Bright100 = 0;
-  Bright075 = 1;
-  Bright050 = 2;
-  Bright025 = 3;
-var
-  l : Byte;
-begin
-  if (level >= 0) and (level <= 63) then l := Bright025
-  else if (level >= 64) and (level <= 127) then l := Bright050
-  else if (level >= 128) and (level <= 191) then l := Bright075
-  else l := Bright100;
-
-  writectrl(All, FuncSet or FSInterface8Bit or FSTwoLine or FSSmallFont or l);
-  UsecDelay(uiDelayLong);
+  if (not bTwoControllers) then
+      CtrlOut(backlight);; //update 'lightline'
 end;
 
 procedure TLCD_HD.write(str: String);
 var
  i: Cardinal;
 begin
-  for i:= 1 to Length(str) do
+  // Do we still need this?
+  {for i:= 1 to Length(str) do
   begin
     case Ord(str[i]) of
-      Ord('°'): str[i]:=Chr(0);
-      Ord('ž'): str[i]:=Chr(1);
+      Ord('Â°'): str[i]:=Chr(0);
+      Ord('Å¾'): str[i]:=Chr(1);
       131: str[i]:=Chr(2);
       132: str[i]:=Chr(3);
       133: str[i]:=Chr(4);
@@ -353,7 +327,7 @@ begin
       135: str[i]:=Chr(6);
       136: str[i]:=Chr(7);
     end;
-  end;
+  end;}
 
   if (not bTwoControllers) or (cursory < ((height div 2)+1)) then
     writestring(C1, str)
@@ -758,16 +732,6 @@ begin
   end;
 end;
 
-procedure DISPLAYDLL_SetBrightness(Level : Byte); stdcall;
-// set brightness level
-begin
-  try
-    if assigned(LCD_HD) then
-       LCD_HD.SetBrightness(Level);
-  except
-  end;
-end;
-
 procedure DISPLAYDLL_SetPosition(X, Y: byte); stdcall;
 // set cursor position
 begin
@@ -798,7 +762,6 @@ end;
 // don't forget to export the funtions, else nothing works :)
 exports
   DISPLAYDLL_SetBacklight,
-  DISPLAYDLL_SetBrightness,
   DISPLAYDLL_CustomChar,
   DISPLAYDLL_Write,
   DISPLAYDLL_SetPosition,

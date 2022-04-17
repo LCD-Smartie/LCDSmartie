@@ -1,14 +1,14 @@
 object SetupForm: TSetupForm
-  Left = 425
-  Height = 454
-  Top = 297
-  Width = 827
+  Left = 388
+  Height = 456
+  Top = 129
+  Width = 823
   Anchors = []
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'LCD Smartie 5.x Setup'
-  ClientHeight = 454
-  ClientWidth = 827
+  ClientHeight = 456
+  ClientWidth = 823
   Color = clBtnFace
   DoubleBuffered = True
   Font.CharSet = ANSI_CHARSET
@@ -27,13 +27,13 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 560
     TabStop = False
-    ActivePage = MyTabSheet
+    ActivePage = MultiInstanceTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 3
+    TabIndex = 5
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -937,11 +937,11 @@ object SetupForm: TSetupForm
                 Text = 'ParametersEdit'
               end
               object ComPortsButton: TButton
-                Left = 196
-                Height = 25
+                Left = 208
+                Height = 23
                 Top = 107
-                Width = 75
-                Caption = 'COM ports'
+                Width = 57
+                Caption = 'List ports'
                 OnClick = ComPortsButtonClick
                 TabOrder = 2
               end
@@ -1507,6 +1507,14 @@ object SetupForm: TSetupForm
         ShowHint = True
         TabOrder = 5
       end
+      object AppendConfigNameCheckBox: TCheckBox
+        Left = 232
+        Height = 19
+        Top = 306
+        Width = 226
+        Caption = 'Append configuration file name to title text'
+        TabOrder = 6
+      end
     end
     object TabSheet1: TTabSheet
       Caption = 'Remote Display'
@@ -1642,6 +1650,291 @@ object SetupForm: TSetupForm
         TabOrder = 5
       end
     end
+    object MultiInstanceTabSheet: TTabSheet
+      Caption = 'Multi Instance'
+      ClientHeight = 390
+      ClientWidth = 552
+      TabVisible = False
+      object MultiInstancePageControl: TPageControl
+        Left = 0
+        Height = 384
+        Top = 0
+        Width = 248
+        ActivePage = MiConfigsTabSheet
+        TabIndex = 0
+        TabOrder = 0
+        object MiConfigsTabSheet: TTabSheet
+          Hint = 'Manage configuration (.ini) files found in the current directory'
+          Caption = 'Configs'
+          ClientHeight = 358
+          ClientWidth = 240
+          OnShow = MiConfigsTabSheetShow
+          ParentShowHint = False
+          ShowHint = True
+          object MiNewConfigBitBtn: TBitBtn
+            Left = 0
+            Height = 30
+            Hint = 'Create a new empty configuration file'
+            Top = 296
+            Width = 75
+            Caption = 'New'
+            OnClick = MiNewConfigBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 0
+          end
+          object MiConfigNameEdit: TEdit
+            Left = 0
+            Height = 21
+            Hint = 'Shows the selected configuration file name or used to enter a new name'
+            Top = 272
+            Width = 235
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+          end
+          object MiDeleteBitBtn: TBitBtn
+            Left = 80
+            Height = 30
+            Hint = 'Delete the selected configuration file'
+            Top = 296
+            Width = 75
+            Caption = 'Delete'
+            OnClick = MiDeleteBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+          end
+          object MiConfigsListBox: TFileListBox
+            Left = 0
+            Height = 264
+            Hint = 'List of configuration (.ini) files found in the current directory'
+            Top = 0
+            Width = 235
+            Directory = '.'
+            ItemHeight = 0
+            Mask = '*.ini'
+            OnClick = MiConfigsListBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 3
+          end
+          object MiConfigsRefreshBitBtn: TBitBtn
+            Left = 80
+            Height = 30
+            Hint = 'Refresh the list'
+            Top = 328
+            Width = 75
+            Caption = 'Refresh'
+            OnClick = MiConfigsRefreshBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 4
+          end
+          object MiConfigsLoadBitBtn: TBitBtn
+            Left = 160
+            Height = 30
+            Hint = 'Load the selected configuration file'
+            Top = 296
+            Width = 75
+            Caption = 'Load'
+            OnClick = MiConfigsLoadBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 5
+          end
+          object MiCopyConfigBitBtn: TBitBtn
+            Left = 0
+            Height = 30
+            Hint = 'Copy the selected configuration file'
+            Top = 328
+            Width = 75
+            Caption = 'Copy'
+            OnClick = MiCopyConfigBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 6
+          end
+        end
+        object MiStartupItemsTabSheet: TTabSheet
+          Hint = 'Manage smartie instances that are started at windown login'
+          Caption = 'Startup Items'
+          ClientHeight = 358
+          ClientWidth = 240
+          OnShow = MiStartupItemsTabSheetShow
+          ParentShowHint = False
+          ShowHint = True
+          object MiStartupItemsRefreshBitBtn: TBitBtn
+            Left = 80
+            Height = 30
+            Hint = 'Refresh the list'
+            Top = 328
+            Width = 75
+            Caption = 'Refresh'
+            OnClick = MiStartupItemsRefreshBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 0
+          end
+          object MiStartupItemRemoveBitBtn: TBitBtn
+            Left = 80
+            Height = 30
+            Hint = 'Remove the selected startup item(s)'
+            Top = 296
+            Width = 75
+            Caption = 'Remove'
+            OnClick = MiStartupItemRemoveBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+          end
+          object MiStartupItemAddBitBtn: TBitBtn
+            Left = 0
+            Height = 30
+            Hint = 'Add a new startup item using the currently loaded config'
+            Top = 296
+            Width = 75
+            Caption = 'Add'
+            OnClick = MiStartupItemAddBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+          end
+          object MiStartupItemsCheckListBox: TCheckListBox
+            Left = 0
+            Height = 288
+            Hint = 'A list of smartie instances that are started at windown login. Note that the configuration name is appended to the item name'
+            Top = 0
+            Width = 235
+            ItemHeight = 0
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 3
+          end
+          object MiStartupItemsLaunchBitBtn: TBitBtn
+            Left = 160
+            Height = 30
+            Hint = 'Launch the selected item(s)'
+            Top = 296
+            Width = 75
+            Caption = 'Launch'
+            OnClick = MiStartupItemsLaunchBitBtnClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 4
+          end
+        end
+        object MiRunningProcessesTabSheet: TTabSheet
+          Hint = 'Manage running smartie instances'#13#10'This works best in combination with custom title and/or append configuration name in the miscellaneous tab'
+          Caption = 'Running Instances'
+          ClientHeight = 358
+          ClientWidth = 240
+          OnShow = MiRunningProcessesTabSheetShow
+          ParentShowHint = False
+          ShowHint = True
+          object MiRiStopInstanceBitBtn: TBitBtn
+            Left = 0
+            Height = 30
+            Hint = 'Stop the selected instance'
+            Top = 328
+            Width = 75
+            Caption = 'Stop'
+            OnClick = MiRiStopInstanceBitBtnClick
+            TabOrder = 0
+          end
+          object MiRiRefreshBitBtn: TBitBtn
+            Left = 160
+            Height = 30
+            Hint = 'Refresh the list'
+            Top = 328
+            Width = 75
+            Caption = 'Refresh'
+            OnClick = MiRiRefreshBitBtnClick
+            TabOrder = 1
+          end
+          object MiRunningInstancesListGrid: TStringGrid
+            Left = 0
+            Height = 328
+            Top = 0
+            Width = 240
+            ColCount = 2
+            FixedCols = 0
+            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goSmoothScroll, goCellHints, goTruncCellHints, goCellEllipsis]
+            ParentShowHint = False
+            RangeSelectMode = rsmMulti
+            RowCount = 1
+            ShowHint = True
+            TabOrder = 2
+          end
+        end
+      end
+      object GroupBox10: TGroupBox
+        Left = 256
+        Height = 128
+        Top = 152
+        Width = 281
+        ClientHeight = 110
+        ClientWidth = 277
+        TabOrder = 1
+        object Label46: TLabel
+          Left = 32
+          Height = 13
+          Top = -8
+          Width = 195
+          Alignment = taCenter
+          Caption = 'Copy All program files to a new directory'
+        end
+        object MiCreateNewProgDirButton1: TButton
+          Left = 88
+          Height = 25
+          Top = 56
+          Width = 75
+          Caption = 'Go'
+          OnClick = MiCreateNewProgDirButton1Click
+          TabOrder = 0
+        end
+        object MiCopyToNewRadioButton: TRadioButton
+          Left = 32
+          Height = 19
+          Top = 8
+          Width = 231
+          Caption = 'Use current config (will rename to config.ini)'
+          Checked = True
+          TabOrder = 1
+          TabStop = True
+        end
+        object RadioButton2: TRadioButton
+          Left = 32
+          Height = 19
+          Top = 32
+          Width = 135
+          Caption = 'Use a new empty config'
+          TabOrder = 2
+        end
+        object CopyingFileLabel: TLabel
+          Left = 8
+          Height = 1
+          Top = 88
+          Width = 1
+        end
+      end
+      object MiCurrentConfigLabel: TLabel
+        Left = 256
+        Height = 69
+        Top = 45
+        Width = 281
+        AutoSize = False
+        Constraints.MinHeight = 50
+        Constraints.MinWidth = 50
+      end
+      object Label47: TLabel
+        Left = 256
+        Height = 13
+        Top = 19
+        Width = 73
+        Caption = 'Loaded Config:'
+      end
+    end
   end
   object LeftPageControl: TPageControl
     Left = 0
@@ -1649,7 +1942,7 @@ object SetupForm: TSetupForm
     Top = 1
     Width = 265
     TabStop = False
-    ActivePage = InternetTabSheet
+    ActivePage = EmailTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1658,7 +1951,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 2
+    TabIndex = 6
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -2406,7 +2699,7 @@ object SetupForm: TSetupForm
         Top = 0
         Width = 209
         Directory = '.'
-        ItemHeight = 13
+        ItemHeight = 0
         Mask = '*.dll'
         OnClick = PluginListBoxClick
         OnDblClick = PluginListBoxDblClick

@@ -1,6 +1,8 @@
 library testdriver;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
   IniFiles,Windows,SysUtils,SyncObjs,Math,SERPORT;
@@ -101,14 +103,15 @@ begin
   end;
 
   // replace custom chars with space
-  Charmap[Ord('°')] := ' ';
-  Charmap[Ord('ž')] := ' ';
+  // do we need this?
+{  Charmap[Ord('Â°')] := ' ';
+  Charmap[Ord('Å¾')] := ' ';
   Charmap[131] := ' ';
   Charmap[132] := ' ';
   Charmap[133] := ' ';
   Charmap[134] := ' ';
   Charmap[135] := ' ';
-  Charmap[136] := ' ';
+  Charmap[136] := ' '; }
 
   // Process their mapping
   for Loop := 0 to (length(sCharMap) div 2)-1 do

@@ -1,6 +1,8 @@
 library HD44780P;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
   SysUtils,

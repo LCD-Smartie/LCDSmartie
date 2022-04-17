@@ -1,6 +1,8 @@
-library seetron;
+library pertelian;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
   Windows,SysUtils,StrUtils,SyncObjs,Math,SERPORT;
@@ -10,21 +12,18 @@ uses
  revhist
 
 1.0 initial driver
-1.1 added backlight off on shutdown
 
 *)
 
 const
-  DLLProjectName = 'Seetron Display DLL';
-  Version = 'v1.1';
+  DLLProjectName = 'Pertelian Display DLL';
+  Version = 'v1.0';
 type
   pboolean = ^boolean;
   TCustomArray = array[0..7] of byte;
-  TProtocol = (prLCD,prTerminal);
 var
   COMPort : TSerialPort = nil;
-  Protocol : TProtocol = prLCD;
-  LineLength : byte = 16;
+  LineLength : byte = 20;
   CurrentX : byte = 1;
   CurrentY : byte = 1;
 
@@ -47,10 +46,7 @@ end;
 
 function DISPLAYDLL_CustomCharIndex(Index : byte) : byte; stdcall;
 begin
-  DISPLAYDLL_CustomCharIndex := 127+Index;
-  case Protocol of
-    prLCD : DISPLAYDLL_CustomCharIndex := 7+Index;
-  end;
+  DISPLAYDLL_CustomCharIndex := 7+Index;
 end;
 
 procedure DISPLAYDLL_Write(Str : pchar); stdcall;
@@ -74,18 +70,9 @@ begin
   CurrentY := Y;
   try
     if assigned(COMPort) then begin
-      case Protocol of
-        prLCD : begin
-          Posit :=  128 + (min(X,40) - 1) + (((Y-1) div 2) * LineLength) + (64*((Y-1) mod 2));
-          COMPort.WriteByte(254);
-          COMPort.WriteByte(Posit);
-        end;
-        prTerminal : begin
-          Posit :=  64 + (min(X,LineLength) - 1) + (LineLength*(min(Y,4)-1));
-          COMPort.WriteByte(16);  // P
-          COMPort.WriteByte(Posit);
-        end;                                       
-      end;
+      Posit :=  128 + (min(X,40) - 1) +  ($40*((Y-1) mod 2)) + (((Y-1) div 2) * LineLength);
+      COMPort.WriteByte(254);
+      COMPort.WriteByte(Posit);
     end;
   except
   end;
@@ -98,24 +85,12 @@ var
 begin
   try
     if assigned(COMPort) then begin
-      case Protocol of
-        prLCD : begin
-          Address := 64 + (Chr - 1)*8;
-          COMPort.WriteByte(254);
-          COMPort.WriteByte(Address);
-          for Address := 0 to 7 do
-            COMPort.WriteByte(Data[Address]);
-          DISPLAYDLL_SetPosition(CurrentX,CurrentY);
-        end;
-        prTerminal : begin
-          Address := 48 + (Chr - 1);
-          COMPort.WriteByte(27);  // esc
-          COMPort.WriteByte(ord('D'));  // "D"
-          COMPort.WriteByte(Address);
-          for Address := 0 to 7 do
-            COMPort.WriteByte(Data[Address]);
-        end;
-      end;
+      Address := 64 + (Chr - 1)*8;
+      COMPort.WriteByte(254);
+      COMPort.WriteByte(Address);
+      for Address := 0 to 7 do
+        COMPort.WriteByte(Data[Address]);
+      DISPLAYDLL_SetPosition(CurrentX,CurrentY);
     end;
   except
   end;
@@ -124,21 +99,7 @@ end;
 procedure DISPLAYDLL_SetBrightness(Brightness : byte); stdcall;
 // VFD only
 begin
-  Brightness := Brightness div 64;  // 0-3 is the brightness
-  try
-    if assigned(COMPort) then begin
-      case Protocol of
-        prLCD : begin
-          // no VFDs with this protocol
-        end;
-        prTerminal : begin
-          COMPort.WriteByte(27);  // esc
-          COMPort.WriteByte(48 + Brightness);  // ascii "0" - "3"
-        end;
-      end;
-    end;
-  except
-  end;
+// no VFDs with this protocol
 end;
 
 procedure DISPLAYDLL_SetContrast(Contrast : byte); stdcall;
@@ -151,15 +112,9 @@ procedure DISPLAYDLL_SetBacklight(LightOn : boolean); stdcall;
 begin
   try
     if assigned(COMPort) then begin
-      case Protocol of
-        prLCD : begin
-          // backlighting switch controlled, not software controlled
-        end;
-        prTerminal : begin
-          if LightOn then COMPort.WriteByte(14)
-          else COMPort.WriteByte(15);
-        end;
-      end;
+      COMPort.WriteByte($FE);
+      if LightOn then COMPort.WriteByte($03)
+      else COMPort.WriteByte($02);
     end;
   except
   end;
@@ -168,19 +123,7 @@ end;
 procedure DISPLAYDLL_SetGPO(GPO : byte; GPOOn : boolean); stdcall;
 // turn on GPO
 begin
-  try
-    if assigned(COMPort) then begin
-      case Protocol of
-        prLCD : begin
-          // no GPO on this display
-        end;
-        prTerminal : begin
-          COMPort.WriteByte(7);  // bell
-        end;
-      end;
-    end;
-  except
-  end;
+// no GPO on this display
 end;
 
 function SubString(var S : string) : string;
@@ -197,11 +140,25 @@ begin
   end;
 end;
 
+procedure InitDisplay;
+begin
+  COMPort.WriteByte($FE);
+  COMPort.WriteByte($38);  // 8 bit, 2 lines, 5x8 font
+  COMPort.WriteByte($FE);
+  COMPort.WriteByte($06);  // cursor increments, no display shift
+  COMPort.WriteByte($FE);
+  COMPort.WriteByte($10);  // cursor move
+  COMPort.WriteByte($FE);
+  COMPort.WriteByte($0C);  // display on, no blinking cursor
+  COMPort.WriteByte($FE);
+  COMPort.WriteByte($01);  // clear display
+end;
+
 function DISPLAYDLL_Init(SizeX,SizeY : byte; StartupParameters : pchar; OK : pboolean) : pchar; stdcall;
 // return startup error
 // open port
 var
-  S,S2,P : string;
+  S,S2 : string;
 begin
   LineLength := SizeX;
   OK^ := true;
@@ -209,15 +166,13 @@ begin
   try
     S2 := uppercase(string(StartupParameters));
     S := substring(S2) + ',' + substring(S2);  // get COM1,9600
-    P := SubString(S2);
-    Protocol := prLCD;
-    if (P = '2') then Protocol := prTerminal;
     S := S + ',8,N,1';
     COMPort := TSerialPort.Create;
     COMPort.OpenSerialPort(S);
+    InitDisplay;
   except
     on E: Exception do begin
-      result := PChar('SEETRON.DLL Exception: ' + E.Message + #0);
+      result := PChar('PERTELIAN.DLL Exception: ' + E.Message + #0);
       OK^ := false;
     end;
   end;
@@ -238,14 +193,12 @@ end;
 
 function DISPLAYDLL_DefaultParameters : pchar; stdcall;
 begin
-  DISPLAYDLL_DefaultParameters := pchar('COM1,9600,1' + #0);
+  DISPLAYDLL_DefaultParameters := pchar('COM1,9600' + #0);
 end;
 
 function DISPLAYDLL_Usage : pchar; stdcall;
 begin
-  Result := pchar('Usage: COM1,9600,p'+#13#10+
-                  'p = Protocol'+#13#10+
-                  '1=LCD 2=Terminal' + #0);
+  Result := pchar('Usage: COM1,9600' + #0);
 end;
 
 function DISPLAYDLL_DriverName : pchar; stdcall;

@@ -1,6 +1,8 @@
 library HD44780S;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
   Windows,SysUtils,Math,

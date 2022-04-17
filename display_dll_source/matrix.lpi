@@ -18,15 +18,13 @@
     </General>
     <BuildModes Count="5">
       <Item1 Name="Default" Default="True"/>
-      <Item2 Name="32 bit Debug">
+      <Item2 Name="Debug x32">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\release-dir\displays\matrix.dll"/>
-          </Target>
           <SearchPaths>
-            <UnitOutputDirectory Value="fuo"/>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
@@ -53,6 +51,7 @@
               <Win32>
                 <GraphicApplication Value="True"/>
               </Win32>
+              <ExecutableType Value="Library"/>
             </Options>
           </Linking>
           <Other>
@@ -67,16 +66,13 @@
           </Other>
         </CompilerOptions>
       </Item2>
-      <Item3 Name="32 bit Release">
+      <Item3 Name="Release x32">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\release-dir\displays\matrix.dll"/>
-          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="fuo"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
@@ -137,15 +133,13 @@
           </Other>
         </CompilerOptions>
       </Item3>
-      <Item4 Name="64 bit Debug">
+      <Item4 Name="Debug x64">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\release-dir\displays\matrix.dll"/>
-          </Target>
           <SearchPaths>
-            <UnitOutputDirectory Value="fuo"/>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
@@ -156,8 +150,8 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <TargetCPU Value="i386"/>
-            <TargetOS Value="win32"/>
+            <TargetCPU Value="x86_64"/>
+            <TargetOS Value="win64"/>
             <Optimizations>
               <OptimizationLevel Value="0"/>
             </Optimizations>
@@ -172,6 +166,7 @@
               <Win32>
                 <GraphicApplication Value="True"/>
               </Win32>
+              <ExecutableType Value="Library"/>
             </Options>
           </Linking>
           <Other>
@@ -186,16 +181,13 @@
           </Other>
         </CompilerOptions>
       </Item4>
-      <Item5 Name="64 bit Release">
+      <Item5 Name="Release x64">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\x64\release-dir\displays\matrix.dll"/>
-          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="x64\fuo"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>

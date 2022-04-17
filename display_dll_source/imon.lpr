@@ -1,6 +1,8 @@
 library imon;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
   Windows,SysUtils,Math;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="WinampCtrl7"/>
     <Type Value="RunAndDesignTime"/>
@@ -8,13 +8,18 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
-          <SyntaxMode Value="delphi"/>
+          <SyntaxMode Value="Delphi"/>
         </SyntaxOptions>
       </Parsing>
+      <Linking>
+        <Debugging>
+          <UseExternalDbgSyms Value="True"/>
+        </Debugging>
+      </Linking>
     </CompilerOptions>
     <Files Count="1">
       <Item1>
@@ -22,6 +27,7 @@
         <UnitName Value="WinampCtrl"/>
       </Item1>
     </Files>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCL"/>

@@ -5,40 +5,36 @@
     <PathDelim Value="\"/>
     <General>
       <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="LegacyLoader"/>
+      <Title Value="FutabaVFD_LCD"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
     <BuildModes>
-      <Item Name="Debug" Default="True"/>
-      <Item Name="Release">
+      <Item Name="Default" Default="True"/>
+      <Item Name="Release x32">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\x64\release-dir\LegacyLoader.exe"/>
-          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Parsing>
+            <Style Value="1"/>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
-              <CStyleOperator Value="False"/>
-              <AllowLabel Value="False"/>
-              <CPPInline Value="False"/>
-              <UseAnsiStrings Value="False"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
             <TargetCPU Value="i386"/>
+            <TargetOS Value="win32"/>
             <Optimizations>
               <OptimizationLevel Value="3"/>
             </Optimizations>
@@ -53,21 +49,56 @@
               <Win32>
                 <GraphicApplication Value="True"/>
               </Win32>
+              <ExecutableType Value="Library"/>
             </Options>
           </Linking>
           <Other>
-            <Verbosity>
-              <ShoLineNum Value="True"/>
-              <ShowAll Value="True"/>
-              <ShowDebugInfo Value="True"/>
-              <ShowUsedFiles Value="True"/>
-              <ShowTriedFiles Value="True"/>
-              <ShowCompProc Value="True"/>
-              <ShowCond Value="True"/>
-              <ShowExecInfo Value="True"/>
-              <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
-              <ShowHintsForSenderNotUsed Value="True"/>
-            </Verbosity>
+            <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <Item Name="Debug x64">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <Style Value="1"/>
+            <SyntaxOptions>
+              <SyntaxMode Value="Delphi"/>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
+            <TargetCPU Value="x86_64"/>
+            <TargetOS Value="win64"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+              <TrashVariables Value="True"/>
+              <UseExternalDbgSyms Value="True"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+              <ExecutableType Value="Library"/>
+            </Options>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
           </Other>
         </CompilerOptions>
       </Item>
@@ -79,9 +110,14 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPackages>
     <Units>
       <Unit>
-        <Filename Value="LegacyLoader.pas"/>
+        <Filename Value="FutabaVFD_LCD.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
@@ -89,43 +125,27 @@
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
-    <Target>
-      <Filename Value="..\x64\release-dir\LegacyLoader.exe"/>
-    </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
+      <Style Value="1"/>
       <SyntaxOptions>
         <SyntaxMode Value="Delphi"/>
-        <IncludeAssertionCode Value="True"/>
       </SyntaxOptions>
     </Parsing>
-    <CodeGeneration>
-      <Checks>
-        <IOChecks Value="True"/>
-        <RangeChecks Value="True"/>
-        <OverflowChecks Value="True"/>
-        <StackChecks Value="True"/>
-      </Checks>
-      <VerifyObjMethodCallValidity Value="True"/>
-      <TargetCPU Value="i386"/>
-    </CodeGeneration>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf3"/>
-        <UseHeaptrc Value="True"/>
-        <TrashVariables Value="True"/>
-        <StripSymbols Value="True"/>
-        <UseExternalDbgSyms Value="True"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
         </Win32>
+        <ExecutableType Value="Library"/>
       </Options>
     </Linking>
+    <Other>
+      <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
+    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions>

@@ -1,6 +1,8 @@
 library crystal;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 (*
 
@@ -472,22 +474,23 @@ begin
   begin
     // Custom characters - these mapping exists only to be compatible with older
     // smartie releases.
-    case Ord(str[i]) of
-      Ord('ž') {158}: str[i]:=Chr(1);
-      131: str[i]:=Chr(2);
-      132: str[i]:=Chr(3);
-      133: str[i]:=Chr(4);
-      134: str[i]:=Chr(5);
-      135: str[i]:=Chr(6);
-      136: str[i]:=Chr(7);
-    end;
+    // Do we still need this?
+//    case Ord(str[i]) of
+//      Ord('Å¾') {158}: str[i]:=Chr(1);
+//      131: str[i]:=Chr(2);
+//      132: str[i]:=Chr(3);
+//      133: str[i]:=Chr(4);
+//      134: str[i]:=Chr(5);
+//      135: str[i]:=Chr(6);
+//      136: str[i]:=Chr(7);
+//    end;
 
     // packet based display, with cgrom v2
     if (bPackets) and (iCF_cgrom = 2) then
     begin
       case Ord(str[i]) of
         Ord('^') {94}: str[i]:= Chr(29);
-        //Ord('ž') {158}: str[i]:= Chr(31); // needs to be redefinable
+        //Ord('Å¾') {158}: str[i]:= Chr(31); // needs to be redefinable
       end;
     end;
 
@@ -497,14 +500,15 @@ begin
        { // map to cgrom - v1.0 displays
            '\' and '~' are not ascii mapped, but also don't appear in the cgrom...
        }
-       if (str[i] = '°') {176} then str[i] := Chr(0); // custom char
-       //if (str[i] = 'ž') then str[i] := Chr(255); // needs to be redefinable
+       if (str[i] = 'Â°') {176} then str[i] := Chr(0); // custom char
+       //if (str[i] = 'Å¾') then str[i] := Chr(255); // needs to be redefinable
     end
     else
     begin
       // v2 cgrom
       case Ord(str[i]) of
-        Ord('°') {176}: str[i]:=Chr(0); // custom char
+        // commented characters not compatible with FPC Ord(). We need another way
+        //Ord('Â°') {176}: str[i]:=Chr(0); // custom char
 
         Ord('$') {36}: str[i]:= Chr(162); // was 202
         Ord('@') {64}: str[i]:= Chr(160);
@@ -513,12 +517,12 @@ begin
         Ord(']') {93}: str[i]:= Chr(252);
         Ord('_') {95}: str[i]:= Chr(196);
         Ord('`') {96}: str[i]:= Chr(39); // ` not in cgrom, mapped to ' instead
-        Ord('’') {146}: str[i]:= Chr(39);
+        //Ord('â€™') {146}: str[i]:= Chr(39);
         Ord('{') {123}: str[i]:= Chr(253);
         Ord('|') {124}: str[i]:= Chr(254);
         Ord('}') {125}: str[i]:= Chr(255);
         Ord('~') {126}: str[i]:= Chr(206);
-        Ord('£') {163}: str[i]:= Chr(161);
+        //Ord('Â£') {163}: str[i]:= Chr(161);
       end;
     end;
     // on ascii based displays, map on to special char locations
@@ -529,7 +533,7 @@ begin
   if (not bPackets) and (iCF_cgrom = 2) then
   begin
     str := StringReplace(str, '^', #30+#1+#29, [rfReplaceAll]);
-    //str := StringReplace(str, Chr(158) {ž}, #30+#1+#31, [rfReplaceAll]);
+    //str := StringReplace(str, Chr(158) {Å¾}, #30+#1+#31, [rfReplaceAll]);
     assert(Pos('^', str)=0);
     assert(Pos(Chr(158), str)=0);
   end;

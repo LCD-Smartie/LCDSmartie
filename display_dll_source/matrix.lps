@@ -3,7 +3,7 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="64 bit Release"/>
+    <BuildModes Active="Release x64"/>
     <Units Count="4">
       <Unit0>
         <Filename Value="matrix.lpr"/>

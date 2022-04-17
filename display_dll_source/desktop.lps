@@ -3,12 +3,13 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="64 bit Debug"/>
+    <BuildModes Active="Release x64"/>
     <Units Count="3">
       <Unit0>
         <Filename Value="desktop.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos Y="25"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="35" Y="19"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -28,7 +29,7 @@
       </Unit1>
       <Unit2>
         <Filename Value="dispform.lfm"/>
-        <IsVisibleTab Value="True"/>
+        <HasResources Value="True"/>
         <EditorIndex Value="1"/>
         <CursorPos X="4" Y="41"/>
         <UsageCount Value="10"/>
@@ -36,6 +37,13 @@
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit2>
     </Units>
+    <OtherDefines Count="5">
+      <Define0 Value="Borland"/>
+      <Define1 Value="Ver150"/>
+      <Define2 Value="Delphi7"/>
+      <Define3 Value="Compiler6_Up"/>
+      <Define4 Value="PUREPASCAL"/>
+    </OtherDefines>
     <JumpHistory Count="8" HistoryIndex="7">
       <Position1>
         <Filename Value="desktop.lpr"/>
@@ -80,12 +88,10 @@
         </Mode0>
       </Modes>
     </RunParams>
-    <HistoryLists Count="3">
-      <List0 Name="WorkingDirectory" Type="File" Count="1"/>
-      <List1 Name="LaunchingApplication" Type="File" Count="1">
+    <HistoryLists Count="1">
+      <List0 Name="LaunchingApplication" Type="File" Count="1">
         <Item1 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
-      </List1>
-      <List2 Name="CommandLineParameters" Count="1"/>
+      </List0>
     </HistoryLists>
   </ProjectSession>
 </CONFIG>

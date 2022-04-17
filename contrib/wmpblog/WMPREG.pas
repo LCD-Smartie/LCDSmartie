@@ -1,5 +1,7 @@
 unit WMPREG;
 
+{$MODE Delphi}
+
 interface
 
 uses
@@ -131,7 +133,7 @@ begin
   end;
   try
     if RegOpen then Reg.CloseKey;
-    if (hEvent > 0) then CloseHandle(hEvent);
+    if (hEvent > 0) then FileClose(hEvent); { *Converted from CloseHandle* }
   except
   end;
   Reg.Free;
@@ -142,8 +144,10 @@ var
 
 procedure StartRegThread;
 begin
-  DataLock := TCriticalSection.Create;
-  RegReadThread := TRegReadThread.Create;
+  DataLock.Create;
+  //DataLock := TCriticalSection.create;
+  RegReadThread.Create;
+  //RegReadThread := TRegReadThread.Create;
 end;
 
 procedure EndRegThread;

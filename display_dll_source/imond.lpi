@@ -9,93 +9,81 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
-        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="speedfan"/>
+      <Title Value="imond"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
-    <BuildModes Count="5">
-      <Item1 Name="Default" Default="True"/>
-      <Item2 Name="Debug x32">
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+      <Item Name="Debug x32">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
-            <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
-              <UseAnsiStrings Value="False"/>
+              <IncludeAssertionCode Value="True"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
-            <SmartLinkUnit Value="True"/>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
             <TargetCPU Value="i386"/>
             <TargetOS Value="win32"/>
-            <Optimizations>
-              <OptimizationLevel Value="0"/>
-            </Optimizations>
           </CodeGeneration>
           <Linking>
             <Debugging>
-              <DebugInfoType Value="dsDwarf2Set"/>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+              <TrashVariables Value="True"/>
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
-            <LinkSmart Value="True"/>
             <Options>
               <Win32>
                 <GraphicApplication Value="True"/>
               </Win32>
+              <ExecutableType Value="Library"/>
             </Options>
           </Linking>
           <Other>
-            <CustomOptions Value="-CPPACKRECORD=8
--SIcom
--WR
--dBorland
--dVer150
--dDelphi7
--dCompiler6_Up
--dPUREPASCAL"/>
+            <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
           </Other>
         </CompilerOptions>
-      </Item2>
-      <Item3 Name="Release x32">
+      </Item>
+      <Item Name="Release x32">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
-            <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
-              <UseAnsiStrings Value="False"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <HeapSize Value="400000"/>
-            <StackSize Value="400000"/>
             <TargetCPU Value="i386"/>
             <TargetOS Value="win32"/>
             <Optimizations>
-              <OptimizationLevel Value="2"/>
+              <OptimizationLevel Value="3"/>
             </Optimizations>
           </CodeGeneration>
           <Linking>
             <Debugging>
               <GenerateDebugInfo Value="False"/>
-              <DebugInfoType Value="dsDwarf2Set"/>
               <StripSymbols Value="True"/>
-              <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -106,110 +94,78 @@
             </Options>
           </Linking>
           <Other>
-            <Verbosity>
-              <ShoLineNum Value="True"/>
-              <ShowAll Value="True"/>
-              <ShowDebugInfo Value="True"/>
-              <ShowUsedFiles Value="True"/>
-              <ShowTriedFiles Value="True"/>
-              <ShowCompProc Value="True"/>
-              <ShowCond Value="True"/>
-              <ShowExecInfo Value="True"/>
-              <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
-              <ShowHintsForSenderNotUsed Value="True"/>
-            </Verbosity>
-            <CustomOptions Value="-dBorland
--dDelphi7
--dCompiler6_Up
--dPUREPASCAL"/>
-            <OtherDefines Count="5">
-              <Define0 Value="Borland"/>
-              <Define1 Value="Ver150"/>
-              <Define2 Value="Delphi7"/>
-              <Define3 Value="Compiler6_Up"/>
-              <Define4 Value="PUREPASCAL"/>
-            </OtherDefines>
+            <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
           </Other>
         </CompilerOptions>
-      </Item3>
-      <Item4 Name="Debug x64">
+      </Item>
+      <Item Name="Debug x64">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
-            <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
-              <UseAnsiStrings Value="False"/>
+              <IncludeAssertionCode Value="True"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
-            <SmartLinkUnit Value="True"/>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
-            <Optimizations>
-              <OptimizationLevel Value="0"/>
-            </Optimizations>
           </CodeGeneration>
           <Linking>
             <Debugging>
-              <DebugInfoType Value="dsDwarf2Set"/>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+              <TrashVariables Value="True"/>
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
-            <LinkSmart Value="True"/>
             <Options>
               <Win32>
                 <GraphicApplication Value="True"/>
               </Win32>
+              <ExecutableType Value="Library"/>
             </Options>
           </Linking>
           <Other>
-            <CustomOptions Value="-CPPACKRECORD=8
--SIcom
--WR
--dBorland
--dVer150
--dDelphi7
--dCompiler6_Up
--dPUREPASCAL"/>
+            <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
           </Other>
         </CompilerOptions>
-      </Item4>
-      <Item5 Name="Release x64">
+      </Item>
+      <Item Name="Release x64">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
-            <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
-              <UseAnsiStrings Value="False"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <HeapSize Value="400000"/>
-            <StackSize Value="400000"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
             <Optimizations>
-              <OptimizationLevel Value="2"/>
+              <OptimizationLevel Value="3"/>
             </Optimizations>
           </CodeGeneration>
           <Linking>
             <Debugging>
               <GenerateDebugInfo Value="False"/>
-              <DebugInfoType Value="dsDwarf2Set"/>
               <StripSymbols Value="True"/>
-              <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -220,32 +176,10 @@
             </Options>
           </Linking>
           <Other>
-            <Verbosity>
-              <ShoLineNum Value="True"/>
-              <ShowAll Value="True"/>
-              <ShowDebugInfo Value="True"/>
-              <ShowUsedFiles Value="True"/>
-              <ShowTriedFiles Value="True"/>
-              <ShowCompProc Value="True"/>
-              <ShowCond Value="True"/>
-              <ShowExecInfo Value="True"/>
-              <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
-              <ShowHintsForSenderNotUsed Value="True"/>
-            </Verbosity>
-            <CustomOptions Value="-dBorland
--dDelphi7
--dCompiler6_Up
--dPUREPASCAL"/>
-            <OtherDefines Count="5">
-              <Define0 Value="Borland"/>
-              <Define1 Value="Ver150"/>
-              <Define2 Value="Delphi7"/>
-              <Define3 Value="Compiler6_Up"/>
-              <Define4 Value="PUREPASCAL"/>
-            </OtherDefines>
+            <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
           </Other>
         </CompilerOptions>
-      </Item5>
+      </Item>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -254,41 +188,30 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="1">
-      <Item1>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="LCL"/>
-      </Item1>
+      </Item>
     </RequiredPackages>
-    <Units Count="1">
-      <Unit0>
-        <Filename Value="speedfan.lpr"/>
+    <Units>
+      <Unit>
+        <Filename Value="imond.lpr"/>
         <IsPartOfProject Value="True"/>
-      </Unit0>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <UnitOutputDirectory Value="fuo"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <SyntaxMode Value="Delphi"/>
-        <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <CodeGeneration>
-      <TargetOS Value="win32"/>
-      <Optimizations>
-        <OptimizationLevel Value="2"/>
-      </Optimizations>
-      <SmallerCode Value="True"/>
-    </CodeGeneration>
     <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="False"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
@@ -301,16 +224,16 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
-      <Item1>
+    <Exceptions>
+      <Item>
         <Name Value="EAbort"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Name Value="ECodetoolError"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Name Value="EFOpenError"/>
-      </Item3>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>

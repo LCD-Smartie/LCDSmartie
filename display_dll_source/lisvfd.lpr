@@ -1,30 +1,31 @@
-library pertelian;
+library lisvfd;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
-  Windows,SysUtils,StrUtils,SyncObjs,Math,SERPORT;
+  Windows,SysUtils,SyncObjs,Math,SERPORT;
 
 (*
 
  revhist
 
 1.0 initial driver
+1.1 changed the way brightness works for displays using a 4 bit interface (internally)
 
 *)
 
 const
-  DLLProjectName = 'Pertelian Display DLL';
-  Version = 'v1.0';
+  DLLProjectName = 'LIS VFD Display DLL';
+  Version = 'v1.1';
 type
   pboolean = ^boolean;
   TCustomArray = array[0..7] of byte;
+
 var
   COMPort : TSerialPort = nil;
-  LineLength : byte = 20;
-  CurrentX : byte = 1;
-  CurrentY : byte = 1;
-
+  BMode : byte;
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -32,19 +33,19 @@ var
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-function DISPLAYDLL_ReadKey : word; stdcall;
-// return 00xx upon success, FF00 on fail
+procedure InitDisplay;
 begin
-  Result := $FF00;
-  try
-  except
-    // seetron displays have varying inputs which I am way too lazy to code
+  if assigned(COMPort) then begin
+    COMPort.WriteByte($A0); // clear screen
+    sleep(10);
   end;
 end;
 
 function DISPLAYDLL_CustomCharIndex(Index : byte) : byte; stdcall;
 begin
-  DISPLAYDLL_CustomCharIndex := 7+Index;
+  Index := Index - 1;
+  if (Index = 0) then Index := 8;
+  DISPLAYDLL_CustomCharIndex := Index;
 end;
 
 procedure DISPLAYDLL_Write(Str : pchar); stdcall;
@@ -54,23 +55,23 @@ var
 begin
   S := string(Str);
   try
+    COMPort.WriteByte($A7);
     COMPort.Write(@S[1], length(S));
+    COMPort.WriteByte(0);
   except
   end;
 end;
 
 procedure DISPLAYDLL_SetPosition(X, Y: byte); stdcall;
 // set cursor position
-var
-  Posit : byte;
 begin
-  CurrentX := X;
-  CurrentY := Y;
   try
     if assigned(COMPort) then begin
-      Posit :=  128 + (min(X,40) - 1) +  ($40*((Y-1) mod 2)) + (((Y-1) div 2) * LineLength);
-      COMPort.WriteByte(254);
-      COMPort.WriteByte(Posit);
+      if (Y = 1) then
+        COMPort.WriteByte($A1)
+      else
+        COMPort.WriteByte($A2);
+      COMPort.WriteByte(0);
     end;
   except
   end;
@@ -79,16 +80,17 @@ end;
 procedure DISPLAYDLL_CustomChar(Chr : byte; Data : TCustomArray); stdcall;
 // define custom character
 var
-  Address : byte;
+  Loop : longint;
 begin
   try
     if assigned(COMPort) then begin
-      Address := 64 + (Chr - 1)*8;
-      COMPort.WriteByte(254);
-      COMPort.WriteByte(Address);
-      for Address := 0 to 7 do
-        COMPort.WriteByte(Data[Address]);
-      DISPLAYDLL_SetPosition(CurrentX,CurrentY);
+      for Loop := 0 to 7 do begin
+        COMPort.WriteByte($AB);
+        COMPort.WriteByte(Chr - 1);
+        COMPort.WriteByte(Loop);
+        COMPort.WriteByte(Data[Loop] and $1F);
+      end;
+      COMPort.WriteByte(0);
     end;
   except
   end;
@@ -96,32 +98,26 @@ end;
 
 procedure DISPLAYDLL_SetBrightness(Brightness : byte); stdcall;
 // VFD only
+// Function set  0  0  1  DL N   F   *   *   40uS    Sets interface data length (DL), number of display line (N) and character font(F).
+// DL      0 = 4-bit interface             1 = 8-bit interface
+// N       0 = 1/8 or 1/11 Duty (1 line)   1 = 1/16 Duty (2 lines)
+// F       0 = 5x7 dots                    1 = 5x10 dots
+var
+  Offset : byte;
 begin
-// no VFDs with this protocol
-end;
-
-procedure DISPLAYDLL_SetContrast(Contrast : byte); stdcall;
-begin
-// these displays do not appear to have a software selectable contrast
-end;
-
-procedure DISPLAYDLL_SetBacklight(LightOn : boolean); stdcall;
-// turn backlighting on/off
-begin
+  if (BMode = 2) then exit;
+  Offset := 59;
+  if (BMode = 1) then
+    Offset := 43;
+  Brightness := Brightness div 64;  // 0-3 is the brightness
   try
     if assigned(COMPort) then begin
-      COMPort.WriteByte($FE);
-      if LightOn then COMPort.WriteByte($03)
-      else COMPort.WriteByte($02);
+      COMPort.WriteByte($A5);
+      COMPort.WriteByte(Offset-Brightness);
+      COMPort.WriteByte(0);
     end;
   except
   end;
-end;
-
-procedure DISPLAYDLL_SetGPO(GPO : byte; GPOOn : boolean); stdcall;
-// turn on GPO
-begin
-// no GPO on this display
 end;
 
 function SubString(var S : string) : string;
@@ -138,39 +134,31 @@ begin
   end;
 end;
 
-procedure InitDisplay;
-begin
-  COMPort.WriteByte($FE);
-  COMPort.WriteByte($38);  // 8 bit, 2 lines, 5x8 font
-  COMPort.WriteByte($FE);
-  COMPort.WriteByte($06);  // cursor increments, no display shift
-  COMPort.WriteByte($FE);
-  COMPort.WriteByte($10);  // cursor move
-  COMPort.WriteByte($FE);
-  COMPort.WriteByte($0C);  // display on, no blinking cursor
-  COMPort.WriteByte($FE);
-  COMPort.WriteByte($01);  // clear display
-end;
-
 function DISPLAYDLL_Init(SizeX,SizeY : byte; StartupParameters : pchar; OK : pboolean) : pchar; stdcall;
 // return startup error
 // open port
 var
   S,S2 : string;
+  Bright : string;
 begin
-  LineLength := SizeX;
   OK^ := true;
   Result := PChar(DLLProjectName + ' ' + Version + #0);
   try
     S2 := uppercase(string(StartupParameters));
     S := substring(S2) + ',' + substring(S2);  // get COM1,9600
+    Bright := substring(S2);
+    try
+      BMode := StrToInt(Bright);
+    except
+      BMode := 0;
+    end;
     S := S + ',8,N,1';
     COMPort := TSerialPort.Create;
     COMPort.OpenSerialPort(S);
     InitDisplay;
   except
     on E: Exception do begin
-      result := PChar('PERTELIAN.DLL Exception: ' + E.Message + #0);
+      result := PChar('LISVFD.DLL Exception: ' + E.Message + #0);
       OK^ := false;
     end;
   end;
@@ -180,7 +168,6 @@ procedure DISPLAYDLL_Done(); stdcall;
 // close port
 begin
   try
-    DISPLAYDLL_SetBacklight(false);
     if assigned(COMPort) then begin
       COMPort.Free;
       COMPort := nil;
@@ -191,12 +178,14 @@ end;
 
 function DISPLAYDLL_DefaultParameters : pchar; stdcall;
 begin
-  DISPLAYDLL_DefaultParameters := pchar('COM1,9600' + #0);
+  DISPLAYDLL_DefaultParameters := pchar('COM1,38400' + #0);
 end;
 
 function DISPLAYDLL_Usage : pchar; stdcall;
 begin
-  Result := pchar('Usage: COM1,9600' + #0);
+  Result := pchar('Usage: COM1,38400[,b]'+#13#10+
+                  'b = brightness control'+#13#10+
+                  '0=default, 1=alt, 2=off' + #0);
 end;
 
 function DISPLAYDLL_DriverName : pchar; stdcall;
@@ -206,11 +195,7 @@ end;
 
 // don't forget to export the funtions, else nothing works :)
 exports
-  DISPLAYDLL_SetGPO,
   DISPLAYDLL_SetBrightness,
-  DISPLAYDLL_SetContrast,
-  DISPLAYDLL_SetBacklight,
-  DISPLAYDLL_ReadKey,
   DISPLAYDLL_CustomChar,
   DISPLAYDLL_CustomCharIndex,
   DISPLAYDLL_Write,

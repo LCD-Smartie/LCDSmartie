@@ -17,17 +17,14 @@
       <ResourceType Value="res"/>
     </General>
     <BuildModes Count="4">
-      <Item1 Name="32 bit Debug" Default="True"/>
-      <Item2 Name="32 bitRelease">
+      <Item1 Name="Debug x32" Default="True"/>
+      <Item2 Name="Release x32">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\release-dir\displays\desktop.dll"/>
-          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="fuo"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
@@ -88,16 +85,13 @@
           </Other>
         </CompilerOptions>
       </Item2>
-      <Item3 Name="64 bit Debug">
+      <Item3 Name="Debug x64">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\x64\release-dir\displays\desktop.dll"/>
-          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="x64\fuo"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
@@ -139,16 +133,13 @@
           </Other>
         </CompilerOptions>
       </Item3>
-      <Item4 Name="64 bit Release">
+      <Item4 Name="Release x64">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="..\x64\release-dir\displays\desktop.dll"/>
-          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="x64\fuo"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
@@ -243,12 +234,9 @@
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
-    <Target>
-      <Filename Value="..\release-dir\displays\desktop.dll"/>
-    </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <UnitOutputDirectory Value="fuo"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       <ObjectPath Value="components\CoolTrayIcon"/>
     </SearchPaths>
     <Parsing>

@@ -28,13 +28,20 @@ uses
   Commctrl,
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
-  ExtDlgs, SpinEx, RTTICtrls;
+  ExtDlgs, CheckLst, SpinEx, RTTICtrls, JwaTlHelp32, Process, FileUtil, strutils, Windows;
 
 const
   NoVariable = 'Variable: ';
 
   { TSetupForm }
 type
+
+  TProcessEntry = record
+    WindowTitle: String;
+    Pid: integer;
+  end;
+
+  TProcessList = array of TProcessEntry;
 
   TCheckBoxArray = array of TCheckBox; // for custom character editor
 
@@ -50,6 +57,26 @@ type
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
+    AppendConfigNameCheckBox: TCheckBox;
+    CopyingFileLabel: TLabel;
+    MiCopyConfigBitBtn: TBitBtn;
+    Label47: TLabel;
+    MiCurrentConfigLabel: TLabel;
+    MiRiRefreshBitBtn: TBitBtn;
+    MiStartupItemsLaunchBitBtn: TBitBtn;
+    MiStartupItemsCheckListBox: TCheckListBox;
+    MiStartupItemAddBitBtn: TBitBtn;
+    MiStartupItemRemoveBitBtn: TBitBtn;
+    MiConfigsLoadBitBtn: TBitBtn;
+    MiConfigsRefreshBitBtn: TBitBtn;
+    GroupBox10: TGroupBox;
+    Label46: TLabel;
+    MiConfigsListBox: TFileListBox;
+    MiCreateNewProgDirButton1: TButton;
+    MiStartupItemsRefreshBitBtn: TBitBtn;
+    MiRiStopInstanceBitBtn: TBitBtn;
+    MiDeleteBitBtn: TBitBtn;
+    MiNewConfigBitBtn: TBitBtn;
     BrightnessTrackBar: TTrackBar;
     Btn_PluginRefresh: TButton;
     ButtonsListBox: TListBox;
@@ -119,6 +146,7 @@ type
     DontScrollLine2CheckBox: TCheckBox;
     DontScrollLine3CheckBox: TCheckBox;
     DontScrollLine4CheckBox: TCheckBox;
+    MiConfigNameEdit: TEdit;
     EmailAccountComboBox: TComboBox;
     EmailCheckTimeSpinEdit: TSpinEdit;
     EmailLastFromRadioButton: TRadioButton;
@@ -221,6 +249,9 @@ type
     Line4EditButton: TSpeedButton;
     Line4MemoEdit: TMemo;
     MainPageControl: TPageControl;
+    MultiInstancePageControl: TPageControl;
+    MiCopyToNewRadioButton: TRadioButton;
+    RadioButton2: TRadioButton;
     RssTMemoEdit: TMemo;
     MiscListBox: TListBox;
     MiscTabSheet: TTabSheet;
@@ -271,11 +302,16 @@ type
     StartupTabSheet: TTabSheet;
     StayOnTopCheckBox: TCheckBox;
     StickyCheckbox: TCheckBox;
+    MiRunningInstancesListGrid: TStringGrid;
     SwapWithScreenButton: TButton;
     SwapWithScreenComboBox: TComboBox;
     SysInfoListBox: TListBox;
     SysInfoTabSheet: TTabSheet;
     TabSheet1: TTabSheet;
+    MultiInstanceTabSheet: TTabSheet;
+    MiConfigsTabSheet: TTabSheet;
+    MiRunningProcessesTabSheet: TTabSheet;
+    MiStartupItemsTabSheet: TTabSheet;
     ThemeNumberSpinEdit: TSpinEdit;
     CustomTitleTIEdit1: TTIEdit;
     TimeToShowSpinEdit: TSpinEdit;
@@ -307,6 +343,24 @@ type
     procedure ComPortsButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LCDSizeComboBoxChange(Sender: TObject);
+    procedure MiConfigsListBoxClick(Sender: TObject);
+    procedure MiConfigsLoadBitBtnClick(Sender: TObject);
+    procedure MiConfigsRefreshBitBtnClick(Sender: TObject);
+    procedure MiConfigsTabSheetShow(Sender: TObject);
+    procedure MiCopyConfigBitBtnClick(Sender: TObject);
+    procedure MiCreateNewProgDirButton1Click(Sender: TObject);
+    procedure InvertButtonClick(Sender: TObject);
+    procedure SelectAllButtonClick(Sender: TObject);
+    procedure MiDeleteBitBtnClick(Sender: TObject);
+    procedure MiNewConfigBitBtnClick(Sender: TObject);
+    procedure MiRiRefreshBitBtnClick(Sender: TObject);
+    procedure MiRiStopInstanceBitBtnClick(Sender: TObject);
+    procedure MiRunningProcessesTabSheetShow(Sender: TObject);
+    procedure MiStartupItemAddBitBtnClick(Sender: TObject);
+    procedure MiStartupItemRemoveBitBtnClick(Sender: TObject);
+    procedure MiStartupItemsLaunchBitBtnClick(Sender: TObject);
+    procedure MiStartupItemsRefreshBitBtnClick(Sender: TObject);
+    procedure MiStartupItemsTabSheetShow(Sender: TObject);
     procedure RssPageChange(Sender: TObject);
     procedure ScreenSpinEditChange(Sender: TObject);
     procedure WinampListBoxClick(Sender: TObject);
@@ -370,6 +424,10 @@ type
     procedure SaveScreen(scr: Integer);
     procedure LoadScreen(scr: Integer);
     procedure LoadHint(DisplayDLLName : string);
+    procedure LoadConfig(Sender: TObject);
+    procedure CreateConfig(Sender: TObject);
+    procedure LoadSettings(Sender: TObject);
+
   end;
 
   procedure UpdateSetupForm(cKey : char);
@@ -377,16 +435,19 @@ type
 {$IFDEF STANDALONESETUP}
 var
   SetupForm: TSetupForm;
+  ConfigFileName: String = 'config.ini';
+  ProcessesList: TProcessList;
+  FileSelectList: TCheckListBox;
 {$ENDIF}
 
 implementation
 uses
-  Windows, ShellApi, graphics, sysutils,
+  ShellApi, graphics, sysutils,
 {$IFNDEF STANDALONESETUP}
   UMain,
 {$ENDIF}
   UConfig,  UDataNetwork, UDataWinamp,
-  UIconUtils, UEditLine, IpRtrMib, IpHlpApi, lazutf8, registry;
+  UIconUtils, UEditLine, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
 
 {$R *.lfm}
 
@@ -424,17 +485,9 @@ begin
 end;
 
 procedure TSetupForm.FormShow(Sender: TObject);
-var
-  SR : TSearchRec;
-  Loop,FindResult : integer;
-  NetStat : TNetworkStatistics;
-  WinampStat : TWinampStat;
-  i : Integer;
-  ActOpr : string;
-  hConfig: longint;
-  ConfigFileName: String;
 begin
   {$IFDEF STANDALONESETUP}
+  MultiInstanceTabSheet.TabVisible := true;
   SetupForm.BorderIcons := [biSystemMenu,biMinimize];
   BitBtn1.Caption := '&Save';
   BitBtn1.Hint := 'Save configuration';
@@ -444,15 +497,75 @@ begin
   BitBtn3.Hint := 'Save under a different filename';
   BitBtn3.OnClick := SaveAsButtonClick;
   BitBtn4.Visible := true;
-  OpenDialog3.Execute;
-  if (OpenDialog3.FileName = '')  then
-    // Brute force as calling Application.terminate would execute the rest of this procedure first
-    exitprocess(1);
+  LoadConfig(Sender);
+  {$ENDIF}
+  LoadSettings(Sender);
+
+
+
+  { The below is commented out as it is reading/writing directly to the device.
+    We need to know more details so we can move it in to the lcd code.
+
+     // var section move down to here:
+      var
+        line, line2: String;
+        ch: char;
+        laatstepacket: Boolean;
+
+      label nextpacket;
+
+  LCDSmartieDisplayForm.VaComm1.WriteChar(chr($FE));   //probe 4 one-wire devices
+  LCDSmartieDisplayForm.VaComm1.WriteChar(chr($C8));
+  LCDSmartieDisplayForm.VaComm1.WriteChar(chr($02));
+
+
+  laatstepacket := false;
+nextpacket:
+  line := '';
+  line2 := '';
+  while LCDSmartieDisplayForm.VaComm1.ReadBufUsed >= 1 do
+  begin
+    LCDSmartieDisplayForm.VaComm1.ReadChar(Ch);
+    line := line + ch;
+  end;
+  if length(line)>13 then
+  begin
+    if line[1] + line[2]='#*' then
+    begin
+      if line[3] = chr(10) then laatstepacket := true;
+      if (line[5] = chr(0)) and (line[14] = chr(0)) then
+      begin
+        for i := 0 to 7 do
+        begin
+          line2 := line2 + IntToHex(ord(line[i + 6]), 2) + ' ';
+        end;
+        ButtonsListBox.Items.Add(line2);
+      end;
+    end;
+    if laatstepacket <> true then goto nextpacket;
+  end;}
+
+end;
+
+procedure TSetupForm.LoadConfig(Sender: TObject);
+var
+  hConfig: longint;
+begin
+  {$IFDEF STANDALONESETUP}
+  if ConfigFileName = '' then
+  begin
+    OpenDialog3.Execute;
+
+    if (OpenDialog3.FileName = '')  then
+      // Brute force as calling Application.terminate would execute the rest of this procedure first
+      exitprocess(1);
 
     ConfigFileName := OpenDialog3.Filename;
+  end;
+
     config := TConfig.Create(ConfigFileName);
     Caption := ConfigFileName;
-
+    MiCurrentConfigLabel.Caption := ConfigFileName;
     if (config.load() = false) then
     begin
       if FileExists(ConfigFileName) then
@@ -464,7 +577,7 @@ begin
       If hConfig=-1 then
       begin
         FileClose(hConfig);
-        showmessage('Default configuration ('+ConfigFileName+') could not be created');
+        showmessage('Configuration file ('+ConfigFileName+') could not be created');
         exitprocess(1);
       end;
       FileClose(hConfig);
@@ -472,13 +585,32 @@ begin
       config.save(); // save default values
     end;
   {$ENDIF}
+end;
 
+procedure TSetupForm.CreateConfig(Sender: TObject);
+begin
+
+end;
+
+procedure TSetupForm.LoadSettings(Sender: TObject);
+var
+  SR : TSearchRec;
+  Loop,FindResult : integer;
+  NetStat : TNetworkStatistics;
+  WinampStat : TWinampStat;
+  i : Integer;
+  ActOpr : string;
+begin
+  AppendConfigNameCheckBox.Checked := config.AppendConfigName;
   CustomTitleTIEdit1.Text := config.MainFormCaption;
+
+  {$IFNDEF STANDALONESETUP}
   SetupForm.Top := config.SettingsFormPosTop;
   SetupForm.Left := config.SettingsFormPosLeft;
 
   MainPageControl.ActivePage := ScreensTabSheet;
   LeftPageControl.ActivePageIndex := config.LastTabIndex;
+  {$ENDIF}
 
   GameServerEdit.text := config.gameServer[1, 1];
 
@@ -609,7 +741,7 @@ begin
   RemoteSendBindIPEdit.Text := config.RemoteSendBindIP;
   RemoteSendPortEdit.Text := config.RemoteSendPort;
   RemoteSendPasswordEdit.Text := config.RemoteSendPassword;
-  
+
   if fileExists(ExtractFilePath(ParamStr(0))+'openssl\cert.pem') and
      fileExists(ExtractFilePath(ParamStr(0))+'openssl\key.pem') then
      RemoteSendUseSSLCheckBox.Checked := config.RemoteSendUseSSL
@@ -637,49 +769,6 @@ begin
   SwapWithScreenComboBox.ItemIndex := 0;
 
   ActionsTimerSpinEdit.Value := config.ActionsTimer;
-
-  { The below is commented out as it is reading/writing directly to the device.
-    We need to know more details so we can move it in to the lcd code.
-
-     // var section move down to here:
-      var
-        line, line2: String;
-        ch: char;
-        laatstepacket: Boolean;
-
-      label nextpacket;
-
-  LCDSmartieDisplayForm.VaComm1.WriteChar(chr($FE));   //probe 4 one-wire devices
-  LCDSmartieDisplayForm.VaComm1.WriteChar(chr($C8));
-  LCDSmartieDisplayForm.VaComm1.WriteChar(chr($02));
-
-
-  laatstepacket := false;
-nextpacket:
-  line := '';
-  line2 := '';
-  while LCDSmartieDisplayForm.VaComm1.ReadBufUsed >= 1 do
-  begin
-    LCDSmartieDisplayForm.VaComm1.ReadChar(Ch);
-    line := line + ch;
-  end;
-  if length(line)>13 then
-  begin
-    if line[1] + line[2]='#*' then
-    begin
-      if line[3] = chr(10) then laatstepacket := true;
-      if (line[5] = chr(0)) and (line[14] = chr(0)) then
-      begin
-        for i := 0 to 7 do
-        begin
-          line2 := line2 + IntToHex(ord(line[i + 6]), 2) + ' ';
-        end;
-        ButtonsListBox.Items.Add(line2);
-      end;
-    end;
-    if laatstepacket <> true then goto nextpacket;
-  end;}
-
 end;
 
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject; aCol,
@@ -736,7 +825,10 @@ end;
 
 procedure TSetupForm.BitBtn4Click(Sender: TObject);
 begin
+  {$IFDEF STANDALONESETUP}
+  ConfigFileName := '';
   FormShow(Sender);
+  {$ENDIF}
 end;
 
 //////////// LIST COM PORTS BUTTON ///////////////////
@@ -747,7 +839,28 @@ i:integer;
 reg:tregistry;
 portnames: tstringlist;
 ports: string;
+aProcess: TProcess;
+lists: tstringlist;
 begin
+   // List Parallel ports
+   aProcess := TProcess.Create(nil);
+   aProcess.Executable := 'WMIC';
+   aProcess.Parameters.Add('/namespace:\\root\cimv2');
+   aProcess.Parameters.Add('path');
+   aProcess.Parameters.Add('Win32_ParallelPort');
+   aProcess.Parameters.Add('get');
+   aProcess.Parameters.Add('caption');
+   aProcess.Options := aProcess.Options + [poWaitOnExit, poUsePipes, poNoConsole];
+   aProcess.Execute;
+   lists := TStringList.Create;
+   lists.LoadFromStream(aProcess.Output);
+   aProcess.Free;
+   ports := 'Parallel ports:'+#13#10;
+   for i := 1 to lists.Count - 1 do
+    ports := ports + lists[i]+#13#10;
+
+   ports := ports + 'Serial ports:'+#13#10;
+
   // really should try..except this
   portnames := TStringList.Create;
   Reg := TRegistry.Create;
@@ -842,6 +955,532 @@ begin
   end;
 end;
 
+// Multi instance manager
+procedure TSetupForm.MiConfigsListBoxClick(Sender: TObject);
+begin
+   MiConfigNameEdit.Text := ExtractFileName(MiConfigsListBox.FileName);
+end;
+
+procedure TSetupForm.MiConfigsLoadBitBtnClick(Sender: TObject);
+begin
+  {$IFDEF STANDALONESETUP}
+  ConfigFileName := MiConfigNameEdit.Text;
+  FormShow(Sender);
+  {$ENDIF}
+end;
+
+procedure TSetupForm.MiConfigsRefreshBitBtnClick(Sender: TObject);
+  var
+  sCurrentDir : string;
+begin
+  // awkward shi as refresh doesnt just refresh the list
+  sCurrentDir := MiConfigsListBox.Directory;
+  MiConfigsListBox.Directory := '..';
+  MiConfigsListBox.Directory := sCurrentDir;
+  MiConfigsListBox.Refresh;
+end;
+
+procedure TSetupForm.MiConfigsTabSheetShow(Sender: TObject);
+begin
+  MiConfigsRefreshBitBtnClick(Sender);
+end;
+
+procedure TSetupForm.MiCopyConfigBitBtnClick(Sender: TObject);
+var
+  NewConfigFileName: string;
+  len: integer;
+  ext: string;
+begin
+  if MiConfigsListBox.FileName = '' then
+    Exit;
+
+  if MiConfigNameEdit.Text = '' then
+  begin
+    showmessage('Configuration file name is empty. Type a new name');
+    Exit;
+  end;
+
+  len := length(MiConfigNameEdit.Text);
+  ext := copy(MiConfigNameEdit.Text, len -3, 4);
+  if (ext = '.ini') then
+    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text
+  else
+    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text+'.ini';
+
+  if FileExists(NewConfigFileName) then
+  begin
+    showmessage('Configuration file ('+NewConfigFileName+') already exists. Choose another name');
+    Exit;
+  end;
+
+  CopyFile(PChar(MiConfigsListBox.FileName), PChar(NewConfigFileName), true);
+  MiConfigsRefreshBitBtnClick(Sender);
+end;
+
+// create a new smartie program directory
+// I tried to keep this as self contained as possible
+procedure TSetupForm.InvertButtonClick(Sender: TObject);
+var
+  i: integer;
+begin
+   {$IFDEF STANDALONESETUP}
+  for i := 0 to FileSelectList.Count -1 do
+    FileSelectList.Checked[i] := not FileSelectList.Checked[i];
+   {$ENDIF}
+end;
+
+procedure TSetupForm.SelectAllButtonClick(Sender: TObject);
+var
+  i: integer;
+begin
+  {$IFDEF STANDALONESETUP}
+  for i := 0 to FileSelectList.Count -1 do
+    FileSelectList.Checked[i] := true;
+  {$ENDIF}
+end;
+
+procedure TSetupForm.MiCreateNewProgDirButton1Click(Sender: TObject);
+var
+  NewDir: string;
+  CopyList, CopyPlugins, CopyRootFiles, TmpList: TStringlist;
+  selectionform: TForm;
+  OkButton, CancelButton, SelectAllButton, InvertButton: TButton;
+  i, j: integer;
+  hConfig: longint;
+  NewConfig: TConfig;
+  selectdir: TSelectDirectoryDialog;
+begin
+  {$IFDEF STANDALONESETUP}
+  selectdir := TSelectDirectoryDialog.Create(nil);
+  selectdir.Title := 'Select or create new folder';
+  selectdir.InitialDir:='.';
+  selectdir.Options:=[ofOldStyleDialog, ofCreatePrompt, ofEnableSizing];
+  if not selectdir.Execute then
+      Exit;
+  NewDir := selectdir.FileName;
+  selectdir.Free;
+
+  selectionform := TForm.Create(nil);
+  selectionform.SetBounds(Left, Top, 395, 300);
+  selectionform.BorderStyle := bsDialog;
+
+  // buttons
+  SelectAllButton := TButton.create(selectionform);
+  SelectAllButton.Caption := 'Select all';
+  SelectAllButton.SetBounds(310, 140, 75, 30);
+  SelectAllButton.Parent := selectionform;
+  SelectAllButton.OnClick := SelectAllButtonClick;
+
+  InvertButton := TButton.create(selectionform);
+  InvertButton.Caption := 'Invert';
+  InvertButton.SetBounds(310, 180, 75, 30);
+  InvertButton.Parent := selectionform;
+  InvertButton.OnClick := InvertButtonClick;
+
+  OkButton := TButton.create(selectionform);
+  OkButton.Caption := 'Ok';
+  OkButton.SetBounds(310, 220, 75, 30);
+  OkButton.Parent := selectionform;
+  OkButton.ModalResult := mrOK;
+
+  CancelButton := TButton.create(selectionform);
+  CancelButton.Caption := 'Cancel';
+  CancelButton.SetBounds(310, 260, 75, 30);
+  CancelButton.Parent := selectionform;
+  CancelButton.ModalResult := mrCancel;
+
+  FileSelectList := TCheckListBox.Create(selectionform);
+  FileSelectList.SetBounds(0, 0, 300, 300);
+  FileSelectList.Parent := selectionform;
+
+  TmpList := TStringlist.Create;
+  FindAllFiles(TmpList, 'plugins', '*', false);
+
+  FileSelectList.Clear;
+  for i := 0 to TmpList.Count - 1 do
+  begin
+    FileSelectList.AddItem(ExtractFileName(TmpList[i]), nil);
+  end;
+
+  selectionform.Caption := 'Select plugins to copy';
+  with selectionform do
+    ShowModal;
+
+  if (selectionform.ModalResult = mrCancel) then
+  begin
+    TmpList.Free;
+    FileSelectList.Free;
+    selectionform.Free;
+    Exit;
+  end;
+
+  CopyPlugins := TStringlist.Create;
+  for i := 0 to FileSelectList.Count -1 do
+  begin
+    if FileSelectList.Checked[i] then
+       CopyPlugins.Add(FileSelectList.Items[i]);
+  end;
+
+  // next window
+  TmpList.Clear;
+  FindAllFiles(TmpList, '.', '*', false);
+
+  FileSelectList.Clear;
+  for i := 0 to TmpList.Count - 1 do
+  begin
+    FileSelectList.AddItem(ExtractFileName(TmpList[i]), nil);
+  end;
+
+  selectionform.Caption := 'Select other files to copy';
+  with selectionform do
+    ShowModal;
+
+  if (selectionform.ModalResult = mrCancel) then
+  begin // user has canceled the operation
+    TmpList.Free;
+    FileSelectList.Free;
+    selectionform.Free;
+    Exit;
+  end;
+
+  CopyRootFiles := TStringlist.Create;
+  for i := 0 to FileSelectList.Count -1 do
+  begin
+    if FileSelectList.Checked[i] then
+       CopyRootFiles.Add(FileSelectList.Items[i]);
+  end;
+
+  FileSelectList.Free;
+  TmpList.Clear;
+
+  // copy root files and create root dirs
+  CopyList := TStringlist.Create;
+  CopyList.AddCommaText('DNBridge.dll, LCDSmartie.exe, LCDSmartie.exe.config, LegacyLoader.exe');
+
+  for i := 0 to CopyRootFiles.Count -1 do
+    CopyList.Add(CopyRootFiles[i]);
+
+  createdir(NewDir);
+  createdir(NewDir+'\cache');
+  createdir(NewDir+'\displays');
+  createdir(NewDir+'\images');
+  createdir(NewDir+'\openssl');
+  createdir(NewDir+'\plugins');
+
+  for i := 0 to CopyList.Count -1 do
+  begin
+    CopyingFileLabel.Caption := 'Copying: '+ExtractFileName(CopyList[i]);
+    CopyingFileLabel.Repaint;
+    copyfile(pchar(CopyList[i]), pchar(NewDir +'\'+CopyList[i]), false);
+  end;
+
+  // copy displays dir
+  CopyList.Clear;
+  FindAllFiles(CopyList, 'displays', '*', false);
+  for i := 0 to CopyList.Count -1 do
+  begin
+    CopyingFileLabel.Caption := 'Copying: '+ExtractFileName(CopyList[i]);
+    CopyingFileLabel.Repaint;
+    copyfile(pchar(CopyList[i]), pchar(NewDir +'\'+CopyList[i]), false);
+  end;
+
+  // copy openssl dir
+  CopyList.Clear;
+  FindAllFiles(CopyList, 'openssl', '*', false);
+  for i := 0 to CopyList.Count -1 do
+  begin
+    CopyingFileLabel.Caption := 'Copying: '+ExtractFileName(CopyList[i]);
+    CopyingFileLabel.Repaint;
+    copyfile(pchar(CopyList[i]), pchar(NewDir +'\'+CopyList[i]), false);
+  end;
+
+  // images dir is different, theres also subdirs
+  CopyList.Clear;
+  FindAllFiles(CopyList, 'images', '*', false);
+  for i := 0 to CopyList.Count -1 do
+  begin
+    CopyingFileLabel.Caption := 'Copying: '+ExtractFileName(CopyList[i]);
+    CopyingFileLabel.Repaint;
+    copyfile(pchar(CopyList[i]), pchar(NewDir+'\'+CopyList[i]), false);
+  end;
+
+  FindAllDirectories(TmpList, 'images', false);
+  for i := 0 to TmpList.Count -1 do
+  begin
+    CopyList.Clear;
+    createdir(NewDir+'\'+TmpList[i]);
+    FindAllFiles(CopyList, TmpList[i], '*', false);
+    for j := 0 to CopyList.Count -1 do
+    begin
+      CopyingFileLabel.Caption := 'Copying: '+ExtractFileName(CopyList[i]);
+      CopyingFileLabel.Repaint;
+      copyfile(pchar(CopyList[j]), pchar(NewDir +'\'+CopyList[j]), false);
+    end;
+  end;
+
+  // copy plugins
+  CopyList.Clear;
+  for i := 0 to CopyPlugins.Count -1 do
+    CopyList.Add(CopyPlugins[i]);
+  for i := 0 to CopyList.Count -1 do
+  begin
+    CopyingFileLabel.Caption := 'Copying: '+ExtractFileName(CopyList[i]);
+    CopyingFileLabel.Repaint;
+    copyfile(pchar('plugins\'+CopyList[i]), pchar(NewDir+'\plugins\'+CopyList[i]), false);
+  end;
+  CopyingFileLabel.Caption := 'Copying config';
+
+  // copy config
+  if MiCopyToNewRadioButton.Checked then
+  begin
+    ApplyButtonClick(Sender);
+    CopyFile(pchar(config.filename), pchar(NewDir+'\config.ini'), false);
+  end
+  else
+  begin
+    hConfig := FileCreate(NewDir+'\config.ini');
+    FileClose(hConfig);
+    NewConfig := TConfig.Create(NewDir+'\config.ini');
+    NewConfig.load();
+    NewConfig.save();
+    NewConfig.Free;
+    NewConfig := nil;
+  end;
+
+  CopyingFileLabel.Caption := 'Done';
+  {$ENDIF}
+end;
+
+procedure TSetupForm.MiDeleteBitBtnClick(Sender: TObject);
+var
+  filename: string;
+begin
+   if MiConfigsListBox.FileName = '' then
+     Exit;
+
+   filename := MiConfigsListBox.FileName;
+
+   case QuestionDlg('Delete Config?', 'Sure to delete' + sLineBreak + filename,
+                       mtInformation, [mrYes, 'Yes', mrNo, 'No', 'IsDefault'], '') of
+     mrYes: DeleteFile(filename);
+   end;
+   MiConfigsRefreshBitBtnClick(Sender);
+end;
+
+procedure TSetupForm.MiNewConfigBitBtnClick(Sender: TObject);
+var
+  hConfig: longint;
+  NewConfig: TConfig;
+  NewConfigFileName: string;
+  len: integer;
+  ext: string;
+begin
+  if MiConfigNameEdit.Text = '' then
+  begin
+    showmessage('Configuration file name is empty. Type a new name');
+    Exit;
+  end;
+
+  len := length(MiConfigNameEdit.Text);
+  ext := copy(MiConfigNameEdit.Text, len -3, 4);
+  if (ext = '.ini') then
+    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text
+  else
+    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text+'.ini';
+
+  if FileExists(NewConfigFileName) then
+  begin
+    showmessage('Configuration file ('+NewConfigFileName+') already exists. Choose another name');
+    Exit;
+  end;
+
+  NewConfig := TConfig.Create(NewConfigFileName);
+  hConfig := FileCreate(NewConfigFileName);
+  If hConfig=-1 then
+  begin
+    FileClose(hConfig);
+    showmessage('Configuration file ('+NewConfigFileName+') could not be created');
+    Exit;
+  end;
+
+  FileClose(hConfig);
+  NewConfig.load();
+  NewConfig.save();
+  NewConfig.Free;
+  NewConfig := nil;
+  MiConfigsRefreshBitBtnClick(Sender);
+end;
+
+// EnumWindows() callback function. Enumerates windows until function returns false
+function EnumWindowsProc(WHandle: HWND; LParM: LParam): LongBool;StdCall;
+var
+  Title:array[0..128] of char;
+  sTitle: String ;
+  pid: DWORD;
+  ProcessesListLen: integer;
+  Style: Long;
+begin
+  {$IFDEF STANDALONESETUP}
+  Result:=True;
+  GetWindowText(wHandle, Title,128);
+  GetWindowThreadProcessId( wHandle, &pid);
+  sTitle:=Title;
+  if (pid = LParM) then
+  begin
+    Style:= GetWindowLong(wHandle, GWL_STYLE);
+    if (IsWindowVisible(wHandle) and IsWindow(wHandle)) or (Style = $06C80000) then
+    begin
+      ProcessesListLen := Length(ProcessesList);
+      setLength(ProcessesList, ProcessesListLen + 1);
+      ProcessesList[ProcessesListLen].WindowTitle := sTitle;
+      ProcessesList[ProcessesListLen].Pid := pid;
+      Result := false;
+    end;
+  end;
+  {$ENDIF}
+end;
+
+procedure TSetupForm.MiRiRefreshBitBtnClick(Sender: TObject);
+var
+  ProcessLoop: BOOL;
+  ProcessSnapshotHandle: THandle;
+  ProcessEntry32: TProcessEntry32;
+  i: integer;
+begin
+  {$IFDEF STANDALONESETUP}
+  ProcessSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  ProcessEntry32.dwSize := SizeOf(ProcessEntry32);
+  ProcessLoop := Process32First(ProcessSnapshotHandle, ProcessEntry32);
+
+  setLength(ProcessesList, 0);
+
+  while Integer(ProcessLoop) <> 0 do
+  begin
+    if ProcessEntry32.szExeFile = 'LCDSmartie.exe' then
+    begin
+
+      EnumWindows(@EnumWindowsProc, ProcessEntry32.th32ProcessID);
+    end;
+    ProcessLoop := Process32Next(ProcessSnapshotHandle, ProcessEntry32);
+  end;
+
+  MiRunningInstancesListGrid.Clear;
+  MiRunningInstancesListGrid.colcount := 2;
+  MiRunningInstancesListGrid.rowcount := 1;
+  MiRunningInstancesListGrid.FixedRows := 1;
+  MiRunningInstancesListGrid.ColWidths[0] := 185;
+  MiRunningInstancesListGrid.ColWidths[1] := 50;
+
+  MiRunningInstancesListGrid.Cells[0, 0] := 'Window Title';
+  MiRunningInstancesListGrid.Cells[1, 0] := 'PID';
+
+  for i := 0 to Length(ProcessesList) -1 do
+  begin
+    MiRunningInstancesListGrid.RowCount := MiRunningInstancesListGrid.RowCount + 1;
+    MiRunningInstancesListGrid.Cells[0, MiRunningInstancesListGrid.RowCount-1] := ProcessesList[i].WindowTitle;
+    MiRunningInstancesListGrid.Cells[1, MiRunningInstancesListGrid.RowCount-1] := inttostr(ProcessesList[i].Pid);
+  end;
+ {$ENDIF}
+end;
+
+procedure TSetupForm.MiRiStopInstanceBitBtnClick(Sender: TObject);
+var
+  pid: integer;
+  hnd : THandle;
+begin
+  pid := strtoint(MiRunningInstancesListGrid.Cells[1, MiRunningInstancesListGrid.Row]);
+
+  hnd := OpenProcess(PROCESS_TERMINATE, False, pid);
+  if hnd > 0 then
+  try
+    Win32Check(TerminateProcess(hnd,0));
+  finally
+    CloseHandle(hnd);
+  end;
+  MiRiRefreshBitBtnClick(Sender);
+end;
+
+procedure TSetupForm.MiRunningProcessesTabSheetShow(Sender: TObject);
+begin
+  MiRiRefreshBitBtnClick(Sender);
+end;
+
+procedure TSetupForm.MiStartupItemAddBitBtnClick(Sender: TObject);
+var
+  sParameters: string;
+  pos: integer;
+begin
+  {$IFDEF STANDALONESETUP}
+  if (config.bAutoStartHide) then
+    sParameters := '-hide ';
+
+  sParameters := sParameters + '-config '+ '"' + ExtractFileName(config.filename) + '"';
+  pos := 1;
+  CreateShortcut('LCD Smartie '+ExtractSubstr(ExtractFileName(ConfigFileName), pos, ['.']), ExtractFilePath(Application.ExeName)+'LCDSmartie.exe' , sParameters, False);
+  MiStartupItemsRefreshBitBtnClick(Sender);
+  {$ENDIF}
+end;
+
+procedure TSetupForm.MiStartupItemRemoveBitBtnClick(Sender: TObject);
+var
+  i: integer;
+  empty: string;
+begin
+  for i := 0 to MiStartupItemsCheckListBox.Count -1  do
+  begin
+    if MiStartupItemsCheckListBox.Checked[i] then
+    begin
+      CreateShortcut(MiStartupItemsCheckListBox.Items[i], empty , empty, True);
+    end;
+  end;
+  MiStartupItemsRefreshBitBtnClick(Sender);
+end;
+
+procedure TSetupForm.MiStartupItemsLaunchBitBtnClick(Sender: TObject);
+var
+  R : TRegIniFile;
+  Dir : string;
+  i: integer;
+begin
+  R := TRegIniFile.Create('Software\MicroSoft\Windows\CurrentVersion\Explorer');
+  Dir := R.ReadString('Shell Folders', 'Startup', '');
+
+  for i := 0 to MiStartupItemsCheckListBox.Count -1  do
+  begin
+    if MiStartupItemsCheckListBox.Checked[i] then
+    begin
+      ShellExecute(Handle, 'open', pchar(Dir+'\'+MiStartupItemsCheckListBox.Items[i]+'.lnk'), '',
+     pchar(ExtractFilePath(Application.ExeName)), SW_SHOWNORMAL)
+    end;
+  end;
+  //R.free;
+end;
+
+procedure TSetupForm.MiStartupItemsRefreshBitBtnClick(Sender: TObject);
+var
+  R : TRegIniFile;
+  Dir : string;
+  Items: TStringList;
+  i: integer;
+begin
+  R := TRegIniFile.Create('Software\MicroSoft\Windows\CurrentVersion\Explorer');
+  Dir := R.ReadString('Shell Folders', 'Startup', '');
+  Items := TStringList.Create;
+  FindAllFiles(Items, Dir, 'LCD Smartie*.lnk', false);
+  MiStartupItemsCheckListBox.Clear;
+  for i := 0 to Items.Count - 1 do
+  begin
+    MiStartupItemsCheckListBox.AddItem(ExtractFileNameWithoutExt(ExtractFileName(Items[i])), nil);
+  end;
+  Items.free;
+  //R.free;
+end;
+
+procedure TSetupForm.MiStartupItemsTabSheetShow(Sender: TObject);
+begin
+  MiStartupItemsRefreshBitBtnClick(Sender);
+end;
+
 procedure TSetupForm.RssPageChange(Sender: TObject);
 var
   feeditem: string;
@@ -855,6 +1494,7 @@ begin
     VariableEdit.Text := '$Rss('+RssTMemoEdit.text+','+feeditem+','+inttostr(RssItemNumSpinEdit.Value)+','+inttostr(RssMaxFreqSpinedit.Value)+')';
   end;
 end;
+////// end multi instance manager
 
 procedure TSetupForm.SaveScreen(scr: Integer);
 begin
@@ -1647,6 +2287,7 @@ begin
   config.RemoteSendPassword := RemoteSendPasswordEdit.Text;
   config.RemoteSendUseSSL := RemoteSendUseSSLCheckBox.Checked;
 
+  config.AppendConfigName := AppendConfigNameCheckBox.Checked;
   Config.MainFormCaption := CustomTitleTIEdit1.Text;
   config.SettingsFormPosTop := SetupForm.Top;
   config.SettingsFormPosLeft := SetupForm.Left;

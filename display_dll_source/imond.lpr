@@ -1,6 +1,8 @@
 library imond;
 
-{$R *.res}
+{$MODE Delphi}
+
+{.$R *.res}
 
 uses
   Windows,SysUtils,Math;
@@ -82,7 +84,7 @@ procedure DISPLAYDLL_Done(); stdcall;
 begin
   try
     if hdevice > 0 then
-      CloseHandle(hDevice);
+      FileClose(hDevice); { *Converted from CloseHandle* }
     hdevice := 0;
   except
   end;

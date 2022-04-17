@@ -2,15 +2,17 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="11"/>
-    <BuildModes Active="Release"/>
+    <Version Value="12"/>
+    <BuildModes Active="Release x64"/>
     <Units Count="1">
       <Unit0>
         <Filename Value="wanip.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="-1"/>
+        <TopLine Value="13"/>
+        <CursorPos X="33" Y="68"/>
         <UsageCount Value="20"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
     </Units>
@@ -21,14 +23,10 @@
       <Define3 Value="Compiler6_Up"/>
       <Define4 Value="PUREPASCAL"/>
     </OtherDefines>
-    <General>
-      <ActiveWindowIndexAtStart Value="-1"/>
-    </General>
     <JumpHistory HistoryIndex="-1"/>
     <RunParams>
       <FormatVersion Value="2"/>
-      <Modes Count="0" ActiveMode=""/>
+      <Modes ActiveMode=""/>
     </RunParams>
   </ProjectSession>
-  <SkipCheckLCLInterfaces Value="True"/>
 </CONFIG>
