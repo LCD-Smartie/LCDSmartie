@@ -278,6 +278,7 @@ var
   OurVersBuild : integer;
   ShowWindowFlag: Boolean;
   LastLineLCD: array [1..4] of string;
+  DisplayError: boolean;
 implementation
 {$IFNDEF STANDALONESETUP}
 {$R *.lfm}
@@ -429,7 +430,7 @@ procedure TLCDSmartieDisplayForm.FormCreate(Sender: TObject);
 var
   hConfig: longint;
 begin
-
+  DisplayError := false;
   application.OnEndSession:=OnEndSession; // lazarus has support for this message
   PrevWndProc:= Windows.WNDPROC(SetWindowLongPtr(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback))); // message handler
 
@@ -1254,15 +1255,16 @@ begin
   UpdateTimersState(false);
     if (not config.screen[activeScreen].settings.bSticky) then
       LCDSmartieDisplayForm.NextScreenTimer.interval := config.screen[activeScreen].settings.showTime*1000;
+  if not DisplayError then
+  begin
+    if (Config.MainFormCaption = '') then
+      LCDSmartieDisplayForm.Caption := 'LCD Smartie ' + GetFmtFileVersion()
+    else
+      LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
 
-  if (Config.MainFormCaption = '') then
-    LCDSmartieDisplayForm.Caption := 'LCD Smartie ' + GetFmtFileVersion()
-  else
-    LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
-
-  if config.AppendConfigName then
-    LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + copy(config.filename, 0, length(config.filename) - 4);
-
+    if config.AppendConfigName then
+      LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + copy(config.filename, 0, length(config.filename) - 4);
+  end;
   trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
 end;
 
@@ -1560,10 +1562,14 @@ begin
       Lcd := TLCD_DLL.CreateDLL(config.width,config.height,config.DisplayDLLName,config.DisplayDLLParameters)
     else
       Lcd := TLCD.Create();
+    DisplayError := false;
   except
     on E: Exception do
     begin
-      showmessage('Failed to open device: ' + E.Message);
+      // can we move this elsewhere to save an annoying popup?
+      //showmessage('Failed to open device: ' + E.Message);
+      LCDSmartieDisplayForm.Caption := E.Message; // yes, put it on the title bar
+      DisplayError := true;
       Lcd := TLCD.Create();
     end;
   end;

@@ -258,7 +258,7 @@ var
   pszFileName : IPersistFile;
   Dir : string;
   FullPath : WideString;
-  R : TRegIniFile;
+  R : TRegistry;
 begin
   LPUnknown := CreateComObject(CLSID_ShellLink);
   pShlLnk := LPUnknown as IShellLink;
@@ -268,9 +268,11 @@ begin
   pShlLnk.SetDescription(PChar('Automatically created by LCD Smartie'));
   pShlLnk.SetWorkingDirectory(PChar(ExtractFilePath(FileName)));
 
-  R := TRegIniFile.Create('Software\MicroSoft\Windows\CurrentVersion\Explorer');
+  R := TRegistry.Create(KEY_READ);
+  R.RootKey := HKEY_CURRENT_USER;
+  R.OpenKeyReadOnly('Software\MicroSoft\Windows\CurrentVersion\Explorer\Shell Folders\');
   try
-    Dir := R.ReadString('Shell Folders', 'Startup', '');
+    Dir := R.ReadString('Startup');
     if Dir <> '' then
     begin
       FullPath := Dir + '\'+sName+'.lnk';
@@ -280,7 +282,7 @@ begin
         pszFileName.Save(PWChar(FullPath), False);
     end;
   finally
-    //R.Free; // something else wrong with lazarus. causes exeption on free
+    R.Free;
   end;
 end;
 

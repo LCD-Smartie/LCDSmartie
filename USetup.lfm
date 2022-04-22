@@ -1712,7 +1712,7 @@ object SetupForm: TSetupForm
             Top = 0
             Width = 235
             Directory = '.'
-            ItemHeight = 0
+            ItemHeight = 13
             Mask = '*.ini'
             OnClick = MiConfigsListBoxClick
             ParentShowHint = False

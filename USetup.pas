@@ -552,7 +552,7 @@ var
   hConfig: longint;
 begin
   {$IFDEF STANDALONESETUP}
-  if ConfigFileName = '' then
+  if (ConfigFileName = '') or (not FileExists(ConfigFileName)) then
   begin
     OpenDialog3.Execute;
 
@@ -964,8 +964,11 @@ end;
 procedure TSetupForm.MiConfigsLoadBitBtnClick(Sender: TObject);
 begin
   {$IFDEF STANDALONESETUP}
-  ConfigFileName := MiConfigNameEdit.Text;
-  FormShow(Sender);
+  if MiConfigNameEdit.Text <> '' then
+  begin
+    ConfigFileName := MiConfigNameEdit.Text;
+    FormShow(Sender);
+  end;
   {$ENDIF}
 end;
 
@@ -1438,12 +1441,14 @@ end;
 
 procedure TSetupForm.MiStartupItemsLaunchBitBtnClick(Sender: TObject);
 var
-  R : TRegIniFile;
+  R : TRegistry;
   Dir : string;
   i: integer;
 begin
-  R := TRegIniFile.Create('Software\MicroSoft\Windows\CurrentVersion\Explorer');
-  Dir := R.ReadString('Shell Folders', 'Startup', '');
+  R := TRegistry.Create(KEY_READ);
+  R.RootKey := HKEY_CURRENT_USER;
+  R.OpenKeyReadOnly('Software\MicroSoft\Windows\CurrentVersion\Explorer\Shell Folders\');
+  Dir := R.ReadString('Startup');
 
   for i := 0 to MiStartupItemsCheckListBox.Count -1  do
   begin
@@ -1453,18 +1458,21 @@ begin
      pchar(ExtractFilePath(Application.ExeName)), SW_SHOWNORMAL)
     end;
   end;
-  //R.free;
+
+  R.free;
 end;
 
 procedure TSetupForm.MiStartupItemsRefreshBitBtnClick(Sender: TObject);
 var
-  R : TRegIniFile;
+  R : TRegistry;
   Dir : string;
   Items: TStringList;
   i: integer;
 begin
-  R := TRegIniFile.Create('Software\MicroSoft\Windows\CurrentVersion\Explorer');
-  Dir := R.ReadString('Shell Folders', 'Startup', '');
+  R := TRegistry.Create(KEY_READ);
+  R.RootKey := HKEY_CURRENT_USER;
+  R.OpenKeyReadOnly('Software\MicroSoft\Windows\CurrentVersion\Explorer\Shell Folders\');
+  Dir := R.ReadString('Startup');
   Items := TStringList.Create;
   FindAllFiles(Items, Dir, 'LCD Smartie*.lnk', false);
   MiStartupItemsCheckListBox.Clear;
@@ -1473,7 +1481,7 @@ begin
     MiStartupItemsCheckListBox.AddItem(ExtractFileNameWithoutExt(ExtractFileName(Items[i])), nil);
   end;
   Items.free;
-  //R.free;
+  R.free;
 end;
 
 procedure TSetupForm.MiStartupItemsTabSheetShow(Sender: TObject);
