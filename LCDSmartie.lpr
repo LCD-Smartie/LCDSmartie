@@ -5,7 +5,7 @@ program LCDSmartie;
 uses
   {madExcept,
   madLinkDisAsm,}
-  Forms, Interfaces,
+  Forms, Interfaces, SysUtils,
   UMain  {LCDSmartieDisplayForm};
 
 {$R *.res}

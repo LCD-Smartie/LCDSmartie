@@ -29,7 +29,7 @@ release-dir/openssl/.rnd
 release-dir/openssl/cert.pem
 release-dir/openssl/key.pem
 # ignore extracted components
-components/WinampCtrl
+components/WinampCtrl/*
 # ignore lazarus backups
 backup
 *.bak

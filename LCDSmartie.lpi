@@ -87,6 +87,14 @@
               <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
               <ShowHintsForSenderNotUsed Value="True"/>
             </Verbosity>
+            <CustomOptions Value="-CPPACKRECORD=8
+-SIcom
+-WR
+-dBorland
+-dVer150
+-dDelphi7
+-dCompiler6_Up
+-dPUREPASCAL"/>
             <OtherDefines Count="5">
               <Define0 Value="Borland"/>
               <Define1 Value="Ver150"/>
@@ -106,18 +114,25 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="x64\fuo"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
-            <Style Value="1"/>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
+              <IncludeAssertionCode Value="True"/>
               <UseAnsiStrings Value="False"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
           </CodeGeneration>
@@ -148,13 +163,18 @@
               <ShowHintsForSenderNotUsed Value="True"/>
             </Verbosity>
             <CustomOptions Value="-CPPACKRECORD=8
--SIcom
--WR
 -dBorland
 -dVer150
 -dDelphi7
 -dCompiler6_Up
 -dPUREPASCAL"/>
+            <OtherDefines Count="5">
+              <Define0 Value="Borland"/>
+              <Define1 Value="Ver150"/>
+              <Define2 Value="Delphi7"/>
+              <Define3 Value="Compiler6_Up"/>
+              <Define4 Value="PUREPASCAL"/>
+            </OtherDefines>
           </Other>
         </CompilerOptions>
       </Item3>
@@ -168,16 +188,16 @@
     </RunParams>
     <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="RunTimeTypeInfoControls"/>
+        <PackageName Value="ExceptionLogger"/>
       </Item1>
       <Item2>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item2>
       <Item3>
-        <PackageName Value="WinampCtrl7"/>
+        <PackageName Value="LazControls"/>
       </Item3>
       <Item4>
-        <PackageName Value="ExceptionLogger"/>
+        <PackageName Value="WinampCtrl7"/>
       </Item4>
       <Item5>
         <PackageName Value="indylaz"/>
@@ -346,7 +366,7 @@
   <Debugging>
     <Exceptions Count="4">
       <Item1>
-        <Name Value="EIdOSSLCouldNotLoadSSLLibrary"/>
+        <Name Value="EConvertError"/>
       </Item1>
       <Item2>
         <Name Value="EIdHTTPProtocolException"/>
@@ -355,7 +375,7 @@
         <Name Value="EIdSocketError"/>
       </Item3>
       <Item4>
-        <Name Value="EConvertError"/>
+        <Name Value="Exception"/>
       </Item4>
     </Exceptions>
   </Debugging>

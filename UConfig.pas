@@ -339,8 +339,11 @@ begin
     screen[ScreenCount].settings.theme := initFile.ReadInteger(sScreen, 'Theme', 1)-1;
     screen[ScreenCount].settings.showTime := initFile.ReadInteger(sScreen, 'ShowTime', 10);
     screen[ScreenCount].settings.bSticky := initFile.ReadBool(sScreen, 'Sticky', false);
+
     screen[ScreenCount].settings.TransitionTime := initFile.ReadInteger(sScreen, 'TransitionTime', 20);
+    screen[ScreenCount].settings.TransitionTime := initFile.ReadInteger(sScreen, 'InteractionTime', 20); // compatibilty to be removed in later version
     screen[ScreenCount].settings.TransitionStyle := TTransitionStyle(initFile.ReadInteger(sScreen, 'TransitionStyle',1));
+    screen[ScreenCount].settings.TransitionStyle := TTransitionStyle(initFile.ReadInteger(sScreen, 'Interaction',1)); // compatibilty to be removed in later version
 
     for LineCount := 1 to MaxLines do
     begin
@@ -547,7 +550,11 @@ begin
     initFile.WriteInteger(sScreen, 'Theme', screen[ScreenCount].settings.theme + 1);
     initFile.WriteInteger(sScreen, 'ShowTime', screen[ScreenCount].settings.showTime);
     initfile.WriteBool(sScreen, 'Sticky', screen[ScreenCount].settings.bSticky);
+
+    initFile.WriteInteger(sScreen, 'InteractionTime', screen[ScreenCount].settings.TransitionTime); // compatibilty to be removed in later version
     initFile.WriteInteger(sScreen, 'TransitionTime', screen[ScreenCount].settings.TransitionTime);
+
+    initFile.WriteInteger(sScreen, 'Interaction', ord(screen[ScreenCount].settings.TransitionStyle));  // compatibilty to be removed in later version
     initFile.WriteInteger(sScreen, 'TransitionStyle', ord(screen[ScreenCount].settings.TransitionStyle));
 
     for LineCount := 1 to MaxLines do

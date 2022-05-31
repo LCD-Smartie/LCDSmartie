@@ -133,8 +133,8 @@ begin
       httpCopy := nil;
       fDataLock.Leave();
 
-      sl.Free;
-      HTTP.Free;
+      freeandnil(sl);
+      freeandnil(HTTP);
     end;
   except
     on E: EIdHTTPProtocolException do

@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 388
+  Left = 646
   Height = 456
-  Top = 129
+  Top = 222
   Width = 823
   Anchors = []
   BorderIcons = []
@@ -15,6 +15,7 @@ object SetupForm: TSetupForm
   Font.Color = clBlack
   Font.Height = -11
   KeyPreview = True
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   ParentBiDiMode = False
@@ -27,13 +28,13 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 560
     TabStop = False
-    ActivePage = MultiInstanceTabSheet
+    ActivePage = ActionsTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 5
+    TabIndex = 1
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -1058,31 +1059,37 @@ object SetupForm: TSetupForm
       ClientWidth = 552
       ImageIndex = 1
       object ActionsStringGrid: TStringGrid
-        Left = 1
+        Left = 0
         Height = 349
         Hint = 'These actions are run on a timer'
         Top = 0
-        Width = 568
+        Width = 536
         ColCount = 0
         DefaultColWidth = 77
         DefaultRowHeight = 16
         DoubleBuffered = True
         FixedCols = 0
         FixedRows = 0
-        Options = [goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowMoving, goColMoving, goEditing, goAutoAddRows, goRowSelect, goAlwaysShowEditor, goRelaxedRowSelect, goDblClickAutoSize, goFixedColSizing, goDontScrollPartCell, goCellHints, goAutoAddRowsSkipContentCheck, goRowHighlight]
+        HeaderHotZones = []
+        HeaderPushZones = []
+        Options = [goVertLine, goHorzLine, goRowMoving, goEditing, goRowSelect, goSmoothScroll, goRowHighlight]
         ParentDoubleBuffered = False
         ParentShowHint = False
         RowCount = 0
+        ScrollBars = ssNone
         ShowHint = True
         TabOrder = 2
         TitleStyle = tsStandard
+        OnDragDrop = ActionsStringGridDragDrop
+        OnDragOver = ActionsStringGridDragOver
+        OnMouseDown = ActionsStringGridMouseDown
         OnSelectEditor = ActionsStringGridSelectEditor
         OnSelection = ActionsStringGridSelection
       end
       object ActionAddButton: TButton
-        Left = 412
+        Left = 392
         Height = 25
-        Hint = 'Add a new action'
+        Hint = 'Insert a new action after the current selection'
         Top = 360
         Width = 75
         Caption = 'New'
@@ -1092,7 +1099,7 @@ object SetupForm: TSetupForm
         TabOrder = 1
       end
       object ActionDeleteButton: TButton
-        Left = 492
+        Left = 472
         Height = 25
         Hint = 'Delete selected action'
         Top = 360
@@ -1122,6 +1129,16 @@ object SetupForm: TSetupForm
         ShowHint = True
         TabOrder = 3
         Value = 150
+      end
+      object ActionsGridScrollBar: TScrollBar
+        Left = 536
+        Height = 349
+        Top = 0
+        Width = 17
+        Kind = sbVertical
+        PageSize = 0
+        TabOrder = 4
+        OnScroll = ActionsGridScrollBarScroll
       end
     end
     object StartupTabSheet: TTabSheet
@@ -1942,7 +1959,7 @@ object SetupForm: TSetupForm
     Top = 1
     Width = 265
     TabStop = False
-    ActivePage = EmailTabSheet
+    ActivePage = PluginsTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1951,7 +1968,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 6
+    TabIndex = 10
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -1969,6 +1986,11 @@ object SetupForm: TSetupForm
         Items.Strings = (
           'Username'
           'Computername'
+          'CPU Type'
+          'CPU Speed Mhz'
+          'CPU Speed Ghz'
+          'CPU usage (%)'
+          'CPU usage Bar (length)'
           'Uptime'
           'Uptime Short'
           'Free Memory'
@@ -2699,6 +2721,7 @@ object SetupForm: TSetupForm
         Top = 0
         Width = 209
         Directory = '.'
+        ExtendedSelect = False
         ItemHeight = 0
         Mask = '*.dll'
         OnClick = PluginListBoxClick

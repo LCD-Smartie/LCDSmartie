@@ -94,7 +94,6 @@ end;
 
 procedure TCreditsForm.FormCreate(Sender: TObject);
 begin
-  Image1.Picture.LoadFromFile('.\images\smartie53.bmp');
   CreditList := TStringList.Create;
   with CreditList do begin    // add core developers here in alpha order
     Add('Core Development:');

@@ -1,4 +1,5 @@
 unit USetup;
+
 {******************************************************************************
  *
  *  LCD Smartie - LCD control software.
@@ -28,16 +29,17 @@ uses
   Commctrl,
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
-  ExtDlgs, CheckLst, SpinEx, RTTICtrls, JwaTlHelp32, Process, FileUtil, strutils, Windows;
+  ExtDlgs, CheckLst, SpinEx, RTTICtrls, Process, FileUtil,
+  Windows;
 
 const
   NoVariable = 'Variable: ';
 
-  { TSetupForm }
+{ TSetupForm }
 type
 
   TProcessEntry = record
-    WindowTitle: String;
+    WindowTitle: string;
     Pid: integer;
   end;
 
@@ -286,6 +288,7 @@ type
     ScreenSpinEdit: TSpinEdit;
     ScreensTabSheet: TTabSheet;
     ScreenTabsheet: TTabSheet;
+    ActionsGridScrollBar: TScrollBar;
     SetiAtHomeEmailEdit: TEdit;
     SetiAtHomeListBox: TListBox;
     SetiAtHomeTabSheet: TTabSheet;
@@ -336,11 +339,20 @@ type
     WinampLocationEdit: TEdit;
     WinampLocationLabel: TLabel;
     WinampTabSheet: TTabSheet;
-    procedure ActionsStringGridSelectEditor(Sender: TObject; aCol,
-      aRow: Integer; var Editor: TWinControl);
-    procedure ActionsStringGridSelection(Sender: TObject; aCol, aRow: Integer);
+    procedure ActionsGridScrollBarScroll(Sender: TObject;
+      ScrollCode: TScrollCode; var ScrollPos: Integer);
+    procedure ActionsStringGridDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure ActionsStringGridDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure ActionsStringGridMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ActionsStringGridSelectEditor(Sender: TObject;
+      aCol, aRow: integer; var Editor: TWinControl);
+    procedure ActionsStringGridSelection(Sender: TObject; aCol, aRow: integer);
+    procedure ActionsStringGridUpdateScrollBar;
     procedure BitBtn4Click(Sender: TObject);
     procedure ComPortsButtonClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure LCDSizeComboBoxChange(Sender: TObject);
     procedure MiConfigsListBoxClick(Sender: TObject);
@@ -415,25 +427,25 @@ type
     procedure SetiEnableCheckBoxClick(Sender: TObject);
 
   private
-    DLLPath : string;
-    setupbutton: Integer;
+    DLLPath: string;
+    setupbutton: integer;
     shdownmessagebutton: integer;
-    CurrentlyShownEmailAccount: Integer;
-    CurrentScreen: Integer;
-    Procedure FocusToInputField;
-    procedure SaveScreen(scr: Integer);
-    procedure LoadScreen(scr: Integer);
-    procedure LoadHint(DisplayDLLName : string);
+    CurrentlyShownEmailAccount: integer;
+    CurrentScreen: integer;
+    procedure FocusToInputField;
+    procedure SaveScreen(scr: integer);
+    procedure LoadScreen(scr: integer);
+    procedure LoadHint(DisplayDLLName: string);
     procedure LoadConfig(Sender: TObject);
-    procedure CreateConfig(Sender: TObject);
     procedure LoadSettings(Sender: TObject);
 
   end;
 
-  procedure UpdateSetupForm(cKey : char);
+procedure UpdateSetupForm(cKey: char);
 
-{$IFDEF STANDALONESETUP}
 var
+  SourceCol, SourceRow: integer;
+{$IFDEF STANDALONESETUP}
   SetupForm: TSetupForm;
   ConfigFileName: String = 'config.ini';
   ProcessesList: TProcessList;
@@ -441,45 +453,51 @@ var
 {$ENDIF}
 
 implementation
+
 uses
-  ShellApi, graphics, sysutils,
+  ShellApi, Graphics, SysUtils,
 {$IFNDEF STANDALONESETUP}
   UMain,
+{$ELSE}
+  JwaTlHelp32,
+  strutils,
 {$ENDIF}
-  UConfig,  UDataNetwork, UDataWinamp,
+  UConfig, UDataNetwork, UDataWinamp,
   UIconUtils, UEditLine, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
 
 {$R *.lfm}
 
-procedure TSetupForm.LoadHint(DisplayDLLName : string);
+procedure TSetupForm.LoadHint(DisplayDLLName: string);
 type
-  TUsageFunc = function : pchar; stdcall;
+  TUsageFunc = function: PChar; stdcall;
 var
-  MyDLL : HMODULE;
-  UsageFunc : TUsageFunc;
+  MyDLL: HMODULE;
+  UsageFunc: TUsageFunc;
 begin
   UsageLabel.Caption := 'no parameters';
   IDLabel.Caption := 'Warning: DLL may not be compatible!';
   ParametersEdit.Text := '';
-  if FileExists(DisplayDLLName) then begin
+  if FileExists(DisplayDLLName) then
+  begin
     try
-      MyDLL := LoadLibrary(pchar(DisplayDLLName));
-      if not (MyDll = 0) then begin
-        UsageFunc := GetProcAddress(MyDLL,pchar('DISPLAYDLL_Usage'));
+      MyDLL := LoadLibrary(PChar(DisplayDLLName));
+      if not (MyDll = 0) then
+      begin
+        UsageFunc := GetProcAddress(MyDLL, PChar('DISPLAYDLL_Usage'));
         if assigned(UsageFunc) then
           UsageLabel.Caption := string(UsageFunc);
-        UsageFunc := GetProcAddress(MyDLL,pchar('DISPLAYDLL_DriverName'));
-        
+        UsageFunc := GetProcAddress(MyDLL, PChar('DISPLAYDLL_DriverName'));
+
         if assigned(UsageFunc) then
           IDLabel.Caption := string(UsageFunc);
-        UsageFunc := GetProcAddress(MyDLL,pchar('DISPLAYDLL_DefaultParameters'));
+        UsageFunc := GetProcAddress(MyDLL, PChar('DISPLAYDLL_DefaultParameters'));
         if assigned(UsageFunc) then
           ParametersEdit.Text := string(UsageFunc);
 
         FreeLibrary(MyDLL);
       end;
     except
-      on e:exception do;
+      on e: Exception do ;
     end;
   end;
 end;
@@ -498,6 +516,8 @@ begin
   BitBtn3.OnClick := SaveAsButtonClick;
   BitBtn4.Visible := true;
   LoadConfig(Sender);
+  if not FileExists(ConfigFileName) then
+  exitprocess(1);
   {$ENDIF}
   LoadSettings(Sender);
 
@@ -558,7 +578,7 @@ begin
 
     if (OpenDialog3.FileName = '')  then
       // Brute force as calling Application.terminate would execute the rest of this procedure first
-      exitprocess(1);
+      exit;
 
     ConfigFileName := OpenDialog3.Filename;
   end;
@@ -587,19 +607,14 @@ begin
   {$ENDIF}
 end;
 
-procedure TSetupForm.CreateConfig(Sender: TObject);
-begin
-
-end;
-
 procedure TSetupForm.LoadSettings(Sender: TObject);
 var
-  SR : TSearchRec;
-  Loop,FindResult : integer;
-  NetStat : TNetworkStatistics;
-  WinampStat : TWinampStat;
-  i : Integer;
-  ActOpr : string;
+  SR: TSearchRec;
+  Loop, FindResult: integer;
+  NetStat: TNetworkStatistics;
+  WinampStat: TWinampStat;
+  i: integer;
+  ActOpr: string;
 begin
   AppendConfigNameCheckBox.Checked := config.AppendConfigName;
   CustomTitleTIEdit1.Text := config.MainFormCaption;
@@ -612,8 +627,9 @@ begin
   LeftPageControl.ActivePageIndex := config.LastTabIndex;
   {$ENDIF}
 
-  GameServerEdit.text := config.gameServer[1, 1];
+  GameServerEdit.Text := config.gameServer[1, 1];
 
+  ActionsStringGrid.DragMode := dmManual;
   ActionsStringGrid.colcount := 6;
   ActionsStringGrid.rowcount := 1; // lazarus grids dont work with 0 rows
 
@@ -623,53 +639,58 @@ begin
   ActionsStringGrid.ColWidths[2] := 40;
   ActionsStringGrid.ColWidths[3] := 46;
   ActionsStringGrid.ColWidths[4] := 36;
-  ActionsStringGrid.ColWidths[5] := 186;
+  ActionsStringGrid.ColWidths[5] := 165;
   // Populate the grid
   for i := 1 to config.totalactions do
   begin
-    ActionsStringGrid.Cells[0, ActionsStringGrid.RowCount-1] := 'if';
-    ActionsStringGrid.Cells[1, ActionsStringGrid.RowCount-1] := config.actionsArray[i, 1];
-    case (StrToInt(config.actionsArray[i, 2]))  of
-      0 : ActOpr := '>';
-      1 : ActOpr := '<';
-      2 : ActOpr := '=';
-      3 : ActOpr := '<=';
-      4 : ActOpr := '>=';
-      else ActOpr := '<>';
+    ActionsStringGrid.Cells[0, ActionsStringGrid.RowCount - 1] := 'if';
+    ActionsStringGrid.Cells[1, ActionsStringGrid.RowCount - 1] :=
+      config.actionsArray[i, 1];
+    case (StrToInt(config.actionsArray[i, 2])) of
+      0: ActOpr := '>';
+      1: ActOpr := '<';
+      2: ActOpr := '=';
+      3: ActOpr := '<=';
+      4: ActOpr := '>=';
+      else
+        ActOpr := '<>';
     end;
-    ActionsStringGrid.Cells[2, ActionsStringGrid.RowCount-1] := ActOpr;
-    ActionsStringGrid.Cells[3, ActionsStringGrid.RowCount-1] := config.actionsArray[i, 3];
-    ActionsStringGrid.Cells[4, ActionsStringGrid.RowCount-1] := 'then';
-    ActionsStringGrid.Cells[5, ActionsStringGrid.RowCount-1] := config.actionsArray[i, 4];
+    ActionsStringGrid.Cells[2, ActionsStringGrid.RowCount - 1] := ActOpr;
+    ActionsStringGrid.Cells[3, ActionsStringGrid.RowCount - 1] :=
+      config.actionsArray[i, 3];
+    ActionsStringGrid.Cells[4, ActionsStringGrid.RowCount - 1] := 'then';
+    ActionsStringGrid.Cells[5, ActionsStringGrid.RowCount - 1] :=
+      config.actionsArray[i, 4];
     ActionsStringGrid.RowCount := ActionsStringGrid.RowCount + 1;
   end;
-  ActionsStringGrid.DeleteRow(config.totalactions); // now delete that first row we created
+  ActionsStringGrid.DeleteRow(config.totalactions);
+  ActionsStringGridUpdateScrollBar;
 
   ScreenSpinEdit.MaxValue := MaxScreens;
 
   // load curent screen into setup form
   {$IFNDEF STANDALONESETUP}
-  ScreenSpinEdit.Value := activeScreen;
-  LoadScreen(activeScreen);
+  ScreenSpinEdit.Value := LCDSmartieDisplayForm.activeScreen;
+  LoadScreen(LCDSmartieDisplayForm.activeScreen);
   {$ELSE}
   LoadScreen(1);
   {$ENDIF}
   ProgramRefreshIntervalSpinEdit.Value := config.refreshRate;
-  WinampLocationEdit.text := config.winampLocation;
-  ColorSchemeComboBox.itemindex := config.colorOption;
+  WinampLocationEdit.Text := config.winampLocation;
+  ColorSchemeComboBox.ItemIndex := config.colorOption;
   TrayIcon.Text := config.sTrayIcon;
   SkinPath.Text := config.sSkinPath;
   DrawPreviewIcons(TrayIcon.Text);
 
-  SetiAtHomeEmailEdit.text := config.setiEmail;
+  SetiAtHomeEmailEdit.Text := config.setiEmail;
 
-  DistributedNetLogfileEdit.text := config.distLog;
+  DistributedNetLogfileEdit.Text := config.distLog;
 
   EmailCheckTimeSpinEdit.Value := config.emailPeriod;
   DLLCheckIntervalSpinEdit.Value := config.dllPeriod;
   ProgramScrollIntervalSpinEdit.Value := config.scrollPeriod;
 
-  StayOnTopCheckBox.checked := config.alwaysOnTop;
+  StayOnTopCheckBox.Checked := config.alwaysOnTop;
   HideOnStartup.Checked := config.bHideOnStartup;
   NoAutoStart.Checked := True;
   AutoStart.Checked := config.bAutoStart;
@@ -681,33 +702,36 @@ begin
   ShutdownEdit3.Text := config.ShutdownMessage[3];
   ShutdownEdit4.Text := config.ShutdownMessage[4];
 
-  WebProxyServerEdit.text := config.httpProxy;
-  WebProxyPortEdit.text := IntToStr(config.httpProxyPort);
+  WebProxyServerEdit.Text := config.httpProxy;
+  WebProxyPortEdit.Text := IntToStr(config.httpProxyPort);
 
   EmailAccountComboBox.Clear;
-  for i := 1 to MaxEmailAccounts do begin
+  for i := 1 to MaxEmailAccounts do
+  begin
     EmailAccountComboBox.Items.Add(IntToStr(i));
   end;
-  EmailAccountComboBox.itemindex := 0;
-  EmailServerEdit.text := config.pop[1].server;
-  EmailLoginEdit.text := config.pop[1].user;
-  EmailPasswordEdit.text := config.pop[1].pword;
+  EmailAccountComboBox.ItemIndex := 0;
+  EmailServerEdit.Text := config.pop[1].server;
+  EmailLoginEdit.Text := config.pop[1].user;
+  EmailPasswordEdit.Text := config.pop[1].pword;
   EmailSSLEdit.Text := config.pop[1].port_ssl;
 
   NetworkStatsListBox.Clear;
-  for NetStat := FirstNetworkStat to LastNetworkStat do begin
+  for NetStat := FirstNetworkStat to LastNetworkStat do
+  begin
     NetworkStatsListBox.Items.Add(NetworkUserHints[NetStat]);
   end;
 
   WinampListBox.Clear;
-  for WinampStat := FirstWinampStat to LastWinampStat do begin
+  for WinampStat := FirstWinampStat to LastWinampStat do
+  begin
     WinampListBox.Items.Add(WinampHints[WinampStat]);
   end;
 
   LCDSizeComboBox.Items.Clear;
   for i := 1 to MaxScreenSizes do
     LCDSizeComboBox.Items.Add(ScreenSizes[i].SizeName);
-  LCDSizeComboBox.itemindex := config.ScreenSize-1;
+  LCDSizeComboBox.ItemIndex := config.ScreenSize - 1;
   LCDSizeComboBoxChange(Sender);
 
   // put display plugin settings on screen
@@ -716,16 +740,19 @@ begin
 
   DisplayPluginList.Items.Clear;
   DisplayPluginList.Items.Add('None');
-  DLLPath := extractfilepath(paramstr(0))+'displays\';
-  FindResult := findfirst(DLLPath+'*.dll',0,SR);
-  while (FindResult = 0) do begin
+  DLLPath := extractfilepath(ParamStr(0)) + 'displays\';
+  FindResult := findfirst(DLLPath + '*.dll', 0, SR);
+  while (FindResult = 0) do
+  begin
     DisplayPluginList.Items.Add(extractfilename(SR.Name));
     FindResult := FindNext(SR);
   end;
   findclose(SR);
   DisplayPluginList.ItemIndex := 0;
-  for Loop := 0 to DisplayPluginList.Items.Count-1 do begin
-    if lowercase(config.DisplayDLLName) = lowercase(DisplayPluginList.Items[Loop]) then begin
+  for Loop := 0 to DisplayPluginList.Items.Count - 1 do
+  begin
+    if lowercase(config.DisplayDLLName) = lowercase(DisplayPluginList.Items[Loop]) then
+    begin
       DisplayPluginList.ItemIndex := Loop;
     end;
   end;
@@ -733,33 +760,34 @@ begin
   DisplayPluginListChange(Sender);
   ParametersEdit.Text := config.DisplayDLLParameters; // set our original parameters back
 
-  RandomizeScreensCheckBox.checked := config.randomScreens;
+  RandomizeScreensCheckBox.Checked := config.randomScreens;
   GamestatsRefreshTimeSpinEdit.Value := config.gameRefresh;
-  FoldingAtHomeEmailEdit.text := config.foldUserid;
+  FoldingAtHomeEmailEdit.Text := config.foldUserid;
 
   EnableRemoteSendCheckBox.Checked := config.EnableRemoteSend;
   RemoteSendBindIPEdit.Text := config.RemoteSendBindIP;
   RemoteSendPortEdit.Text := config.RemoteSendPort;
   RemoteSendPasswordEdit.Text := config.RemoteSendPassword;
 
-  if fileExists(ExtractFilePath(ParamStr(0))+'openssl\cert.pem') and
-     fileExists(ExtractFilePath(ParamStr(0))+'openssl\key.pem') then
-     RemoteSendUseSSLCheckBox.Checked := config.RemoteSendUseSSL
+  if fileExists(ExtractFilePath(ParamStr(0)) + 'openssl\cert.pem') and
+    fileExists(ExtractFilePath(ParamStr(0)) + 'openssl\key.pem') then
+    RemoteSendUseSSLCheckBox.Checked := config.RemoteSendUseSSL
   else
-     RemoteSendUseSSLCheckBox.Checked := false;
+    RemoteSendUseSSLCheckBox.Checked := False;
 
   FoldEnableCheckBox.Checked := config.foldEnabled;
   SetiEnableCheckBox.Checked := config.setiEnabled;
 
   for i := 1 to 24 do ButtonsListBox.Items.Delete(1);
-  LCDFeaturesTabSheet.Enabled := true;
+  LCDFeaturesTabSheet.Enabled := True;
   ButtonsListBox.Items.Add('FanSpeed(1,1) (nr,divider)');
 
   // Screen re-arrange populate combo boxes
   CopyToScreenComboBox.Clear;
   MoveToScreenComboBox.Clear;
   SwapWithScreenComboBox.Clear;
-  for i := 1 to MaxScreens do begin
+  for i := 1 to MaxScreens do
+  begin
     CopyToScreenComboBox.Items.Add(IntToStr(i));
     MoveToScreenComboBox.Items.Add(IntToStr(i));
     SwapWithScreenComboBox.Items.Add(IntToStr(i));
@@ -771,56 +799,78 @@ begin
   ActionsTimerSpinEdit.Value := config.ActionsTimer;
 end;
 
-procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject; aCol,
-  aRow: Integer; var Editor: TWinControl);
+procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
+  aCol, aRow: integer; var Editor: TWinControl);
 var
-  Items : array [0..27] of string = ('Next Theme',
-          'Last Theme',
-          'Next screen',
-          'Last screen',
-          'Goto Theme(2)',
-          'Goto Screen(2)',
-          'Freeze/unfreeze screen',
-          'Refresh all data',
-          'Backlight(0/1) (0=off 1=on)',
-          'BacklightToggle',
-          'Backlight Flash(5) (nr. of times)',
-          'PlayWave[c:\wave.wav]',
-          'Execute[c:\autoexec.bat]',
-          'Winamp next track',
-          'Winamp last track',
-          'Winamp play',
-          'Winamp stop',
-          'Winamp pause',
-          'Winamp Shuffle (toggle)',
-          'Winamp volume down',
-          'Winamp volume up',
-          'EnableScreen(1-20)',
-          'DisableScreen(1-20)',
-          '$dll(name.dll,2,param1,param2)',
-          'GPO(1-8,0/1)  (0=off 1=on)',
-          'GPOToggle(1-8)',
-          'GPOFlash(1-8,2)  (nr. of times)',
-          'Fan(1-3,0-255) (0-255=speed)');
+  Items: array [0..29] of string = ('Next Theme', 'Last Theme',
+    'Next screen', 'Last screen', 'GotoTheme(2)',
+    'GotoScreen(2)', 'Freeze screen', 'Unfreeze screen', 'Toggle freeze',
+    'Refresh all data', 'Backlight(0/1) (0=off 1=on)',
+    'BacklightToggle', 'Backlight Flash(5) (nr. of times)',
+    'PlayWave[c:\wave.wav]', 'Execute[c:\autoexec.bat]',
+    'Winamp next track', 'Winamp last track',
+    'Winamp play', 'Winamp stop', 'Winamp pause',
+    'Winamp Shuffle (toggle)', 'Winamp volume down',
+    'Winamp volume up', 'EnableScreen(1-20)',
+    'DisableScreen(1-20)', '$dll(name.dll,2,param1,param2)',
+    'GPO(1-8,0/1)  (0=off 1=on)', 'GPOToggle(1-8)',
+    'GPOFlash(1-8,2)  (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)');
 begin
-  if aCol=2 then begin
+  if aCol = 2 then
+  begin
     Editor := ActionsStringGrid.EditorByStyle(cbsPickList);
     TPickListCellEditor(Editor).Items.CommaText := '=,<,>,<=,>=,<>';
   end;
-  if aCol=5 then begin
+  if aCol = 5 then
+  begin
     Editor := ActionsStringGrid.EditorByStyle(cbsPickList);
-   TPickListCellEditor(Editor).Items.SetStrings(items);
+    TPickListCellEditor(Editor).Items.SetStrings(items);
   end;
 end;
 
-procedure TSetupForm.ActionsStringGridSelection(Sender: TObject; aCol,
-  aRow: Integer);
+procedure TSetupForm.ActionsStringGridMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (aCol=0) or (aCol=4) then
-    ActionsStringGrid.Options:=ActionsStringGrid.Options-[goEditing];
+  ActionsStringGrid.MouseToCell(X, Y, SourceCol, SourceRow);
+  ActionsStringGrid.BeginDrag(False, 4);
+end;
 
-  if (aCol=1) or (aCol=2) or (aCol=3) or (aCol=5) then
-    ActionsStringGrid.Options:=ActionsStringGrid.Options+[goEditing];
+procedure TSetupForm.ActionsStringGridDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+  var
+  CurrentCol, CurrentRow: integer;
+begin
+  ActionsStringGrid.MouseToCell(X, Y, CurrentCol, CurrentRow);
+  Accept := (Sender = Source);
+end;
+
+procedure TSetupForm.ActionsStringGridDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+var
+  DestCol, DestRow: Integer;
+begin
+  ActionsStringGrid.MouseToCell(X, Y, DestCol, DestRow);
+  ActionsStringGrid.MoveColRow(false, SourceRow, DestRow);
+end;
+
+procedure TSetupForm.ActionsGridScrollBarScroll(Sender: TObject;
+  ScrollCode: TScrollCode; var ScrollPos: Integer);
+begin
+  ActionsStringGrid.TopRow:=ScrollPos;
+end;
+
+procedure TSetupForm.ActionsStringGridSelection(Sender: TObject; aCol, aRow: integer);
+begin
+  if (aCol = 0) or (aCol = 4) then
+    ActionsStringGrid.Options := ActionsStringGrid.Options - [goEditing];
+
+  if (aCol = 1) or (aCol = 2) or (aCol = 3) or (aCol = 5) then
+    ActionsStringGrid.Options := ActionsStringGrid.Options + [goEditing];
+end;
+
+procedure TSetupForm.ActionsStringGridUpdateScrollBar;
+begin
+  ActionsGridScrollBar.Max := ActionsStringGrid.RowCount;
 end;
 
 procedure TSetupForm.BitBtn4Click(Sender: TObject);
@@ -835,31 +885,31 @@ end;
 
 procedure TSetupForm.ComPortsButtonClick(Sender: TObject);
 var
-i:integer;
-reg:tregistry;
-portnames: tstringlist;
-ports: string;
-aProcess: TProcess;
-lists: tstringlist;
+  i: integer;
+  reg: tregistry;
+  portnames: TStringList;
+  ports: string;
+  aProcess: TProcess;
+  lists: TStringList;
 begin
-   // List Parallel ports
-   aProcess := TProcess.Create(nil);
-   aProcess.Executable := 'WMIC';
-   aProcess.Parameters.Add('/namespace:\\root\cimv2');
-   aProcess.Parameters.Add('path');
-   aProcess.Parameters.Add('Win32_ParallelPort');
-   aProcess.Parameters.Add('get');
-   aProcess.Parameters.Add('caption');
-   aProcess.Options := aProcess.Options + [poWaitOnExit, poUsePipes, poNoConsole];
-   aProcess.Execute;
-   lists := TStringList.Create;
-   lists.LoadFromStream(aProcess.Output);
-   aProcess.Free;
-   ports := 'Parallel ports:'+#13#10;
-   for i := 1 to lists.Count - 1 do
-    ports := ports + lists[i]+#13#10;
+  // List Parallel ports
+  aProcess := TProcess.Create(nil);
+  aProcess.Executable := 'WMIC';
+  aProcess.Parameters.Add('/namespace:\\root\cimv2');
+  aProcess.Parameters.Add('path');
+  aProcess.Parameters.Add('Win32_ParallelPort');
+  aProcess.Parameters.Add('get');
+  aProcess.Parameters.Add('caption');
+  aProcess.Options := aProcess.Options + [poWaitOnExit, poUsePipes, poNoConsole];
+  aProcess.Execute;
+  lists := TStringList.Create;
+  lists.LoadFromStream(aProcess.Output);
+  aProcess.Free;
+  ports := 'Parallel ports:' + #13#10;
+  for i := 1 to lists.Count - 1 do
+    ports := ports + lists[i] + #13#10;
 
-   ports := ports + 'Serial ports:'+#13#10;
+  ports := ports + 'Serial ports:' + #13#10;
 
   // really should try..except this
   portnames := TStringList.Create;
@@ -868,16 +918,25 @@ begin
   if Reg.OpenKeyReadOnly('HARDWARE\DEVICEMAP\SERIALCOMM') then
     reg.GetValueNames(portnames);
   for i := 0 to portnames.Count - 1 do
-    ports := ports + portnames[i] + ' ' + (reg.ReadString(portnames[i]))+#13#10;
-  showmessage(ports);
+    ports := ports + portnames[i] + ' ' + (reg.ReadString(portnames[i])) + #13#10;
+  ShowMessage(ports);
   Reg.Free;
+end;
+
+procedure TSetupForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  {$IFDEF STANDALONESETUP}
+  config.Free;
+  config := nil;
+  {$ENDIF}
 end;
 
 procedure TSetupForm.DisplayPluginListChange(Sender: TObject);
 begin
   if (DisplayPluginList.ItemIndex > 0) then
-    LoadHint(DLLPath+DisplayPluginList.Text)
-  else begin
+    LoadHint(DLLPath + DisplayPluginList.Text)
+  else
+  begin
     UsageLabel.Caption := 'no parameters';
     IDLabel.Caption := '';
     ParametersEdit.Text := '';
@@ -886,79 +945,79 @@ end;
 
 procedure TSetupForm.LCDSizeComboBoxChange(Sender: TObject);
 begin
-  if LCDSizeComboBox.itemindex < 0 then LCDSizeComboBox.itemindex := 0;
+  if LCDSizeComboBox.ItemIndex < 0 then LCDSizeComboBox.ItemIndex := 0;
 
-  if LCDSizeComboBox.itemindex < 5 then
+  if LCDSizeComboBox.ItemIndex < 5 then
   begin
-    ContinueLine1CheckBox.checked := false;
-    Line2MemoEdit.Visible := false;
-    Line3MemoEdit.Visible := false;
-    Line4MemoEdit.Visible := false;
-    Line2EditButton.Visible := false;
-    Line3EditButton.Visible := false;
-    Line4EditButton.Visible := false;
-    ShutdownEdit2.Visible := false;
-    ShutdownEdit3.Visible := false;
-    ShutdownEdit4.Visible := false;
-    DontScrollLine2CheckBox.Visible := false;
-    DontScrollLine3CheckBox.Visible := false;
-    DontScrollLine4CheckBox.Visible := false;
-    ContinueLine1CheckBox.Visible := false;
-    ContinueLine2CheckBox.Visible := false;
-    ContinueLine3CheckBox.Visible := false;
-    CenterLine2CheckBox.visible := false;
-    CenterLine3CheckBox.visible := false;
-    CenterLine4CheckBox.visible := false;
+    ContinueLine1CheckBox.Checked := False;
+    Line2MemoEdit.Visible := False;
+    Line3MemoEdit.Visible := False;
+    Line4MemoEdit.Visible := False;
+    Line2EditButton.Visible := False;
+    Line3EditButton.Visible := False;
+    Line4EditButton.Visible := False;
+    ShutdownEdit2.Visible := False;
+    ShutdownEdit3.Visible := False;
+    ShutdownEdit4.Visible := False;
+    DontScrollLine2CheckBox.Visible := False;
+    DontScrollLine3CheckBox.Visible := False;
+    DontScrollLine4CheckBox.Visible := False;
+    ContinueLine1CheckBox.Visible := False;
+    ContinueLine2CheckBox.Visible := False;
+    ContinueLine3CheckBox.Visible := False;
+    CenterLine2CheckBox.Visible := False;
+    CenterLine3CheckBox.Visible := False;
+    CenterLine4CheckBox.Visible := False;
   end;
-  if (LCDSizeComboBox.itemindex < 9) and (LCDSizeComboBox.itemindex > 4) then
+  if (LCDSizeComboBox.ItemIndex < 9) and (LCDSizeComboBox.ItemIndex > 4) then
   begin
-    if ContinueLine1CheckBox.checked = false then Line2MemoEdit.Visible := true;
-    ContinueLine2CheckBox.checked := false;
-    Line3MemoEdit.Visible := false;
-    Line4MemoEdit.Visible := false;
-    Line2EditButton.Visible := true;
-    Line3EditButton.Visible := false;
-    Line4EditButton.Visible := false;
-    ShutdownEdit2.Visible := true;
-    ShutdownEdit3.Visible := false;
-    ShutdownEdit4.Visible := false;
-    DontScrollLine2CheckBox.Visible := true;
-    DontScrollLine3CheckBox.Visible := false;
-    DontScrollLine4CheckBox.Visible := false;
-    ContinueLine1CheckBox.Visible := true;
-    ContinueLine2CheckBox.Visible := false;
-    ContinueLine3CheckBox.Visible := false;
-    CenterLine2CheckBox.visible := true;
-    CenterLine3CheckBox.visible := false;
-    CenterLine4CheckBox.visible := false;
+    if ContinueLine1CheckBox.Checked = False then Line2MemoEdit.Visible := True;
+    ContinueLine2CheckBox.Checked := False;
+    Line3MemoEdit.Visible := False;
+    Line4MemoEdit.Visible := False;
+    Line2EditButton.Visible := True;
+    Line3EditButton.Visible := False;
+    Line4EditButton.Visible := False;
+    ShutdownEdit2.Visible := True;
+    ShutdownEdit3.Visible := False;
+    ShutdownEdit4.Visible := False;
+    DontScrollLine2CheckBox.Visible := True;
+    DontScrollLine3CheckBox.Visible := False;
+    DontScrollLine4CheckBox.Visible := False;
+    ContinueLine1CheckBox.Visible := True;
+    ContinueLine2CheckBox.Visible := False;
+    ContinueLine3CheckBox.Visible := False;
+    CenterLine2CheckBox.Visible := True;
+    CenterLine3CheckBox.Visible := False;
+    CenterLine4CheckBox.Visible := False;
   end;
-  if LCDSizeComboBox.itemindex > 8 then
+  if LCDSizeComboBox.ItemIndex > 8 then
   begin
-    if ContinueLine1CheckBox.checked = false then Line2MemoEdit.Visible := true;
-    if ContinueLine2CheckBox.checked = false then Line3MemoEdit.Visible := true;
-    if ContinueLine3CheckBox.checked = false then Line4MemoEdit.Visible := true;
-    Line2EditButton.Visible := true;
-    Line3EditButton.Visible := true;
-    Line4EditButton.Visible := true;
-    ShutdownEdit2.Visible := true;
-    ShutdownEdit3.Visible := true;
-    ShutdownEdit4.Visible := true;
-    DontScrollLine2CheckBox.Visible := true;
-    DontScrollLine3CheckBox.Visible := true;
-    DontScrollLine4CheckBox.Visible := true;
-    ContinueLine1CheckBox.Visible := true;
-    ContinueLine2CheckBox.Visible := true;
-    ContinueLine3CheckBox.Visible := true;
-    CenterLine2CheckBox.visible := true;
-    CenterLine3CheckBox.visible := true;
-    CenterLine4CheckBox.visible := true;
+    if ContinueLine1CheckBox.Checked = False then Line2MemoEdit.Visible := True;
+    if ContinueLine2CheckBox.Checked = False then Line3MemoEdit.Visible := True;
+    if ContinueLine3CheckBox.Checked = False then Line4MemoEdit.Visible := True;
+    Line2EditButton.Visible := True;
+    Line3EditButton.Visible := True;
+    Line4EditButton.Visible := True;
+    ShutdownEdit2.Visible := True;
+    ShutdownEdit3.Visible := True;
+    ShutdownEdit4.Visible := True;
+    DontScrollLine2CheckBox.Visible := True;
+    DontScrollLine3CheckBox.Visible := True;
+    DontScrollLine4CheckBox.Visible := True;
+    ContinueLine1CheckBox.Visible := True;
+    ContinueLine2CheckBox.Visible := True;
+    ContinueLine3CheckBox.Visible := True;
+    CenterLine2CheckBox.Visible := True;
+    CenterLine3CheckBox.Visible := True;
+    CenterLine4CheckBox.Visible := True;
   end;
 end;
 
 // Multi instance manager
 procedure TSetupForm.MiConfigsListBoxClick(Sender: TObject);
 begin
-   MiConfigNameEdit.Text := ExtractFileName(MiConfigsListBox.FileName);
+  MiConfigNameEdit.Text := ExtractFileName(MiConfigsListBox.FileName);
 end;
 
 procedure TSetupForm.MiConfigsLoadBitBtnClick(Sender: TObject);
@@ -973,8 +1032,8 @@ begin
 end;
 
 procedure TSetupForm.MiConfigsRefreshBitBtnClick(Sender: TObject);
-  var
-  sCurrentDir : string;
+var
+  sCurrentDir: string;
 begin
   // awkward shi as refresh doesnt just refresh the list
   sCurrentDir := MiConfigsListBox.Directory;
@@ -999,24 +1058,26 @@ begin
 
   if MiConfigNameEdit.Text = '' then
   begin
-    showmessage('Configuration file name is empty. Type a new name');
+    ShowMessage('Configuration file name is empty. Type a new name');
     Exit;
   end;
 
   len := length(MiConfigNameEdit.Text);
-  ext := copy(MiConfigNameEdit.Text, len -3, 4);
+  ext := copy(MiConfigNameEdit.Text, len - 3, 4);
   if (ext = '.ini') then
-    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text
+    NewConfigFileName := ExtractFilePath(application.exename) + MiConfigNameEdit.Text
   else
-    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text+'.ini';
+    NewConfigFileName := ExtractFilePath(application.exename) +
+      MiConfigNameEdit.Text + '.ini';
 
   if FileExists(NewConfigFileName) then
   begin
-    showmessage('Configuration file ('+NewConfigFileName+') already exists. Choose another name');
+    ShowMessage('Configuration file (' + NewConfigFileName +
+      ') already exists. Choose another name');
     Exit;
   end;
 
-  CopyFile(PChar(MiConfigsListBox.FileName), PChar(NewConfigFileName), true);
+  CopyFile(PChar(MiConfigsListBox.FileName), PChar(NewConfigFileName), True);
   MiConfigsRefreshBitBtnClick(Sender);
 end;
 
@@ -1043,9 +1104,10 @@ begin
 end;
 
 procedure TSetupForm.MiCreateNewProgDirButton1Click(Sender: TObject);
+{$IFDEF STANDALONESETUP}
 var
   NewDir: string;
-  CopyList, CopyPlugins, CopyRootFiles, TmpList: TStringlist;
+  CopyList, CopyPlugins, CopyRootFiles, TmpList: TStringList;
   selectionform: TForm;
   OkButton, CancelButton, SelectAllButton, InvertButton: TButton;
   i, j: integer;
@@ -1053,7 +1115,7 @@ var
   NewConfig: TConfig;
   selectdir: TSelectDirectoryDialog;
 begin
-  {$IFDEF STANDALONESETUP}
+
   selectdir := TSelectDirectoryDialog.Create(nil);
   selectdir.Title := 'Select or create new folder';
   selectdir.InitialDir:='.';
@@ -1251,23 +1313,26 @@ begin
   end;
 
   CopyingFileLabel.Caption := 'Done';
-  {$ENDIF}
+{$ELSE}
+begin
+{$ENDIF}
 end;
 
 procedure TSetupForm.MiDeleteBitBtnClick(Sender: TObject);
 var
   filename: string;
 begin
-   if MiConfigsListBox.FileName = '' then
-     Exit;
+  if MiConfigsListBox.FileName = '' then
+    Exit;
 
-   filename := MiConfigsListBox.FileName;
+  filename := MiConfigsListBox.FileName;
 
-   case QuestionDlg('Delete Config?', 'Sure to delete' + sLineBreak + filename,
-                       mtInformation, [mrYes, 'Yes', mrNo, 'No', 'IsDefault'], '') of
-     mrYes: DeleteFile(filename);
-   end;
-   MiConfigsRefreshBitBtnClick(Sender);
+  case QuestionDlg('Delete Config?', 'Sure to delete' + sLineBreak +
+      filename, mtInformation, [mrYes, 'Yes', mrNo,
+      'No', 'IsDefault'], '') of
+    mrYes: DeleteFile(filename);
+  end;
+  MiConfigsRefreshBitBtnClick(Sender);
 end;
 
 procedure TSetupForm.MiNewConfigBitBtnClick(Sender: TObject);
@@ -1280,29 +1345,31 @@ var
 begin
   if MiConfigNameEdit.Text = '' then
   begin
-    showmessage('Configuration file name is empty. Type a new name');
+    ShowMessage('Configuration file name is empty. Type a new name');
     Exit;
   end;
 
   len := length(MiConfigNameEdit.Text);
-  ext := copy(MiConfigNameEdit.Text, len -3, 4);
+  ext := copy(MiConfigNameEdit.Text, len - 3, 4);
   if (ext = '.ini') then
-    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text
+    NewConfigFileName := ExtractFilePath(application.exename) + MiConfigNameEdit.Text
   else
-    NewConfigFileName := ExtractFilePath(application.exename)+MiConfigNameEdit.Text+'.ini';
+    NewConfigFileName := ExtractFilePath(application.exename) +
+      MiConfigNameEdit.Text + '.ini';
 
   if FileExists(NewConfigFileName) then
   begin
-    showmessage('Configuration file ('+NewConfigFileName+') already exists. Choose another name');
+    ShowMessage('Configuration file (' + NewConfigFileName +
+      ') already exists. Choose another name');
     Exit;
   end;
 
   NewConfig := TConfig.Create(NewConfigFileName);
   hConfig := FileCreate(NewConfigFileName);
-  If hConfig=-1 then
+  if hConfig = -1 then
   begin
     FileClose(hConfig);
-    showmessage('Configuration file ('+NewConfigFileName+') could not be created');
+    ShowMessage('Configuration file (' + NewConfigFileName + ') could not be created');
     Exit;
   end;
 
@@ -1315,15 +1382,15 @@ begin
 end;
 
 // EnumWindows() callback function. Enumerates windows until function returns false
-function EnumWindowsProc(WHandle: HWND; LParM: LParam): LongBool;StdCall;
+function EnumWindowsProc(WHandle: HWND; LParM: LParam): longbool; stdcall;
+{$IFDEF STANDALONESETUP}
 var
-  Title:array[0..128] of char;
-  sTitle: String ;
+  Title: array[0..128] of char;
+  sTitle: string;
   pid: DWORD;
   ProcessesListLen: integer;
   Style: Long;
 begin
-  {$IFDEF STANDALONESETUP}
   Result:=True;
   GetWindowText(wHandle, Title,128);
   GetWindowThreadProcessId( wHandle, &pid);
@@ -1340,17 +1407,19 @@ begin
       Result := false;
     end;
   end;
-  {$ENDIF}
+{$ELSE}
+begin
+{$ENDIF}
 end;
 
 procedure TSetupForm.MiRiRefreshBitBtnClick(Sender: TObject);
+{$IFDEF STANDALONESETUP}
 var
   ProcessLoop: BOOL;
   ProcessSnapshotHandle: THandle;
   ProcessEntry32: TProcessEntry32;
   i: integer;
 begin
-  {$IFDEF STANDALONESETUP}
   ProcessSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   ProcessEntry32.dwSize := SizeOf(ProcessEntry32);
   ProcessLoop := Process32First(ProcessSnapshotHandle, ProcessEntry32);
@@ -1383,24 +1452,30 @@ begin
     MiRunningInstancesListGrid.Cells[0, MiRunningInstancesListGrid.RowCount-1] := ProcessesList[i].WindowTitle;
     MiRunningInstancesListGrid.Cells[1, MiRunningInstancesListGrid.RowCount-1] := inttostr(ProcessesList[i].Pid);
   end;
- {$ENDIF}
+{$ELSE}
+begin
+{$ENDIF}
 end;
 
 procedure TSetupForm.MiRiStopInstanceBitBtnClick(Sender: TObject);
+{$IFDEF STANDALONESETUP}
 var
   pid: integer;
-  hnd : THandle;
+  hnd: THandle;
 begin
-  pid := strtoint(MiRunningInstancesListGrid.Cells[1, MiRunningInstancesListGrid.Row]);
+  pid := StrToInt(MiRunningInstancesListGrid.Cells[1, MiRunningInstancesListGrid.Row]);
 
   hnd := OpenProcess(PROCESS_TERMINATE, False, pid);
   if hnd > 0 then
-  try
-    Win32Check(TerminateProcess(hnd,0));
-  finally
-    CloseHandle(hnd);
-  end;
+    try
+      Win32Check(TerminateProcess(hnd, 0));
+    finally
+      CloseHandle(hnd);
+    end;
   MiRiRefreshBitBtnClick(Sender);
+{$ELSE}
+begin
+{$ENDIF}
 end;
 
 procedure TSetupForm.MiRunningProcessesTabSheetShow(Sender: TObject);
@@ -1409,11 +1484,11 @@ begin
 end;
 
 procedure TSetupForm.MiStartupItemAddBitBtnClick(Sender: TObject);
+{$IFDEF STANDALONESETUP}
 var
   sParameters: string;
   pos: integer;
 begin
-  {$IFDEF STANDALONESETUP}
   if (config.bAutoStartHide) then
     sParameters := '-hide ';
 
@@ -1421,7 +1496,9 @@ begin
   pos := 1;
   CreateShortcut('LCD Smartie '+ExtractSubstr(ExtractFileName(ConfigFileName), pos, ['.']), ExtractFilePath(Application.ExeName)+'LCDSmartie.exe' , sParameters, False);
   MiStartupItemsRefreshBitBtnClick(Sender);
-  {$ENDIF}
+{$ELSE}
+begin
+{$ENDIF}
 end;
 
 procedure TSetupForm.MiStartupItemRemoveBitBtnClick(Sender: TObject);
@@ -1429,11 +1506,11 @@ var
   i: integer;
   empty: string;
 begin
-  for i := 0 to MiStartupItemsCheckListBox.Count -1  do
+  for i := 0 to MiStartupItemsCheckListBox.Count - 1 do
   begin
     if MiStartupItemsCheckListBox.Checked[i] then
     begin
-      CreateShortcut(MiStartupItemsCheckListBox.Items[i], empty , empty, True);
+      CreateShortcut(MiStartupItemsCheckListBox.Items[i], empty, empty, True);
     end;
   end;
   MiStartupItemsRefreshBitBtnClick(Sender);
@@ -1441,8 +1518,8 @@ end;
 
 procedure TSetupForm.MiStartupItemsLaunchBitBtnClick(Sender: TObject);
 var
-  R : TRegistry;
-  Dir : string;
+  R: TRegistry;
+  Dir: string;
   i: integer;
 begin
   R := TRegistry.Create(KEY_READ);
@@ -1450,22 +1527,23 @@ begin
   R.OpenKeyReadOnly('Software\MicroSoft\Windows\CurrentVersion\Explorer\Shell Folders\');
   Dir := R.ReadString('Startup');
 
-  for i := 0 to MiStartupItemsCheckListBox.Count -1  do
+  for i := 0 to MiStartupItemsCheckListBox.Count - 1 do
   begin
     if MiStartupItemsCheckListBox.Checked[i] then
     begin
-      ShellExecute(Handle, 'open', pchar(Dir+'\'+MiStartupItemsCheckListBox.Items[i]+'.lnk'), '',
-     pchar(ExtractFilePath(Application.ExeName)), SW_SHOWNORMAL)
+      ShellExecute(Handle, 'open',
+        PChar(Dir + '\' + MiStartupItemsCheckListBox.Items[i] + '.lnk'), '',
+        PChar(ExtractFilePath(Application.ExeName)), SW_SHOWNORMAL);
     end;
   end;
 
-  R.free;
+  R.Free;
 end;
 
 procedure TSetupForm.MiStartupItemsRefreshBitBtnClick(Sender: TObject);
 var
-  R : TRegistry;
-  Dir : string;
+  R: TRegistry;
+  Dir: string;
   Items: TStringList;
   i: integer;
 begin
@@ -1474,14 +1552,15 @@ begin
   R.OpenKeyReadOnly('Software\MicroSoft\Windows\CurrentVersion\Explorer\Shell Folders\');
   Dir := R.ReadString('Startup');
   Items := TStringList.Create;
-  FindAllFiles(Items, Dir, 'LCD Smartie*.lnk', false);
+  FindAllFiles(Items, Dir, 'LCD Smartie*.lnk', False);
   MiStartupItemsCheckListBox.Clear;
   for i := 0 to Items.Count - 1 do
   begin
-    MiStartupItemsCheckListBox.AddItem(ExtractFileNameWithoutExt(ExtractFileName(Items[i])), nil);
+    MiStartupItemsCheckListBox.AddItem(ExtractFileNameWithoutExt(
+      ExtractFileName(Items[i])), nil);
   end;
-  Items.free;
-  R.free;
+  Items.Free;
+  R.Free;
 end;
 
 procedure TSetupForm.MiStartupItemsTabSheetShow(Sender: TObject);
@@ -1493,136 +1572,139 @@ procedure TSetupForm.RssPageChange(Sender: TObject);
 var
   feeditem: string;
 begin
-  if RssTMemoEdit.text <> '' then begin
+  if RssTMemoEdit.Text <> '' then
+  begin
     case RssTypeComboBox.ItemIndex of
       0: feeditem := 't';
       1: feeditem := 'd';
       2: feeditem := 'b';
     end;
-    VariableEdit.Text := '$Rss('+RssTMemoEdit.text+','+feeditem+','+inttostr(RssItemNumSpinEdit.Value)+','+inttostr(RssMaxFreqSpinedit.Value)+')';
+    VariableEdit.Text := '$Rss(' + RssTMemoEdit.Text + ',' + feeditem + ',' +
+      IntToStr(RssItemNumSpinEdit.Value) + ',' + IntToStr(RssMaxFreqSpinedit.Value) + ')';
   end;
 end;
 ////// end multi instance manager
 
-procedure TSetupForm.SaveScreen(scr: Integer);
+procedure TSetupForm.SaveScreen(scr: integer);
 begin
   if scr = 0 then Exit;
-  config.screen[scr].line[1].text := Line1MemoEdit.text;
-  config.screen[scr].line[2].text := Line2MemoEdit.text;
-  config.screen[scr].line[3].text := Line3MemoEdit.text;
-  config.screen[scr].line[4].text := Line4MemoEdit.text;
+  config.screen[scr].line[1].Text := Line1MemoEdit.Text;
+  config.screen[scr].line[2].Text := Line2MemoEdit.Text;
+  config.screen[scr].line[3].Text := Line3MemoEdit.Text;
+  config.screen[scr].line[4].Text := Line4MemoEdit.Text;
 
-  config.screen[scr].settings.enabled := ScreenEnabledCheckBox.checked;
+  config.screen[scr].settings.Enabled := ScreenEnabledCheckBox.Checked;
   try
-    config.screen[scr].settings.theme := ThemeNumberSpinEdit.value-1;
+    config.screen[scr].settings.theme := ThemeNumberSpinEdit.Value - 1;
   except
     config.screen[scr].settings.theme := 0;
   end;
   try
-    config.screen[scr].settings.showTime := TimeToShowSpinEdit.value;
+    config.screen[scr].settings.showTime := TimeToShowSpinEdit.Value;
   except
     config.screen[scr].settings.showTime := 10;
   end;
-    config.screen[scr].settings.bSticky := StickyCheckbox.Checked;
+  config.screen[scr].settings.bSticky := StickyCheckbox.Checked;
 
-  config.screen[scr].line[1].center := CenterLine1CheckBox.checked;
-  config.screen[scr].line[2].center := CenterLine2CheckBox.checked;
-  config.screen[scr].line[3].center := CenterLine3CheckBox.checked;
-  config.screen[scr].line[4].center := CenterLine4CheckBox.checked;
+  config.screen[scr].line[1].center := CenterLine1CheckBox.Checked;
+  config.screen[scr].line[2].center := CenterLine2CheckBox.Checked;
+  config.screen[scr].line[3].center := CenterLine3CheckBox.Checked;
+  config.screen[scr].line[4].center := CenterLine4CheckBox.Checked;
 
-  config.screen[scr].line[1].noscroll := DontScrollLine1CheckBox.checked;
-  config.screen[scr].line[2].noscroll := DontScrollLine2CheckBox.checked;
-  config.screen[scr].line[3].noscroll := DontScrollLine3CheckBox.checked;
-  config.screen[scr].line[4].noscroll := DontScrollLine4CheckBox.checked;
+  config.screen[scr].line[1].noscroll := DontScrollLine1CheckBox.Checked;
+  config.screen[scr].line[2].noscroll := DontScrollLine2CheckBox.Checked;
+  config.screen[scr].line[3].noscroll := DontScrollLine3CheckBox.Checked;
+  config.screen[scr].line[4].noscroll := DontScrollLine4CheckBox.Checked;
 {$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.ResetScrollPositions();
 {$ENDIF}
-  config.screen[scr].line[1].contNextLine := ContinueLine1CheckBox.checked;
-  config.screen[scr].line[2].contNextLine := ContinueLine2CheckBox.checked;
-  config.screen[scr].line[3].contNextLine := ContinueLine3CheckBox.checked;
+  config.screen[scr].line[1].contNextLine := ContinueLine1CheckBox.Checked;
+  config.screen[scr].line[2].contNextLine := ContinueLine2CheckBox.Checked;
+  config.screen[scr].line[3].contNextLine := ContinueLine3CheckBox.Checked;
   config.screen[scr].line[4].contNextLine := False;
 
-  config.screen[scr].settings.TransitionStyle := TTransitionStyle(TransitionStyleComboBox.ItemIndex);
+  config.screen[scr].settings.TransitionStyle :=
+    TTransitionStyle(TransitionStyleComboBox.ItemIndex);
   config.screen[scr].settings.TransitionTime := TransitionTimeSpinEdit.Value;
 end;
 
-procedure TSetupForm.LoadScreen(scr: Integer);
+procedure TSetupForm.LoadScreen(scr: integer);
 var
   ascreen: TScreen;
 begin
   ascreen := config.screen[scr];
-  ScreenEnabledCheckBox.checked := ascreen.settings.enabled;
-  ThemeNumberSpinEdit.value := ascreen.settings.theme + 1;
-  TimeToShowSpinEdit.value := ascreen.settings.showTime;
-  StickyCheckbox.checked := ascreen.settings.bSticky;
-  TimeToShowSpinEdit.enabled := not ascreen.settings.bSticky;
+  ScreenEnabledCheckBox.Checked := ascreen.settings.Enabled;
+  ThemeNumberSpinEdit.Value := ascreen.settings.theme + 1;
+  TimeToShowSpinEdit.Value := ascreen.settings.showTime;
+  StickyCheckbox.Checked := ascreen.settings.bSticky;
+  TimeToShowSpinEdit.Enabled := not ascreen.settings.bSticky;
 
-  DontScrollLine1CheckBox.checked := false;
-  DontScrollLine2CheckBox.checked := false;
-  DontScrollLine3CheckBox.checked := false;
-  DontScrollLine4CheckBox.checked := false;
-  ContinueLine1CheckBox.checked := false;
-  ContinueLine2CheckBox.checked := false;
-  ContinueLine3CheckBox.checked := false;
-  DontScrollLine1CheckBox.enabled := true;
-  DontScrollLine1CheckBox.checked := false;
-  Line2MemoEdit.enabled := true;
-  DontScrollLine2CheckBox.enabled := true;
-  DontScrollLine2CheckBox.checked := false;
-  Line3MemoEdit.enabled := true;
-  DontScrollLine3CheckBox.enabled := true;
-  DontScrollLine3CheckBox.checked := false;
-  Line4MemoEdit.enabled := true;
+  DontScrollLine1CheckBox.Checked := False;
+  DontScrollLine2CheckBox.Checked := False;
+  DontScrollLine3CheckBox.Checked := False;
+  DontScrollLine4CheckBox.Checked := False;
+  ContinueLine1CheckBox.Checked := False;
+  ContinueLine2CheckBox.Checked := False;
+  ContinueLine3CheckBox.Checked := False;
+  DontScrollLine1CheckBox.Enabled := True;
+  DontScrollLine1CheckBox.Checked := False;
+  Line2MemoEdit.Enabled := True;
+  DontScrollLine2CheckBox.Enabled := True;
+  DontScrollLine2CheckBox.Checked := False;
+  Line3MemoEdit.Enabled := True;
+  DontScrollLine3CheckBox.Enabled := True;
+  DontScrollLine3CheckBox.Checked := False;
+  Line4MemoEdit.Enabled := True;
 
   Line1MemoEdit.color := $00A1D7A4;
   Line2MemoEdit.color := clWhite;
   Line3MemoEdit.color := clWhite;
   Line4MemoEdit.color := clWhite;
   setupbutton := 1;
-  GameServerEdit.text := config.gameServer[scr, 1];
+  GameServerEdit.Text := config.gameServer[scr, 1];
 
   ascreen := config.screen[scr];
-  DontScrollLine1CheckBox.checked := ascreen.line[1].noscroll;
+  DontScrollLine1CheckBox.Checked := ascreen.line[1].noscroll;
   if ascreen.line[1].contNextLine then
   begin
-    ContinueLine1CheckBox.checked := true;
-    DontScrollLine1CheckBox.Checked := true;
-    DontScrollLine1CheckBox.enabled := false;
-    Line2MemoEdit.enabled := false;
+    ContinueLine1CheckBox.Checked := True;
+    DontScrollLine1CheckBox.Checked := True;
+    DontScrollLine1CheckBox.Enabled := False;
+    Line2MemoEdit.Enabled := False;
     Line2MemoEdit.color := $00BBBBFF;
   end;
-  Line1MemoEdit.text := ascreen.line[1].text;
+  Line1MemoEdit.Text := ascreen.line[1].Text;
   CenterLine1CheckBox.Checked := ascreen.line[1].center;
 
-  DontScrollLine2CheckBox.checked := ascreen.line[2].noscroll;
+  DontScrollLine2CheckBox.Checked := ascreen.line[2].noscroll;
   if ascreen.line[2].contNextLine then
   begin
-    ContinueLine2CheckBox.checked := true;
-    DontScrollLine2CheckBox.Checked := true;
-    DontScrollLine2CheckBox.enabled := false;
-    Line3MemoEdit.enabled := false;
+    ContinueLine2CheckBox.Checked := True;
+    DontScrollLine2CheckBox.Checked := True;
+    DontScrollLine2CheckBox.Enabled := False;
+    Line3MemoEdit.Enabled := False;
     Line3MemoEdit.color := $00BBBBFF;
   end;
-  Line2MemoEdit.text := ascreen.line[2].text;
+  Line2MemoEdit.Text := ascreen.line[2].Text;
   CenterLine2CheckBox.Checked := ascreen.line[2].center;
 
-  DontScrollLine3CheckBox.checked := ascreen.line[3].noscroll;
+  DontScrollLine3CheckBox.Checked := ascreen.line[3].noscroll;
   if ascreen.line[3].contNextLine then
   begin
-    ContinueLine3CheckBox.checked := true;
-    DontScrollLine3CheckBox.Checked := true;
-    DontScrollLine3CheckBox.enabled := false;
-    Line4MemoEdit.enabled := false;
+    ContinueLine3CheckBox.Checked := True;
+    DontScrollLine3CheckBox.Checked := True;
+    DontScrollLine3CheckBox.Enabled := False;
+    Line4MemoEdit.Enabled := False;
     Line4MemoEdit.color := $00BBBBFF;
   end;
-  Line3MemoEdit.text := ascreen.line[3].text;
+  Line3MemoEdit.Text := ascreen.line[3].Text;
   CenterLine3CheckBox.Checked := ascreen.line[3].center;
 
-  DontScrollLine4CheckBox.checked := ascreen.line[4].noscroll;
-  Line4MemoEdit.text := ascreen.line[4].text;
+  DontScrollLine4CheckBox.Checked := ascreen.line[4].noscroll;
+  Line4MemoEdit.Text := ascreen.line[4].Text;
   CenterLine4CheckBox.Checked := ascreen.line[4].center;
 
-  TransitionStyleComboBox.ItemIndex := ord(ascreen.settings.TransitionStyle);
+  TransitionStyleComboBox.ItemIndex := Ord(ascreen.settings.TransitionStyle);
   TransitionTimeSpinEdit.Value := ascreen.settings.TransitionTime;
 end;
 
@@ -1631,7 +1713,7 @@ begin
   SaveScreen(CurrentScreen);
 
   try
-    CurrentScreen := max(1,min(MaxScreens,ScreenSpinEdit.Value));
+    CurrentScreen := max(1, min(MaxScreens, ScreenSpinEdit.Value));
   except
     CurrentScreen := 1;
   end;
@@ -1643,14 +1725,17 @@ end;
 
 procedure TSetupForm.WinampListBoxClick(Sender: TObject);
 var
-  WinampStat : TWinampStat;
+  WinampStat: TWinampStat;
 begin
-  WinampStat := TWinampStat(WinampListBox.itemindex);
-  if (WinampStat >= FirstWinampStat) and (WinampStat <= LastWinampStat) then begin
+  WinampStat := TWinampStat(WinampListBox.ItemIndex);
+  if (WinampStat >= FirstWinampStat) and (WinampStat <= LastWinampStat) then
+  begin
     VariableEdit.Text := WinampKeys[WinampStat];
-    if (WinampStat = wsWinampPosition) then  // special case, should be resolved elsewhere
+    if (WinampStat = wsWinampPosition) then
+      // special case, should be resolved elsewhere
       VariableEdit.Text := VariableEdit.Text + '(10)';
-  end else
+  end
+  else
     VariableEdit.Text := NoVariable;
 
   if not (VariableEdit.Text = NoVariable) then
@@ -1660,42 +1745,45 @@ end;
 
 // Select currently active text field that will receive variable if 'insert'
 // is pressed.
-Procedure TSetupForm.FocusToInputField;
+procedure TSetupForm.FocusToInputField;
 var
-  tempint1, tempint2: Integer;
+  tempint1, tempint2: integer;
 begin
-  if (ScreensTabSheet.visible) then // in Screens tab
+  if (ScreensTabSheet.Visible) then // in Screens tab
   begin
     // not all the lines will be enabled/visible because of different size displays.
-    if (setupbutton = 2) and (Line2MemoEdit.Enabled) and (Line2MemoEdit.visible) then
+    if (setupbutton = 2) and (Line2MemoEdit.Enabled) and (Line2MemoEdit.Visible) then
     begin
       tempint1 := Line2MemoEdit.SelStart;
       tempint2 := Line2MemoEdit.SelLength;
-      Line2MemoEdit.setfocus;
+      Line2MemoEdit.SetFocus;
       Line2MemoEdit.SelStart := tempint1;
       Line2MemoEdit.SelLength := tempint2;
     end
-    else if (setupbutton = 3) and (Line3MemoEdit.enabled) and (Line3MemoEdit.visible) then
+    else if (setupbutton = 3) and (Line3MemoEdit.Enabled) and
+      (Line3MemoEdit.Visible) then
     begin
       tempint1 := Line3MemoEdit.SelStart;
       tempint2 := Line3MemoEdit.SelLength;
-      Line3MemoEdit.setfocus;
+      Line3MemoEdit.SetFocus;
       Line3MemoEdit.SelStart := tempint1;
       Line3MemoEdit.SelLength := tempint2;
     end
-    else if (setupbutton = 4) and (Line4MemoEdit.enabled) and (Line4MemoEdit.visible) then
+    else if (setupbutton = 4) and (Line4MemoEdit.Enabled) and
+      (Line4MemoEdit.Visible) then
     begin
       tempint1 := Line4MemoEdit.SelStart;
       tempint2 := Line4MemoEdit.SelLength;
-      Line4MemoEdit.setfocus;
+      Line4MemoEdit.SetFocus;
       Line4MemoEdit.SelStart := tempint1;
       Line4MemoEdit.SelLength := tempint2;
     end
-    else if (Line1MemoEdit.Enabled) and (Line1MemoEdit.visible) then // default to line 1 of screen section
+    else if (Line1MemoEdit.Enabled) and (Line1MemoEdit.Visible) then
+      // default to line 1 of screen section
     begin // setupbutton = 1
       tempint1 := Line1MemoEdit.SelStart;
       tempint2 := Line1MemoEdit.SelLength;
-      Line1MemoEdit.setfocus;
+      Line1MemoEdit.SetFocus;
       Line1MemoEdit.SelStart := tempint1;
       Line1MemoEdit.SelLength := tempint2;
     end;
@@ -1704,99 +1792,102 @@ end;
 
 procedure TSetupForm.InsertButtonClick(Sender: TObject);
 var
-  tempint: Integer;
+  tempint: integer;
 begin
   if VariableEdit.Text <> NoVariable then
   begin
-    if (ScreensTabSheet.visible) then // in Screens tab
+    if (ScreensTabSheet.Visible) then // in Screens tab
     begin
-      if (setupbutton = 2) and (Line2MemoEdit.enabled) and (Line2MemoEdit.visible) then
+      if (setupbutton = 2) and (Line2MemoEdit.Enabled) and (Line2MemoEdit.Visible) then
       begin
         tempint := Line2MemoEdit.SelStart;
-        Line2MemoEdit.text := utf8copy(Line2MemoEdit.text, 1, Line2MemoEdit.SelStart) + VariableEdit.Text +
-          utf8copy(Line2MemoEdit.text, Line2MemoEdit.SelStart + 1 + Line2MemoEdit.SelLength,
-          UTF8Length(Line2MemoEdit.Text));
+        Line2MemoEdit.Text := utf8copy(Line2MemoEdit.Text, 1, Line2MemoEdit.SelStart) +
+          VariableEdit.Text + utf8copy(Line2MemoEdit.Text, Line2MemoEdit.SelStart +
+          1 + Line2MemoEdit.SelLength, UTF8Length(Line2MemoEdit.Text));
         Line2MemoEdit.SetFocus;
-        Line2MemoEdit.selstart := tempint + utf8length(VariableEdit.text);
+        Line2MemoEdit.selstart := tempint + utf8length(VariableEdit.Text);
       end
-      else if (setupbutton = 3) and (Line3MemoEdit.enabled) and (Line3MemoEdit.visible) then
+      else if (setupbutton = 3) and (Line3MemoEdit.Enabled) and
+        (Line3MemoEdit.Visible) then
       begin
         tempint := Line3MemoEdit.SelStart;
-        Line3MemoEdit.text := utf8copy(Line3MemoEdit.text, 1, Line3MemoEdit.SelStart) + VariableEdit.Text +
-          utf8copy(Line3MemoEdit.text, Line3MemoEdit.SelStart + 1 + Line3MemoEdit.SelLength,
-          UTF8Length(Line3MemoEdit.Text));
+        Line3MemoEdit.Text := utf8copy(Line3MemoEdit.Text, 1, Line3MemoEdit.SelStart) +
+          VariableEdit.Text + utf8copy(Line3MemoEdit.Text, Line3MemoEdit.SelStart +
+          1 + Line3MemoEdit.SelLength, UTF8Length(Line3MemoEdit.Text));
         Line3MemoEdit.SetFocus;
-        Line3MemoEdit.selstart := tempint + UTF8Length(VariableEdit.text);
+        Line3MemoEdit.selstart := tempint + UTF8Length(VariableEdit.Text);
       end
-      else if (setupbutton = 4) and (Line4MemoEdit.enabled) and (Line4MemoEdit.visible) then
+      else if (setupbutton = 4) and (Line4MemoEdit.Enabled) and
+        (Line4MemoEdit.Visible) then
       begin
         tempint := Line4MemoEdit.SelStart;
-        Line4MemoEdit.text := utf8copy(Line4MemoEdit.text, 1, Line4MemoEdit.SelStart) + VariableEdit.Text +
-          utf8copy(Line4MemoEdit.text, Line4MemoEdit.SelStart + 1 + Line4MemoEdit.SelLength,
-          UTF8Length(Line4MemoEdit.Text));
+        Line4MemoEdit.Text := utf8copy(Line4MemoEdit.Text, 1, Line4MemoEdit.SelStart) +
+          VariableEdit.Text + utf8copy(Line4MemoEdit.Text, Line4MemoEdit.SelStart +
+          1 + Line4MemoEdit.SelLength, UTF8Length(Line4MemoEdit.Text));
         Line4MemoEdit.SetFocus;
-        Line4MemoEdit.selstart := tempint + UTF8Length(VariableEdit.text);
+        Line4MemoEdit.selstart := tempint + UTF8Length(VariableEdit.Text);
       end
-      else if (Line1MemoEdit.enabled) and (Line1MemoEdit.visible) then // default to line 1
+      else if (Line1MemoEdit.Enabled) and (Line1MemoEdit.Visible) then
+        // default to line 1
       begin
         tempint := Line1MemoEdit.SelStart;
-        Line1MemoEdit.text := utf8copy(Line1MemoEdit.text, 1, tempint) + VariableEdit.Text +
-          utf8copy(Line1MemoEdit.text, tempint + 1 + Line1MemoEdit.SelLength,
-          UTF8Length(Line1MemoEdit.Text));
+        Line1MemoEdit.Text := utf8copy(Line1MemoEdit.Text, 1, tempint) +
+          VariableEdit.Text + utf8copy(Line1MemoEdit.Text, tempint +
+          1 + Line1MemoEdit.SelLength, UTF8Length(Line1MemoEdit.Text));
         Line1MemoEdit.SetFocus;
-        Line1MemoEdit.selstart := tempint + UTF8Length(VariableEdit.text);
+        Line1MemoEdit.selstart := tempint + UTF8Length(VariableEdit.Text);
       end;
     end
     else if (ActionsTabSheet.Visible) then // in Actions tab
     begin
-      if (LastKeyPressedEdit.text='') and (VariableEdit.text='$MObutton') then
+      if (LastKeyPressedEdit.Text = '') and (VariableEdit.Text = '$MObutton') then
       begin
-        showmessage ('please press the button you want to bind');
+        ShowMessage('please press the button you want to bind');
       end
       else
       begin
         if pos('$MObutton', VariableEdit.Text) <> 0 then
-          VariableEdit.Text := '$MObutton(' + LastKeyPressedEdit.text + ')';
-         ActionsStringGrid.Cells[1, ActionsStringGrid.row] := VariableEdit.text;
+          VariableEdit.Text := '$MObutton(' + LastKeyPressedEdit.Text + ')';
+        ActionsStringGrid.Cells[1, ActionsStringGrid.row] := VariableEdit.Text;
       end;
     end
     else if (StartupTabSheet.Visible) then // in startup/shutdown tab
     begin
-      if (shdownmessagebutton = 2) and (ShutdownEdit2.enabled) then
+      if (shdownmessagebutton = 2) and (ShutdownEdit2.Enabled) then
       begin
         tempint := ShutdownEdit2.SelStart;
-        ShutdownEdit2.text := utf8copy(ShutdownEdit2.text, 1, ShutdownEdit2.SelStart) + VariableEdit.Text +
-          utf8copy(ShutdownEdit2.text, ShutdownEdit2.SelStart + 1 + ShutdownEdit2.SelLength,
-          UTF8Length(ShutdownEdit2.Text));
+        ShutdownEdit2.Text := utf8copy(ShutdownEdit2.Text, 1, ShutdownEdit2.SelStart) +
+          VariableEdit.Text + utf8copy(ShutdownEdit2.Text, ShutdownEdit2.SelStart +
+          1 + ShutdownEdit2.SelLength, UTF8Length(ShutdownEdit2.Text));
         ShutdownEdit2.SetFocus;
-        ShutdownEdit2.selstart := tempint + utf8length(VariableEdit.text);
+        ShutdownEdit2.selstart := tempint + utf8length(VariableEdit.Text);
       end
-      else if (shdownmessagebutton = 3) and (ShutdownEdit3.enabled) then
+      else if (shdownmessagebutton = 3) and (ShutdownEdit3.Enabled) then
       begin
         tempint := ShutdownEdit3.SelStart;
-        ShutdownEdit3.text := utf8copy(ShutdownEdit3.text, 1, ShutdownEdit3.SelStart) + VariableEdit.Text +
-          utf8copy(ShutdownEdit3.text, ShutdownEdit3.SelStart + 1 + ShutdownEdit3.SelLength,
-          UTF8Length(ShutdownEdit3.Text));
+        ShutdownEdit3.Text := utf8copy(ShutdownEdit3.Text, 1, ShutdownEdit3.SelStart) +
+          VariableEdit.Text + utf8copy(ShutdownEdit3.Text, ShutdownEdit3.SelStart +
+          1 + ShutdownEdit3.SelLength, UTF8Length(ShutdownEdit3.Text));
         ShutdownEdit3.SetFocus;
-        ShutdownEdit3.selstart := tempint + UTF8Length(VariableEdit.text);
+        ShutdownEdit3.selstart := tempint + UTF8Length(VariableEdit.Text);
       end
-      else if (shdownmessagebutton = 4) and (ShutdownEdit4.enabled) then
+      else if (shdownmessagebutton = 4) and (ShutdownEdit4.Enabled) then
       begin
         tempint := ShutdownEdit4.SelStart;
-        ShutdownEdit4.text := utf8copy(ShutdownEdit4.text, 1, ShutdownEdit4.SelStart) + VariableEdit.Text +
-          utf8copy(ShutdownEdit4.text, ShutdownEdit4.SelStart + 1 + ShutdownEdit4.SelLength,
-          UTF8Length(ShutdownEdit4.Text));
+        ShutdownEdit4.Text := utf8copy(ShutdownEdit4.Text, 1, ShutdownEdit4.SelStart) +
+          VariableEdit.Text + utf8copy(ShutdownEdit4.Text, ShutdownEdit4.SelStart +
+          1 + ShutdownEdit4.SelLength, UTF8Length(ShutdownEdit4.Text));
         ShutdownEdit4.SetFocus;
-        ShutdownEdit4.selstart := tempint + UTF8Length(VariableEdit.text);
+        ShutdownEdit4.selstart := tempint + UTF8Length(VariableEdit.Text);
       end
-      else if (ShutdownEdit1.enabled) then // default to line 1
+      else if (ShutdownEdit1.Enabled) then // default to line 1
       begin
         tempint := ShutdownEdit1.SelStart;
-        ShutdownEdit1.text := utf8copy(ShutdownEdit1.text, 1, tempint) + VariableEdit.Text +
-          utf8copy(ShutdownEdit1.text, tempint + 1 + ShutdownEdit1.SelLength,
-          UTF8Length(ShutdownEdit1.Text));
+        ShutdownEdit1.Text := utf8copy(ShutdownEdit1.Text, 1, tempint) +
+          VariableEdit.Text + utf8copy(ShutdownEdit1.Text, tempint +
+          1 + ShutdownEdit1.SelLength, UTF8Length(ShutdownEdit1.Text));
         ShutdownEdit1.SetFocus;
-        ShutdownEdit1.selstart := tempint + UTF8Length(VariableEdit.text);
+        ShutdownEdit1.selstart := tempint + UTF8Length(VariableEdit.Text);
       end;
     end;
   end;
@@ -1804,41 +1895,47 @@ end;
 
 procedure TSetupForm.SysInfoListBoxClick(Sender: TObject);
 begin
-  case SysInfoListBox.itemindex of
-    0 : VariableEdit.Text := '$SysUsername';
-    1 : VariableEdit.Text := '$SysComputername';
-    2 : VariableEdit.Text := '$SysUptime';
-    3 : VariableEdit.Text := '$SysUptims';
-    4 : VariableEdit.Text := '$MemFree';
-    5 : VariableEdit.Text := '$MemUsed';
-    6 : VariableEdit.Text := '$MemTotal';
-    7 : VariableEdit.Text := '$MemF%';
-    8 : VariableEdit.Text := '$MemU%';
-    9 : VariableEdit.Text := '$Bar($MemFree,$MemTotal,10)';
-    10 : VariableEdit.Text := '$Bar($MemUsed,$MemTotal,10)';
-    11 : VariableEdit.Text := '$PageFree';
-    12 : VariableEdit.Text := '$PageUsed';
-    13 : VariableEdit.Text := '$PageTotal';
-    14 : VariableEdit.Text := '$PageF%';
-    15 : VariableEdit.Text := '$PageU%';
-    16 : VariableEdit.Text := '$Bar($PageFree,$PageTotal,10)';
-    17 : VariableEdit.Text := '$Bar($PageUsed,$PageTotal,10)';
-    18 : VariableEdit.Text := '$HDFree(C)';
-    19 : VariableEdit.Text := '$HDUsed(C)';
-    20 : VariableEdit.Text := '$HDTotal(C)';
-    21 : VariableEdit.Text := '$HDFreg(C)';
-    22 : VariableEdit.Text := '$HDUseg(C)';
-    23 : VariableEdit.Text := '$HDTotag(C)';
-    24 : VariableEdit.Text := '$HDF%(C)';
-    25 : VariableEdit.Text := '$HDU%(C)';
-    26 : VariableEdit.Text := '$Bar($HDFree(C),$HDTotal(C),10)';
-    27 : VariableEdit.Text := '$Bar($HDUsed(C),$HDTotal(C),10)';
-    28 : VariableEdit.Text := '$ScreenReso';
-    29 : VariableEdit.Text := '$SysSSActive';
-    30 : VariableEdit.Text := '$SysFSGameActive';
-    31 : VariableEdit.Text := '$SysFSAppActive';
-    32 : VariableEdit.Text := '$SysAppActive(LCDSmartie.exe)';
-    else VariableEdit.Text := NoVariable;
+  case SysInfoListBox.ItemIndex of
+    0: VariableEdit.Text := '$SysUsername';
+    1: VariableEdit.Text := '$SysComputername';
+    2: VariableEdit.Text := '$SysCPUType';
+    3 : VariableEdit.Text := '$SysCPUSpeedMhz';
+    4 : VariableEdit.Text := '$SysCPUSpeedGhz';
+    5 : VariableEdit.Text := '$SysCPUUsage';
+    6 : VariableEdit.Text := '$Bar($SysCPUUsage,100,10)';
+    7: VariableEdit.Text := '$SysUptime';
+    8: VariableEdit.Text := '$SysUptims';
+    9: VariableEdit.Text := '$MemFree';
+    10: VariableEdit.Text := '$MemUsed';
+    11: VariableEdit.Text := '$MemTotal';
+    12: VariableEdit.Text := '$MemF%';
+    13: VariableEdit.Text := '$MemU%';
+    14: VariableEdit.Text := '$Bar($MemFree,$MemTotal,10)';
+    15: VariableEdit.Text := '$Bar($MemUsed,$MemTotal,10)';
+    16: VariableEdit.Text := '$PageFree';
+    17: VariableEdit.Text := '$PageUsed';
+    18: VariableEdit.Text := '$PageTotal';
+    19: VariableEdit.Text := '$PageF%';
+    20: VariableEdit.Text := '$PageU%';
+    21: VariableEdit.Text := '$Bar($PageFree,$PageTotal,10)';
+    22: VariableEdit.Text := '$Bar($PageUsed,$PageTotal,10)';
+    23: VariableEdit.Text := '$HDFree(C)';
+    24: VariableEdit.Text := '$HDUsed(C)';
+    25: VariableEdit.Text := '$HDTotal(C)';
+    26: VariableEdit.Text := '$HDFreg(C)';
+    27: VariableEdit.Text := '$HDUseg(C)';
+    28: VariableEdit.Text := '$HDTotag(C)';
+    29: VariableEdit.Text := '$HDF%(C)';
+    30: VariableEdit.Text := '$HDU%(C)';
+    31: VariableEdit.Text := '$Bar($HDFree(C),$HDTotal(C),10)';
+    32: VariableEdit.Text := '$Bar($HDUsed(C),$HDTotal(C),10)';
+    33: VariableEdit.Text := '$ScreenReso';
+    34: VariableEdit.Text := '$SysSSActive';
+    35: VariableEdit.Text := '$SysFSGameActive';
+    36: VariableEdit.Text := '$SysFSAppActive';
+    37: VariableEdit.Text := '$SysAppActive(LCDSmartie.exe)';
+    else
+      VariableEdit.Text := NoVariable;
   end; // case
 
   if not (VariableEdit.Text = NoVariable) then
@@ -1847,24 +1944,33 @@ end;
 
 procedure TSetupForm.InternetListBoxClick(Sender: TObject);
 begin
-  case InternetListBox.itemindex of
-    0: VariableEdit.Text := '$Rss(https://news.bbc.co.uk/rss/newsonline_uk_edition/world/rss091.xml,b)';
-    1: VariableEdit.Text := '$Rss(https://news.bbc.co.uk/rss/newsonline_uk_edition/uk/rss091.xml,b)';
+  case InternetListBox.ItemIndex of
+    0: VariableEdit.Text :=
+        '$Rss(https://news.bbc.co.uk/rss/newsonline_uk_edition/world/rss091.xml,b)';
+    1: VariableEdit.Text :=
+        '$Rss(https://news.bbc.co.uk/rss/newsonline_uk_edition/uk/rss091.xml,b)';
     2: VariableEdit.Text := '$Rss(https://feeds.feedburner.com/tweakers/mixed,b)';
     3: VariableEdit.Text := '$Rss(https://www.theregister.com/headlines.rss,b)';
-    4: VariableEdit.Text := '$Rss(http://rss.slashdot.org/Slashdot/slashdot,b)'; // only http
+    4: VariableEdit.Text := '$Rss(http://rss.slashdot.org/Slashdot/slashdot,b)';
+    // only http
     5: VariableEdit.Text := '$Rss(https://www.wired.com/feed/rss,b)';
     6: VariableEdit.Text := '$Rss(https://sourceforge.net/p/lcdsmartie/news/feed,b,1)';
     7: VariableEdit.Text := '$Rss(https://sourceforge.net/p/palmorb/news/feed,b,1)';
-    8: VariableEdit.Text := '$Rss(https://news.bbc.co.uk/rss/newsonline_world_edition/business/rss091.xml,b)';
-    9: VariableEdit.Text := '$Rss(https://www.washingtonpost.com/wp-srv/business/rssheadlines.xml,b)';
+    8: VariableEdit.Text :=
+        '$Rss(https://news.bbc.co.uk/rss/newsonline_world_edition/business/rss091.xml,b)';
+    9: VariableEdit.Text :=
+        '$Rss(https://www.washingtonpost.com/wp-srv/business/rssheadlines.xml,b)';
     10: VariableEdit.Text := '$Rss(https://news.yahoo.com/rss/entertainment,b)';
-    11: VariableEdit.Text := '$Rss(https://www.nytimes.com/services/xml/rss/nyt/Health.xml,b)';
-    12: VariableEdit.Text := '$Rss(https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml,b)';
+    11: VariableEdit.Text :=
+        '$Rss(https://www.nytimes.com/services/xml/rss/nyt/Health.xml,b)';
+    12: VariableEdit.Text :=
+        '$Rss(https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml,b)';
     13: VariableEdit.Text := '$Rss(https://www.volkskrant.nl/economie/rss.xml,b)';
-    14: VariableEdit.Text := '$Rss(https://rs.vpro.nl/v3/api/feeds/3voor12/section/3voor12%20Landelijk,b)';
+    14: VariableEdit.Text :=
+        '$Rss(https://rs.vpro.nl/v3/api/feeds/3voor12/section/3voor12%20Landelijk,b)';
     15: VariableEdit.Text := '$Rss(https://www.ad.nl/home/rss.xml,b)';
-    else VariableEdit.Text := NoVariable;
+    else
+      VariableEdit.Text := NoVariable;
   end; // case
 
   if not (VariableEdit.Text = NoVariable) then
@@ -1873,32 +1979,33 @@ end;
 
 procedure TSetupForm.QStatLabelClick(Sender: TObject);
 begin
-  ShellExecute(0, Nil, pchar('www.qstat.org'), Nil, Nil, SW_NORMAL);
+  ShellExecute(0, nil, PChar('www.qstat.org'), nil, nil, SW_NORMAL);
 end;
 
 procedure TSetupForm.MiscListBoxClick(Sender: TObject);
 begin
-  case MiscListBox.itemindex of
-    0 : VariableEdit.Text := '$DnetSpeed';
-    1 : VariableEdit.Text := '$DnetDone';
-    2 : VariableEdit.Text := '$Time(d mmmm yyyy hh: nn: ss)';
-    3 : VariableEdit.Text := '°';
-    4 : VariableEdit.Text := '█';
-    5 : VariableEdit.Text := '$Chr(20)';
-    6 : VariableEdit.Text := '$File(C:\file.txt,1)';
-    7 : VariableEdit.Text := '$LogFile(C:\file.log,0)';
-    8 : VariableEdit.Text := '$dll(demo.dll,5,param1,param2)';
-    9 : VariableEdit.Text := '$Count(101#$CPUSpeed#4)';
-    10 : VariableEdit.Text := '$Bar(30,100,20)';
-    11 : VariableEdit.Text := '$Right(ins variable(s) here,$3%)';
-    12 : VariableEdit.Text := '$Fill(10)';
-    13 : VariableEdit.Text := '$Flash(insert text here$)$';
-    14 : VariableEdit.Text := '$CustomChar(1, 31, 31, 31, 31, 31, 31, 31, 31)';
-    15 : VariableEdit.Text := '$Rss(URL,t|d|b,ITEM#,MAXFREQHRS)';
-    16 : VariableEdit.Text := '$Center(text here,15)';
-    17 : VariableEdit.Text := '$ScreenChanged';
-    18 : VariableEdit.Text := '$Sender(127.0.0.10,6088,password1234,1,1)';
-    else VariableEdit.Text := NoVariable;
+  case MiscListBox.ItemIndex of
+    0: VariableEdit.Text := '$DnetSpeed';
+    1: VariableEdit.Text := '$DnetDone';
+    2: VariableEdit.Text := '$Time(d mmmm yyyy hh: nn: ss)';
+    3: VariableEdit.Text := '°';
+    4: VariableEdit.Text := '█';
+    5: VariableEdit.Text := '$Chr(20)';
+    6: VariableEdit.Text := '$File(C:\file.txt,1)';
+    7: VariableEdit.Text := '$LogFile(C:\file.log,0)';
+    8: VariableEdit.Text := '$dll(demo.dll,5,param1,param2)';
+    9: VariableEdit.Text := '$Count(101#$CPUSpeed#4)';
+    10: VariableEdit.Text := '$Bar(30,100,20)';
+    11: VariableEdit.Text := '$Right(ins variable(s) here,$3%)';
+    12: VariableEdit.Text := '$Fill(10)';
+    13: VariableEdit.Text := '$Flash(insert text here$)$';
+    14: VariableEdit.Text := '$CustomChar(1, 31, 31, 31, 31, 31, 31, 31, 31)';
+    15: VariableEdit.Text := '$Rss(URL,t|d|b,ITEM#,MAXFREQHRS)';
+    16: VariableEdit.Text := '$Center(text here,15)';
+    17: VariableEdit.Text := '$ScreenChanged';
+    18: VariableEdit.Text := '$Sender(127.0.0.10,6088,password1234,1,1)';
+    else
+      VariableEdit.Text := NoVariable;
   end; // case
 
   if not (VariableEdit.Text = NoVariable) then
@@ -1907,17 +2014,18 @@ end;
 
 procedure TSetupForm.SetiAtHomeListBoxClick(Sender: TObject);
 begin
-  case SetiAtHomeListBox.itemindex of
-    0 : VariableEdit.Text := '$SETIResults';
-    1 : VariableEdit.Text := '$SETICPUTime';
-    2 : VariableEdit.Text := '$SETIAverage';
-    3 : VariableEdit.Text := '$SETILastresult';
-    4 : VariableEdit.Text := '$SETIusertime';
-    5 : VariableEdit.Text := '$SETItotalusers';
-    6 : VariableEdit.Text := '$SETIrank';
-    7 : VariableEdit.Text := '$SETIsharingrank';
-    8 : VariableEdit.Text := '$SETImoreWU%';
-    else VariableEdit.Text := NoVariable;
+  case SetiAtHomeListBox.ItemIndex of
+    0: VariableEdit.Text := '$SETIResults';
+    1: VariableEdit.Text := '$SETICPUTime';
+    2: VariableEdit.Text := '$SETIAverage';
+    3: VariableEdit.Text := '$SETILastresult';
+    4: VariableEdit.Text := '$SETIusertime';
+    5: VariableEdit.Text := '$SETItotalusers';
+    6: VariableEdit.Text := '$SETIrank';
+    7: VariableEdit.Text := '$SETIsharingrank';
+    8: VariableEdit.Text := '$SETImoreWU%';
+    else
+      VariableEdit.Text := NoVariable;
   end; // case
 
   if not (VariableEdit.Text = NoVariable) then
@@ -1953,16 +2061,16 @@ procedure TSetupForm.GameServerEditExit(Sender: TObject);
 begin
   if (setupbutton >= 0) and (setupbutton <= 4) then
   begin
-    config.gameServer[ScreenSpinEdit.Value, setupbutton] := GameServerEdit.text;
+    config.gameServer[ScreenSpinEdit.Value, setupbutton] := GameServerEdit.Text;
   end;
 end;
 
 procedure TSetupForm.DistributedNetBrowseButtonClick(Sender: TObject);
 var
-  line, line2: String;
+  line, line2: string;
 begin
-// remove duplicate backslash
-  line := DistributedNetLogfileEdit.text;
+  // remove duplicate backslash
+  line := DistributedNetLogfileEdit.Text;
   line2 := '';
   while pos('\', line) <> 0 do
   begin
@@ -1970,32 +2078,33 @@ begin
     line := copy(line, pos('\', line) + 1, length(line));
   end;
   opendialog2.InitialDir := line2;
-  opendialog2.FileName := DistributedNetLogfileEdit.text;
+  opendialog2.FileName := DistributedNetLogfileEdit.Text;
   Opendialog2.Execute;
-  if opendialog2.FileName <> '' then DistributedNetLogfileEdit.text := opendialog2.FileName;
+  if opendialog2.FileName <> '' then DistributedNetLogfileEdit.Text :=
+      opendialog2.FileName;
 end;
 
 procedure TSetupForm.EmailAccountComboBoxChange(Sender: TObject);
 begin
-  config.pop[CurrentlyShownEmailAccount + 1].server := EmailServerEdit.text;
-  config.pop[CurrentlyShownEmailAccount + 1].user := EmailLoginEdit.text;
-  config.pop[CurrentlyShownEmailAccount + 1].pword := EmailPasswordEdit.text;
-  config.pop[CurrentlyShownEmailAccount + 1].port_ssl := EmailSSLEdit.text;
+  config.pop[CurrentlyShownEmailAccount + 1].server := EmailServerEdit.Text;
+  config.pop[CurrentlyShownEmailAccount + 1].user := EmailLoginEdit.Text;
+  config.pop[CurrentlyShownEmailAccount + 1].pword := EmailPasswordEdit.Text;
+  config.pop[CurrentlyShownEmailAccount + 1].port_ssl := EmailSSLEdit.Text;
 
-  if EmailAccountComboBox.itemIndex < 0 then EmailAccountComboBox.itemindex := 0;
+  if EmailAccountComboBox.ItemIndex < 0 then EmailAccountComboBox.ItemIndex := 0;
 
-  CurrentlyShownEmailAccount := EmailAccountComboBox.itemindex;
-  EmailServerEdit.text := config.pop[CurrentlyShownEmailAccount + 1].server;
-  EmailLoginEdit.text := config.pop[CurrentlyShownEmailAccount + 1].user;
-  EmailPasswordEdit.text := config.pop[CurrentlyShownEmailAccount + 1].pword;
-  EmailSSLEdit.text := config.pop[CurrentlyShownEmailAccount + 1].port_ssl;
+  CurrentlyShownEmailAccount := EmailAccountComboBox.ItemIndex;
+  EmailServerEdit.Text := config.pop[CurrentlyShownEmailAccount + 1].server;
+  EmailLoginEdit.Text := config.pop[CurrentlyShownEmailAccount + 1].user;
+  EmailPasswordEdit.Text := config.pop[CurrentlyShownEmailAccount + 1].pword;
+  EmailSSLEdit.Text := config.pop[CurrentlyShownEmailAccount + 1].port_ssl;
 
   if EmailMessageCountRadioButton.Checked then
-  VariableEdit.Text := '$Email('+IntToStr(CurrentlyShownEmailAccount+1)+')'
+    VariableEdit.Text := '$Email(' + IntToStr(CurrentlyShownEmailAccount + 1) + ')'
   else if EmailLastSubjectRadioButton.Checked then
-  VariableEdit.Text := '$EmailSub('+IntToStr(CurrentlyShownEmailAccount+1)+')'
+    VariableEdit.Text := '$EmailSub(' + IntToStr(CurrentlyShownEmailAccount + 1) + ')'
   else if EmailLastFromRadioButton.Checked then
-  VariableEdit.Text := '$EmailFrom('+IntToStr(CurrentlyShownEmailAccount+1)+')';
+    VariableEdit.Text := '$EmailFrom(' + IntToStr(CurrentlyShownEmailAccount + 1) + ')';
 
   if not (VariableEdit.Text = NoVariable) then
     FocusToInputField();
@@ -2003,81 +2112,81 @@ end;
 
 procedure TSetupForm.ContinueLine1CheckBoxClick(Sender: TObject);
 var
-  tempint1: Integer;
+  tempint1: integer;
 
 begin
-  if ContinueLine1CheckBox.checked = true then
+  if ContinueLine1CheckBox.Checked = True then
   begin
-    DontScrollLine1CheckBox.Checked := true;
-    DontScrollLine1CheckBox.enabled := false;
+    DontScrollLine1CheckBox.Checked := True;
+    DontScrollLine1CheckBox.Enabled := False;
     if setupbutton = 2 then
     begin
       tempint1 := Line1MemoEdit.SelStart;
-      Line1MemoEdit.setfocus;
+      Line1MemoEdit.SetFocus;
       Line1MemoEdit.SelStart := tempint1;
     end;
-    Line2MemoEdit.enabled := false;
+    Line2MemoEdit.Enabled := False;
     Line2MemoEdit.color := $00BBBBFF;
   end
   else
   begin
-    DontScrollLine1CheckBox.enabled := true;
-    DontScrollLine1CheckBox.checked := false;
-    Line2MemoEdit.enabled := true;
+    DontScrollLine1CheckBox.Enabled := True;
+    DontScrollLine1CheckBox.Checked := False;
+    Line2MemoEdit.Enabled := True;
     Line2MemoEdit.color := clWhite;
   end;
 end;
 
 procedure TSetupForm.ContinueLine2CheckBoxClick(Sender: TObject);
 var
-  tempint1: Integer;
+  tempint1: integer;
 
 begin
-  if ContinueLine2CheckBox.checked = true then
+  if ContinueLine2CheckBox.Checked = True then
   begin
-    DontScrollLine2CheckBox.Checked := true;
-    DontScrollLine2CheckBox.enabled := false;
+    DontScrollLine2CheckBox.Checked := True;
+    DontScrollLine2CheckBox.Enabled := False;
     if setupbutton = 3 then
     begin
       tempint1 := Line1MemoEdit.SelStart;
-      Line1MemoEdit.setfocus;
+      Line1MemoEdit.SetFocus;
       Line1MemoEdit.SelStart := tempint1;
     end;
-    Line3MemoEdit.enabled := false;
+    Line3MemoEdit.Enabled := False;
     Line3MemoEdit.color := $00BBBBFF;
   end
   else
   begin
-    DontScrollLine2CheckBox.enabled := true;
-    DontScrollLine2CheckBox.checked := false;
-    Line3MemoEdit.enabled := true;
+    DontScrollLine2CheckBox.Enabled := True;
+    DontScrollLine2CheckBox.Checked := False;
+    Line3MemoEdit.Enabled := True;
     Line3MemoEdit.color := clWhite;
   end;
 end;
 
 procedure TSetupForm.ContinueLine3CheckBoxClick(Sender: TObject);
 var
-  tempint1: Integer;
+  tempint1: integer;
 
 begin
-  if ContinueLine3CheckBox.checked = true then
+  if ContinueLine3CheckBox.Checked = True then
   begin
-    DontScrollLine3CheckBox.Checked := true;
-    DontScrollLine3CheckBox.enabled := false;
+    DontScrollLine3CheckBox.Checked := True;
+    DontScrollLine3CheckBox.Enabled := False;
     if setupbutton = 4 then
     begin
       tempint1 := Line1MemoEdit.SelStart;
-      Line1MemoEdit.setfocus;
+      Line1MemoEdit.SetFocus;
       Line1MemoEdit.SelStart := tempint1;
     end;
-    Line4MemoEdit.enabled := false;
+    Line4MemoEdit.Enabled := False;
     Line4MemoEdit.color := $00BBBBFF;
   end
   else
   begin
-    DontScrollLine3CheckBox.enabled := true;
-    DontScrollLine3CheckBox.checked := false;
-    Line4MemoEdit.enabled := true;
+    DontScrollLine3CheckBox.Enabled := True;
+    DontScrollLine3CheckBox.Checked := False;
+    Line4MemoEdit.Enabled := True;
     Line4MemoEdit.color := clWhite;
   end;
 end;
@@ -2085,77 +2194,82 @@ end;
 procedure TSetupForm.WinampLocationBrowseButtonClick(Sender: TObject);
 begin
   opendialog1.Execute;
-  if opendialog1.FileName <> '' then WinampLocationEdit.text := opendialog1.FileName;
+  if opendialog1.FileName <> '' then WinampLocationEdit.Text := opendialog1.FileName;
 end;
 
 procedure TSetupForm.GamestatsListBoxClick(Sender: TObject);
 var
-  S : string;
+  S: string;
 begin
-  case GameTypeComboBox.itemindex of
-    0 : S := '$Half-life';
-    1 : S := '$QuakeII';
-    2 : S := '$QuakeIII';
-    3 : S := '$Unreal';
-    else S := NoVariable;
+  case GameTypeComboBox.ItemIndex of
+    0: S := '$Half-life';
+    1: S := '$QuakeII';
+    2: S := '$QuakeIII';
+    3: S := '$Unreal';
+    else
+      S := NoVariable;
   end; // case
 
-  if not (S = NoVariable) then begin
-    VariableEdit.Text := S + IntToStr(GamestatsListBox.Itemindex+1);
+  if not (S = NoVariable) then
+  begin
+    VariableEdit.Text := S + IntToStr(GamestatsListBox.ItemIndex + 1);
     FocusToInputField();
-  end else
+  end
+  else
     VariableEdit.Text := S;
 end;
 
 procedure TSetupForm.LineEditEnter(Sender: TObject);
 begin
 
-  if (Line1MemoEdit <> Sender) and Line1MemoEdit.Enabled = true then
+  if (Line1MemoEdit <> Sender) and Line1MemoEdit.Enabled = True then
     Line1MemoEdit.color := clWhite
   else
-    if Line1MemoEdit.Enabled = true then
-   begin
-      Line1MemoEdit.color := $00A1D7A4;
-      setupbutton := 1;
-    end;
+  if Line1MemoEdit.Enabled = True then
+  begin
+    Line1MemoEdit.color := $00A1D7A4;
+    setupbutton := 1;
+  end;
 
-  if (Line2MemoEdit <> Sender) and Line2MemoEdit.Enabled = true then
+  if (Line2MemoEdit <> Sender) and Line2MemoEdit.Enabled = True then
     Line2MemoEdit.color := clWhite
   else
-    if Line2MemoEdit.Enabled = true then
-    begin
-      Line2MemoEdit.color := $00A1D7A4;
-      setupbutton := 2;
-    end;
+  if Line2MemoEdit.Enabled = True then
+  begin
+    Line2MemoEdit.color := $00A1D7A4;
+    setupbutton := 2;
+  end;
 
-  if (Line3MemoEdit <> Sender) and Line3MemoEdit.Enabled = true then
+  if (Line3MemoEdit <> Sender) and Line3MemoEdit.Enabled = True then
     Line3MemoEdit.color := clWhite
   else
-    if Line3MemoEdit.Enabled = true then
-    begin
-      Line3MemoEdit.color := $00A1D7A4;
-      setupbutton := 3;
-    end;
+  if Line3MemoEdit.Enabled = True then
+  begin
+    Line3MemoEdit.color := $00A1D7A4;
+    setupbutton := 3;
+  end;
 
-  if (Line4MemoEdit <> Sender) and Line4MemoEdit.Enabled = true then
+  if (Line4MemoEdit <> Sender) and Line4MemoEdit.Enabled = True then
     Line4MemoEdit.color := clWhite
   else
-    if Line4MemoEdit.Enabled = true then
-    begin
-      Line4MemoEdit.color := $00A1D7A4;
-      setupbutton := 4;
-    end;
+  if Line4MemoEdit.Enabled = True then
+  begin
+    Line4MemoEdit.color := $00A1D7A4;
+    setupbutton := 4;
+  end;
 
 end;
 
 procedure TSetupForm.NetworkStatsListBoxClick(Sender: TObject);
 var
-  NetStat : TNetworkStatistics;
+  NetStat: TNetworkStatistics;
 begin
-  NetStat := TNetworkStatistics(NetworkStatsListBox.itemindex);
-  if (NetStat >= FirstNetworkStat) and (NetStat <= LastNetworkStat) then begin
-    VariableEdit.Text := NetworkStatisticsKeys[NetStat]+ '(1)';
-  end else
+  NetStat := TNetworkStatistics(NetworkStatsListBox.ItemIndex);
+  if (NetStat >= FirstNetworkStat) and (NetStat <= LastNetworkStat) then
+  begin
+    VariableEdit.Text := NetworkStatisticsKeys[NetStat] + '(1)';
+  end
+  else
     VariableEdit.Text := NoVariable;
 
   if not (VariableEdit.Text = NoVariable) then
@@ -2164,19 +2278,20 @@ end;
 
 procedure TSetupForm.FoldingAtHomeListBoxClick(Sender: TObject);
 begin
-  case FoldingAtHomeListBox.itemindex of
-    0 : VariableEdit.Text := '$FOLDUser';
-    1 : VariableEdit.Text := '$FOLDwu';
-    2 : VariableEdit.Text := '$FOLDlastwu';
-    3 : VariableEdit.Text := '$FOLDact50min';
-    4 : VariableEdit.Text := '$FOLDactweek';
-    5 : VariableEdit.Text := '$FOLDscore';
-    6 : VariableEdit.Text := '$FOLDrank';
-    7 : VariableEdit.Text := '$FOLDteamname';
-    8 : VariableEdit.Text := '$FOLDteamscore';
-    9 : VariableEdit.Text := '$FOLDteamwu';
-    10 : VariableEdit.Text := '$FOLDteamlastwu';
-    else VariableEdit.Text := NoVariable;
+  case FoldingAtHomeListBox.ItemIndex of
+    0: VariableEdit.Text := '$FOLDUser';
+    1: VariableEdit.Text := '$FOLDwu';
+    2: VariableEdit.Text := '$FOLDlastwu';
+    3: VariableEdit.Text := '$FOLDact50min';
+    4: VariableEdit.Text := '$FOLDactweek';
+    5: VariableEdit.Text := '$FOLDscore';
+    6: VariableEdit.Text := '$FOLDrank';
+    7: VariableEdit.Text := '$FOLDteamname';
+    8: VariableEdit.Text := '$FOLDteamscore';
+    9: VariableEdit.Text := '$FOLDteamwu';
+    10: VariableEdit.Text := '$FOLDteamlastwu';
+    else
+      VariableEdit.Text := NoVariable;
   end; // case
 
   if not (VariableEdit.Text = NoVariable) then
@@ -2187,65 +2302,68 @@ end;
 // Apply pressed.
 procedure TSetupForm.ApplyButtonClick(Sender: TObject);
 var
-  ReinitLCD, ReloadSkin: Boolean;
-  x: Integer;
-  iMaxUsedRow: Integer;
+  ReinitLCD, ReloadSkin: boolean;
+  x, y: integer;
+  iMaxUsedRow: integer;
 begin
-  ReinitLCD := false;
-  ReloadSkin := false;
+  ReinitLCD := False;
+  ReloadSkin := False;
 
   iMaxUsedRow := -1;
-  for x := 0 to ActionsStringGrid.RowCount-1 do
+  y := 0;
+  for x := 0 to ActionsStringGrid.RowCount - 1 do
   begin
-    if (ActionsStringGrid.cells[1, x] <> '') and (ActionsStringGrid.cells[5,
-      x] <> '') then
+    if (ActionsStringGrid.cells[1, x] <> '') and
+       (ActionsStringGrid.cells[2, x] <> '') and
+       (ActionsStringGrid.cells[3, x] <> '') and
+       (ActionsStringGrid.cells[5, x] <> '') then
     begin
-        iMaxUsedRow := x;
-        config.actionsArray[x + 1, 1] := ActionsStringGrid.Cells[1, x];
+      iMaxUsedRow := y;
+      config.actionsArray[y + 1, 1] := ActionsStringGrid.Cells[1, x];
 
-        if ActionsStringGrid.Cells[2, x]='>' then
-           config.actionsArray[x + 1, 2] := '0';
-        if ActionsStringGrid.Cells[2, x]='<' then
-           config.actionsArray[x + 1, 2] := '1';
-        if ActionsStringGrid.Cells[2, x]='=' then
-           config.actionsArray[x + 1, 2] := '2';
-        if ActionsStringGrid.Cells[2, x]='<=' then
-           config.actionsArray[x + 1, 2] := '3';
-        if ActionsStringGrid.Cells[2, x]='>=' then
-           config.actionsArray[x + 1, 2] := '4';
-        if ActionsStringGrid.Cells[2, x]='<>' then
-           config.actionsArray[x + 1, 2] := '5';
+      if ActionsStringGrid.Cells[2, x] = '>' then
+        config.actionsArray[y + 1, 2] := '0';
+      if ActionsStringGrid.Cells[2, x] = '<' then
+        config.actionsArray[y + 1, 2] := '1';
+      if ActionsStringGrid.Cells[2, x] = '=' then
+        config.actionsArray[y + 1, 2] := '2';
+      if ActionsStringGrid.Cells[2, x] = '<=' then
+        config.actionsArray[y + 1, 2] := '3';
+      if ActionsStringGrid.Cells[2, x] = '>=' then
+        config.actionsArray[y + 1, 2] := '4';
+      if ActionsStringGrid.Cells[2, x] = '<>' then
+        config.actionsArray[y + 1, 2] := '5';
 
-        config.actionsArray[x + 1, 3] := ActionsStringGrid.Cells[3, x];
-        config.actionsArray[x + 1, 4] := ActionsStringGrid.Cells[5, x];
+      config.actionsArray[y + 1, 3] := ActionsStringGrid.Cells[3, x];
+      config.actionsArray[y + 1, 4] := ActionsStringGrid.Cells[5, x];
+      inc(y);
     end;
   end;
   config.totalactions := iMaxUsedRow + 1;
 
-  // Check if Com settings have changed.
+  // unconditionally reinit lcd
+  ReinitLCD := True;
 
-   if (config.DisplayDLLParameters <> ParametersEdit.Text) then ReinitLCD := true;
-   if (config.DisplayDLLName <> DisplayPluginList.Text) then ReinitLCD := true;
 {$IFNDEF STANDALONESETUP}
-  LCDSmartieDisplayForm.WinampCtrl1.WinampLocation := WinampLocationEdit.text;
+  LCDSmartieDisplayForm.WinampCtrl1.WinampLocation := WinampLocationEdit.Text;
 {$ENDIF}
-  config.winampLocation := WinampLocationEdit.text;
+  config.winampLocation := WinampLocationEdit.Text;
   config.refreshRate := ProgramRefreshIntervalSpinEdit.Value;
-  config.setiEmail := SetiAtHomeEmailEdit.text;
+  config.setiEmail := SetiAtHomeEmailEdit.Text;
 
-  config.ScreenSize := LCDSizeComboBox.itemindex + 1;
-  config.randomScreens := RandomizeScreensCheckBox.checked;
-  config.foldUserid := FoldingAtHomeEmailEdit.text;
+  config.ScreenSize := LCDSizeComboBox.ItemIndex + 1;
+  config.randomScreens := RandomizeScreensCheckBox.Checked;
+  config.foldUserid := FoldingAtHomeEmailEdit.Text;
   config.gameRefresh := GamestatsRefreshTimeSpinEdit.Value;
-  config.colorOption := ColorSchemeComboBox.itemindex;
-  config.distLog := DistributedNetLogfileEdit.text;
-  config.dllPeriod := DLLCheckIntervalSpinEdit.value;
+  config.colorOption := ColorSchemeComboBox.ItemIndex;
+  config.distLog := DistributedNetLogfileEdit.Text;
+  config.dllPeriod := DLLCheckIntervalSpinEdit.Value;
   config.emailPeriod := EmailCheckTimeSpinEdit.Value;
-  config.scrollPeriod := ProgramScrollIntervalSpinEdit.value;
-  config.alwaysOnTop := StayOnTopCheckBox.checked;
+  config.scrollPeriod := ProgramScrollIntervalSpinEdit.Value;
+  config.alwaysOnTop := StayOnTopCheckBox.Checked;
   config.bHideOnStartup := HideOnStartup.Checked;
-  config.bAutoStart := AutoStart.checked;
-  config.bAutoStartHide := AutoStartHide.checked;
+  config.bAutoStart := AutoStart.Checked;
+  config.bAutoStartHide := AutoStartHide.Checked;
   config.EmulateLCD := EmulateLCDCheckbox.Checked;
   config.ShutdownMessage[1] := ShutdownEdit1.Text;
   config.ShutdownMessage[2] := ShutdownEdit2.Text;
@@ -2263,14 +2381,18 @@ begin
   LCDSmartieDisplayForm.SetupAutoStart();
 {$ENDIF}
 
-  config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].server := EmailServerEdit.text;
-  config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].user := EmailLoginEdit.text;
-  config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].pword := EmailPasswordEdit.text;
-  config.pop[(EmailAccountComboBox.itemindex + 1) mod MaxEmailAccounts].port_ssl := EmailSSLEdit.text;
+  config.pop[(EmailAccountComboBox.ItemIndex + 1) mod MaxEmailAccounts].server :=
+    EmailServerEdit.Text;
+  config.pop[(EmailAccountComboBox.ItemIndex + 1) mod MaxEmailAccounts].user :=
+    EmailLoginEdit.Text;
+  config.pop[(EmailAccountComboBox.ItemIndex + 1) mod MaxEmailAccounts].pword :=
+    EmailPasswordEdit.Text;
+  config.pop[(EmailAccountComboBox.ItemIndex + 1) mod MaxEmailAccounts].port_ssl :=
+    EmailSSLEdit.Text;
 
-  if not (WebProxyPortEdit.text = '') then
-    config.httpProxyPort := StrToInt(WebProxyPortEdit.text);
-  config.httpProxy := WebProxyServerEdit.text;
+  if not (WebProxyPortEdit.Text = '') then
+    config.httpProxyPort := StrToInt(WebProxyPortEdit.Text);
+  config.httpProxy := WebProxyServerEdit.Text;
 
   SaveScreen(ScreenSpinEdit.Value);
   {$IFNDEF STANDALONESETUP}
@@ -2278,9 +2400,9 @@ begin
   LCDSmartieDisplayForm.Data.RefreshDataThreads;
   {$ENDIF}
   config.LastTabIndex := LeftPageControl.ActivePageIndex;
-  if config.sSkinPath <> SkinPath.Text then ReloadSkin := true;
-  if config.sTrayIcon <> TrayIcon.Text then ReloadSkin := true;
-  config.sSkinPath :=  SkinPath.Text;
+  if config.sSkinPath <> SkinPath.Text then ReloadSkin := True;
+  if config.sTrayIcon <> TrayIcon.Text then ReloadSkin := True;
+  config.sSkinPath := SkinPath.Text;
   config.sTrayIcon := TrayIcon.Text;
   {$IFNDEF STANDALONESETUP}
   if ReloadSkin then
@@ -2302,7 +2424,7 @@ begin
   config.ActionsTimer := ActionsTimerSpinEdit.Value;
   config.save();
   {$IFNDEF STANDALONESETUP}
-  if ReinitLCD = true then
+  if ReinitLCD = True then
   begin
     LCDSmartieDisplayForm.ReInitLCD();
   end;
@@ -2327,18 +2449,18 @@ end;
 
 procedure TSetupForm.FormCreate(Sender: TObject);
 var
-  pathssl :string;
+  pathssl: string;
 begin
   {$IFDEF STANDALONESETUP}
   SetupForm.BorderStyle := bsSingle;
   {$ENDIF}
-  pathssl := ExtractFilePath(ParamStr(0))+'openssl\';
- // check if ssl dll exists , if not block the ssl edit !!!
-  if not fileExists(pathssl+'libeay32.dll') or
-     not fileExists(pathssl+'ssleay32.dll') then EmailSSLEdit.Enabled :=False ;
+  pathssl := ExtractFilePath(ParamStr(0)) + 'openssl\';
+  // check if ssl dll exists , if not block the ssl edit !!!
+  if not fileExists(pathssl + 'libeay32.dll') or not
+    fileExists(pathssl + 'ssleay32.dll') then EmailSSLEdit.Enabled := False;
 
   //point PluginListBox to the plugin dirs
-  PluginListBox.Directory := ExtractFilePath(ParamStr(0))+'plugins\';
+  PluginListBox.Directory := ExtractFilePath(ParamStr(0)) + 'plugins\';
 end;
 
 procedure TSetupForm.MainPageControlChange(Sender: TObject);
@@ -2346,52 +2468,58 @@ begin
 
   if MainPageControl.ActivePage = ScreensTabSheet then
   begin
-    if LeftPageControl.activepage = LCDFeaturesTabSheet then
+    if LeftPageControl.ActivePage = LCDFeaturesTabSheet then
     begin
-      if pos('$MObutton', VariableEdit.text) <> 0 then VariableEdit.text := NoVariable;
+      if pos('$MObutton', VariableEdit.Text) <> 0 then VariableEdit.Text := NoVariable;
       LeftPageControl.ActivePage := WinampTabSheet;
     end;
-    GameServerEdit.text := config.gameServer[ScreenSpinEdit.Value, 1];
+    GameServerEdit.Text := config.gameServer[ScreenSpinEdit.Value, 1];
     setupbutton := 1;
     Line1MemoEdit.color := $00A1D7A4;
-    if Line2MemoEdit.enabled= true then Line2MemoEdit.color := clWhite
-    else Line2MemoEdit.color := $00BBBBFF;
-    if Line3MemoEdit.enabled= true then Line3MemoEdit.color := clWhite
-    else Line3MemoEdit.color := $00BBBBFF;
-    if Line4MemoEdit.enabled= true then Line4MemoEdit.color := clWhite
-    else Line4MemoEdit.color := $00BBBBFF;
+    if Line2MemoEdit.Enabled = True then Line2MemoEdit.color := clWhite
+    else
+      Line2MemoEdit.color := $00BBBBFF;
+    if Line3MemoEdit.Enabled = True then Line3MemoEdit.color := clWhite
+    else
+      Line3MemoEdit.color := $00BBBBFF;
+    if Line4MemoEdit.Enabled = True then Line4MemoEdit.color := clWhite
+    else
+      Line4MemoEdit.color := $00BBBBFF;
   end;
 end;
 
 procedure TSetupForm.ActionAddButtonClick(Sender: TObject);
+var
+  Selection: integer;
 begin
-  ActionsStringGrid.RowCount := ActionsStringGrid.RowCount+1;
-  ActionsStringGrid.Cells[0, ActionsStringGrid.RowCount-1] := 'if';
-  ActionsStringGrid.Cells[4, ActionsStringGrid.RowCount-1] := 'then';
+  Selection := ActionsStringGrid.Selection.Top;
+  ActionsStringGrid.InsertColRow(false, Selection +1);
+  ActionsStringGrid.Cells[0, Selection +1] := 'if';
+  ActionsStringGrid.Cells[4, Selection +1] := 'then';
+  ActionsStringGridUpdateScrollBar;
 end;
 
 procedure TSetupForm.ActionDeleteButtonClick(Sender: TObject);
-var
-  counter2: Integer;
 begin
-    counter2 := ActionsStringGrid.Selection.Top;
-    ActionsStringGrid.DeleteRow(counter2);
+  ActionsStringGrid.DeleteRow(ActionsStringGrid.Selection.Top);
+  ActionsStringGridUpdateScrollBar;
 end;
 
 procedure TSetupForm.ButtonsListBoxClick(Sender: TObject);
 begin
-  case ButtonsListBox.itemindex of
-    0 : VariableEdit.Text := '$MObutton';
-    1 : VariableEdit.Text := '$FanSpeed(1,1)';
-    2 : VariableEdit.Text := '$Sensor1';
-    3 : VariableEdit.Text := '$Sensor2';
-    4 : VariableEdit.Text := '$Sensor3';
-    5 : VariableEdit.Text := '$Sensor4';
-    6 : VariableEdit.Text := '$Sensor5';
-    7 : VariableEdit.Text := '$Sensor6';
-    8 : VariableEdit.Text := '$Sensor7';
-    9 : VariableEdit.Text := '$Sensor8';
-    else VariableEdit.Text := NoVariable;
+  case ButtonsListBox.ItemIndex of
+    0: VariableEdit.Text := '$MObutton';
+    1: VariableEdit.Text := '$FanSpeed(1,1)';
+    2: VariableEdit.Text := '$Sensor1';
+    3: VariableEdit.Text := '$Sensor2';
+    4: VariableEdit.Text := '$Sensor3';
+    5: VariableEdit.Text := '$Sensor4';
+    6: VariableEdit.Text := '$Sensor5';
+    7: VariableEdit.Text := '$Sensor6';
+    8: VariableEdit.Text := '$Sensor7';
+    9: VariableEdit.Text := '$Sensor8';
+    else
+      VariableEdit.Text := NoVariable;
   end; // case
 
   if not (VariableEdit.Text = NoVariable) then
@@ -2400,7 +2528,7 @@ end;
 
 procedure TSetupForm.StickyCheckboxClick(Sender: TObject);
 begin
-  TimeToShowSpinEdit.enabled := not StickyCheckbox.checked;
+  TimeToShowSpinEdit.Enabled := not StickyCheckbox.Checked;
 end;
 
 procedure TSetupForm.ColorSchemeComboBoxChange(Sender: TObject);
@@ -2408,10 +2536,10 @@ begin
   if ColorSchemeComboBox.ItemIndex < 0 then ColorSchemeComboBox.ItemIndex := 0;
 end;
 
-procedure UpdateSetupForm(cKey : char);
+procedure UpdateSetupForm(cKey: char);
 begin
   if assigned(SetupForm) then
-    SetupForm.LastKeyPressedEdit.text := cKey;
+    SetupForm.LastKeyPressedEdit.Text := cKey;
 end;
 
 procedure TSetupForm.ContrastTrackBarChange(Sender: TObject);
@@ -2428,17 +2556,17 @@ begin
   {$ENDIF}
 end;
 
- /////// SHUTDOWN MESSAGE EDIT ///////////////
+/////// SHUTDOWN MESSAGE EDIT ///////////////
 
 procedure TSetupForm.ShutdownEditEnter(Sender: TObject);
 var
   oEdit: TMemo;
 begin
 
-  oEdit := Sender As TMemo;
+  oEdit := Sender as TMemo;
   oEdit.Color := $00A1D7A4;
 
-  if (ShutdownEdit1 <> Sender) And ShutdownEdit1.Enabled = true then
+  if (ShutdownEdit1 <> Sender) and ShutdownEdit1.Enabled = True then
     ShutdownEdit1.color := clWhite
   else
   begin
@@ -2446,7 +2574,7 @@ begin
     shdownmessagebutton := 1;
   end;
 
-  if (ShutdownEdit2 <> Sender) And ShutdownEdit2.enabled = true then
+  if (ShutdownEdit2 <> Sender) and ShutdownEdit2.Enabled = True then
     ShutdownEdit2.color := clWhite
   else
   begin
@@ -2454,7 +2582,7 @@ begin
     shdownmessagebutton := 2;
   end;
 
-  if (ShutdownEdit3 <> Sender) And ShutdownEdit3.enabled = true then
+  if (ShutdownEdit3 <> Sender) and ShutdownEdit3.Enabled = True then
     ShutdownEdit3.color := clWhite
   else
   begin
@@ -2462,7 +2590,7 @@ begin
     shdownmessagebutton := 3;
   end;
 
-  if (ShutdownEdit4 <> Sender) And ShutdownEdit4.enabled = true then
+  if (ShutdownEdit4 <> Sender) and ShutdownEdit4.Enabled = True then
     ShutdownEdit4.color := clWhite
   else
   begin
@@ -2476,7 +2604,7 @@ end;
 /////////////////////////////////////////////////////////////////
 procedure TSetupForm.Btn_PluginRefreshClick(Sender: TObject);
 var
-  sCurrentDir : string;
+  sCurrentDir: string;
 begin
   // awkward shi as refresh doesnt just refresh the list
   sCurrentDir := PluginListBox.Directory;
@@ -2487,20 +2615,20 @@ end;
 
 procedure TSetupForm.PluginListBoxDblClick(Sender: TObject);
 var
-  plugin_name :string;
+  plugin_name: string;
 begin
   plugin_name := ExtractFileName(PluginListBox.FileName);
-  plugin_name := copy(plugin_name,0,Length(plugin_name)-4)+'.txt';
-  if FileExists(ExtractFilePath(ParamStr(0))+'plugins\'+plugin_name) then
-    ShellExecute(0, Nil, pchar(plugin_name), Nil, Nil, SW_NORMAL)
+  plugin_name := copy(plugin_name, 0, Length(plugin_name) - 4) + '.txt';
+  if FileExists(ExtractFilePath(ParamStr(0)) + 'plugins\' + plugin_name) then
+    ShellExecute(0, nil, PChar(plugin_name), nil, nil, SW_NORMAL)
   else
-    ShowMessage('File : '+plugin_name+' does not exist');
+    ShowMessage('File : ' + plugin_name + ' does not exist');
 end;
 
 
 procedure TSetupForm.PluginListBoxClick(Sender: TObject);
 begin
-  VariableEdit.text := '$dll('+ExtractFileName(PluginListBox.FileName)+',1,0,0)';
+  VariableEdit.Text := '$dll(' + ExtractFileName(PluginListBox.FileName) + ',1,0,0)';
 end;
 
 /////////////////////////////////////////////////////////////////
@@ -2509,26 +2637,26 @@ end;
 procedure TSetupForm.TrayIconBrowseButtonClick(Sender: TObject);
 var
   bEnd: bool;
-  s : string;
+  s: string;
 begin
-  bEnd:=False;
+  bEnd := False;
   repeat
-  begin
-    OpenIco.InitialDir := ExtractFilePath(application.exename) + SkinPath.Text;
-    OpenIco.FileName := TrayIcon.Text;
+    begin
+      OpenIco.InitialDir := ExtractFilePath(application.exename) + SkinPath.Text;
+      OpenIco.FileName := TrayIcon.Text;
 
-    if OpenIco.Execute() then
+      if OpenIco.Execute() then
       begin
-      s := ExtractFilePath(OpenIco.FileName);
-      if s = OpenIco.InitialDir then
-        bEnd := True
-      else
-        ShowMessage('Error'+ sLineBreak +
-                    'Tray Icon can be only in the current selected Skin path')
+        s := ExtractFilePath(OpenIco.FileName);
+        if s = OpenIco.InitialDir then
+          bEnd := True
+        else
+          ShowMessage('Error' + sLineBreak +
+            'Tray Icon can be only in the current selected Skin path');
       end
-    else
-      bEnd:=True;
-  end
+      else
+        bEnd := True;
+    end
   until bEnd;
 
   TrayIcon.Text := extractfilename(OpenIco.FileName);
@@ -2541,10 +2669,10 @@ begin
 end;
 
 
-procedure TSetupForm.DrawPreviewIcons(const sIconFileName: String);
+procedure TSetupForm.DrawPreviewIcons(const sIconFileName: string);
 var
-hIcon: tIcon;
-IconPathName: string;
+  hIcon: tIcon;
+  IconPathName: string;
 begin
   hIcon := TIcon.Create;
   IconPathName := extractfilepath(application.exename) + SkinPath.Text + sIconFileName;
@@ -2557,28 +2685,29 @@ begin
   except
     on E: Exception do
     begin
-      showmessage('Error' + sLineBreak + 'Unable to load Tray Icon from Skin path, ' +
+      ShowMessage('Error' + sLineBreak + 'Unable to load Tray Icon from Skin path, ' +
         SkinPath.Text + sIconFileName + ': ' + E.Message);
     end;
   end;
-  hIcon.Destroy;
+  hIcon.Free;
 end;
 
-Function MyFileExists(const FileName: string): Boolean;
+function MyFileExists(const FileName: string): boolean;
 var
   Handle: THandle;
   FindData: TWin32FindData;
 begin
   Handle := FindFirstFile(PChar(FileName), FindData);
   if Handle <> INVALID_HANDLE_VALUE then
-    begin
-      Windows.FindClose(Handle);
-      if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY)=0 then
-        Result:=true
-      else
-        Result:=false;
-    end
-  else Result:=false;
+  begin
+    Windows.FindClose(Handle);
+    if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
+      Result := True
+    else
+      Result := False;
+  end
+  else
+    Result := False;
 end;
 
 /////////////////////////////////////////////////////////////////
@@ -2586,22 +2715,21 @@ end;
 /////////////////////////////////////////////////////////////////
 procedure TSetupForm.SkinPathBrowseButtonClick(Sender: TObject);
 var
-  b,f,s,x: string;
+  b, f, s, x: string;
 begin
   b := ExtractFilePath(application.exename);
-  f:= '\images';
-  if SelectDirectory('Select a skin directory', b, f)
-  then
+  f := '\images';
+  if SelectDirectory('Select a skin directory', b, f) then
+  begin
+    x := f + '\colors.cfg';
+    if MyFileExists(x) then
     begin
-      x := f + '\colors.cfg';
-      if MyFileExists(x) then
-        begin
-          s := ExtractRelativePath(b, f);
-          SkinPath.Text := s + '\';
-        end
-      else
-        ShowMessage('Selected directory does not contain a valid skin');
-    end;
+      s := ExtractRelativePath(b, f);
+      SkinPath.Text := s + '\';
+    end
+    else
+      ShowMessage('Selected directory does not contain a valid skin');
+  end;
 end;
 
 /////////////////////////////////////////////////////////////////
@@ -2620,19 +2748,20 @@ begin
   FormEdit.Top := config.EditFormPosTop;
   FormEdit.Left := config.EditFormPosLeft;
 
-  with FormEdit do begin
+  with FormEdit do
+  begin
     showmodal;
 
-   if ModalResult = mrOK then
-   begin
-     config.EditFormPosTop := FormEdit.Top;
-     config.EditFormPosLeft := FormEdit.Left;
+    if ModalResult = mrOk then
+    begin
+      config.EditFormPosTop := FormEdit.Top;
+      config.EditFormPosLeft := FormEdit.Left;
 
-     if Sender = Line1EditButton then Line1MemoEdit.Text := FormEdit.Memo1.Text;
-     if Sender = Line2EditButton then Line2MemoEdit.Text := FormEdit.Memo1.Text;
-     if Sender = Line3EditButton then Line3MemoEdit.Text := FormEdit.Memo1.Text;
-     if Sender = Line4EditButton then Line4MemoEdit.Text := FormEdit.Memo1.Text;
-   end;
+      if Sender = Line1EditButton then Line1MemoEdit.Text := FormEdit.Memo1.Text;
+      if Sender = Line2EditButton then Line2MemoEdit.Text := FormEdit.Memo1.Text;
+      if Sender = Line3EditButton then Line3MemoEdit.Text := FormEdit.Memo1.Text;
+      if Sender = Line4EditButton then Line4MemoEdit.Text := FormEdit.Memo1.Text;
+    end;
   end;
 
 end;
@@ -2643,14 +2772,15 @@ end;
 
 function GetAllCheckboxes(_frm: TForm): TCheckBoxArray;
 var
-  i: Integer;
+  i: integer;
   cmp: TComponent;
 begin
   SetLength(Result, _frm.ComponentCount);
   i := 1;
   repeat
     cmp := _frm.FindComponent('CCharCheckBox' + IntToStr(i));
-    if cmp <> nil then begin
+    if cmp <> nil then
+    begin
       Result[i - 1] := cmp as TCheckBox;
       Inc(i);
     end;
@@ -2675,63 +2805,64 @@ begin
 
   if CreateCCharRadioButton.Checked then
   begin
-    CreateCCharLocSpinEdit.enabled := true;
-    UseCCharLocSpinEdit.enabled := false;
+    CreateCCharLocSpinEdit.Enabled := True;
+    UseCCharLocSpinEdit.Enabled := False;
 
-    for i:=0 to 39 do
+    for i := 0 to 39 do
     begin
-      CheckBoxes[i].Enabled := true;
+      CheckBoxes[i].Enabled := True;
     end;
 
     i := 1;
-    while box<40 do
+    while box < 40 do
     begin
-      CCharLine[i] := 0 ;
+      CCharLine[i] := 0;
       if CheckBoxes[box].Checked then
       begin
-        CCharLine[i] := CCharLine[i]+16;
+        CCharLine[i] := CCharLine[i] + 16;
       end;
       Inc(box);
       if CheckBoxes[box].Checked then
       begin
-        CCharLine[i] := CCharLine[i]+8;
+        CCharLine[i] := CCharLine[i] + 8;
       end;
       Inc(box);
       if CheckBoxes[box].Checked then
       begin
-        CCharLine[i] := CCharLine[i]+4;
+        CCharLine[i] := CCharLine[i] + 4;
       end;
       Inc(box);
       if CheckBoxes[box].Checked then
       begin
-        CCharLine[i] := CCharLine[i]+2;
+        CCharLine[i] := CCharLine[i] + 2;
       end;
       Inc(box);
       if CheckBoxes[box].Checked then
       begin
-        CCharLine[i] := CCharLine[i]+1;
+        CCharLine[i] := CCharLine[i] + 1;
       end;
       Inc(box);
       Inc(i);
     end;
 
-    VariableEdit.Text := '$CustomChar('+IntToStr(CreateCCharLocSpinEdit.Value)
-    +','+IntToStr(CCharLine[1])+','+IntToStr(CCharLine[2])+','+IntToStr(CCharLine[3])
-    +','+IntToStr(CCharLine[4])+','+IntToStr(CCharLine[5])+','+IntToStr(CCharLine[6])
-    +','+IntToStr(CCharLine[7])+','+IntToStr(CCharLine[8])+')';
-    end
-    else
-    begin
-      CreateCCharLocSpinEdit.enabled := false;
-      UseCCharLocSpinEdit.enabled := true;
+    VariableEdit.Text := '$CustomChar(' + IntToStr(CreateCCharLocSpinEdit.Value) +
+      ',' + IntToStr(CCharLine[1]) + ',' + IntToStr(CCharLine[2]) + ',' + IntToStr(
+      CCharLine[3]) + ',' + IntToStr(CCharLine[4]) + ',' + IntToStr(CCharLine[5]) +
+      ',' + IntToStr(CCharLine[6]) + ',' + IntToStr(CCharLine[7]) + ',' + IntToStr(CCharLine[8]) + ')';
+  end
+  else
+  begin
+    CreateCCharLocSpinEdit.Enabled := False;
+    UseCCharLocSpinEdit.Enabled := True;
 
-      for i:=0 to 39 do
-      begin
-        CheckBoxes[i].Enabled := false;
-      end;
-      VariableEdit.Text := '$Chr('+inttostr(CCharLocation[UseCCharLocSpinEdit.value])+')'
+    for i := 0 to 39 do
+    begin
+      CheckBoxes[i].Enabled := False;
     end;
-    checkboxes := nil;
+    VariableEdit.Text := '$Chr(' + IntToStr(
+      CCharLocation[UseCCharLocSpinEdit.Value]) + ')';
+  end;
+  checkboxes := nil;
 end;
 
 // some code taken from UDataNetwork.pas to list interface numbers
@@ -2740,20 +2871,22 @@ procedure TSetupForm.NetworkStatsAdapterListButtonClick(Sender: TObject);
 var
   Size: ULONG;
   IntfTable: PMibIfTable;
-  MaxEntries: Cardinal;
-  Names: String;
-  i: Integer;
+  MaxEntries: cardinal;
+  Names: string;
+  i: integer;
 begin
   Size := 0;
   if GetIfTable(nil, Size, True) <> ERROR_INSUFFICIENT_BUFFER then  Exit;
-  if (Size < sizeof( TMibIftable)) then Exit;
+  if (Size < sizeof(TMibIftable)) then Exit;
   IntfTable := AllocMem(Size);
   if (IntfTable <> nil) and (GetIfTable(IntfTable, Size, True) = NO_ERROR) then
   begin
-    MaxEntries := min(IntfTable^.dwNumEntries,MAXNETSTATS);
-    for i:=0 to MaxEntries-1 do
+    MaxEntries := min(IntfTable^.dwNumEntries, MAXNETSTATS);
+    for i := 0 to MaxEntries - 1 do
     begin
-    {$R-}Names := Names+IntToStr(i)+' '+PChar(@IntfTable.Table[i].bDescr[0])+#13#10;{$R+}
+    {$R-}
+      Names := Names + IntToStr(i) + ' ' + PChar(@IntfTable.Table[i].bDescr[0]) + #13#10;
+{$R+}
     end;
     ShowMessage(Names);
   end;
@@ -2764,39 +2897,43 @@ end;
 ////////////////////////////////////////////////////////
 procedure TSetupForm.CopyToScreenButtonClick(Sender: TObject);
 begin
-  if ScreenSpinEdit.value = CopyToScreenComboBox.ItemIndex+1 then
+  if ScreenSpinEdit.Value = CopyToScreenComboBox.ItemIndex + 1 then
   begin
-    showmessage('Destination screen is the same as this screen'+#13#10+'Choose another destination');
+    ShowMessage('Destination screen is the same as this screen' +
+      #13#10 + 'Choose another destination');
     exit;
   end;
-  config.screen[CopyToScreenComboBox.itemindex+1] := config.screen[screenspinedit.value];
+  config.screen[CopyToScreenComboBox.ItemIndex + 1] := config.screen[screenspinedit.Value];
 end;
 
 procedure TSetupForm.MoveToScreenButtonClick(Sender: TObject);
 begin
-  if ScreenSpinEdit.value = MoveToScreenComboBox.ItemIndex+1 then
+  if ScreenSpinEdit.Value = MoveToScreenComboBox.ItemIndex + 1 then
   begin
-    showmessage('Destination screen is the same as this screen'+#13#10+'Choose another destination');
+    ShowMessage('Destination screen is the same as this screen' +
+      #13#10 + 'Choose another destination');
     exit;
   end;
-  config.screen[MoveToScreenComboBox.ItemIndex+1] := config.screen[ScreenSpinEdit.value];
-  config.screen[ScreenSpinEdit.value] := Default(TScreen);
-  LoadScreen(ScreenSpinEdit.value);
+  config.screen[MoveToScreenComboBox.ItemIndex + 1] := config.screen[ScreenSpinEdit.Value];
+  config.screen[ScreenSpinEdit.Value] := Default(TScreen);
+  LoadScreen(ScreenSpinEdit.Value);
 end;
 
 procedure TSetupForm.SwapWithScreenButtonClick(Sender: TObject);
 var
   TempScreen: Tscreen;
 begin
-  if ScreenSpinEdit.value = SwapWithScreenComboBox.ItemIndex+1 then
+  if ScreenSpinEdit.Value = SwapWithScreenComboBox.ItemIndex + 1 then
   begin
-    showmessage('Destination screen is the same as this screen'+#13#10+'Choose another destination');
+    ShowMessage('Destination screen is the same as this screen' +
+      #13#10 + 'Choose another destination');
     exit;
   end;
-  TempScreen := config.screen[ScreenSpinEdit.value];
-  config.screen[ScreenSpinEdit.value] := config.screen[SwapWithScreenComboBox.ItemIndex+1];
-  config.screen[SwapWithScreenComboBox.ItemIndex+1] :=  TempScreen;
-  LoadScreen(ScreenSpinEdit.value);
+  TempScreen := config.screen[ScreenSpinEdit.Value];
+  config.screen[ScreenSpinEdit.Value] :=
+    config.screen[SwapWithScreenComboBox.ItemIndex + 1];
+  config.screen[SwapWithScreenComboBox.ItemIndex + 1] := TempScreen;
+  LoadScreen(ScreenSpinEdit.Value);
 end;
 
 ////////////////////////////////////////////////////////
@@ -2805,19 +2942,19 @@ end;
 procedure TSetupForm.RemoteSendUseSSLCheckBoxClick(Sender: TObject);
 begin
   if RemoteSendUseSSLCheckBox.Checked then
-    if fileExists(ExtractFilePath(application.exename)+'openssl\cert.pem') and
-       fileExists(ExtractFilePath(application.exename)+'openssl\key.pem') then
-       config.RemoteSendUseSSL := true
+    if fileExists(ExtractFilePath(application.exename) + 'openssl\cert.pem') and
+      fileExists(ExtractFilePath(application.exename) + 'openssl\key.pem') then
+      config.RemoteSendUseSSL := True
     else
     begin
-       config.RemoteSendUseSSL := false;
-       RemoteSendUseSSLCheckBox.Checked := false;
-       showmessage('Generate SSL certificate first');
+      config.RemoteSendUseSSL := False;
+      RemoteSendUseSSLCheckBox.Checked := False;
+      ShowMessage('Generate SSL certificate first');
     end
   else
   begin
-    RemoteSendUseSSLCheckBox.Checked := false;
-    config.RemoteSendUseSSL := false;
+    RemoteSendUseSSLCheckBox.Checked := False;
+    config.RemoteSendUseSSL := False;
   end;
 end;
 
@@ -2825,13 +2962,14 @@ procedure TSetupForm.RemoteSendGenerateCertKeyButtonClick(Sender: TObject);
 var
   OSSLDirname: string;
 begin
-  OSSLDirname := ExtractFilePath(application.exename)+'openssl\';
+  OSSLDirname := ExtractFilePath(application.exename) + 'openssl\';
 
-  if fileExists(OSSLDirname+'openssl.exe') then
-    ShellExecute(Handle, 'open', pchar(OSSLDirname+'openssl.exe'), 'req -x509 -nodes -days 365 -newkey rsa:1024 -keyout key.pem -out cert.pem -subj "/C=LC/ST=DSM/L=ART/O=Mon organisation/CN=IE" -config openssl.cfg',
-     pchar(OSSLDirname), SW_SHOWNORMAL)
+  if fileExists(OSSLDirname + 'openssl.exe') then
+    ShellExecute(Handle, 'open', PChar(OSSLDirname + 'openssl.exe'),
+      'req -x509 -nodes -days 365 -newkey rsa:1024 -keyout key.pem -out cert.pem -subj "/C=LC/ST=DSM/L=ART/O=Mon organisation/CN=IE" -config openssl.cfg',
+      PChar(OSSLDirname), SW_SHOWNORMAL)
   else
-    showmessage('openssl\openssl.exe is missing');
+    ShowMessage('openssl\openssl.exe is missing');
 end;
 
 

@@ -25,7 +25,7 @@ unit UDataSystem;
 interface
 
 uses
-  DataThread, Windows, SysUtils, Classes, Registry, shellapi, jwatlhelp32;
+  DataThread, Windows, SysUtils, Classes, Registry, shellapi, JwaWindows, jwatlhelp32, jwaWinBase, usmbios;
 
 const
   // lets put a prefix key to make it clear what they are
@@ -35,11 +35,13 @@ const
   UpTimeKey = SysKey + 'Uptime';
   UpTimeShortKey = SysKey + 'Uptims';
   ScreensaverActiveKey = SysKey + 'SSActive';
-  FullScreenGameActive = SysKey + 'FSGameActive';
-  FullScreenAppActive = SysKey + 'FSAppActive';
-  ApplicationActive = SysKey + 'AppActive';
-
-
+  FullScreenGameActiveKey = SysKey + 'FSGameActive';
+  FullScreenAppActiveKey = SysKey + 'FSAppActive';
+  ApplicationActiveKey = SysKey + 'AppActive';
+  CPUUseKey = SysKey + 'CPUUsage';
+  CPUTypeKey = SysKey + 'CPUType';
+  CPUSpeedMhzKey = SysKey + 'CPUSpeedMhz';
+  CPUSpeedGhzKey = SysKey + 'CPUSpeedGhz';
   MemKey = '$Mem';
   MemFreeKey = MemKey + 'Free';
   MemUsedKey = MemKey + 'Used';
@@ -52,6 +54,17 @@ const
   PageTotalKey = PageKey + 'Total';
   PageFreePercentKey = PageKey + 'F%';
   PageUsedPercentKey = PageKey + 'U%';
+  alpha = 0.15;
+
+type
+  TPROCESSOR_POWER_INFORMATION = record
+    Number: ULONG;
+    MaxMhz: ULONG;
+    CurrentMhz: ULONG;
+    MhzLimit: ULONG;
+    MaxIdleState: ULONG;
+    CurrentIdleState: ULONG;
+  end;
 
 {$M+}
 type
@@ -63,6 +76,15 @@ type
     iUptime: Int64;
     iLastUptime: Cardinal;
     uptimereg, uptimeregs: String;
+    FullScreenGameActive: string;
+    FullScreenAppActive: string;
+    SnapTime: TDateTime;
+    CPUUse:double;
+    SMBios: tsmbios;
+    CPUType: string;
+    CPUSpeed: string;
+    systeminfo: SYSTEM_INFO;
+    PPIbuff: array of TPROCESSOR_POWER_INFORMATION;
     function getIsWin2kXP: Boolean;
     function getTotalPhysMemory: Int64;
     function getAvailPhysMemory: Int64;
@@ -91,6 +113,7 @@ type
     function isapplicationactive(application: string): integer;
   end;
 
+
 type
   PMemoryStatusEx = ^TMemoryStatusEx;
   LPMEMORYSTATUSEX = PMemoryStatusEx;
@@ -111,6 +134,13 @@ type
   MEMORYSTATUSEX = _MEMORYSTATUSEX;
   {$EXTERNALSYM MEMORYSTATUSEX}
 
+var
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
+  ProcList: TStringList;
+  FLastIdleTime: Int64;
+  FLastKernelTime: Int64;
+  FLastUserTime: Int64;
 implementation
 
 uses
@@ -119,14 +149,26 @@ uses
 function SHQueryUserNotificationState( p : Pointer ) : HRESULT; stdcall; external shell32 name 'SHQueryUserNotificationState';
 
 constructor TSystemDataThread.Create;
+var
+  lprocessorinfo:TProcessorInformation;
 begin
   STComputername := Computername;
   STUsername := Username;
+  ProcList := TStringList.Create;
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  Smbios := tsmbios.create;
+    for LProcessorInfo in SMBios.ProcessorInfo do
+      CPUType := LProcessorInfo.ProcessorVersionStr;
+  CPUSpeed := '0';
+  setLength(PPIbuff, ProcessorCount);
   inherited Create(100);
 end;
 
 destructor TSystemDataThread.Destroy;
 begin
+  ProcList.Free;
+  Proclist := nil;
+  CloseHandle(FSnapshotHandle);
   inherited;
 end;
 
@@ -157,12 +199,15 @@ begin
   end;
 end;
 
+// TODO: This may not be needed anymore as alot has changed in the years from
+// when it was needed. Many new features of LCDSmartie require at least Vista
+// maybe even 7
 function TSystemDataThread.getIsWin2kXP: Boolean;
 var
-  oviVersionInfo: TOSVERSIONINFO;
+  oviVersionInfo: windows.TOSVERSIONINFO;
 begin
   oviVersionInfo.dwOSVersionInfoSize := SizeOf(oviVersionInfo);
-  if not GetVersionEx(oviVersionInfo) then raise
+  if not windows.GetVersionEx(oviVersionInfo) then raise
     Exception.Create('Can''t get the Windows version');
   if (oviVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and
     (oviVersionInfo.dwMajorVersion >= 5) then getIsWin2kXP := true
@@ -273,31 +318,16 @@ begin
   strdispose(p);
 end;
 
-//// crap to detect if program is active
 function processExists(exeFileName: string): Boolean;
 var
-  ContinueLoop: BOOL;
-  FSnapshotHandle: THandle;
-  FProcessEntry32: TProcessEntry32;
+  i: integer;
 begin
-  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
-  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
   Result := False;
-  while Integer(ContinueLoop) <> 0 do
-  begin
-    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) =
-      UpperCase(ExeFileName)) or (UpperCase(FProcessEntry32.szExeFile) =
-      UpperCase(ExeFileName))) then
-    begin
+  for i := 0 to ProcList.Count -1 do
+    if ProcList[i] = UpperCase(ExeFileName) then
       Result := True;
-    end;
-    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
-  end;
-  CloseHandle(FSnapshotHandle);
 end;
 
-//// detect if screensaver is active
 function TSystemDataThread.isscreensaveractive: integer;
 var
   Reg: Tregistry;
@@ -314,17 +344,7 @@ begin
   Reg.Free;
 end;
 
-// crap for detecting fulscreen applications
-// just leave this here should it be needed
-//typedef enum  {
-//  QUNS_NOT_PRESENT              = 1,
-//  QUNS_BUSY                     = 2,
-//  QUNS_RUNNING_D3D_FULL_SCREEN  = 3,
-//  QUNS_PRESENTATION_MODE        = 4,
-//  QUNS_ACCEPTS_NOTIFICATIONS    = 5,
-//  QUNS_QUIET_TIME               = 6,
-//  QUNS_APP                      = 7
-//} QUERY_USER_NOTIFICATION_STATE;
+
 function TSystemDataThread.isfullscreengameactive: integer;
 var
  i : LongInt;
@@ -349,6 +369,14 @@ begin
       result := 0;
 end;
 
+function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
+var
+ TimeStamp: TTimeStamp;
+begin
+  TimeStamp:= DateTimeToTimeStamp (aDateTime);
+  Result:= TimeStamp.Time;
+end;
+
 function TSystemDataThread.isapplicationactive(application: string): integer;
 begin
   if processExists(application) then
@@ -363,6 +391,18 @@ var
   y, mo, d, h, m, s : Cardinal;
   uiRemaining: Cardinal;
   sTempUptime: String;
+    IdleTimeRec: TFileTime;
+  KernelTimeRec: TFileTime;
+  UserTimeRec: TFileTime;
+  IdleTime: Int64 absolute IdleTimeRec;
+  KernelTime: Int64 absolute KernelTimeRec;
+  UserTime: Int64 absolute UserTimeRec;
+  IdleDiff: Int64;
+  KernelDiff: Int64;
+  UserDiff: Int64;
+  SysTime: Int64;
+  i: integer;
+  NextCPUUse: double;
 begin
   if (not Terminated) then begin
     fDataLock.Enter;
@@ -458,10 +498,78 @@ begin
   end;
 
   // remove the trailing space and assign to class member
-  fDataLock.Enter();
+  fDataLock.Enter;
   uptimeregs := MidStr(sTempUptime, 1, Length(sTempUptime)-1);
-  fDataLock.Leave();
+  fDataLock.Leave;
 
+// crap for detecting fulscreen applications
+// just leave this here should it be needed
+//typedef enum  {
+//  QUNS_NOT_PRESENT              = 1,
+//  QUNS_BUSY                     = 2,
+//  QUNS_RUNNING_D3D_FULL_SCREEN  = 3,
+//  QUNS_PRESENTATION_MODE        = 4,
+//  QUNS_ACCEPTS_NOTIFICATIONS    = 5,
+//  QUNS_QUIET_TIME               = 6,
+//  QUNS_APP                      = 7
+//} QUERY_USER_NOTIFICATION_STATE;
+  if (SHQueryUserNotificationState(@i) = S_OK) then
+    case (i) of
+      2: begin // non d3d full screen
+           FullScreenAppActive := '1';
+           FullScreenGameActive := '0';
+         end;
+      3: begin // d3d full screen
+           FullScreenAppActive := '0';
+           FullScreenGameActive := '1';
+         end;
+      else
+        FullScreenAppActive := '0';
+        FullScreenGameActive := '0';
+    end;
+
+  // this is a hog. better to run in the refresh proc and limit it to every 300ms or more
+  // executing CreateToolhelp32Snapshot(), Process32First() and Process32Next() everytime
+  // actions call through here cause massive cpu usage and nearly 30ms delay. Possibly more
+  // depending on the type and quantity of actions called
+  if DateTimeToMilliseconds(Now() - SnapTime) >= 300 then
+  begin
+    fDataLock.Enter;
+    SnapTime := Now();
+    FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if  Process32First(FSnapshotHandle, FProcessEntry32)then
+    begin
+      ProcList.Clear;
+      repeat
+        ProcList.Add(UpperCase(ExtractFileName(FProcessEntry32.szExeFile)));
+      until not Process32Next(FSnapshotHandle, FProcessEntry32);
+    end;
+    fDataLock.Leave;
+  end;
+
+  fDataLock.Enter;
+  if jwaWinBase.GetSystemTimes(@IdleTimeRec, @KernelTimeRec, @UserTimeRec) then
+  begin
+    IdleDiff := IdleTime - FLastIdleTime;
+    KernelDiff := KernelTime - FLastKernelTime;
+    UserDiff := UserTime - FLastUserTime;
+    FLastIdleTime := IdleTime;
+    FLastKernelTime := KernelTime;
+    FLastUserTime := UserTime;
+    SysTime := KernelDiff + UserDiff;
+    NextCPUUse := (SysTime - IdleDiff)/SysTime * 100;
+    CPUUse := alpha*NextCPUUse + (1-alpha)*CPUUse;
+  end;
+  fDataLock.Leave;
+
+  fDataLock.Enter;
+  try
+    if CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, nil, NULL,
+        PPIbuff, sizeof(TPROCESSOR_POWER_INFORMATION) * ProcessorCount) = 0 then
+      CPUSpeed := inttostr(PPIbuff[0].CurrentMhz);
+  except
+  end;
+  fDataLock.Leave;
 end;
 
 procedure TSystemDataThread.ResolveVariables(var Line : string);
@@ -470,38 +578,41 @@ var
   args: Array [1..maxArgs] of String;
   prefix, postfix: String;
   numArgs: Cardinal;
+
 begin
 
-  if (pos(SysKey,Line) > 0) then begin
-  if (pos(ApplicationActive,Line) > 0) then begin
-    while decodeArgs(line, ApplicationActive, maxArgs, args, prefix, postfix, numargs) do
+  fDataLock.Enter();
+  if (pos(SysKey,Line) > 0) then
+  begin
+    while decodeArgs(line, ApplicationActiveKey, maxArgs, args, prefix, postfix, numargs) do
     begin
       Line := prefix;
       Line := Line + inttostr(isapplicationactive(args[1])) + postfix;
     end;
+   end;
+
+  if (pos(SysKey,Line) > 0) then
+  begin
+    Line := StringReplace(line, CPUTypeKey, CPUType, [rfReplaceAll]);
+    Line := StringReplace(line, CPUUseKey, Format('%.0f', [CPUUse]), [rfReplaceAll]);
+    Line := StringReplace(line, CPUSpeedMhzKey, CPUSpeed, [rfReplaceAll]);
+    Line := StringReplace(line, CPUSpeedGhzKey, Format('%.2f', [strtoint(CPUSpeed) / 1000]) , [rfReplaceAll]);
   end;
-
-  if (pos(UserNameKey,Line) > 0) then
-  Line := StringReplace(line, UserNameKey, STUsername, [rfReplaceAll]);
-
-  if (pos(ComputerNameKey,Line) > 0) then
-  Line := StringReplace(line, ComputerNameKey, STcomputername, [rfReplaceAll]);
-
-  if (pos(UpTimeKey,Line) > 0) then
-  line := StringReplace(line, UpTimeKey, uptimereg, [rfReplaceAll]);
-
-  if (pos(UpTimeShortKey,Line) > 0) then
-  line := StringReplace(line, UpTimeShortKey, uptimeregs, [rfReplaceAll]);
-
-  if (pos(ScreensaverActiveKey,Line) > 0) then
-  Line := StringReplace(line, ScreensaverActiveKey, inttostr(isscreensaveractive), [rfReplaceAll]);
-
-  if (pos(FullScreenGameActive,Line) > 0) then
-  Line := StringReplace(line, FullScreenGameActive, inttostr(isfullscreengameactive), [rfReplaceAll]);
-
-  if (pos(FullScreenAppActive,Line) > 0) then
-  Line := StringReplace(line, FullScreenAppActive, inttostr(isfullscreenappactive), [rfReplaceAll]);
+  if (pos(SysKey,Line) > 0) then
+  begin
+    Line := StringReplace(line, UserNameKey, STUsername, [rfReplaceAll]);
+    Line := StringReplace(line, ComputerNameKey, STcomputername, [rfReplaceAll]);
+    line := StringReplace(line, UpTimeKey, uptimereg, [rfReplaceAll]);
+    line := StringReplace(line, UpTimeShortKey, uptimeregs, [rfReplaceAll]);
   end;
+  if (pos(SysKey,Line) > 0) then
+  begin
+    Line := StringReplace(line, ScreensaverActiveKey, inttostr(isscreensaveractive), [rfReplaceAll]);
+    Line := StringReplace(line, FullScreenGameActiveKey, FullScreenGameActive, [rfReplaceAll]);
+    Line := StringReplace(line, FullScreenAppActiveKey, FullScreenAppActive, [rfReplaceAll]);
+  end;
+  fDataLock.Leave();
+
 
   if (pos(MemKey,Line) > 0) then begin
     fDataLock.Enter;

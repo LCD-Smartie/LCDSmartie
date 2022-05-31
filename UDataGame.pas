@@ -177,13 +177,13 @@ begin
     if (pos(GameKeys[GameCount], line) <> 0) then begin
       fDataLock.Enter();
       try
-        line := StringReplace(line, GameKeys[GameCount]+'1', qstatreg1[activeScreen,
+        line := StringReplace(line, GameKeys[GameCount]+'1', qstatreg1[LCDSmartieDisplayForm.activeScreen,
           qstattemp], [rfReplaceAll]);
-        line := StringReplace(line, GameKeys[GameCount]+'2', qstatreg2[activeScreen,
+        line := StringReplace(line, GameKeys[GameCount]+'2', qstatreg2[LCDSmartieDisplayForm.activeScreen,
           qstattemp], [rfReplaceAll]);
-        line := StringReplace(line, GameKeys[GameCount]+'3', qstatreg3[activeScreen,
+        line := StringReplace(line, GameKeys[GameCount]+'3', qstatreg3[LCDSmartieDisplayForm.activeScreen,
           qstattemp], [rfReplaceAll]);
-        line := StringReplace(line, GameKeys[GameCount]+'4', qstatreg4[activeScreen,
+        line := StringReplace(line, GameKeys[GameCount]+'4', qstatreg4[LCDSmartieDisplayForm.activeScreen,
           qstattemp], [rfReplaceAll]);
       finally
         fDataLock.Leave();

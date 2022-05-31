@@ -71,10 +71,11 @@ var
 begin
   try
     JsonStats := myJSONItem.Create;
+    JsonTeam := myJSONItem.Create;
+
     if TryStrToInt(config.foldUserid, i) then
     begin
-      if ( strtoint(config.foldUserid) > 0 )then
-        sFilename := getUrl('https://api2.foldingathome.org/uid/'+config.foldUserid)
+        sFilename := getUrl('https://api2.foldingathome.org/uid/'+config.foldUserid, 30)
     end
     else
       Raise Exception.Create('User ID must be a number');
@@ -100,7 +101,6 @@ begin
     foldLastWU := JsonStats.Value[iRank+2].getstr; // last wu
 
     /// Team Stuff
-    JsonTeam := myJSONItem.Create;
     JsonString := JsonStats.Value[iRank+4].getJSON;
     delete(JsonString, 1, 1);
     JsonString := Copy(JsonString,1,length(JsonString)-1);
@@ -110,6 +110,8 @@ begin
     foldTeamWU := JsonTeam.Value[3].getstr;
     foldTeamLastWU := JsonTeam.Value[4].getstr;
     fDataLock.Leave();
+    freeandnil(JsonTeam);
+    freeandnil(JsonStats);
 
   except
     on EExiting do raise;

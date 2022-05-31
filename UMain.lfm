@@ -1,8 +1,8 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 374
+  Left = 391
   Height = 91
-  Top = 195
-  Width = 239
+  Top = 132
+  Width = 241
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
   Anchors = []
@@ -10,7 +10,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
   BorderStyle = bsToolWindow
   Caption = 'LCD Smartie x.x.x.x'
   ClientHeight = 91
-  ClientWidth = 239
+  ClientWidth = 241
   Color = clBtnFace
   DoubleBuffered = True
   Font.CharSet = ANSI_CHARSET
@@ -553,8 +553,8 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Top = 120
   end
   object ExceptionLogger1: TExceptionLogger
-    LogFileName = 'Debug.log'
     MaxCallStackDepth = 60
+    Left = 168
     Top = 120
   end
 end

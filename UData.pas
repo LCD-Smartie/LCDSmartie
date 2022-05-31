@@ -123,9 +123,7 @@ uses
   Windows, Forms, Dialogs, StrUtils, Winsock,
   UMain, UUtils, UConfig,
   DataThread, UDataNetwork, UDataDisk, UDataGame, UDataSystem,
-  // cpu stuff doesn't work under 64 bit but libre hardware monitor
-  // provides the same and more functionality
-  {UDataCPU,} {UDataSeti,}  UDataFolding, UDataRSS, UDataDNet,
+  {UDataSeti,}  UDataFolding, UDataRSS, UDataDNet,
   UDataWinamp, UDataSender;
 
 
@@ -184,9 +182,6 @@ begin
   DataThread.Start;
   DataThreads.Add(DataThread);
 
-{  DataThread := TCPUDataThread.Create;
-  DataThread.Start;
-  DataThreads.Add(DataThread);  }
     // seti is broken atm
 //  DataThread := TSetiDataThread.Create;
 //  DataThread.Start;
@@ -273,7 +268,8 @@ begin
   end;
 
   DataThreads.Free;
-
+  if assigned(AProcess) then
+    freeandnil(AProcess);
   WSACleanup();
 
   inherited;
@@ -848,7 +844,7 @@ begin
     LegacySharedMem^.LibraryParam1 := sParam1;
     LegacySharedMem^.LibraryParam2 := sParam2;
     setevent(hLegacyCallFunctionEvent);
-    waitresult := WaitForSingleObject(hLegacyRecvEvent,10000);
+    waitresult := WaitForSingleObject(hLegacyRecvEvent,5000);
     if (waitresult = WAIT_TIMEOUT) then
       result := 'Legacy plugin function timed out'
     else

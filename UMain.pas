@@ -28,14 +28,10 @@ unit UMain;
 interface
 
 uses
-  Menus, Graphics, WinampCtrl, ExtCtrls, Controls, Buttons,
-  Classes, Forms, USetup, UConfig, ULCD, UData, lcdline, IdComponent,
+  Menus, Graphics, WinampCtrl, ExtCtrls, Controls, Buttons, Classes, Forms,
+  USetup, UConfig, ULCD, UData, lcdline, UExceptionLogger, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
-  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows
-  {$IFNDEF STANDALONESETUP}
-  , UExceptionLogger
-  {$ENDIF}
-  ;
+  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows;
 
   { TLCDSmartieDisplayForm }
 type
@@ -63,9 +59,7 @@ type
   end;
 
   TLCDSmartieDisplayForm = class(TForm)
-    {$IFNDEF STANDALONESETUP}
     ExceptionLogger1: TExceptionLogger;
-    {$ENDIF}
     SavePosition: TMenuItem;
     N1: TMenuItem;
     NextScreenTimer: TTimer;
@@ -254,6 +248,16 @@ type
     doesflash: Boolean;
     lcd: TLCD;
     Data: TData;
+      PrevWndProc: WNDPROC;
+
+  activeScreen : Integer;
+  OurVersMaj : integer;
+  OurVersMin : integer;
+  OurVersRel : integer;
+  OurVersBuild : integer;
+  ShowWindowFlag: Boolean;
+  LastLineLCD: array [1..4] of string;
+  DisplayError: boolean;
     procedure DoFullDisplayDraw;
     procedure UpdateTimersState(InSetupState : boolean);
     procedure ChangeScreen(scr: Integer);
@@ -265,20 +269,10 @@ type
   end;
 
   function GetFmtFileVersion(const FileName: String = '';  const Fmt: String = '%d.%d.%d.%d'): String;
-
 var
-  PrevWndProc: WNDPROC;
-  SetupForm : tsetupform;
-  activeScreen : Integer;
   LCDSmartieDisplayForm: TLCDSmartieDisplayForm;
-  bTerminating: Boolean;
-  OurVersMaj : integer;
-  OurVersMin : integer;
-  OurVersRel : integer;
-  OurVersBuild : integer;
-  ShowWindowFlag: Boolean;
-  LastLineLCD: array [1..4] of string;
-  DisplayError: boolean;
+  SetupForm : tsetupform;
+  bTerminating: Boolean = false;
 implementation
 {$IFNDEF STANDALONESETUP}
 {$R *.lfm}
@@ -310,6 +304,7 @@ begin
      (wParam = PBT_APMRESUMESUSPEND)
     then
       LCDSmartieDisplayForm.ReInitLCD();
+  end;
 
     // time to go to sleep
     if (wParam = PBT_APMSUSPEND) or
@@ -318,8 +313,8 @@ begin
       LCDSmartieDisplayForm.FiniLCD(true);
       LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
     end;
-   end;
-  result:= CallWindowProc(PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
+
+  result:= CallWindowProc(LCDSmartieDisplayForm.PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
 end;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -438,7 +433,6 @@ begin
   IdOpenSSLSetLibPath('.\openssl\');
 
   fillchar(ScreenLCD,sizeof(ScreenLCD),$00);
-  bTerminating := false;
   Randomize;
 
   SetCurrentDir(extractfilepath(application.exename));
@@ -642,7 +636,6 @@ end;
 procedure TLCDSmartieDisplayForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   bTerminating := true;
-
   while timerRefresh.enabled = true do timerRefresh.enabled := false;
   while ActionsTimer.enabled = true do ActionsTimer.enabled := false;
   while LeftManualScrollTimer.enabled = true do LeftManualScrollTimer.enabled := false;
@@ -650,19 +643,18 @@ begin
   while NextScreenTimer.enabled = true do NextScreenTimer.enabled := false;
   while ScrollFlashTimer.enabled = true do ScrollFlashTimer.enabled := false;
   while TransitionTimer.enabled = true do TransitionTimer.enabled := false;
-
   FiniLCD(true);
 
   while Assigned(Data) do
   begin
-    if (Data.CanExit()) then
+    if Data.CanExit() then
     begin
       Data.free;
       Data := nil;
     end;
   end;
 
-  while not Assigned(Data) and Assigned(config) do
+  while Assigned(config) do
   begin
     config.free;
     config := nil;
@@ -857,7 +849,6 @@ begin
   end;
 end;
 
-
 procedure TLCDSmartieDisplayForm.ActionsTimerTimer(Sender: TObject);
 //ACTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 var
@@ -867,7 +858,6 @@ var
   sLeftValue, sRightValue, sAction: String;
   bNum: Boolean;
   doAction: Array[1..MaxActions] of Boolean;
-
 begin
   ActionsTimer.Interval := config.ActionsTimer;
 
@@ -940,7 +930,6 @@ begin
     // This delay impacts the user experience when using keys.
     if (Pos('MObutton', config.actionsArray[counter, 1]) <> 0) then
       didAction[counter] := false;
-
   end;
 end;
 
@@ -1087,6 +1076,7 @@ begin
       parsedLine[counter] := line;
       newline[counter] := line;  // Used by screen change transition.
     end;
+
     if (not TransitionTimer.enabled) then SendCustomChars();
     Data.ScreenEnd();
 
@@ -1095,11 +1085,10 @@ begin
       // handle continuing on the next line (if req)
       if (h < MaxLines) and (config.screen[activeScreen].line[h].contNextLine) then
       begin
-        parsedLine[h + 1] := copy(parsedLine[h], 1 + config.width,
-          length(parsedLine[h]));
+        newline[h + 1] := copy(newline[h], 1 + config.width, length(newline[h]));
+        parsedLine[h + 1] := copy(parsedLine[h], 1 + config.width, length(parsedLine[h]));
       end;
     end;
-
     gotnewlines := true;
   end;
 
@@ -1875,7 +1864,17 @@ begin
       end;
     end;
 
-    if pos('FreezeScreen', sAction) <> 0 then
+    if pos('Freeze screen', sAction) <> 0 then
+    begin
+      if not frozen then freeze();
+    end;
+
+    if pos('Unfreeze screen', sAction) <> 0 then
+    begin
+      if frozen then freeze();
+    end;
+
+    if pos('Toggle freeze', sAction) <> 0 then
     begin
       freeze();
     end;
@@ -2551,10 +2550,10 @@ begin
     iVer[3] := HiWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
     iVer[4] := LoWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
 
-    OurVersMaj := iVer[1];
-    OurVersMin := iVer[2];
-    OurVersRel := iVer[3];
-    OurVersBuild := iVer[4];
+    LCDSmartieDisplayForm.OurVersMaj := iVer[1];
+    LCDSmartieDisplayForm.OurVersMin := iVer[2];
+    LCDSmartieDisplayForm.OurVersRel := iVer[3];
+    LCDSmartieDisplayForm.OurVersBuild := iVer[4];
 
     finally
       FreeMem(pBuffer);

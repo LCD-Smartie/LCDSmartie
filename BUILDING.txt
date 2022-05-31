@@ -6,11 +6,10 @@ Required Components
 This project requires the following components to be installed and in
 the projects path:
  - WinampCtrl.
+     This can be found in the components sub-directory
 
-This can be found in the components sub-directory
-
-Indy 10
-This can be installed via lazarus package manager
+ - Indy 10
+     This can be installed via lazarus package manager
 
 Install all components before loading the LCD Smartie project.
 
