@@ -158,7 +158,9 @@ begin
 //  if status <> 0 then
 //     raise Exception.Create('WSAStartup failed');
 
+  {$IF Defined(CPUX64)}
   LegacyLoaderStarted := false;
+  {$IFEND}
 
   uiTotalDlls := 0;
 
