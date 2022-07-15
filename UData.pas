@@ -144,7 +144,7 @@ var
   hLegacyLoadLibraryEvent: THandle;
   hLegacyCallFunctionEvent: THandle;
   hLegacyRecvEvent: THandle;
-  AProcess: TProcess;
+  LegacyLoaderStarted: boolean;
   {$IFEND}
 constructor TData.Create;
 var
@@ -157,6 +157,8 @@ begin
 //  status := WSAStartup(MAKEWORD(2,0), WSAData);
 //  if status <> 0 then
 //     raise Exception.Create('WSAStartup failed');
+
+  LegacyLoaderStarted := false;
 
   uiTotalDlls := 0;
 
@@ -268,8 +270,6 @@ begin
   end;
 
   DataThreads.Free;
-  if assigned(AProcess) then
-    freeandnil(AProcess);
   WSACleanup();
 
   inherited;
@@ -931,7 +931,7 @@ begin
     // this means were trying to load a 32bit dll in a 64bit program
     dlls[uiDll].legacyDll := true;
 
-    if AProcess = nil then
+    if not LegacyLoaderStarted then
     begin
       CreateGUID(GUID);
       ShMemID := GUIDToString(GUID);
@@ -953,11 +953,9 @@ begin
       if  not ( hLegacyRecvEvent > 0) then
         hLegacyRecvEvent := CreateEvent(nil, FALSE, FALSE, Pchar('Local\LCDSmartieLegacyRecvEvent' + ShMemID));
 
-      // launch wrapper non blocking tproccess
-      AProcess := TProcess.Create(nil);
-      AProcess.Executable:= 'LegacyLoader';
-      AProcess.Parameters.Add(ShMemID);
-      AProcess.Execute;
+      // launch wrapper
+      ShellExecute(0,nil, PChar('LegacyLoader.exe'),PChar(ShMemID),nil,0);
+      LegacyLoaderStarted := true;
       end;
 
       // tell it to load this dll
