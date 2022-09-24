@@ -1864,17 +1864,17 @@ begin
       end;
     end;
 
-    if pos('Freeze screen', sAction) <> 0 then
+    if pos('FreezeScreen', sAction) <> 0 then
     begin
       if not frozen then freeze();
     end;
 
-    if pos('Unfreeze screen', sAction) <> 0 then
+    if pos('UnfreezeScreen', sAction) <> 0 then
     begin
       if frozen then freeze();
     end;
 
-    if pos('Toggle freeze', sAction) <> 0 then
+    if pos('ToggleFreeze', sAction) <> 0 then
     begin
       freeze();
     end;
@@ -1889,7 +1889,7 @@ begin
       backlit();
     end;
 
-    if pos('BLFlash(', sAction) <> 0 then
+    if pos('BacklightFlash(', sAction) <> 0 then
     begin
       temp1 := copy(sAction, pos('(', sAction) + 1, pos(')', sAction)
             - pos('(', sAction)-1);
@@ -1908,34 +1908,34 @@ begin
       playsound(Pchar(temp1), 0, SND_FILENAME);
     end;
 
-    if pos('Exec[', sAction) <> 0 then
+    if pos('Execute[', sAction) <> 0 then
     begin
-      temp1 := copy(sAction, pos('Exec[', sAction) + 5, pos(']', sAction)
+      temp1 := copy(sAction, pos('Execute[', sAction) + 5, pos(']', sAction)
          - pos('Exec[', sAction)-5);
       shellexecute(0, 'open', PChar(temp1), '', '', SW_SHOW);
     end;
 
-    if (pos('WA', sAction) <> 0) then
+    if (pos('Winamp', sAction) <> 0) then
     begin
-      if pos('WANextTrack', sAction) <> 0 then
+      if pos('WinampNext', sAction) <> 0 then
         Winampctrl1.Next;
 
-      if pos('WALastTrack', sAction) <> 0 then
+      if pos('WinampLast', sAction) <> 0 then
         Winampctrl1.Previous;
 
-      if pos('WAPlay', sAction) <> 0 then
+      if pos('WinampPlay', sAction) <> 0 then
         Winampctrl1.Play;
 
-      if pos('WAStop', sAction) <> 0 then
+      if pos('WinampStop', sAction) <> 0 then
         Winampctrl1.Stop;
 
-      if pos('WAPause', sAction) <> 0 then
+      if pos('WinampPause', sAction) <> 0 then
         Winampctrl1.Pause;
 
-      if pos('WAShuffle', sAction) <> 0 then
+      if pos('WinampShuffle', sAction) <> 0 then
         Winampctrl1.ToggleShufflE;
 
-      if pos('WAVolDown', sAction) <> 0 then
+      if pos('WinampVolumeDown', sAction) <> 0 then
       begin
         WinampCtrl1.VolumeDown;
         WinampCtrl1.VolumeDown;
@@ -1944,7 +1944,7 @@ begin
         WinampCtrl1.VolumeDown;
       end;
 
-      if pos('WAVolUp', sAction) <> 0 then
+      if pos('WinampVolumeUp', sAction) <> 0 then
       begin
         WinampCtrl1.VolumeUp;
         WinampCtrl1.VolumeUp;

@@ -42,6 +42,7 @@ const
   CPUTypeKey = SysKey + 'CPUType';
   CPUSpeedMhzKey = SysKey + 'CPUSpeedMhz';
   CPUSpeedGhzKey = SysKey + 'CPUSpeedGhz';
+
   MemKey = '$Mem';
   MemFreeKey = MemKey + 'Free';
   MemUsedKey = MemKey + 'Used';
@@ -612,7 +613,6 @@ begin
     Line := StringReplace(line, FullScreenAppActiveKey, FullScreenAppActive, [rfReplaceAll]);
   end;
   fDataLock.Leave();
-
 
   if (pos(MemKey,Line) > 0) then begin
     fDataLock.Enter;

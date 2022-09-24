@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 646
+  Left = 552
   Height = 456
-  Top = 222
+  Top = 247
   Width = 823
   Anchors = []
   BorderIcons = []
@@ -1959,7 +1959,7 @@ object SetupForm: TSetupForm
     Top = 1
     Width = 265
     TabStop = False
-    ActivePage = PluginsTabSheet
+    ActivePage = EmailTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1968,7 +1968,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 10
+    TabIndex = 6
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange

@@ -802,19 +802,19 @@ end;
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
   aCol, aRow: integer; var Editor: TWinControl);
 var
-  Items: array [0..29] of string = ('Next Theme', 'Last Theme',
-    'Next screen', 'Last screen', 'GotoTheme(2)',
-    'GotoScreen(2)', 'Freeze screen', 'Unfreeze screen', 'Toggle freeze',
+  Items: array [0..29] of string = ('NextTheme', 'LastTheme',
+    'NextScreen', 'LastScreen', 'GotoTheme(2)',
+    'GotoScreen(2)', 'FreezeScreen', 'UnfreezeScreen', 'ToggleFreeze',
     'Refresh all data', 'Backlight(0/1) (0=off 1=on)',
-    'BacklightToggle', 'Backlight Flash(5) (nr. of times)',
+    'BacklightToggle', 'BacklightFlash(5) (nr. of times)',
     'PlayWave[c:\wave.wav]', 'Execute[c:\autoexec.bat]',
-    'Winamp next track', 'Winamp last track',
-    'Winamp play', 'Winamp stop', 'Winamp pause',
-    'Winamp Shuffle (toggle)', 'Winamp volume down',
-    'Winamp volume up', 'EnableScreen(1-20)',
+    'WinampNextTrack', 'WinampLastTrack',
+    'WinampPlay', 'WinampStop', 'WinampPause',
+    'WinampShuffle (toggle)', 'WinampVolumeDown',
+    'WinampVolumeUp', 'EnableScreen(1-20)',
     'DisableScreen(1-20)', '$dll(name.dll,2,param1,param2)',
-    'GPO(1-8,0/1)  (0=off 1=on)', 'GPOToggle(1-8)',
-    'GPOFlash(1-8,2)  (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)');
+    'GPO(1-8,0/1) (0=off 1=on)', 'GPOToggle(1-8)',
+    'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)');
 begin
   if aCol = 2 then
   begin
