@@ -21,6 +21,9 @@ While there is much information on the lcd smartie forums, any issues with this 
 - There may/will be bugs
 
 ### Done this log
+- Added option to start as administrator and use task scheduler for autostart
+- Removed SETI tab and replaced with BOINC
+- Fixed issue where some actions had spaces in the names
 - Major re-write of dnbridge.dll to compile under VS2022
 - Added 64bit target but CPU detection code is not 64bit compatible so it has had to go. There are plugins which can provide the same info though
 - Can now use variables in shutdown message

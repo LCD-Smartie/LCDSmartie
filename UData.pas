@@ -123,7 +123,7 @@ uses
   Windows, Forms, Dialogs, StrUtils, Winsock,
   UMain, UUtils, UConfig,
   DataThread, UDataNetwork, UDataDisk, UDataGame, UDataSystem,
-  {UDataSeti,}  UDataFolding, UDataRSS, UDataDNet,
+  UDataBoinc,  UDataFolding, UDataRSS, UDataDNet,
   UDataWinamp, UDataSender;
 
 
@@ -186,10 +186,9 @@ begin
   DataThread.Start;
   DataThreads.Add(DataThread);
 
-    // seti is broken atm
-//  DataThread := TSetiDataThread.Create;
-//  DataThread.Start;
-//  DataThreads.Add(DataThread);
+  DataThread := TBOINCDataThread.Create;
+  DataThread.Start;
+  DataThreads.Add(DataThread);
 
   DataThread := TFoldingDataThread.Create;
   DataThread.Start;

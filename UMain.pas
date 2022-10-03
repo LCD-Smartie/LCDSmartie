@@ -225,6 +225,7 @@ type
     NumberOfScreensToShift: Integer;
     iLastRandomTranCycle: Integer;
     ConfigFileName: String;
+    RestartAsAdmin: boolean;
     procedure SetOnscreenBacklight();
     function DoGuess(line: Integer): Integer;
     procedure freeze();
@@ -280,7 +281,7 @@ implementation
 uses
   Dialogs, ShellAPI, mmsystem, StrUtils,
   UCredits, ULCD_DLL, UUtils, lazutf8,
-  FONTMGR, UIconUtils, InterfaceBase, Win32Int;
+  FONTMGR, UIconUtils, InterfaceBase, Win32Int, Registry, ComObj;
 
 // message handler
 // lazarus only supports passing certain messages so we have to implement our own handler
@@ -413,6 +414,21 @@ begin
   SetOnscreenBacklight;
 end;
 
+function RunAsAdmin(const Handle: Hwnd; const Path, Params: string): Boolean;
+var
+  sei: TShellExecuteInfoA;
+begin
+  FillChar(sei, SizeOf(sei), 0);
+  sei.cbSize := SizeOf(sei);
+  sei.Wnd := Handle;
+  sei.fMask := SEE_MASK_FLAG_DDEWAIT;
+  sei.lpVerb := 'runas';
+  sei.lpFile := PAnsiChar(Path);
+  sei.lpParameters := PAnsiChar(Params);
+  sei.nShow := SW_SHOWNORMAL;
+  Result := ShellExecuteExA(@sei);
+end;
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ////                                                                       ////
@@ -424,6 +440,8 @@ end;
 procedure TLCDSmartieDisplayForm.FormCreate(Sender: TObject);
 var
   hConfig: longint;
+  i: integer;
+  allParameters: string;
 begin
   DisplayError := false;
   application.OnEndSession:=OnEndSession; // lazarus has support for this message
@@ -444,6 +462,18 @@ begin
 
   ConfigFileName := 'config.ini';
   ProcessCommandLineParams;  // can change config file name
+
+  if RestartAsAdmin then
+  begin
+    for i := 1 to ParamCount do
+      allParameters := allParameters+' '+ParamStr(i);
+
+    application.MainForm.Hide;
+    application.Terminate;
+    RunAsAdmin(0, application.ExeName, allParameters);
+    exit;
+   end;
+
   config := TConfig.Create(ConfigFileName);
 
   if (config.load() = false) then
@@ -609,7 +639,7 @@ end;
 
 procedure TLCDSmartieDisplayForm.ProcessCommandLineParams;
 var
-  I: integer;
+  I, j: integer;
   parameter: String;
 begin
   ShowWindowFlag := True;
@@ -629,6 +659,11 @@ begin
       Inc(i);
       ConfigFileName := ParamStr(i);  // will give '' if out of range
     end;
+
+    if not IsAdministrator then
+      if (parameter = '-admin') then
+        RestartAsAdmin := true;
+
     Inc(i);
   end;
 end;
@@ -663,13 +698,15 @@ end;
 
 procedure TLCDSmartieDisplayForm.FormShow(Sender: TObject);
 begin
-  // restore window position from config
-  LCDSmartieDisplayForm.Top  := config.MainFormPosTop;
-  LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
+  if assigned(config) then
+  begin
+    // restore window position from config
+    LCDSmartieDisplayForm.Top  := config.MainFormPosTop;
+    LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
 
-//  timerRefresh.Interval := 0; // reset timer
-  timerRefresh.Interval := 1; // make it short in case minimized has been selected.
-  TrayIcon1.ShowIcon:=true;
+    timerRefresh.Interval := 1; // make it short in case minimized has been selected.
+    TrayIcon1.ShowIcon:=true;
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.SavePositionClick(Sender: TObject);
@@ -924,7 +961,7 @@ begin
       didAction[counter] := doAction[counter];
     end;
 
-    // Ulgy special case - [the action code needs a rewrite]
+    // Ugly special case - [the action code needs a rewrite]
     // If action was caused by a key press then don't record that we have
     // done it - this will reduce the delay required to reset actions.
     // This delay impacts the user experience when using keys.
@@ -2471,7 +2508,6 @@ begin
   Result := StringReplace(sStr, '&&', '&', [rfReplaceAll])
 end;
 
-
 procedure TLCDSmartieDisplayForm.SetupAutoStart;
 var
   sParameters: String;
@@ -2484,18 +2520,25 @@ begin
   if (config.bAutoStartHide) then
     sParameters := sParameters + '-hide ';
 
-  if (config.filename <> 'config.ini') then
-  begin
-    sParameters := sParameters + '-config ' + '"' + config.filename + '"';
-    sShortCutName := sShortCutName + ' ' + copy(config.filename, 0, length(config.filename) - 4);
-  end;
+  if (config.bStartAsAdmin) then
+    sParameters := sParameters + '-admin ';
+
+  sParameters := sParameters + '-config ' + '"' + config.filename + '"';
+  sShortCutName := sShortCutName + ' ' + copy(config.filename, 0, length(config.filename) - 4);
 
   bDelete := not (config.bAutoStart or config.bAutoStartHide);
-  try
-    CreateShortcut(sShortCutName, application.exename, sParameters, bDelete);
-  except
-    on E: Exception do; // catch this to keep lazarus debugger happy
-  end;
+
+  if not config.bUseTaskScheduler then
+  begin
+    try
+      CreateShortcut(sShortCutName, application.exename, sParameters, bDelete);
+    except
+      on E: Exception do; // catch this to keep lazarus debugger happy
+    end;
+  end
+  else
+    if IsAdministrator then
+      SetupSchedulerAutoStart(sShortCutName, application.exename, sParameters, config.bStartAsAdmin, bDelete);
 end;
 
 /// <summary>

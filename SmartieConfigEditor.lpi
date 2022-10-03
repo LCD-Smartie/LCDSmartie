@@ -156,7 +156,6 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <RelocatableUnit Value="True"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
             <Optimizations>
@@ -191,6 +190,9 @@
       <FormatVersion Value="2"/>
     </RunParams>
     <RequiredPackages>
+      <Item>
+        <PackageName Value="ExceptionLogger"/>
+      </Item>
       <Item>
         <PackageName Value="RunTimeTypeInfoControls"/>
       </Item>

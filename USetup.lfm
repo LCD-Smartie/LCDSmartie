@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 552
+  Left = 585
   Height = 456
-  Top = 247
+  Top = 253
   Width = 823
   Anchors = []
   BorderIcons = []
@@ -28,13 +28,13 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 560
     TabStop = False
-    ActivePage = ActionsTabSheet
+    ActivePage = StartupTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 1
+    TabIndex = 2
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -1148,12 +1148,12 @@ object SetupForm: TSetupForm
       ImageIndex = 2
       object GroupBox7: TGroupBox
         Left = 8
-        Height = 81
+        Height = 112
         Hint = 'These settings are for when starting with windows.'
         Top = 16
         Width = 201
         Caption = 'Autostart'
-        ClientHeight = 63
+        ClientHeight = 94
         ClientWidth = 197
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
@@ -1203,15 +1203,44 @@ object SetupForm: TSetupForm
           ParentFont = False
           TabOrder = 2
         end
+        object StartAsAdminCheckBox: TCheckBox
+          Left = 8
+          Height = 19
+          Hint = 'Causes LCDSmartie to relaunch itself with elevated privileges.'#13#10'Windows 10 doesn''t allow starting of startup items with run as administrator set.'#13#10'Use this if you have plugins, etc. that need administrator privileges. This has the side effect of '#13#10'causing a UAC notification if UAC is enabled'
+          Top = 56
+          Width = 146
+          Caption = 'Autostart as administrator'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 3
+        end
+        object UseTaskSchedulerCheckBox: TCheckBox
+          Left = 8
+          Height = 19
+          Hint = 'Uses windows task scheduler instead of startup folder to launch LCD Smartie.'#13#10'It can be used to launch as Administrator without the UAC nag'
+          Top = 72
+          Width = 113
+          Caption = 'Use Task Scheduler'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnChange = UseTaskSchedulerCheckBoxChange
+          ParentFont = False
+          TabOrder = 4
+        end
       end
       object GroupBox8: TGroupBox
         Left = 8
-        Height = 49
+        Height = 56
         Hint = 'These settings are for when starting apply to all start methods (by hand or autostart).'
-        Top = 104
+        Top = 136
         Width = 201
         Caption = 'Start options'
-        ClientHeight = 31
+        ClientHeight = 38
         ClientWidth = 197
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
@@ -1240,7 +1269,7 @@ object SetupForm: TSetupForm
         Left = 8
         Height = 121
         Hint = 'Custom message to be displayed when LCD Smartie is shut down.'
-        Top = 164
+        Top = 200
         Width = 347
         Anchors = [akTop, akLeft, akRight]
         Caption = 'Shut down message'
@@ -1729,7 +1758,7 @@ object SetupForm: TSetupForm
             Top = 0
             Width = 235
             Directory = '.'
-            ItemHeight = 13
+            ItemHeight = 0
             Mask = '*.ini'
             OnClick = MiConfigsListBoxClick
             ParentShowHint = False
@@ -1959,7 +1988,7 @@ object SetupForm: TSetupForm
     Top = 1
     Width = 265
     TabStop = False
-    ActivePage = EmailTabSheet
+    ActivePage = BOINCTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1968,7 +1997,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 6
+    TabIndex = 4
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -2312,57 +2341,134 @@ object SetupForm: TSetupForm
         TabOrder = 0
       end
     end
-    object SetiAtHomeTabSheet: TTabSheet
-      Caption = 'Seti@Home'
+    object BOINCTabSheet: TTabSheet
+      Caption = 'BOINC'
       ClientHeight = 445
       ClientWidth = 217
       ImageIndex = 7
-      object Label41: TLabel
-        Left = 3
-        Height = 13
-        Top = 304
-        Width = 171
-        Caption = 'Email address used with Seti@home'
-      end
-      object SetiAtHomeListBox: TListBox
-        Left = 0
-        Height = 265
+      object BOINCListBox: TListBox
+        Left = -1
+        Height = 177
         Top = 0
-        Width = 209
+        Width = 212
         Items.Strings = (
-          'Total number of WU''s done'
-          'Total CPU time'
-          'Average CPU Time per work unit '
-          'time of last result returned'
-          'time you are SETI@home user'
-          'Total users'
-          'Your rank'
-          'users you share your rank with'
-          'completed more work then ...'
+          'id'
+          'cpid'
+          'create time'
+          'name'
+          'country'
+          'total credit'
+          'exp. avg. credit'
+          'exp. avg. time'
+          'team id'
+          'url'
+          'host id'
+          'host create time'
+          'host rpc seq no'
+          'host rpc time'
+          'host cpid'
+          'host total credit'
+          'host exp. avg. credit'
+          'host exp. avg. time'
+          'host domain name'
+          'host processor num cpus'
+          'host processor vendor'
+          'host processor model'
+          'host processor fpops'
+          'host processor iops'
+          'host os name'
+          'host os version'
+          'host memory num bytes'
+          'host disk free'
+          'host disk total'
+          'host venue'
         )
         ItemHeight = 13
-        OnClick = SetiAtHomeListBoxClick
+        OnClick = BOINCListBoxClick
         OnDblClick = InsertButtonClick
         TabOrder = 0
       end
-      object SetiAtHomeEmailEdit: TEdit
-        Left = 0
-        Height = 21
-        Top = 320
-        Width = 209
-        TabOrder = 1
-      end
-      object SetiEnableCheckBox: TCheckBox
+      object BOINCEnableCheckBox: TCheckBox
         Left = 0
         Height = 19
-        Hint = 'S@H is currently in hibernation(whatever that means) plus this is probably broken so it can be disabled for now so it''s not sending requests for no reason'
-        Top = 280
+        Hint = 'it can be disabled so it''s not sending requests for no reason'
+        Top = 336
         Width = 52
         Caption = 'Enable'
-        OnClick = SetiEnableCheckBoxClick
+        OnClick = BOINCEnableCheckBoxClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+      end
+      object BoincServerEdit: TEdit
+        Left = 2
+        Height = 21
+        Hint = 'Always leave the trailing ''/'''
+        Top = 232
+        Width = 209
+        OnChange = BoincServerEditChange
         ParentShowHint = False
         ShowHint = True
         TabOrder = 2
+      end
+      object BoincServerIndexComboBox: TComboBox
+        Left = 58
+        Height = 21
+        Top = 184
+        Width = 40
+        ItemHeight = 13
+        OnChange = BoincServerIndexComboBoxChange
+        TabOrder = 3
+        Text = '1'
+      end
+      object BoincUserNameEdit: TEdit
+        Left = 2
+        Height = 21
+        Top = 272
+        Width = 208
+        OnChange = BoincUserNameEditChange
+        TabOrder = 4
+      end
+      object BoincPasswordEdit: TEdit
+        Left = 2
+        Height = 21
+        Hint = 'Although the password is masked here it is stored plaintext in the config. Be careful'
+        Top = 312
+        Width = 208
+        EchoMode = emPassword
+        OnChange = BoincPasswordEditChange
+        ParentShowHint = False
+        PasswordChar = '*'
+        ShowHint = True
+        TabOrder = 5
+      end
+      object Label52: TLabel
+        Left = 4
+        Height = 13
+        Top = 192
+        Width = 47
+        Caption = 'Server id:'
+      end
+      object Label53: TLabel
+        Left = 4
+        Height = 13
+        Top = 216
+        Width = 83
+        Caption = 'Server adddress:'
+      end
+      object Label54: TLabel
+        Left = 4
+        Height = 13
+        Top = 256
+        Width = 94
+        Caption = 'User email address:'
+      end
+      object Label63: TLabel
+        Left = 4
+        Height = 13
+        Top = 296
+        Width = 50
+        Caption = 'Password:'
       end
     end
     object FoldingAtHomeTabSheet: TTabSheet
@@ -2403,7 +2509,6 @@ object SetupForm: TSetupForm
           'Team score'
           'Team WU'
           'Team Date of last work unit'
-          ''
         )
         ItemHeight = 13
         OnClick = FoldingAtHomeListBoxClick
@@ -2486,11 +2591,14 @@ object SetupForm: TSetupForm
       object EmailPasswordEdit: TEdit
         Left = 64
         Height = 21
+        Hint = 'Although the password is masked here it is stored plaintext in the config. Be careful'
         Top = 128
         Width = 145
         Color = 16706270
         EchoMode = emPassword
+        ParentShowHint = False
         PasswordChar = '*'
+        ShowHint = True
         TabOrder = 4
         Text = 'Ur passw'
       end
@@ -2722,7 +2830,7 @@ object SetupForm: TSetupForm
         Width = 209
         Directory = '.'
         ExtendedSelect = False
-        ItemHeight = 0
+        ItemHeight = 13
         Mask = '*.dll'
         OnClick = PluginListBoxClick
         OnDblClick = PluginListBoxDblClick

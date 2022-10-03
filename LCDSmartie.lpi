@@ -27,6 +27,7 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="3"/>
+      <BuildNr Value="2"/>
       <CharSet Value="04B0"/>
     </VersionInfo>
     <BuildModes Count="3">
@@ -185,25 +186,28 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="ExceptionLogger"/>
+        <PackageName Value="FCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="RunTimeTypeInfoControls"/>
+        <PackageName Value="ExceptionLogger"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item3>
       <Item4>
-        <PackageName Value="WinampCtrl7"/>
+        <PackageName Value="LazControls"/>
       </Item4>
       <Item5>
-        <PackageName Value="indylaz"/>
+        <PackageName Value="WinampCtrl7"/>
       </Item5>
       <Item6>
-        <PackageName Value="LCL"/>
+        <PackageName Value="indylaz"/>
       </Item6>
+      <Item7>
+        <PackageName Value="LCL"/>
+      </Item7>
     </RequiredPackages>
     <Units Count="20">
       <Unit0>
@@ -273,8 +277,9 @@
         <IsPartOfProject Value="True"/>
       </Unit14>
       <Unit15>
-        <Filename Value="UDataSeti.pas"/>
+        <Filename Value="udataboinc.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="UDataBoinc"/>
       </Unit15>
       <Unit16>
         <Filename Value="USetup.pas"/>
@@ -363,7 +368,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="4">
+    <Exceptions Count="5">
       <Item1>
         <Name Value="EConvertError"/>
       </Item1>
@@ -376,6 +381,9 @@
       <Item4>
         <Name Value="Exception"/>
       </Item4>
+      <Item5>
+        <Name Value="EOleException"/>
+      </Item5>
     </Exceptions>
   </Debugging>
 </CONFIG>

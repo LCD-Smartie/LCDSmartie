@@ -4,7 +4,7 @@ program SmartieConfigEditor;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  Forms, USetup, runtimetypeinfocontrols
+  Forms, USetup, ExceptionLogger, runtimetypeinfocontrols
   { you can add units after this };
 
 {$R *.res}

@@ -40,6 +40,7 @@ const
   MaxActions = 99;
   MaxScreenSizes = 12;
   MaxEmailAccounts = 99;
+  maxBoincAccounts = 20;
 
 type
   TScreenSize = record
@@ -96,12 +97,17 @@ type
     settings: TScreenSettings;
   end;
 
-
   TPopAccount = Record
     server: String;
     user: String;
     pword: String;
     port_ssl: String;
+  end;
+
+  TBoincAccount = Record
+    server: String;
+    user: String;
+    password: String;
   end;
 
   TTestDriverSettings = Record
@@ -139,10 +145,11 @@ type
 
     localeFormat: TFormatSettings;
     bHideOnStartup: Boolean;
-    bAutoStart, bAutoStartHide: Boolean;
+    bAutoStart, bAutoStartHide, bStartAsAdmin, bUseTaskScheduler: Boolean;
     testDriver: TTestDriverSettings;
     isUsbPalm: Boolean;
     gameServer: Array[1..MaxScreens, 1..MaxLines] of String;
+    boincAccount: Array [1..maxBoincAccounts] of TBoincAccount;
     pop: Array [1..MaxEmailAccounts] of TPopAccount;
     comPort: Integer;
     baudrate: Integer;
@@ -164,8 +171,7 @@ type
     screen: Array[1..MaxScreens] of Tscreen;
     ShutdownMessage: Array[1..MaxLines] of string;
     winampLocation: String;
-    setiEmail: String;
-    setiEnabled: Boolean;
+    boincEnabled: Boolean;
     actionsArray: Array[1..MaxActions, 1..4] of String;
     totalactions: Integer;
     // screen settings
@@ -253,7 +259,7 @@ end;
 function TConfig.loadINI: Boolean;
 var
   initfile: TINIFile;
-  ActionsCount, MailCount, ScreenCount, LineCount: Integer;
+  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount: Integer;
 //  sConfigFileFormatVersion, sScreenTextSyntaxVersion: String;    // dont know why we read these as they're never used
   sScreen, sLine, sPOPAccount, sGameLine: String;
   iTemp: Integer;
@@ -328,9 +334,8 @@ begin
 
   bootDriverDelay := initfile.ReadInteger('General Settings',
     'BootDriverDelay', 3);
-  setiEmail := initfile.ReadString('General Settings', 'SETIEmail',
-    'test@test.com');
-  setiEnabled := initfile.ReadBool('General Settings', 'SETIEnabled', false);
+
+  boincEnabled := initfile.ReadBool('General Settings', 'boincEnabled', false);
 
   for ScreenCount := 1 to MaxScreens do
   begin
@@ -420,9 +425,14 @@ begin
   checkUpdates := initFile.ReadBool('General Settings', 'CheckUpdates', true);
 
   colorOption := initFile.ReadInteger('General Settings', 'ColorOption', 4);
+
   bHideOnStartup := initFile.ReadBool('General Settings', 'HideOnStartup', false);
   bAutoStart := initFile.ReadBool('General Settings', 'AutoStart', false);
   bAutoStartHide := initFile.ReadBool('General Settings', 'AutoStartHidden', false);
+  bStartAsAdmin :=  initFile.ReadBool('General Settings', 'StartAsAdmin', false);
+  bUseTaskScheduler :=  initFile.ReadBool('General Settings', 'AutoStartUseTaskScheduler', false);
+
+
   EmulateLCD := initFile.ReadBool('General Settings', 'EmulateLCD', false);
 
   for LineCount := 1 to MaxLines do
@@ -457,6 +467,14 @@ begin
     end;
   end;
 
+  for boincAccountsCount := 1 to maxBoincAccounts do
+  begin
+    boincAccount[boincAccountsCount].server := initfile.ReadString('Boinc Servers', 'Server'+Format('%.2u', [boincAccountsCount], localeFormat), '');
+    boincAccount[boincAccountsCount].user := initfile.ReadString('Boinc Servers', 'User'+Format('%.2u', [boincAccountsCount], localeFormat), '');
+    boincAccount[boincAccountsCount].password := initfile.ReadString('Boinc Servers', 'Password'+Format('%.2u', [boincAccountsCount], localeFormat), '');
+  end;
+
+
   // Load Actions
   ActionsCount := 0;
   repeat
@@ -490,7 +508,7 @@ procedure TConfig.saveINI;
 var
   initfile : TMemINIFile;
   sScreen, sLine, sPOPAccount, sGameLine: String;
-  ActionsCount, MailCount, ScreenCount, LineCount: Integer;
+  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount: Integer;
   sPrefix: String;
 begin
   {$IFNDEF STANDALONESETUP}
@@ -540,8 +558,7 @@ begin
   initfile.WriteInteger('General Settings', 'BootDriverDelay',
     bootDriverDelay);
 
-  initfile.WriteString('General Settings', 'SETIEmail', setiEmail);
-  initfile.WriteBool('General Settings', 'SETIEnabled', setiEnabled);
+  initfile.WriteBool('General Settings', 'boincEnabled', boincEnabled);
 
   for ScreenCount := 1 to MaxScreens do
   begin
@@ -624,6 +641,9 @@ begin
   initFile.WriteBool('General Settings', 'HideOnStartup', bHideOnStartup);
   initFile.WriteBool('General Settings', 'AutoStart', bAutoStart);
   initFile.WriteBool('General Settings', 'AutoStartHidden', bAutoStartHide);
+  initFile.WriteBool('General Settings', 'StartAsAdmin', bStartAsAdmin);
+  initFile.WriteBool('General Settings', 'AutoStartUseTaskScheduler', bUseTaskScheduler);
+
   initFile.WriteBool('General Settings', 'EmulateLCD', EmulateLCD);
 
   for LineCount := 1 to MaxLines do
@@ -653,6 +673,13 @@ begin
         + Format('%.2u', [LineCount], localeFormat);
       initfile.WriteString('Game Servers', sGameLine, gameServer[ScreenCount, LineCount]);
     end;
+  end;
+
+  for boincAccountsCount := 1 to maxBoincAccounts do
+  begin
+    initfile.WriteString('Boinc Servers', 'Server'+Format('%.2u', [boincAccountsCount], localeFormat), boincAccount[boincAccountsCount].server);
+    initfile.WriteString('Boinc Servers', 'User'+Format('%.2u', [boincAccountsCount], localeFormat), boincAccount[boincAccountsCount].user);
+    initfile.WriteString('Boinc Servers', 'Password'+Format('%.2u', [boincAccountsCount], localeFormat), boincAccount[boincAccountsCount].password);
   end;
 
   // Save Actions

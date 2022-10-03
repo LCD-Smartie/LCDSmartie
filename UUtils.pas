@@ -42,6 +42,8 @@ type
 Function CenterText(const sLine: String; iWidth: Integer): String;
 //procedure AddPluginsToPath;
 procedure CreateShortcut(const sName, FileName,Args: string; uninstall: Boolean = False);
+procedure SetupSchedulerAutoStart(const sName, FileName,Args: string; asAdmin: Boolean; uninstall: Boolean = False);
+function IsAdministrator: Boolean;
 function errMsg(uError: Cardinal): String;
 function decodeArgs(const str: String; const funcName: String; maxargs: Cardinal; var
     args: Array of String; var prefix: String; var postfix: String; var
@@ -283,6 +285,86 @@ begin
     end;
   finally
     R.Free;
+  end;
+end;
+
+procedure SetupSchedulerAutoStart(const sName, FileName, Args: string; asAdmin: Boolean; uninstall: Boolean = False);
+var
+  service,rootfolder,taskdefinition,reginfo,principal,settings,triggers,
+  trigger,action_:Olevariant;
+begin
+  if not uninstall then
+  begin
+    service:=CreateOleObject('Schedule.Service');
+    service.connect;
+    rootfolder:=service.GetFolder(Olevariant('\'));
+    taskdefinition:=service.NewTask(0);
+    reginfo:=taskdefinition.RegistrationInfo;
+    reginfo.Description:='LCDSmartieAutoStart';
+    reginfo.Author:='LCDSmartie';
+    principal:=taskdefinition.Principal;
+    principal.LogonType:=3; // TASK_LOGON_INTERACTIVE_TOKEN
+
+    if (asAdmin) then
+      principal.RunLevel := 1; // TASK_RUNLEVEL_HIGHEST
+
+    settings:=taskdefinition.Settings;
+    settings.Enabled:=true;
+    settings.StartWhenAvailable:=true;
+    settings.Hidden:=False;
+    settings.RunOnlyIfIdle:=False;
+    settings.DisallowStartIfOnBatteries := False;
+    settings.StopIfGoingOnBatteries := False;
+    settings.ExecutionTimeLimit:=olevariant('PT0S'); // infinite execution time
+    triggers:=taskdefinition.Triggers;
+    trigger:=triggers.Create(9); // TASK_TRIGGER_LOGON
+    trigger.Id:=olevariant(sName);
+    trigger.Enabled:=true;
+    action_:=taskdefinition.Actions.Create(0);
+    action_.Path:=olevariant(FileName);
+    action_.Arguments := olevariant(Args);
+    action_.WorkingDirectory := olevariant(PChar(ExtractFilePath(FileName)));
+    rootfolder.RegisterTaskDefinition(olevariant(sName), taskdefinition, 6, NULL, NULL, 3);
+  end
+  else
+  begin
+    service:=CreateOleObject('Schedule.Service');
+    service.connect;
+    rootfolder:=service.GetFolder(Olevariant('\'));
+    try
+      rootfolder.DeleteTask(Olevariant(sName), 0)
+    except
+      on E: Exception do; // catch this
+    end;
+  end;
+end;
+
+// Function to check for adminstrator privileges
+function CheckTokenMembership(TokenHandle: THANDLE; SidToCheck: Pointer; var IsMember: BOOL): BOOL; stdcall; external advapi32 name 'CheckTokenMembership';
+
+function IsAdministrator: Boolean;
+var
+  psidAdmin: Pointer;
+  B: BOOL;
+const
+  SECURITY_NT_AUTHORITY: TSidIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 5));
+  SECURITY_BUILTIN_DOMAIN_RID  = $00000020;
+  DOMAIN_ALIAS_RID_ADMINS      = $00000220;
+  {%H-}SE_GROUP_USE_FOR_DENY_ONLY  = $00000010;
+begin
+  psidAdmin := nil;
+  try
+    Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
+      SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+      psidAdmin));
+
+    if CheckTokenMembership(0, psidAdmin, B{%H-}) then
+      Result := B
+    else
+      Result := False;
+  finally
+    if psidAdmin <> nil then
+      FreeSid(psidAdmin);
   end;
 end;
 

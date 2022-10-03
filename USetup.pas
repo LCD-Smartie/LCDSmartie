@@ -60,7 +60,16 @@ type
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
     AppendConfigNameCheckBox: TCheckBox;
+    BoincServerIndexComboBox: TComboBox;
+    UseTaskSchedulerCheckBox: TCheckBox;
     CopyingFileLabel: TLabel;
+    BoincServerEdit: TEdit;
+    BoincUserNameEdit: TEdit;
+    BoincPasswordEdit: TEdit;
+    Label52: TLabel;
+    Label53: TLabel;
+    Label54: TLabel;
+    Label63: TLabel;
     MiCopyConfigBitBtn: TBitBtn;
     Label47: TLabel;
     MiCurrentConfigLabel: TLabel;
@@ -216,7 +225,6 @@ type
     Label39: TLabel;
     Label4: TLabel;
     Label40: TLabel;
-    Label41: TLabel;
     Label42: TLabel;
     Label43: TLabel;
     Label44: TLabel;
@@ -289,10 +297,9 @@ type
     ScreensTabSheet: TTabSheet;
     ScreenTabsheet: TTabSheet;
     ActionsGridScrollBar: TScrollBar;
-    SetiAtHomeEmailEdit: TEdit;
-    SetiAtHomeListBox: TListBox;
-    SetiAtHomeTabSheet: TTabSheet;
-    SetiEnableCheckBox: TCheckBox;
+    BOINCListBox: TListBox;
+    BOINCTabSheet: TTabSheet;
+    BOINCEnableCheckBox: TCheckBox;
     ShutdownEdit1: TMemo;
     ShutdownEdit2: TMemo;
     ShutdownEdit3: TMemo;
@@ -302,6 +309,7 @@ type
     SkinPathBrowseButton: TSpeedButton;
     RssMaxFreqSpinedit: TSpinEdit;
     RssItemNumSpinEdit: TSpinEdit;
+    StartAsAdminCheckBox: TCheckBox;
     StartupTabSheet: TTabSheet;
     StayOnTopCheckBox: TCheckBox;
     StickyCheckbox: TCheckBox;
@@ -351,6 +359,10 @@ type
     procedure ActionsStringGridSelection(Sender: TObject; aCol, aRow: integer);
     procedure ActionsStringGridUpdateScrollBar;
     procedure BitBtn4Click(Sender: TObject);
+    procedure BoincPasswordEditChange(Sender: TObject);
+    procedure BoincServerEditChange(Sender: TObject);
+    procedure BoincServerIndexComboBoxChange(Sender: TObject);
+    procedure BoincUserNameEditChange(Sender: TObject);
     procedure ComPortsButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -375,6 +387,7 @@ type
     procedure MiStartupItemsTabSheetShow(Sender: TObject);
     procedure RssPageChange(Sender: TObject);
     procedure ScreenSpinEditChange(Sender: TObject);
+    procedure UseTaskSchedulerCheckBoxChange(Sender: TObject);
     procedure WinampListBoxClick(Sender: TObject);
     procedure InsertButtonClick(Sender: TObject);
     procedure SysInfoListBoxClick(Sender: TObject);
@@ -383,7 +396,7 @@ type
     procedure MiscListBoxClick(Sender: TObject);
     procedure LeftPageControlChange(Sender: TObject);
     procedure GameServerEditExit(Sender: TObject);
-    procedure SetiAtHomeListBoxClick(Sender: TObject);
+    procedure BOINCListBoxClick(Sender: TObject);
     procedure DistributedNetBrowseButtonClick(Sender: TObject);
     procedure EmailAccountComboBoxChange(Sender: TObject);
     procedure ContinueLine1CheckBoxClick(Sender: TObject);
@@ -424,7 +437,7 @@ type
     procedure RemoteSendGenerateCertKeyButtonClick(Sender: TObject);
     procedure RemoteSendUseSSLCheckBoxClick(Sender: TObject);
     procedure FoldEnableCheckBoxClick(Sender: TObject);
-    procedure SetiEnableCheckBoxClick(Sender: TObject);
+    procedure BOINCEnableCheckBoxClick(Sender: TObject);
 
   private
     DLLPath: string;
@@ -682,8 +695,6 @@ begin
   SkinPath.Text := config.sSkinPath;
   DrawPreviewIcons(TrayIcon.Text);
 
-  SetiAtHomeEmailEdit.Text := config.setiEmail;
-
   DistributedNetLogfileEdit.Text := config.distLog;
 
   EmailCheckTimeSpinEdit.Value := config.emailPeriod;
@@ -695,6 +706,8 @@ begin
   NoAutoStart.Checked := True;
   AutoStart.Checked := config.bAutoStart;
   AutoStartHide.Checked := config.bAutoStartHide;
+  StartAsAdminCheckBox.Checked := config.bStartAsAdmin;
+  UseTaskSchedulerCheckBox.Checked := config.bUseTaskScheduler;
   EmulateLCDCheckbox.Checked := config.EmulateLCD;
   HideOnStartup.Checked := config.bHideOnStartup;
   ShutdownEdit1.Text := config.ShutdownMessage[1];
@@ -775,8 +788,12 @@ begin
   else
     RemoteSendUseSSLCheckBox.Checked := False;
 
+  for i :=1 to 20 do BoincServerIndexComboBox.Items.Add(inttostr(i));
+  BoincServerIndexComboBox.ItemIndex := 0;
+  BoincServerIndexComboBoxChange(Sender);
+
   FoldEnableCheckBox.Checked := config.foldEnabled;
-  SetiEnableCheckBox.Checked := config.setiEnabled;
+  BOINCEnableCheckBox.Checked := config.boincEnabled;
 
   for i := 1 to 24 do ButtonsListBox.Items.Delete(1);
   LCDFeaturesTabSheet.Enabled := True;
@@ -879,6 +896,28 @@ begin
   ConfigFileName := '';
   FormShow(Sender);
   {$ENDIF}
+end;
+
+procedure TSetupForm.BoincPasswordEditChange(Sender: TObject);
+begin
+  config.boincAccount[BoincServerIndexComboBox.ItemIndex+1].password := BoincPasswordEdit.Text;
+end;
+
+procedure TSetupForm.BoincServerEditChange(Sender: TObject);
+begin
+  config.boincAccount[BoincServerIndexComboBox.ItemIndex+1].server := BoincServerEdit.Text;
+end;
+
+procedure TSetupForm.BoincServerIndexComboBoxChange(Sender: TObject);
+begin
+  BoincServerEdit.Text := config.boincAccount[BoincServerIndexComboBox.ItemIndex+1].server;
+  BoincUserNameEdit.Text := config.boincAccount[BoincServerIndexComboBox.ItemIndex+1].user;
+  BoincPasswordEdit.Text := config.boincAccount[BoincServerIndexComboBox.ItemIndex+1].password;
+end;
+
+procedure TSetupForm.BoincUserNameEditChange(Sender: TObject);
+begin
+  config.boincAccount[BoincServerIndexComboBox.ItemIndex+1].user := BoincUserNameEdit.Text;
 end;
 
 //////////// LIST COM PORTS BUTTON ///////////////////
@@ -1723,6 +1762,13 @@ begin
 {$ENDIF}
 end;
 
+procedure TSetupForm.UseTaskSchedulerCheckBoxChange(Sender: TObject);
+begin
+  if not IsAdministrator then
+    ShowMessage('This will not work Unless LCD Smartie is running as administrator');
+
+end;
+
 procedure TSetupForm.WinampListBoxClick(Sender: TObject);
 var
   WinampStat: TWinampStat;
@@ -2012,18 +2058,39 @@ begin
     FocusToInputField();
 end;
 
-procedure TSetupForm.SetiAtHomeListBoxClick(Sender: TObject);
+procedure TSetupForm.BOINCListBoxClick(Sender: TObject);
 begin
-  case SetiAtHomeListBox.ItemIndex of
-    0: VariableEdit.Text := '$SETIResults';
-    1: VariableEdit.Text := '$SETICPUTime';
-    2: VariableEdit.Text := '$SETIAverage';
-    3: VariableEdit.Text := '$SETILastresult';
-    4: VariableEdit.Text := '$SETIusertime';
-    5: VariableEdit.Text := '$SETItotalusers';
-    6: VariableEdit.Text := '$SETIrank';
-    7: VariableEdit.Text := '$SETIsharingrank';
-    8: VariableEdit.Text := '$SETImoreWU%';
+  case BOINCListBox.ItemIndex of
+    0: VariableEdit.Text := '$BOINCid('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    1: VariableEdit.Text := '$BOINCcpid('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    2: VariableEdit.Text := '$BOINCcreate_time('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    3: VariableEdit.Text := '$BOINCname('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    4: VariableEdit.Text := '$BOINCcountry('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    5: VariableEdit.Text := '$BOINCtotal_credit('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    6: VariableEdit.Text := '$BOINCexpavg_credit('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    7: VariableEdit.Text := '$BOINCexpavg_time('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    8: VariableEdit.Text := '$BOINCteamid('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    9: VariableEdit.Text := '$BOINCurl('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+')';
+    10: VariableEdit.Text := '$BOINCHostid('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    11: VariableEdit.Text := '$BOINCHostcreate_time('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    12: VariableEdit.Text := '$BOINCHostrpc_seqno('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    13: VariableEdit.Text := '$BOINCHostrpc_time('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    14: VariableEdit.Text := '$BOINCHosthost_cpid('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    15: VariableEdit.Text := '$BOINCHosttotal_credit('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    16: VariableEdit.Text := '$BOINCHostexpavg_credit('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    17: VariableEdit.Text := '$BOINCHostexpavg_time('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    18: VariableEdit.Text := '$BOINCHostdomain_name('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    19: VariableEdit.Text := '$BOINCHostp_ncpus('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    20: VariableEdit.Text := '$BOINCHostp_vendor('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    21: VariableEdit.Text := '$BOINCHostp_model('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    22: VariableEdit.Text := '$BOINCHostp_fpops('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    23: VariableEdit.Text := '$BOINCHostp_iops('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    24: VariableEdit.Text := '$BOINCHostos_name('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    25: VariableEdit.Text := '$BOINCHostos_version('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    26: VariableEdit.Text := '$BOINCHostm_nbytes('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    27: VariableEdit.Text := '$BOINCHostd_free('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    28: VariableEdit.Text := '$BOINCHostd_total('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
+    29: VariableEdit.Text := '$BOINCHostvenue('+inttostr(BoincServerIndexComboBox.ItemIndex+1)+',host index)';
     else
       VariableEdit.Text := NoVariable;
   end; // case
@@ -2046,8 +2113,8 @@ begin
     InternetListBoxClick(Sender);
   if LeftPageControl.ActivePage = MiscTabSheet then
     MiscListBoxClick(Sender);
-  if LeftPageControl.ActivePage = SetiAtHomeTabSheet then
-    SetiAtHomeListBoxClick(Sender);
+  if LeftPageControl.ActivePage = BOINCTabSheet then
+    BOINCListBoxClick(Sender);
   if LeftPageControl.ActivePage = FoldingAtHomeTabSheet then
     FoldingAtHomeListBoxClick(Sender);
   if LeftPageControl.ActivePage = EmailTabSheet then
@@ -2349,8 +2416,6 @@ begin
 {$ENDIF}
   config.winampLocation := WinampLocationEdit.Text;
   config.refreshRate := ProgramRefreshIntervalSpinEdit.Value;
-  config.setiEmail := SetiAtHomeEmailEdit.Text;
-
   config.ScreenSize := LCDSizeComboBox.ItemIndex + 1;
   config.randomScreens := RandomizeScreensCheckBox.Checked;
   config.foldUserid := FoldingAtHomeEmailEdit.Text;
@@ -2364,6 +2429,8 @@ begin
   config.bHideOnStartup := HideOnStartup.Checked;
   config.bAutoStart := AutoStart.Checked;
   config.bAutoStartHide := AutoStartHide.Checked;
+  config.bStartAsAdmin := StartAsAdminCheckBox.Checked;
+  config.bUseTaskScheduler := UseTaskSchedulerCheckBox.Checked;
   config.EmulateLCD := EmulateLCDCheckbox.Checked;
   config.ShutdownMessage[1] := ShutdownEdit1.Text;
   config.ShutdownMessage[2] := ShutdownEdit2.Text;
@@ -2973,15 +3040,15 @@ begin
 end;
 
 
-////////////// FOLDING/SETI ENABLE/DISABLE /////////////////
+////////////// FOLDING/BOINC ENABLE/DISABLE /////////////////
 procedure TSetupForm.FoldEnableCheckBoxClick(Sender: TObject);
 begin
   config.foldEnabled := FoldEnableCheckBox.Checked;
 end;
 
-procedure TSetupForm.SetiEnableCheckBoxClick(Sender: TObject);
+procedure TSetupForm.BOINCEnableCheckBoxClick(Sender: TObject);
 begin
-  config.setiEnabled := SetiEnableCheckBox.Checked;
+  config.boincEnabled := BOINCEnableCheckBox.Checked;
 end;
 
 end.
