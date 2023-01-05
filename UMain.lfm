@@ -7,7 +7,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
   VertScrollBar.Visible = False
   Anchors = []
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsToolWindow
+  BorderStyle = bsDialog
   Caption = 'LCD Smartie x.x.x.x'
   ClientHeight = 91
   ClientWidth = 241
@@ -203,11 +203,13 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Alignment = taLeftJustify
     BevelOuter = bvNone
     Color = clNone
+    DoubleBuffered = True
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Fixedsys'
     ParentColor = False
+    ParentDoubleBuffered = False
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
@@ -223,11 +225,13 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Alignment = taLeftJustify
     BevelOuter = bvNone
     Color = clNone
+    DoubleBuffered = True
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Fixedsys'
     ParentColor = False
+    ParentDoubleBuffered = False
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
@@ -243,11 +247,13 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Alignment = taLeftJustify
     BevelOuter = bvNone
     Color = clNone
+    DoubleBuffered = True
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Fixedsys'
     ParentColor = False
+    ParentDoubleBuffered = False
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
@@ -263,11 +269,13 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Alignment = taLeftJustify
     BevelOuter = bvNone
     Color = clNone
+    DoubleBuffered = True
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Fixedsys'
     ParentColor = False
+    ParentDoubleBuffered = False
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
@@ -283,11 +291,13 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     BevelOuter = bvNone
     Caption = '1 | 1'
     Color = clNavy
+    DoubleBuffered = True
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentColor = False
+    ParentDoubleBuffered = False
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
@@ -303,6 +313,8 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     inherited LCDPanel: TPanel
       Height = 18
       ClientHeight = 18
+      DoubleBuffered = True
+      ParentDoubleBuffered = False
       inherited PaintBox: TPaintBox
         Height = 18
       end
@@ -319,6 +331,8 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     inherited LCDPanel: TPanel
       Height = 18
       ClientHeight = 18
+      DoubleBuffered = True
+      ParentDoubleBuffered = False
       inherited PaintBox: TPaintBox
         Height = 18
       end
@@ -335,6 +349,8 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     inherited LCDPanel: TPanel
       Height = 18
       ClientHeight = 18
+      DoubleBuffered = True
+      ParentDoubleBuffered = False
       inherited PaintBox: TPaintBox
         Height = 18
       end
@@ -351,6 +367,8 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     inherited LCDPanel: TPanel
       Height = 18
       ClientHeight = 18
+      DoubleBuffered = True
+      ParentDoubleBuffered = False
       inherited PaintBox: TPaintBox
         Height = 18
       end

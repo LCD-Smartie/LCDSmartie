@@ -3252,23 +3252,6 @@ object SetupForm: TSetupForm
       end
     end
   end
-  object VariableEdit: TEdit
-    Left = 8
-    Height = 13
-    Top = 369
-    Width = 200
-    BorderStyle = bsNone
-    Color = clBtnFace
-    Enabled = False
-    Font.CharSet = ANSI_CHARSET
-    Font.Color = clBlack
-    Font.Height = -12
-    Font.Name = 'MS Sans Serif'
-    ParentFont = False
-    TabStop = False
-    TabOrder = 1
-    Text = '[Variable]'
-  end
   object InsertButton: TButton
     Left = 77
     Height = 25
@@ -3336,6 +3319,27 @@ object SetupForm: TSetupForm
     OnClick = BitBtn4Click
     TabOrder = 5
     Visible = False
+  end
+  object VariableEdit: TEdit
+    Left = 8
+    Height = 13
+    Hint = '[Variable]'
+    Top = 369
+    Width = 200
+    BorderStyle = bsNone
+    Color = clBtnFace
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -12
+    Font.Name = 'MS Sans Serif'
+    OnChange = VariableEditChange
+    ParentFont = False
+    ParentShowHint = False
+    ReadOnly = True
+    ShowHint = True
+    TabStop = False
+    TabOrder = 1
+    Text = '[Variable]'
   end
   object OpenDialog2: TOpenDialog
     Title = 'Open distributed.net logfile'
