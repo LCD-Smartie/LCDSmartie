@@ -55,7 +55,9 @@ const
   PageTotalKey = PageKey + 'Total';
   PageFreePercentKey = PageKey + 'F%';
   PageUsedPercentKey = PageKey + 'U%';
-  alpha = 0.15;
+
+  alpha = 0.5;
+  PDH_FMT_DOUBLE = $200;
 
 type
   TPROCESSOR_POWER_INFORMATION = record
@@ -65,6 +67,19 @@ type
     MhzLimit: ULONG;
     MaxIdleState: ULONG;
     CurrentIdleState: ULONG;
+  end;
+
+type
+  PTPDH_FMT_COUNTERVALUE = ^TPDH_FMT_COUNTERVALUE;
+
+  TPDH_FMT_COUNTERVALUE = record
+  CStatus: DWORD ;
+  case integer of
+    1: ( longValue: LONGINT; );
+    2: ( doubleValue: double; );
+    3: ( largeValue: Int64; );
+    4: ( AnsiStringValue: PAnsiChar; );
+    5: ( WideStringValue: PWideChar; );
   end;
 
 {$M+}
@@ -86,7 +101,12 @@ type
     CPUSpeed: string;
     systeminfo: SYSTEM_INFO;
     PPIbuff: array of TPROCESSOR_POWER_INFORMATION;
+    pdhQueryHandle: THANDLE;
+    pdhCounterHandle: THANDLE;
+    pdhCounterType: DWORD;
+    pdhFmtCounterValue: TPDH_FMT_COUNTERVALUE;
     function getIsWin2kXP: Boolean;
+    function getIsWin11: Boolean;
     function getTotalPhysMemory: Int64;
     function getAvailPhysMemory: Int64;
     function getTotalPageFile: Int64;
@@ -102,6 +122,7 @@ type
     procedure  ResolveVariables(var Line : string); override;
   published
     property bIsWin2kXP: Boolean read getIsWin2kXP;
+    property bIsWin11: Boolean read getIsWin11;
     property totalPhysmemory: Int64 read gettotalphysmemory;
     property AvailPhysmemory: Int64 read getavailphysmemory;
     property totalPageFile: Int64 read gettotalPageFile;
@@ -147,11 +168,17 @@ implementation
 uses
   UUtils, StrUtils;
 
+function PdhOpenQueryA( szDataSource : PAnsiChar; dwUserData : PDWORD; phQuery: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhOpenQueryA';
+function PdhAddCounterA( hQuery : THANDLE; szFullCounterPath : PAnsiChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterA';
+function PdhCollectQueryData( hQuery : THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCollectQueryData';
+function PdhGetFormattedCounterValue( hCounter : THANDLE; dwFormat : DWORD; lpdwType: pointer; pValue: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhGetFormattedCounterValue';
+
 function SHQueryUserNotificationState( p : Pointer ) : HRESULT; stdcall; external shell32 name 'SHQueryUserNotificationState';
 
 constructor TSystemDataThread.Create;
 var
   lprocessorinfo:TProcessorInformation;
+  pdhRet: HRESULT;
 begin
   STComputername := Computername;
   STUsername := Username;
@@ -162,6 +189,15 @@ begin
       CPUType := LProcessorInfo.ProcessorVersionStr;
   CPUSpeed := '0';
   setLength(PPIbuff, ProcessorCount);
+
+  if ( PdhOpenQueryA(nil, nil, @pdhQueryHandle) >= 0 ) then
+  begin
+    if getIsWin11 then
+      pdhRet := PdhAddCounterA(pdhQueryHandle, pchar('\Processor Information(_Total)\% Processor Utility'), nil, @pdhCounterHandle)
+    else
+      pdhRet := PdhAddCounterA(pdhQueryHandle, pchar('\Processor(_Total)\% Processor Time'), nil, @pdhCounterHandle);
+  end;
+
   inherited Create(100);
 end;
 
@@ -213,6 +249,18 @@ begin
   if (oviVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and
     (oviVersionInfo.dwMajorVersion >= 5) then getIsWin2kXP := true
   else getIsWin2kXP := false;
+end;
+
+function TSystemDataThread.getIsWin11: Boolean;
+var
+  oviVersionInfo: windows.TOSVERSIONINFO;
+begin
+  oviVersionInfo.dwOSVersionInfoSize := SizeOf(oviVersionInfo);
+  if not windows.GetVersionEx(oviVersionInfo) then raise
+    Exception.Create('Can''t get the Windows version');
+  if (oviVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and
+    (oviVersionInfo.dwMajorVersion >= 10) and (oviVersionInfo.dwBuildNumber >= 22621)then getIsWin11 := true
+  else getIsWin11 := false;
 end;
 
 function TSystemDataThread.gettotalphysmemory: Int64;
@@ -392,18 +440,8 @@ var
   y, mo, d, h, m, s : Cardinal;
   uiRemaining: Cardinal;
   sTempUptime: String;
-    IdleTimeRec: TFileTime;
-  KernelTimeRec: TFileTime;
-  UserTimeRec: TFileTime;
-  IdleTime: Int64 absolute IdleTimeRec;
-  KernelTime: Int64 absolute KernelTimeRec;
-  UserTime: Int64 absolute UserTimeRec;
-  IdleDiff: Int64;
-  KernelDiff: Int64;
-  UserDiff: Int64;
-  SysTime: Int64;
   i: integer;
-  NextCPUUse: double;
+  NextCPUUse: Int64;
 begin
   if (not Terminated) then begin
     fDataLock.Enter;
@@ -549,18 +587,11 @@ begin
   end;
 
   fDataLock.Enter;
-  if jwaWinBase.GetSystemTimes(@IdleTimeRec, @KernelTimeRec, @UserTimeRec) then
-  begin
-    IdleDiff := IdleTime - FLastIdleTime;
-    KernelDiff := KernelTime - FLastKernelTime;
-    UserDiff := UserTime - FLastUserTime;
-    FLastIdleTime := IdleTime;
-    FLastKernelTime := KernelTime;
-    FLastUserTime := UserTime;
-    SysTime := KernelDiff + UserDiff;
-    NextCPUUse := (SysTime - IdleDiff)/SysTime * 100;
-    CPUUse := alpha*NextCPUUse + (1-alpha)*CPUUse;
-  end;
+  PdhCollectQueryData(pdhQueryHandle);
+  PdhGetFormattedCounterValue(pdhCounterHandle, PDH_FMT_DOUBLE, @pdhCounterType, @pdhFmtCounterValue);
+
+  NextCPUUse := round(pdhFmtCounterValue.doubleValue);
+  CPUUse := alpha*NextCPUUse + (1-alpha)*CPUUse;
   fDataLock.Leave;
 
   fDataLock.Enter;

@@ -99,7 +99,7 @@ begin
   else
     config.iCF_cgrom := 1;
 
-  LCDSmartieDisplayForm.DoFullDisplayDraw();
+  // LCDSmartieDisplayForm.DoFullDisplayDraw(); unnecessary?
 end;
 
 end.

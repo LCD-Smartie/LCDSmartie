@@ -21,6 +21,8 @@ While there is much information on the lcd smartie forums, any issues with this 
 - There may/will be bugs
 
 ### Done this log
+- Fixed Issue where Windows 11 reports incorrect cpu usage
+- New driver for EZIO serial display
 - Added option to start as administrator and use task scheduler for autostart
 - Removed SETI tab and replaced with BOINC
 - Fixed issue where some actions had spaces in the names
