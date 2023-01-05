@@ -193,7 +193,7 @@ type
     ScreenLCD: Array[1..MaxLines] of TOnScreenLineWrapper;
     parsedLine: Array[1..MaxLines] of String;
     scrollPos: Array[1..MaxLines] of Integer;
-    tmpline: Array [1..MaxLines] of String;
+    //tmpline: Array [1..MaxLines] of String;
     Oldline: Array[1..MaxLines] of String;
     Newline: Array[1..MaxLines] of String;
     GuessArray: Array[1..MaxLines, 1..MaxCols] of Boolean;
@@ -257,9 +257,8 @@ type
   OurVersRel : integer;
   OurVersBuild : integer;
   ShowWindowFlag: Boolean;
-  LastLineLCD: array [1..4] of string;
   DisplayError: boolean;
-    procedure DoFullDisplayDraw;
+   // procedure DoFullDisplayDraw; unnecessary?
     procedure UpdateTimersState(InSetupState : boolean);
     procedure ChangeScreen(scr: Integer);
     procedure ResetScrollPositions;
@@ -639,7 +638,7 @@ end;
 
 procedure TLCDSmartieDisplayForm.ProcessCommandLineParams;
 var
-  I, j: integer;
+  I: integer;
   parameter: String;
 begin
   ShowWindowFlag := True;
@@ -1163,22 +1162,16 @@ begin
     begin
       if (not config.screen[activeScreen].line[counter].noscroll) then
       begin
-        tmpline[counter] := EscapeAmp(scroll(parsedLine[counter], counter, scrollcount));
-        if (tmpline[counter] <> ScreenLCD[counter].Caption) then
-          ScreenLCD[counter].Caption := tmpline[counter];
+          ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, scrollcount));
       end
       else
         if (scrollPos[counter]>1) then // maintain manual scroll postion
         begin
-          tmpline[counter] := EscapeAmp(scroll(parsedLine[counter], counter, 0));
-          if (tmpline[counter] <> ScreenLCD[counter].Caption) then
-            ScreenLCD[counter].Caption := tmpline[counter]
+            ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, 0))
         end
         else
         begin
-          tmpline[counter] := EscapeAmp(copy(parsedLine[counter], 1, config.width));
-          if (tmpline[counter] <> ScreenLCD[counter].Caption) then
-            ScreenLCD[counter].Caption := tmpline[counter];
+            ScreenLCD[counter].Caption := EscapeAmp(copy(parsedLine[counter], 1, config.width));
         end;
     end;
   end
@@ -1189,15 +1182,8 @@ begin
 
   for h := 1 to config.height do
   begin
-    tmpline[h] := ScreenLCD[h].Caption;
-    tmpline[h] := copy(UnescapeAmp(tmpline[h]) + '                                        ', 1, config.width);
-
-    if tmpline[h] <> LastLineLCD[h] then
-    begin
-      LastLineLCD[h] := tmpline[h];
-      Lcd.setPosition(1, h);
-      Lcd.write(tmpline[h]);
-    end;
+    Lcd.setPosition(1, h);
+    Lcd.write(copy(UnescapeAmp(ScreenLCD[h].Caption) + '                                        ', 1, config.width));
   end;
 end;
 
@@ -1608,7 +1594,7 @@ begin
   Lcd.setContrast(config.DLL_contrast);
   Lcd.setBrightness(config.DLL_brightness);
 
-  DoFullDisplayDraw();
+  //DoFullDisplayDraw(); unnecessary?
 
   UpdateTimersState(assigned(SetupForm));
 end;
@@ -2059,7 +2045,7 @@ end;
 ////                                                                       ////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
+{ // unnecessary?
 procedure TLCDSmartieDisplayForm.DoFullDisplayDraw;
 var
   x: Integer;
@@ -2071,7 +2057,7 @@ begin
     tmpline[x] := '';
   end;
 end;
-
+ }
 procedure TLCDSmartieDisplayForm.ResetScrollPositions;
 var
   y: Integer;
@@ -2133,6 +2119,8 @@ end;
 
 // Only used when line scroll button is pressed.
 procedure TLCDSmartieDisplayForm.scrollLine(line: Byte; direction: Integer);
+var
+  tmpline: Array [1..MaxLines] of String;
 begin
   tmpline[line] := copy (scroll(parsedLine[line], line, direction)
     + '                                        ', 1, config.width);

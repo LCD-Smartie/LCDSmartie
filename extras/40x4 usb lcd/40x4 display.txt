@@ -22,13 +22,13 @@ Disp  Name  Arduino Pin
  6    DB2    7
  7    DB1    8
  8    DB0    9
- 9    E1     16
- 10   R/W    14
- 11   RS     15
+ 9    E1     14
+ 10   R/W    15
+ 11   RS     18
  12   VEE    GND
  13   VSS    GND
  14   VCC    +5
- 15   E2     10
+ 15   E2     16
  16   NC
  17   LED_A  +5
  18   LED_K  GND

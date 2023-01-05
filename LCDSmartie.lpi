@@ -16,10 +16,6 @@
       <Title Value="LCDSmartie"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
-      <XPManifest>
-        <DpiAware Value="True"/>
-        <ExecutionLevel Value="requireAdministrator"/>
-      </XPManifest>
       <Icon Value="0"/>
     </General>
     <VersionInfo>
@@ -27,7 +23,7 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="3"/>
-      <BuildNr Value="2"/>
+      <BuildNr Value="4"/>
       <CharSet Value="04B0"/>
     </VersionInfo>
     <BuildModes Count="3">

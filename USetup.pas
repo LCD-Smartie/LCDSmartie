@@ -347,6 +347,7 @@ type
     WinampLocationEdit: TEdit;
     WinampLocationLabel: TLabel;
     WinampTabSheet: TTabSheet;
+    procedure VariableEditChange(Sender: TObject);
     procedure ActionsGridScrollBarScroll(Sender: TObject;
       ScrollCode: TScrollCode; var ScrollPos: Integer);
     procedure ActionsStringGridDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -479,6 +480,11 @@ uses
   UIconUtils, UEditLine, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
 
 {$R *.lfm}
+
+procedure TSetupForm.VariableEditChange(Sender: TObject);
+begin
+  VariableEdit.Hint:=VariableEdit.Text;
+end;
 
 procedure TSetupForm.LoadHint(DisplayDLLName: string);
 type
