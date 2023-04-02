@@ -1242,6 +1242,7 @@ begin
   begin
     SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and WS_EX_APPWINDOW);
     LCDSmartieDisplayForm.Visible:=true;
+    ResizeHeight;
   end;
 end;
 
