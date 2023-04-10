@@ -31,7 +31,7 @@ uses
   Menus, Graphics, WinampCtrl, ExtCtrls, Controls, Buttons, Classes, Forms,
   USetup, UConfig, ULCD, UData, lcdline, UExceptionLogger, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
-  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows;
+  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math;
 
   { TLCDSmartieDisplayForm }
 type
@@ -193,9 +193,10 @@ type
     ScreenLCD: Array[1..MaxLines] of TOnScreenLineWrapper;
     parsedLine: Array[1..MaxLines] of String;
     scrollPos: Array[1..MaxLines] of Integer;
-    //tmpline: Array [1..MaxLines] of String;
     Oldline: Array[1..MaxLines] of String;
     Newline: Array[1..MaxLines] of String;
+    LastLineLCD: array [1..4] of string;
+    tmpline: Array [1..MaxLines] of String;
     GuessArray: Array[1..MaxLines, 1..MaxCols] of Boolean;
     canflash: Boolean;
     bSavedEmulateLCD: boolean;
@@ -249,16 +250,16 @@ type
     doesflash: Boolean;
     lcd: TLCD;
     Data: TData;
-      PrevWndProc: WNDPROC;
-
-  activeScreen : Integer;
-  OurVersMaj : integer;
-  OurVersMin : integer;
-  OurVersRel : integer;
-  OurVersBuild : integer;
-  ShowWindowFlag: Boolean;
-  DisplayError: boolean;
-   // procedure DoFullDisplayDraw; unnecessary?
+    PrevWndProc: WNDPROC;
+    activeScreen : Integer;
+    OurVersMaj : integer;
+    OurVersMin : integer;
+    OurVersRel : integer;
+    OurVersBuild : integer;
+    ShowWindowFlag: Boolean;
+    DisplayError: boolean;
+    StartTime: TDATETIME;
+    procedure DoFullDisplayDraw;
     procedure UpdateTimersState(InSetupState : boolean);
     procedure ChangeScreen(scr: Integer);
     procedure ResetScrollPositions;
@@ -442,6 +443,10 @@ var
   i: integer;
   allParameters: string;
 begin
+  StartTime := now;
+  // this to fix/work around a problem with lazarus and exceptions not being dealt with properly in DLLs
+  SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
+
   DisplayError := false;
   application.OnEndSession:=OnEndSession; // lazarus has support for this message
   PrevWndProc:= Windows.WNDPROC(SetWindowLongPtr(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback))); // message handler
@@ -1072,7 +1077,10 @@ begin
     end;
 
     if (config.alwaysOnTop) then
-      LCDSmartieDisplayForm.formStyle := fsStayOnTop;
+      LCDSmartieDisplayForm.formStyle := fsSystemStayOnTop
+    else
+      LCDSmartieDisplayForm.formStyle := fsNormal;
+
 
     if (config.width <> iSavedWidth) or (config.EmulateLCD <> bSavedEmulateLCD) then
     begin
@@ -1182,9 +1190,23 @@ begin
 
   for h := 1 to config.height do
   begin
+    tmpline[h] := ScreenLCD[h].Caption;
+    tmpline[h] := copy(UnescapeAmp(tmpline[h]) + '                                        ', 1, config.width);
+
+    if tmpline[h] <> LastLineLCD[h] then
+    begin
+      LastLineLCD[h] := tmpline[h];
+      Lcd.setPosition(1, h);
+      Lcd.write(tmpline[h]);
+    end;
+  end;
+  // this loop instead of the one above writes a complete screen update
+  // but maybe incompatible with some displays
+  {for h := 1 to config.height do
+  begin
     Lcd.setPosition(1, h);
     Lcd.write(copy(UnescapeAmp(ScreenLCD[h].Caption) + '                                        ', 1, config.width));
-  end;
+  end;}
 end;
 
 procedure TLCDSmartieDisplayForm.UpdateTimersState(InSetupState : boolean);
@@ -1595,7 +1617,7 @@ begin
   Lcd.setContrast(config.DLL_contrast);
   Lcd.setBrightness(config.DLL_brightness);
 
-  //DoFullDisplayDraw(); unnecessary?
+  DoFullDisplayDraw();
 
   UpdateTimersState(assigned(SetupForm));
 end;
@@ -2046,7 +2068,6 @@ end;
 ////                                                                       ////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-{ // unnecessary?
 procedure TLCDSmartieDisplayForm.DoFullDisplayDraw;
 var
   x: Integer;
@@ -2058,7 +2079,7 @@ begin
     tmpline[x] := '';
   end;
 end;
- }
+
 procedure TLCDSmartieDisplayForm.ResetScrollPositions;
 var
   y: Integer;

@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 585
+  Left = 567
   Height = 456
-  Top = 253
+  Top = 392
   Width = 823
   Anchors = []
   BorderIcons = []
@@ -21,20 +21,20 @@ object SetupForm: TSetupForm
   ParentBiDiMode = False
   ParentDoubleBuffered = False
   Position = poScreenCenter
-  LCLVersion = '2.2.0.4'
+  LCLVersion = '2.2.6.0'
   object MainPageControl: TPageControl
     Left = 264
     Height = 416
     Top = 0
     Width = 560
     TabStop = False
-    ActivePage = StartupTabSheet
+    ActivePage = ScreensTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -67,6 +67,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
           WordWrap = True
         end
@@ -80,6 +81,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object Label18: TLabel
@@ -92,6 +94,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object ScreenLabel: TLabel
@@ -104,6 +107,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object Label60: TLabel
@@ -116,6 +120,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object Label61: TLabel
@@ -128,6 +133,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object Label62: TLabel
@@ -140,6 +146,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object ThemeNumberSpinEdit: TSpinEdit
@@ -351,8 +358,13 @@ object SetupForm: TSetupForm
           Height = 23
           Top = 64
           Width = 344
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
+          Font.CharSet = 4
+          Font.Height = 18
+          Font.Name = 'Modern'
+          Font.Pitch = fpFixed
+          Lines.Strings = (
+            '       ()_()  Smartie  5.4  ()_()      '
+          )
           OnEnter = LineEditEnter
           ParentFont = False
           TabOrder = 10
@@ -364,8 +376,13 @@ object SetupForm: TSetupForm
           Height = 23
           Top = 87
           Width = 344
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
+          Font.CharSet = 4
+          Font.Height = 18
+          Font.Name = 'Modern'
+          Font.Pitch = fpFixed
+          Lines.Strings = (
+            '       (o o)                (o o)      '
+          )
           OnEnter = LineEditEnter
           ParentFont = False
           TabOrder = 11
@@ -377,8 +394,13 @@ object SetupForm: TSetupForm
           Height = 23
           Top = 110
           Width = 344
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
+          Font.CharSet = 4
+          Font.Height = 18
+          Font.Name = 'Modern'
+          Font.Pitch = fpFixed
+          Lines.Strings = (
+            ' .-ooO--`o''--Ooo-.    .-ooO--`o''--Ooo-.'
+          )
           OnEnter = LineEditEnter
           ParentFont = False
           TabOrder = 12
@@ -391,8 +413,13 @@ object SetupForm: TSetupForm
           Top = 133
           Width = 344
           Constraints.MinHeight = 23
-          Font.Height = 19
-          Font.Name = 'Fixedsys'
+          Font.CharSet = 4
+          Font.Height = 18
+          Font.Name = 'Modern'
+          Font.Pitch = fpFixed
+          Lines.Strings = (
+            ' |  LCD Smartie  |    |      5.5      |'
+          )
           OnEnter = LineEditEnter
           ParentFont = False
           TabOrder = 13
@@ -461,6 +488,7 @@ object SetupForm: TSetupForm
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Tahoma'
+            ParentColor = False
             ParentFont = False
             WordWrap = True
           end
@@ -529,6 +557,7 @@ object SetupForm: TSetupForm
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Tahoma'
+            ParentColor = False
             ParentFont = False
             WordWrap = True
           end
@@ -633,6 +662,7 @@ object SetupForm: TSetupForm
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Tahoma'
+            ParentColor = False
             ParentFont = False
             WordWrap = True
           end
@@ -663,6 +693,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object Label6: TLabel
@@ -675,6 +706,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object Label59: TLabel
@@ -687,6 +719,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
         object ColorSchemeComboBox: TComboBox
@@ -821,6 +854,7 @@ object SetupForm: TSetupForm
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'Tahoma'
+          ParentColor = False
           ParentFont = False
         end
       end
@@ -855,7 +889,7 @@ object SetupForm: TSetupForm
             Height = 142
             Top = 3
             Width = 294
-            ActivePage = PluginTabsheet
+            ActivePage = ScreenTabsheet
             Align = alClient
             Font.CharSet = ANSI_CHARSET
             Font.Color = clBlack
@@ -864,7 +898,7 @@ object SetupForm: TSetupForm
             MultiLine = True
             ParentFont = False
             TabHeight = 16
-            TabIndex = 0
+            TabIndex = 1
             TabOrder = 0
             TabPosition = tpLeft
             Options = [nboMultiLine]
@@ -883,6 +917,7 @@ object SetupForm: TSetupForm
                 Font.Height = -11
                 Font.Name = 'Tahoma'
                 Font.Style = [fsBold]
+                ParentColor = False
                 ParentFont = False
               end
               object IDLabel: TLabel
@@ -895,6 +930,7 @@ object SetupForm: TSetupForm
                 Font.Color = clWindowText
                 Font.Height = -11
                 Font.Name = 'MS Sans Serif'
+                ParentColor = False
                 ParentFont = False
               end
               object Label14: TLabel
@@ -908,6 +944,7 @@ object SetupForm: TSetupForm
                 Font.Height = -11
                 Font.Name = 'Tahoma'
                 Font.Style = [fsBold]
+                ParentColor = False
                 ParentFont = False
               end
               object UsageLabel: TLabel
@@ -916,6 +953,7 @@ object SetupForm: TSetupForm
                 Top = 83
                 Width = 30
                 Caption = 'Usage'
+                ParentColor = False
               end
               object DisplayPluginList: TComboBox
                 Left = 92
@@ -962,6 +1000,7 @@ object SetupForm: TSetupForm
                 Font.Color = clWindowText
                 Font.Height = -11
                 Font.Name = 'Tahoma'
+                ParentColor = False
                 ParentFont = False
               end
               object LCDSizeComboBox: TComboBox
@@ -1064,7 +1103,6 @@ object SetupForm: TSetupForm
         Hint = 'These actions are run on a timer'
         Top = 0
         Width = 536
-        ColCount = 0
         DefaultColWidth = 77
         DefaultRowHeight = 16
         DoubleBuffered = True
@@ -1116,6 +1154,7 @@ object SetupForm: TSetupForm
         Top = 372
         Width = 168
         Caption = 'Actions timer interval(milliseconds):'
+        ParentColor = False
       end
       object ActionsTimerSpinEdit: TSpinEdit
         Left = 170
@@ -1357,6 +1396,7 @@ object SetupForm: TSetupForm
         Top = 61
         Width = 50
         Caption = 'Tray Icon:'
+        ParentColor = False
       end
       object TrayIconPreview32: TImage
         Left = 261
@@ -1399,6 +1439,7 @@ object SetupForm: TSetupForm
         Top = 5
         Width = 48
         Caption = 'Skin Path:'
+        ParentColor = False
       end
       object SkinPathBrowseButton: TSpeedButton
         Left = 221
@@ -1443,6 +1484,7 @@ object SetupForm: TSetupForm
         Top = 119
         Width = 107
         Caption = 'Distributed.net logfile:'
+        ParentColor = False
       end
       object TrayIcon: TEdit
         Left = 5
@@ -1522,6 +1564,7 @@ object SetupForm: TSetupForm
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
+        ParentColor = False
         ParentFont = False
       end
       object Label8: TLabel
@@ -1534,6 +1577,7 @@ object SetupForm: TSetupForm
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
+        ParentColor = False
         ParentFont = False
       end
       object Label45: TLabel
@@ -1542,6 +1586,7 @@ object SetupForm: TSetupForm
         Top = 287
         Width = 59
         Caption = 'Custom Title'
+        ParentColor = False
       end
       object CustomTitleTIEdit1: TTIEdit
         Left = 5
@@ -1573,6 +1618,7 @@ object SetupForm: TSetupForm
         Top = 80
         Width = 68
         Caption = 'Bind Listen IP:'
+        ParentColor = False
       end
       object Label19: TLabel
         Left = 32
@@ -1580,6 +1626,7 @@ object SetupForm: TSetupForm
         Top = 112
         Width = 55
         Caption = 'Listen port:'
+        ParentColor = False
       end
       object Label22: TLabel
         Left = 32
@@ -1587,6 +1634,7 @@ object SetupForm: TSetupForm
         Top = 208
         Width = 89
         Caption = 'Generate SSL key:'
+        ParentColor = False
       end
       object Label38: TLabel
         Left = 8
@@ -1594,6 +1642,7 @@ object SetupForm: TSetupForm
         Top = 8
         Width = 219
         Caption = 'Restart Smartie after changing these settings'
+        ParentColor = False
       end
       object Label39: TLabel
         Left = 38
@@ -1601,6 +1650,7 @@ object SetupForm: TSetupForm
         Top = 144
         Width = 50
         Caption = 'password:'
+        ParentColor = False
       end
       object Label42: TLabel
         Left = 216
@@ -1608,6 +1658,7 @@ object SetupForm: TSetupForm
         Top = 144
         Width = 268
         Caption = 'This will be sent plain text if Use SSL below isn''t checked'
+        ParentColor = False
       end
       object Label49: TLabel
         Left = 80
@@ -1616,6 +1667,7 @@ object SetupForm: TSetupForm
         Width = 312
         AutoSize = False
         Caption = 'There is no guarantee on the security of the server. Use at your own risk and beware of transmitting personal information in screen data'
+        ParentColor = False
         WordWrap = True
       end
       object Label55: TLabel
@@ -1629,6 +1681,7 @@ object SetupForm: TSetupForm
         Font.Height = -13
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentColor = False
         ParentFont = False
       end
       object EnableRemoteSendCheckBox: TCheckBox
@@ -1758,7 +1811,7 @@ object SetupForm: TSetupForm
             Top = 0
             Width = 235
             Directory = '.'
-            ItemHeight = 0
+            ItemHeight = 13
             Mask = '*.ini'
             OnClick = MiConfigsListBoxClick
             ParentShowHint = False
@@ -1929,6 +1982,7 @@ object SetupForm: TSetupForm
           Width = 195
           Alignment = taCenter
           Caption = 'Copy All program files to a new directory'
+          ParentColor = False
         end
         object MiCreateNewProgDirButton1: TButton
           Left = 88
@@ -1962,6 +2016,7 @@ object SetupForm: TSetupForm
           Height = 1
           Top = 88
           Width = 1
+          ParentColor = False
         end
       end
       object MiCurrentConfigLabel: TLabel
@@ -1972,6 +2027,7 @@ object SetupForm: TSetupForm
         AutoSize = False
         Constraints.MinHeight = 50
         Constraints.MinWidth = 50
+        ParentColor = False
       end
       object Label47: TLabel
         Left = 256
@@ -1979,16 +2035,85 @@ object SetupForm: TSetupForm
         Top = 19
         Width = 73
         Caption = 'Loaded Config:'
+        ParentColor = False
+      end
+    end
+    object InfoTabSheet: TTabSheet
+      Caption = 'Info'
+      ClientHeight = 390
+      ClientWidth = 552
+      object GroupBox6: TGroupBox
+        Left = 0
+        Height = 347
+        Top = 0
+        Width = 296
+        Caption = 'Value storage'
+        ClientHeight = 329
+        ClientWidth = 292
+        TabOrder = 0
+        object StorageStringGrid: TStringGrid
+          Left = 2
+          Height = 308
+          Top = 2
+          Width = 288
+          AutoEdit = False
+          ColCount = 2
+          ColRowDraggingCursor = crNo
+          ColSizingCursor = crNone
+          ExtendedSelect = False
+          FixedCols = 0
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
+          RowCount = 102
+          TabOrder = 0
+          ColWidths = (
+            28
+            239
+          )
+          Cells = (
+            2
+            0
+            0
+            'Pos'
+            1
+            0
+            'Value'
+          )
+        end
+        object Label69: TLabel
+          Left = 2
+          Height = 13
+          Top = 312
+          Width = 278
+          Caption = 'Store and fetch using $Store(value, pos) and $Fetch(pos)'
+          ParentColor = False
+        end
+      end
+      object Label70: TLabel
+        Left = 312
+        Height = 13
+        Top = 24
+        Width = 46
+        Caption = 'Run time:'
+        ParentColor = False
+      end
+      object RunTimeLabel: TLabel
+        Left = 360
+        Height = 13
+        Top = 24
+        Width = 39
+        Caption = 'Runtime'
+        ParentColor = False
+        WordWrap = True
       end
     end
   end
   object LeftPageControl: TPageControl
     Left = 0
     Height = 453
-    Top = 1
+    Top = 3
     Width = 265
     TabStop = False
-    ActivePage = BOINCTabSheet
+    ActivePage = PerfTabSheet
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -1997,7 +2122,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 4
+    TabIndex = 12
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -2020,6 +2145,8 @@ object SetupForm: TSetupForm
           'CPU Speed Ghz'
           'CPU usage (%)'
           'CPU usage Bar (length)'
+          'CPU usage by core (%)'
+          'CPU speed by core Mhz'
           'Uptime'
           'Uptime Short'
           'Free Memory'
@@ -2085,6 +2212,7 @@ object SetupForm: TSetupForm
         Top = 304
         Width = 104
         Caption = 'Winamp.exe location:'
+        ParentColor = False
       end
       object WinampListBox: TListBox
         Left = 0
@@ -2174,6 +2302,7 @@ object SetupForm: TSetupForm
         Top = 280
         Width = 28
         Caption = 'Type:'
+        ParentColor = False
       end
       object Label25: TLabel
         Left = 39
@@ -2181,6 +2310,7 @@ object SetupForm: TSetupForm
         Top = 312
         Width = 37
         Caption = 'Item #:'
+        ParentColor = False
       end
       object Label26: TLabel
         Left = 27
@@ -2188,6 +2318,7 @@ object SetupForm: TSetupForm
         Top = 344
         Width = 49
         Caption = 'Max Freq:'
+        ParentColor = False
       end
       object Label36: TLabel
         Left = 0
@@ -2195,6 +2326,7 @@ object SetupForm: TSetupForm
         Top = 224
         Width = 39
         Caption = 'RSS Url:'
+        ParentColor = False
       end
       object RssTypeComboBox: TComboBox
         Left = 96
@@ -2224,6 +2356,7 @@ object SetupForm: TSetupForm
         Top = 304
         Width = 36
         Caption = 'Server:'
+        ParentColor = False
       end
       object Label12: TLabel
         Left = 8
@@ -2231,6 +2364,7 @@ object SetupForm: TSetupForm
         Top = 120
         Width = 149
         Caption = 'The gamestats are made by an'
+        ParentColor = False
       end
       object Label13: TLabel
         Left = 8
@@ -2238,6 +2372,7 @@ object SetupForm: TSetupForm
         Top = 136
         Width = 87
         Caption = 'external program;'
+        ParentColor = False
       end
       object Label15: TLabel
         Left = 128
@@ -2245,6 +2380,7 @@ object SetupForm: TSetupForm
         Top = 136
         Width = 4
         Caption = '.'
+        ParentColor = False
       end
       object QStatLabel: TLabel
         Cursor = crHandPoint
@@ -2258,6 +2394,7 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsUnderline]
+        ParentColor = False
         ParentFont = False
         OnClick = QStatLabelClick
       end
@@ -2267,12 +2404,14 @@ object SetupForm: TSetupForm
         Top = 236
         Width = 97
         Caption = 'Refresh time (mins):'
+        ParentColor = False
       end
       object Label35: TLabel
         Left = 32
         Height = 1
         Top = 192
         Width = 1
+        ParentColor = False
       end
       object Label40: TLabel
         Left = 8
@@ -2280,6 +2419,7 @@ object SetupForm: TSetupForm
         Top = 264
         Width = 56
         Caption = 'Game type:'
+        ParentColor = False
       end
       object GameServerEdit: TEdit
         Left = 16
@@ -2448,6 +2588,7 @@ object SetupForm: TSetupForm
         Top = 192
         Width = 47
         Caption = 'Server id:'
+        ParentColor = False
       end
       object Label53: TLabel
         Left = 4
@@ -2455,6 +2596,7 @@ object SetupForm: TSetupForm
         Top = 216
         Width = 83
         Caption = 'Server adddress:'
+        ParentColor = False
       end
       object Label54: TLabel
         Left = 4
@@ -2462,6 +2604,7 @@ object SetupForm: TSetupForm
         Top = 256
         Width = 94
         Caption = 'User email address:'
+        ParentColor = False
       end
       object Label63: TLabel
         Left = 4
@@ -2469,6 +2612,7 @@ object SetupForm: TSetupForm
         Top = 296
         Width = 50
         Caption = 'Password:'
+        ParentColor = False
       end
     end
     object FoldingAtHomeTabSheet: TTabSheet
@@ -2482,6 +2626,7 @@ object SetupForm: TSetupForm
         Top = 304
         Width = 131
         Caption = 'User ID for Folding@Home:'
+        ParentColor = False
       end
       object FoldingAtHomeEmailEdit: TEdit
         Left = 0
@@ -2539,6 +2684,7 @@ object SetupForm: TSetupForm
         Top = 62
         Width = 36
         Caption = 'Server:'
+        ParentColor = False
       end
       object Label32: TLabel
         Left = 7
@@ -2546,6 +2692,7 @@ object SetupForm: TSetupForm
         Top = 111
         Width = 55
         Caption = 'Loginname:'
+        ParentColor = False
       end
       object Label33: TLabel
         Left = 12
@@ -2553,6 +2700,7 @@ object SetupForm: TSetupForm
         Top = 136
         Width = 50
         Caption = 'Password:'
+        ParentColor = False
       end
       object Label48: TLabel
         Left = 8
@@ -2560,6 +2708,7 @@ object SetupForm: TSetupForm
         Top = 306
         Width = 113
         Caption = 'Email check time (mins):'
+        ParentColor = False
       end
       object Label50: TLabel
         Left = 8
@@ -2567,6 +2716,7 @@ object SetupForm: TSetupForm
         Top = 36
         Width = 69
         Caption = 'Email account:'
+        ParentColor = False
       end
       object Label28: TLabel
         Left = 72
@@ -2579,6 +2729,7 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentColor = False
         ParentFont = False
       end
       object Label2: TLabel
@@ -2587,6 +2738,7 @@ object SetupForm: TSetupForm
         Top = 87
         Width = 44
         Caption = 'SSL port:'
+        ParentColor = False
       end
       object EmailPasswordEdit: TEdit
         Left = 64
@@ -2715,7 +2867,7 @@ object SetupForm: TSetupForm
       ImageIndex = 6
       object MiscListBox: TListBox
         Left = 0
-        Height = 317
+        Height = 349
         Top = 0
         Width = 209
         Font.CharSet = ANSI_CHARSET
@@ -2742,6 +2894,13 @@ object SetupForm: TSetupForm
           '$Center(text here,width)'
           '$ScreenChanged'
           '$Sender(IP,Port,password,SSL 0/1,Line 1-4)'
+          '$Store(value,pos)'
+          '$Fetch(pos)'
+          '$Round(number, round places)'
+          '$Add(num,num)'
+          '$Sub(num,num)'
+          '$Mul(num,num)'
+          '$Div(num,num)'
         )
         ItemHeight = 13
         OnClick = MiscListBoxClick
@@ -2766,6 +2925,7 @@ object SetupForm: TSetupForm
         Top = 184
         Width = 169
         Caption = 'When you insert a button please'
+        ParentColor = False
       end
       object Label29: TLabel
         Left = 8
@@ -2773,6 +2933,7 @@ object SetupForm: TSetupForm
         Top = 200
         Width = 170
         Caption = 'first press the button (see below)'
+        ParentColor = False
       end
       object Label56: TLabel
         Left = 8
@@ -2780,6 +2941,7 @@ object SetupForm: TSetupForm
         Top = 320
         Width = 86
         Caption = 'Last key pressed:'
+        ParentColor = False
       end
       object Label30: TLabel
         Left = 8
@@ -2787,6 +2949,7 @@ object SetupForm: TSetupForm
         Top = 232
         Width = 180
         Caption = 'The buttons get the value ''1'' when'
+        ParentColor = False
       end
       object Label57: TLabel
         Left = 8
@@ -2794,6 +2957,7 @@ object SetupForm: TSetupForm
         Top = 248
         Width = 86
         Caption = 'they are pushed.'
+        ParentColor = False
       end
       object ButtonsListBox: TListBox
         Left = 0
@@ -2830,7 +2994,7 @@ object SetupForm: TSetupForm
         Width = 209
         Directory = '.'
         ExtendedSelect = False
-        ItemHeight = 13
+        ItemHeight = 0
         Mask = '*.dll'
         OnClick = PluginListBoxClick
         OnDblClick = PluginListBoxDblClick
@@ -2862,6 +3026,7 @@ object SetupForm: TSetupForm
         Top = 8
         Width = 119
         Caption = 'Create Character in slot:'
+        ParentColor = False
       end
       object Label21: TLabel
         Left = 32
@@ -2869,6 +3034,7 @@ object SetupForm: TSetupForm
         Top = 201
         Width = 102
         Caption = 'Use character in slot:'
+        ParentColor = False
       end
       object Panel2: TPanel
         Left = 56
@@ -3251,6 +3417,182 @@ object SetupForm: TSetupForm
         Value = 1
       end
     end
+    object PerfTabSheet: TTabSheet
+      Caption = 'Perf'
+      ClientHeight = 445
+      ClientWidth = 217
+      object PerfCountersListBox: TListBox
+        Left = 0
+        Height = 176
+        Hint = 'Objects: A list of perf counter objects'#13#10'Click an object to populate the list of counters and instances'
+        Top = 32
+        Width = 212
+        ExtendedSelect = False
+        Enabled = False
+        ItemHeight = 0
+        OnClick = PerfCountersListBoxClick
+        ParentShowHint = False
+        ShowHint = True
+        Sorted = True
+        TabOrder = 0
+      end
+      object CountersComboBox: TComboBox
+        Left = 0
+        Height = 21
+        Hint = 'Counter: A list of perf object counters'
+        Top = 224
+        Width = 212
+        AutoComplete = True
+        AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+        AutoDropDown = True
+        AutoSelect = False
+        AutoSize = False
+        Enabled = False
+        ItemHeight = 13
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+      end
+      object InstancesComboBox: TComboBox
+        Left = 0
+        Height = 21
+        Hint = 'Instance: A list of perf counter instances'
+        Top = 264
+        Width = 212
+        AutoComplete = True
+        AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+        AutoDropDown = True
+        AutoSelect = False
+        AutoSize = False
+        Enabled = False
+        ItemHeight = 13
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+      end
+      object FormatComboBox: TComboBox
+        Left = 76
+        Height = 21
+        Hint = 'Format: Type of number returned by this counter'#13#10'PDH_FMT_LONG - For whole numbers between -2147483648 and 2147483647'#13#10'PDH_FMT_DOUBLE - For decimal point numbers'#13#10'PDH_FMT_LARGE - For whole numbers between -9223372036854775808 and 9223372036854775807 '
+        Top = 288
+        Width = 136
+        Enabled = False
+        ItemHeight = 13
+        ItemIndex = 0
+        Items.Strings = (
+          'PDH_FMT_LONG'
+          'PDH_FMT_DOUBLE'
+          'PDH_FMT_LARGE'
+          ''
+        )
+        ParentShowHint = False
+        ReadOnly = True
+        ShowHint = True
+        TabOrder = 3
+        Text = 'PDH_FMT_LONG'
+      end
+      object PerfSettingsIndexComboBox: TComboBox
+        Left = 144
+        Height = 21
+        Hint = 'Slot index: Choose this first before selecting counters and saving'#13#10'Changing selection will load the items previously saved to the slot'
+        Top = 4
+        Width = 64
+        Enabled = False
+        ItemHeight = 13
+        OnChange = PerfSettingsIndexComboBoxChange
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+      end
+      object ScalingComboBox: TComboBox
+        Left = 76
+        Height = 21
+        Hint = 'Scaling: Automatic scaling applied to the number'#13#10'NONE - Default scaling'#13#10'PDH_FMT_NOSCALE - Do not apply the counter''s default scaling factor'#13#10'PDH_FMT_1000 - Multiply the actual value by 1,000'#13#10'PDH_FMT_NODATA - Unknown but here for completeness'#13#10'PDH_FMT_NOCAP100 - Do not cap number to 100 for certain counters '
+        Top = 312
+        Width = 136
+        Enabled = False
+        ItemHeight = 13
+        ItemIndex = 0
+        Items.Strings = (
+          'NONE'
+          'PDH_FMT_NOSCALE'
+          'PDH_FMT_1000'
+          'PDH_FMT_NODATA'
+          'PDH_FMT_NOCAP100'
+          ''
+        )
+        ParentShowHint = False
+        ReadOnly = True
+        ShowHint = True
+        TabOrder = 5
+        Text = 'NONE'
+      end
+      object Label64: TLabel
+        Left = 0
+        Height = 13
+        Top = 208
+        Width = 43
+        Caption = 'Counter:'
+        ParentColor = False
+      end
+      object Label65: TLabel
+        Left = 0
+        Height = 13
+        Top = 248
+        Width = 46
+        Caption = 'Instance:'
+        ParentColor = False
+      end
+      object Label66: TLabel
+        Left = 0
+        Height = 13
+        Top = 296
+        Width = 38
+        Caption = 'Format:'
+        ParentColor = False
+      end
+      object Label67: TLabel
+        Left = 0
+        Height = 13
+        Top = 320
+        Width = 37
+        Caption = 'Scaling:'
+        ParentColor = False
+      end
+      object Button2: TButton
+        Left = 76
+        Height = 25
+        Hint = 'Save: Save the counter to the slot selected by index'
+        Top = 336
+        Width = 64
+        Caption = 'Save'
+        Enabled = False
+        OnClick = Button2Click
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 6
+      end
+      object Label68: TLabel
+        Left = 108
+        Height = 13
+        Top = 8
+        Width = 32
+        Caption = 'Index:'
+        ParentColor = False
+      end
+      object pdhRefreshButton: TButton
+        Left = 0
+        Height = 25
+        Hint = 'Get the list of counters'
+        Top = 0
+        Width = 75
+        Caption = 'Refresh'
+        OnClick = pdhRefreshButtonClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 7
+      end
+    end
   end
   object InsertButton: TButton
     Left = 77
@@ -3370,6 +3712,11 @@ object SetupForm: TSetupForm
     Title = 'Open existing or create new file'
     InitialDir = '.'
     Left = 368
+    Top = 416
+  end
+  object InfoTimer: TTimer
+    OnTimer = InfoTimerTimer
+    Left = 400
     Top = 416
   end
 end

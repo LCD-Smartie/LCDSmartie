@@ -23,7 +23,7 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="3"/>
-      <BuildNr Value="5"/>
+      <BuildNr Value="6"/>
       <CharSet Value="04B0"/>
     </VersionInfo>
     <BuildModes Count="3">
@@ -364,22 +364,10 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="5">
+    <Exceptions Count="1">
       <Item1>
-        <Name Value="EConvertError"/>
-      </Item1>
-      <Item2>
         <Name Value="EIdHTTPProtocolException"/>
-      </Item2>
-      <Item3>
-        <Name Value="EIdSocketError"/>
-      </Item3>
-      <Item4>
-        <Name Value="Exception"/>
-      </Item4>
-      <Item5>
-        <Name Value="EOleException"/>
-      </Item5>
+      </Item1>
     </Exceptions>
   </Debugging>
 </CONFIG>

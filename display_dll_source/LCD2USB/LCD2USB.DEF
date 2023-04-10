@@ -1,0 +1,15 @@
+;------------------------------------------------------------------------
+LIBRARY LCD2USB
+
+EXPORTS
+DISPLAYDLL_DriverName @1
+DISPLAYDLL_Usage @2
+DISPLAYDLL_Init @3
+DISPLAYDLL_Done @4
+DISPLAYDLL_SetBacklight @ 5
+DISPLAYDLL_SetContrast @6
+DISPLAYDLL_SetBrightness @7
+DISPLAYDLL_Write @8
+DISPLAYDLL_SetPosition @9
+DISPLAYDLL_CustomChar @10
+;------------------------------------------------------------------------

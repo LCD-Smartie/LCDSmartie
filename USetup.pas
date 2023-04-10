@@ -29,24 +29,31 @@ uses
   Commctrl,
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
-  ExtDlgs, CheckLst, SpinEx, RTTICtrls, Process, FileUtil,
-  Windows;
+  ExtDlgs, CheckLst, ValEdit, Menus, SpinEx, RTTICtrls, Process, FileUtil,
+  Windows, Types;
 
 const
   NoVariable = 'Variable: ';
+  PERF_DETAIL_WIZARD = $400;
+  PDH_MORE_DATA  = $FFFFFFFF800007D2;
 
 { TSetupForm }
 type
-
   TProcessEntry = record
     WindowTitle: string;
     Pid: integer;
   end;
 
+type
   TProcessList = array of TProcessEntry;
 
+type
   TCheckBoxArray = array of TCheckBox; // for custom character editor
 
+type
+  PPAnsiChar = ^PAnsiChar;
+
+type
   TSetupForm = class(TForm)
     ActionAddButton: TButton;
     ActionDeleteButton: TButton;
@@ -61,6 +68,27 @@ type
     BitBtn4: TBitBtn;
     AppendConfigNameCheckBox: TCheckBox;
     BoincServerIndexComboBox: TComboBox;
+    pdhRefreshButton: TButton;
+    Button2: TButton;
+    GroupBox6: TGroupBox;
+    Label64: TLabel;
+    Label65: TLabel;
+    Label66: TLabel;
+    Label67: TLabel;
+    Label68: TLabel;
+    Label69: TLabel;
+    Label70: TLabel;
+    RunTimeLabel: TLabel;
+    ScalingComboBox: TComboBox;
+    CountersComboBox: TComboBox;
+    InstancesComboBox: TComboBox;
+    FormatComboBox: TComboBox;
+    PerfSettingsIndexComboBox: TComboBox;
+    PerfCountersListBox: TListBox;
+    PerfTabSheet: TTabSheet;
+    InfoTimer: TTimer;
+    InfoTabSheet: TTabSheet;
+    StorageStringGrid: TStringGrid;
     UseTaskSchedulerCheckBox: TCheckBox;
     CopyingFileLabel: TLabel;
     BoincServerEdit: TEdit;
@@ -347,6 +375,11 @@ type
     WinampLocationEdit: TEdit;
     WinampLocationLabel: TLabel;
     WinampTabSheet: TTabSheet;
+    procedure Button2Click(Sender: TObject);
+    procedure InfoTimerTimer(Sender: TObject);
+    procedure pdhRefreshButtonClick(Sender: TObject);
+    procedure PerfCountersListBoxClick(Sender: TObject);
+    procedure PerfSettingsIndexComboBoxChange(Sender: TObject);
     procedure VariableEditChange(Sender: TObject);
     procedure ActionsGridScrollBarScroll(Sender: TObject;
       ScrollCode: TScrollCode; var ScrollPos: Integer);
@@ -469,21 +502,272 @@ var
 implementation
 
 uses
-  ShellApi, Graphics, SysUtils,
+  ShellApi, Graphics, SysUtils, dateutils,
 {$IFNDEF STANDALONESETUP}
   UMain,
 {$ELSE}
   JwaTlHelp32,
   strutils,
 {$ENDIF}
-  UConfig, UDataNetwork, UDataWinamp,
+  UConfig, UDataNetwork, UDataWinamp, UData,
   UIconUtils, UEditLine, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
+
+function PdhEnumObjectsA( szDataSource: PAnsiChar; szMachineName: PAnsiChar; mszObjectList: PPAnsiChar; pcchBufferSize: PDWORD; dwDetailLevel: DWORD; bRefresh: boolean ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectsA';
+function PdhEnumObjectItemsA( szDataSource: PAnsiChar;
+  szMachineName: PAnsiChar;
+  szObjectName: PAnsiChar;
+  mszCounterList: PPAnsiChar;
+  pcchCounterListLength: PDWORD;
+  mszInstanceList: PPAnsiChar;
+  pcchInstanceListLength: PDWORD;
+  dwDetailLevel: DWORD;
+  dwFlags: DWORD ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectItemsA';
+
 
 {$R *.lfm}
 
 procedure TSetupForm.VariableEditChange(Sender: TObject);
 begin
   VariableEdit.Hint:=VariableEdit.Text;
+end;
+
+procedure TSetupForm.pdhRefreshButtonClick(Sender: TObject);
+var
+  buffsize: DWORD;
+  buff: array of AnsiChar;
+  ret: HRESULT;
+  list: array of string;
+  i: integer;
+begin
+  buffsize := 0;
+  if (PdhEnumObjectsA(nil, nil, nil, @buffsize, PERF_DETAIL_WIZARD, true) = PDH_MORE_DATA) then
+  begin
+    // according to https://learn.microsoft.com/en-us/windows/win32/api/pdh/nf-pdh-pdhenumobjectsa
+    // Were only supposed to add 1 on xp but we get a range check error sometimes without it here
+    SetLength(buff, buffsize+1);
+    ret := PdhEnumObjectsA(nil, nil, @buff[0], @buffsize, PERF_DETAIL_WIZARD, false);
+    if ret <> 0 then
+    begin
+      PerfCountersListBox.Clear;
+      PerfCountersListBox.Enabled := false;
+      PerfCountersListBox.Items.Add('Failed: PdhEnumObjects ' + inttostr(ret));
+      PerfCountersListBox.Items.Add('Try refresh');
+      exit;
+    end;
+    FormatComboBox.Enabled := true;
+    ScalingComboBox.Enabled := true;
+    Button2.Enabled := true;
+    PerfSettingsIndexComboBox.Enabled := true;
+  end
+  else
+  begin
+    PerfCountersListBox.Clear;
+    PerfCountersListBox.Enabled := false;
+    PerfCountersListBox.Items.Add('Failed: PdhEnumObjects failed');
+    PerfCountersListBox.Items.Add('Try refresh');
+    exit;
+  end;
+  PerfCountersListBox.Enabled := true;
+
+  while length(buff) > 0 do
+  begin
+    SetLength(list, length(list)+1);
+    list[length(list) -1] := strpas(@buff[0]);
+    delete(buff, 0, length(list[length(list)-1]) +1);
+    if (list[length(list)-1] = '') then
+      delete(list, length(list)-1, 1);
+  end;
+  PerfCountersListBox.Clear;
+  PerfCountersListBox.Items.AddStrings(list);
+
+  PerfSettingsIndexComboBox.Clear;
+  for i := 1 to length(config.PerfSettings) do
+    PerfSettingsIndexComboBox.Items.Add(inttostr(i));
+
+    PerfSettingsIndexComboBox.ItemIndex := 0;
+  PerfSettingsIndexComboBoxChange(Sender);
+end;
+
+procedure TSetupForm.PerfCountersListBoxClick(Sender: TObject);
+var
+  item: string;
+  buff1size: DWORD;
+  buff2size: DWORD;
+  buff1: array of AnsiChar;
+  buff2: array of AnsiChar;
+  ret: HRESULT;
+  list: array of string;
+begin
+  item := PerfCountersListBox.GetSelectedText;
+  buff1size := 0;
+  buff2size := 0;
+  PerfCountersListBox.Hint := PerfCountersListBox.GetSelectedText;
+  if (PdhEnumObjectItemsA(nil, nil, pchar(item), nil, @buff1size, nil, @buff2size, PERF_DETAIL_WIZARD, 0) = PDH_MORE_DATA ) then
+  begin
+    // according to https://learn.microsoft.com/en-us/windows/win32/api/pdh/nf-pdh-pdhenumobjectsa
+    // We're only supposed to add 1 on xp and only to PdhEnumObjectsA buffer but we get a range check error
+    // on certain counters without it here
+    SetLength(buff1, buff1size+1);
+    SetLength(buff2, buff2size+1);
+    ret := PdhEnumObjectItemsA(nil, nil, pchar(item), @buff1[0], @buff1size, @buff2[0], @buff2size, PERF_DETAIL_WIZARD, 0);
+    if ret <> 0 then
+    begin
+      PerfCountersListBox.Clear;
+      PerfCountersListBox.Enabled := false;
+      PerfCountersListBox.Items.Add('Failed: PdhEnumObjectItems ' + inttostr(ret));
+      PerfCountersListBox.Items.Add('Try refresh');
+      exit;
+    end;
+  end
+  else
+  begin
+    PerfCountersListBox.Clear;
+    PerfCountersListBox.Enabled := false;
+    PerfCountersListBox.Items.Add('Failed: PdhEnumObjectItems failed');
+    PerfCountersListBox.Items.Add('Try refresh');
+    exit;
+  end;
+
+  while length(buff1) > 0 do
+  begin
+    SetLength(list, length(list)+1);
+    list[length(list) -1] := strpas(@buff1[0]);
+    delete(buff1, 0, length(list[length(list)-1]) +1);
+    if (list[length(list)-1] = '') then
+      delete(list, length(list)-1, 1);
+  end;
+
+  CountersComboBox.Clear;
+  if (length(list) > 0) then
+  begin
+    CountersComboBox.Enabled := true;
+    CountersComboBox.Items.AddStrings(list);
+    CountersComboBox.ItemIndex := 0;
+  end
+  else
+    CountersComboBox.Enabled := false;
+
+  SetLength(list, 0);
+
+  while length(buff2) > 0 do
+  begin
+    SetLength(list, length(list)+1);
+    list[length(list) -1] := strpas(@buff2[0]);
+    delete(buff2, 0, length(list[length(list)-1]) +1);
+    if (list[length(list)-1] = '') then
+      delete(list, length(list)-1, 1);
+  end;
+
+  InstancesComboBox.Clear;
+  if (length(list) > 0) then
+  begin
+    InstancesComboBox.Enabled := true;
+    InstancesComboBox.Items.AddStrings(list);
+    InstancesComboBox.ItemIndex := 0;
+  end
+  else
+    InstancesComboBox.Enabled := false;
+end;
+
+procedure TSetupForm.Button2Click(Sender: TObject);
+begin
+  config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].PerfObject := PerfCountersListBox.GetSelectedText;
+
+  config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Counter := CountersComboBox.Text;
+  config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Instance := InstancesComboBox.Text;
+
+  config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Format := FormatComboBox.ItemIndex;
+  config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Scaling := ScalingComboBox.ItemIndex;
+end;
+
+function CorrectPlural(const s: string; Count: Integer): string;
+begin
+  Result := IntToStr(Count) + ' ' + s;
+  if Count<>1 then begin
+    Result := Result + 's';
+  end;
+end;
+
+function HumanReadableTime(Time: Double): string;
+//Time is in seconds
+const
+  SecondsPerMinute = 60;
+  SecondsPerHour = 60*SecondsPerMinute;
+  SecondsPerDay = 24*SecondsPerHour;
+  SecondsPerWeek = 7*SecondsPerDay;
+  SecondsPerYear = 365*SecondsPerDay;
+
+var
+  Years, Weeks, Days, Hours, Minutes, Seconds: Int64;
+
+begin
+  Try
+    Years := Trunc(Time/SecondsPerYear);
+    Time := Time - Years*SecondsPerYear;
+    Weeks := Trunc(Time/SecondsPerWeek);
+    Time := Time - Weeks*SecondsPerWeek;
+    Days := Trunc(Time/SecondsPerDay);
+    Time := Time - Days*SecondsPerDay;
+    Hours := Trunc(Time/SecondsPerHour);
+    Time := Time - Hours*SecondsPerHour;
+    Minutes := Trunc(Time/SecondsPerMinute);
+    Time := Time - Minutes*SecondsPerMinute;
+    Seconds := Trunc(Time);
+
+    if Years>5000 then begin
+      Result := IntToStr(Round(Years/1000))+' millennia';
+    end else if Years>500 then begin
+      Result := IntToStr(Round(Years/100))+' centuries';
+    end else if Years>0 then begin
+      Result := CorrectPlural('year', Years) + ' ' + CorrectPlural('week', Weeks);
+    end else if Weeks>0 then begin
+      Result := CorrectPlural('week', Weeks) + ' ' + CorrectPlural('day', Days);
+    end else if Days>0 then begin
+      Result := CorrectPlural('day', Days) + ' ' + CorrectPlural('hour', Hours);
+    end else if Hours>0 then begin
+      Result := CorrectPlural('hour', Hours) + ' ' + CorrectPlural('minute', Minutes);
+    end else if Minutes>0 then begin
+      Result := CorrectPlural('minute', Minutes)+ ' ' + CorrectPlural('second', Seconds);
+    end else begin
+      Result := CorrectPlural('second', Seconds);
+    end;
+  Except
+    Result := 'an eternity';
+  End;
+end;
+
+procedure TSetupForm.InfoTimerTimer(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := 0 to length(LCDSmartieDisplayForm.Data.storage) - 1 do
+    if LCDSmartieDisplayForm.Data.storage[i] <> '' then
+      StorageStringGrid.Cells[1,i+1] :=  LCDSmartieDisplayForm.Data.storage[i];
+
+  RunTimeLabel.Caption :=  HumanReadableTime(secondsbetween(Now, LCDSmartieDisplayForm.StartTime))
+end;
+
+
+procedure TSetupForm.PerfSettingsIndexComboBoxChange(Sender: TObject);
+var
+  itemindex: integer;
+begin
+
+  itemindex := PerfCountersListBox.Items.IndexOf(config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].PerfObject);
+  PerfCountersListBox.ItemIndex := itemindex;
+
+  if itemindex >= 0 then
+    PerfCountersListBoxClick(Sender);
+
+  itemindex := CountersComboBox.Items.IndexOf(config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Counter);
+  CountersComboBox.ItemIndex := itemindex;
+
+  itemindex := InstancesComboBox.Items.IndexOf(config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Instance);
+  InstancesComboBox.ItemIndex := itemindex;
+
+  FormatComboBox.ItemIndex := config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Format;
+  ScalingComboBox.ItemIndex := config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Scaling;
+  VariableEdit.Caption := '$Perf('+inttostr(PerfSettingsIndexComboBox.ItemIndex+1)+')';
 end;
 
 procedure TSetupForm.LoadHint(DisplayDLLName: string);
@@ -820,6 +1104,9 @@ begin
   SwapWithScreenComboBox.ItemIndex := 0;
 
   ActionsTimerSpinEdit.Value := config.ActionsTimer;
+
+  for i := 0 to length(LCDSmartieDisplayForm.Data.storage) - 1 do
+    StorageStringGrid.Cells[0,i+1] := inttostr(i);
 end;
 
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
@@ -1771,7 +2058,7 @@ end;
 procedure TSetupForm.UseTaskSchedulerCheckBoxChange(Sender: TObject);
 begin
   if not IsAdministrator then
-    ShowMessage('This will not work Unless LCD Smartie is running as administrator');
+    ShowMessage('Use task scheduler will not work Unless LCD Smartie is running as administrator');
 
 end;
 
@@ -1951,41 +2238,43 @@ begin
     0: VariableEdit.Text := '$SysUsername';
     1: VariableEdit.Text := '$SysComputername';
     2: VariableEdit.Text := '$SysCPUType';
-    3 : VariableEdit.Text := '$SysCPUSpeedMhz';
-    4 : VariableEdit.Text := '$SysCPUSpeedGhz';
-    5 : VariableEdit.Text := '$SysCPUUsage';
-    6 : VariableEdit.Text := '$Bar($SysCPUUsage,100,10)';
-    7: VariableEdit.Text := '$SysUptime';
-    8: VariableEdit.Text := '$SysUptims';
-    9: VariableEdit.Text := '$MemFree';
-    10: VariableEdit.Text := '$MemUsed';
-    11: VariableEdit.Text := '$MemTotal';
-    12: VariableEdit.Text := '$MemF%';
-    13: VariableEdit.Text := '$MemU%';
-    14: VariableEdit.Text := '$Bar($MemFree,$MemTotal,10)';
-    15: VariableEdit.Text := '$Bar($MemUsed,$MemTotal,10)';
-    16: VariableEdit.Text := '$PageFree';
-    17: VariableEdit.Text := '$PageUsed';
-    18: VariableEdit.Text := '$PageTotal';
-    19: VariableEdit.Text := '$PageF%';
-    20: VariableEdit.Text := '$PageU%';
-    21: VariableEdit.Text := '$Bar($PageFree,$PageTotal,10)';
-    22: VariableEdit.Text := '$Bar($PageUsed,$PageTotal,10)';
-    23: VariableEdit.Text := '$HDFree(C)';
-    24: VariableEdit.Text := '$HDUsed(C)';
-    25: VariableEdit.Text := '$HDTotal(C)';
-    26: VariableEdit.Text := '$HDFreg(C)';
-    27: VariableEdit.Text := '$HDUseg(C)';
-    28: VariableEdit.Text := '$HDTotag(C)';
-    29: VariableEdit.Text := '$HDF%(C)';
-    30: VariableEdit.Text := '$HDU%(C)';
-    31: VariableEdit.Text := '$Bar($HDFree(C),$HDTotal(C),10)';
-    32: VariableEdit.Text := '$Bar($HDUsed(C),$HDTotal(C),10)';
-    33: VariableEdit.Text := '$ScreenReso';
-    34: VariableEdit.Text := '$SysSSActive';
-    35: VariableEdit.Text := '$SysFSGameActive';
-    36: VariableEdit.Text := '$SysFSAppActive';
-    37: VariableEdit.Text := '$SysAppActive(LCDSmartie.exe)';
+    3: VariableEdit.Text := '$SysCPUSpeedMhz';
+    4: VariableEdit.Text := '$SysCPUSpeedGhz';
+    5: VariableEdit.Text := '$SysCPUUsage';
+    6: VariableEdit.Text := '$Bar($SysCPUUsage,100,10)';
+    7: VariableEdit.Text := '$SysCPUCoreUsage(0, _Total)';
+    8: VariableEdit.Text := '$SysCPUCoreSpeed(0, _Total)';
+    9: VariableEdit.Text := '$SysUptime';
+    10: VariableEdit.Text := '$SysUptims';
+    11: VariableEdit.Text := '$MemFree';
+    12: VariableEdit.Text := '$MemUsed';
+    13: VariableEdit.Text := '$MemTotal';
+    14: VariableEdit.Text := '$MemF%';
+    15: VariableEdit.Text := '$MemU%';
+    16: VariableEdit.Text := '$Bar($MemFree,$MemTotal,10)';
+    17: VariableEdit.Text := '$Bar($MemUsed,$MemTotal,10)';
+    18: VariableEdit.Text := '$PageFree';
+    19: VariableEdit.Text := '$PageUsed';
+    20: VariableEdit.Text := '$PageTotal';
+    21: VariableEdit.Text := '$PageF%';
+    22: VariableEdit.Text := '$PageU%';
+    23: VariableEdit.Text := '$Bar($PageFree,$PageTotal,10)';
+    24: VariableEdit.Text := '$Bar($PageUsed,$PageTotal,10)';
+    25: VariableEdit.Text := '$HDFree(C)';
+    26: VariableEdit.Text := '$HDUsed(C)';
+    27: VariableEdit.Text := '$HDTotal(C)';
+    28: VariableEdit.Text := '$HDFreg(C)';
+    29: VariableEdit.Text := '$HDUseg(C)';
+    30: VariableEdit.Text := '$HDTotag(C)';
+    31: VariableEdit.Text := '$HDF%(C)';
+    32: VariableEdit.Text := '$HDU%(C)';
+    33: VariableEdit.Text := '$Bar($HDFree(C),$HDTotal(C),10)';
+    34: VariableEdit.Text := '$Bar($HDUsed(C),$HDTotal(C),10)';
+    35: VariableEdit.Text := '$ScreenReso';
+    36: VariableEdit.Text := '$SysSSActive';
+    37: VariableEdit.Text := '$SysFSGameActive';
+    38: VariableEdit.Text := '$SysFSAppActive';
+    39: VariableEdit.Text := '$SysAppActive(LCDSmartie.exe)';
     else
       VariableEdit.Text := NoVariable;
   end; // case
@@ -2056,6 +2345,13 @@ begin
     16: VariableEdit.Text := '$Center(text here,15)';
     17: VariableEdit.Text := '$ScreenChanged';
     18: VariableEdit.Text := '$Sender(127.0.0.10,6088,password1234,1,1)';
+    19: VariableEdit.Text := '$Store(Some Text,0)';
+    20: VariableEdit.Text := '$Fetch(0)';
+    21: VariableEdit.Text := '$Round(3.14159265359,3)';
+    22: VariableEdit.Text := '$Add(3,2)';
+    23: VariableEdit.Text := '$Sub(5,3)';
+    24: VariableEdit.Text := '$Mul(2,5)';
+    25: VariableEdit.Text := '$Div(10,2)';
     else
       VariableEdit.Text := NoVariable;
   end; // case
@@ -2375,11 +2671,15 @@ end;
 // Apply pressed.
 procedure TSetupForm.ApplyButtonClick(Sender: TObject);
 var
-  ReinitLCD, ReloadSkin: boolean;
+  ReInitLCD, ReloadSkin: boolean;
   x, y: integer;
   iMaxUsedRow: integer;
 begin
-  ReinitLCD := False;
+  ReInitLCD := False;
+  if (DisplayPluginList.Caption <> config.DisplayDLLName) or (ParametersEdit.Caption <> config.DisplayDLLParameters) or
+    (LCDSizeComboBox.ItemIndex +1  <> config.ScreenSize) then
+    ReInitLCD := True;
+
   ReloadSkin := False;
 
   iMaxUsedRow := -1;
@@ -2413,9 +2713,6 @@ begin
     end;
   end;
   config.totalactions := iMaxUsedRow + 1;
-
-  // unconditionally reinit lcd
-  ReinitLCD := True;
 
 {$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.WinampCtrl1.WinampLocation := WinampLocationEdit.Text;
@@ -2497,10 +2794,10 @@ begin
   config.ActionsTimer := ActionsTimerSpinEdit.Value;
   config.save();
   {$IFNDEF STANDALONESETUP}
-  if ReinitLCD = True then
-  begin
+  if ReinitLcd then
     LCDSmartieDisplayForm.ReInitLCD();
-  end;
+
+  ReInitLCD := False;
   LCDSmartieDisplayForm.ShowTrueLCD := Config.EmulateLCD;
   {$ENDIF}
 end;

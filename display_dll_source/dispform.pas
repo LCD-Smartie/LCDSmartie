@@ -5,8 +5,9 @@ unit DISPFORM;
 interface
 
 uses
-  Windows, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, ImgList;
+  Windows, SysUtils, Variants, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, ImgList, Menus, win32int, lcltype, ComCtrls,
+  IniFiles;
 
 const
   MaxWidth = 40;
@@ -241,16 +242,51 @@ const
     ($1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F)); // char 255 // full block
 
 type
+  TConfig = record
+    StayOnTop: boolean;
+    AlphaBlend: boolean;
+    AlphaBlendValue: integer;
+    PosX: integer;
+    PosY: integer;
+  end;
+
+type
   TFontArray = array[32..255] of TBitmap;
 
+  { TLCDDisplayForm }
+
   TLCDDisplayForm = class(TForm)
-    RootPanel: TPanel;
-    LCDPanel: TPanel;
+    AlphaOffMenuItem: TMenuItem;
+    Alpha90MenuItem: TMenuItem;
+    Alpha10MenuItem: TMenuItem;
+    Alpha20MenuItem: TMenuItem;
+    Alpha30MenuItem: TMenuItem;
+    Alpha40MenuItem: TMenuItem;
+    Alpha50MenuItem: TMenuItem;
+    Alpha60MenuItem: TMenuItem;
+    Alpha70MenuItem: TMenuItem;
+    Alpha80MenuItem: TMenuItem;
+    StayOnTopMenuItem: TMenuItem;
+    TransparentMenuItem: TMenuItem;
     PaintBox: TPaintBox;
+    PopupMenu1: TPopupMenu;
+    Timer1: TTimer;
+    procedure AlphaMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Free;
+    procedure MenuItem1Click(Sender: TObject);
+    procedure PaintBoxMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure PaintBoxMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure PaintBoxPaint(Sender: TObject);
+    procedure PopupMenu1Close(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
+    Config: TConfig;
     MyWidth,MyHeight : integer;
     WidthOffset,HeightOffset : integer;
     CurrentX,CurrentY : integer;
@@ -258,6 +294,9 @@ type
     BackgroundBitmap : TBitmap;
     BackgroundColor : TColor;
     FrameBuffer : array[1..MaxWidth*MaxHeight] of byte;
+    procedure readconfig;
+    procedure writeconfig;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest) ; message WM_NCHitTest;
     procedure LoadFont;
     procedure GetBlankChar(Bitmap : TBitmap);
     procedure GetDefaultBitmap(Index : byte; Bitmap : TBitmap);
@@ -278,6 +317,68 @@ implementation
 
 uses
   Math;
+
+procedure TLCDDisplayForm.readconfig;
+var
+  ini: TINIFile;
+begin
+  ini := TINIFile.Create('displays\desktopcfg.ini');
+  config.StayOnTop := ini.ReadBool('config', 'StayOnTop', false);
+  config.AlphaBlend := ini.ReadBool('config', 'AlphaBlend', false);
+  config.AlphaBlendValue := ini.ReadInteger('config', 'AlphaBlendValue', 255);
+  config.PosX := ini.ReadInteger('config', 'PosX', 0);
+  config.PosY := ini.ReadInteger('config', 'PosY', 0);
+  ini.Free;
+end;
+
+procedure TLCDDisplayForm.writeconfig;
+var
+  ini: TINIFile;
+begin
+  ini := TINIFile.Create('displays\desktopcfg.ini');
+  ini.WriteBool('config', 'StayOnTop', config.StayOnTop);
+  ini.WriteBool('config', 'AlphaBlend', config.AlphaBlend);
+  ini.WriteInteger('config', 'AlphaBlendValue', config.AlphaBlendValue);
+  ini.WriteInteger('config', 'PosX', config.PosX);
+  ini.WriteInteger('config', 'PosY', config.PosY);
+  ini.Free;
+end;
+
+procedure TLCDDisplayForm.Timer1Timer(Sender: TObject);
+const
+ SWP_NOMOVE = $0002;
+ SWP_NOSIZE = $0001;
+ SWP_NOACTIVATE = $0010;
+ dwSWPflags = SWP_NOMOVE or  SWP_NOSIZE or SWP_NOACTIVATE;
+begin
+   if StayOnTopMenuItem.Checked then
+     SetWindowPos(Handle, HWND_TOPMOST,	0,0,0,0, dwSWPflags)
+   else
+     SetWindowPos(Handle, HWND_NOTOPMOST,	0,0,0,0, dwSWPflags);
+
+   if (config.StayOnTop <> StayOnTopMenuItem.Checked) or (config.AlphaBlend <> AlphaBlend) or
+        (config.AlphaBlendValue <> AlphaBlendValue) or (config.PosY <> Top) or (config.PosX <> Left) then
+   begin
+     config.StayOnTop := StayOnTopMenuItem.Checked;
+     config.AlphaBlend := AlphaBlend;
+     config.AlphaBlendValue := AlphaBlendValue;
+     config.PosY := Top;
+     config.PosX := Left;
+     writeconfig;
+   end;
+
+end;
+
+procedure TLCDDisplayForm.WMNCHitTest(var Msg: TWMNCHitTest) ;
+ var
+  Res: SmallInt;
+begin
+  inherited;
+  Res := GetKeyState(VK_RBUTTON);
+  if Res > 0 then
+    if Msg.Result = htClient then
+      Msg.Result := htCaption;
+end;
 
 procedure TLCDDisplayForm.LoadFont;
 var
@@ -320,8 +421,38 @@ begin
   end;
 end;
 
+
+procedure TLCDDisplayForm.AlphaMenuItemClick(Sender: TObject);
+begin
+  if TMenuItem(Sender).Name = 'AlphaOffMenuItem' then
+    Alphablend := false
+  else
+    begin
+    Alphablend := true;
+    if TMenuItem(Sender).Name = 'Alpha10MenuItem' then
+      AlphaBlendValue := 229
+    else if TMenuItem(Sender).Name = 'Alpha20MenuItem' then
+      AlphaBlendValue := 180
+    else if TMenuItem(Sender).Name = 'Alpha30MenuItem' then
+      AlphaBlendValue := 178
+    else if TMenuItem(Sender).Name = 'Alpha40MenuItem' then
+      AlphaBlendValue := 153
+    else if TMenuItem(Sender).Name = 'Alpha50MenuItem' then
+      AlphaBlendValue := 127
+    else if TMenuItem(Sender).Name = 'Alpha60MenuItem' then
+      AlphaBlendValue := 102
+    else if TMenuItem(Sender).Name = 'Alpha70MenuItem' then
+      AlphaBlendValue := 76
+    else if TMenuItem(Sender).Name = 'Alpha80MenuItem' then
+      AlphaBlendValue := 51
+    else if TMenuItem(Sender).Name = 'Alpha90MenuItem' then
+      AlphaBlendValue := 25;
+    end;
+end;
+
 procedure TLCDDisplayForm.FormCreate(Sender: TObject);
 begin
+  readconfig;
   BackgroundColor := clLime;
   BackgroundBitmap := TBitmap.Create;
   CurrentX := 1;
@@ -333,6 +464,94 @@ begin
   fillchar(Font,sizeof(Font),$00);
   fillchar(FrameBuffer,sizeof(FrameBuffer),32);
   LoadFont;
+  show;
+end;
+
+procedure TLCDDisplayForm.FormShow(Sender: TObject);
+var
+  Style: long;
+  CaptionHeight: long;
+begin
+  Left := config.PosX;
+  Top := config.PosY;
+  StayOnTopMenuItem.Checked := config.StayOnTop;
+  Width := (MyWidth*(CharWidth+1)*2);
+  Height := (MyHeight*(CharHeight+1)*2);
+  if assigned(BackgroundBitmap) then BackgroundBitmap.Free;
+  BackgroundBitmap := TBitmap.Create;
+  with BackgroundBitmap do begin
+    Width := 1+ MyWidth*(CharWidth+1);
+    Height := 1 + MyHeight*(CharHeight+1);
+    Canvas.Pen.Color := BackgroundColor;
+    Canvas.Brush.Color := BackgroundColor;
+    Canvas.Rectangle(1,1,Width,Height);
+    ClearDisplay;
+  end;
+  Style:=GetWindowLong(Handle, GWL_STYLE);
+  CaptionHeight := GetSystemMetrics(SM_CYCAPTION);
+  SetWindowLong(Handle,GWL_STYLE, Style and (not WS_CAPTION));
+  changebounds(left,top, width - 4 , Height - CaptionHeight - 4, false);
+  AlphaBlendValue := config.AlphaBlendValue;
+  Alphablend := config.AlphaBlend;
+
+  if config.AlphaBlend = false then
+    AlphaOffMenuItem.Checked := false
+  else
+    begin
+    if config.AlphaBlendValue >= 229 then
+      Alpha10MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 180 then
+      Alpha20MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 178 then
+      Alpha30MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 153 then
+      Alpha40MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 127 then
+      Alpha50MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 102 then
+      Alpha60MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 76 then
+      Alpha70MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 51 then
+      Alpha80MenuItem.Checked := true
+    else if config.AlphaBlendValue >= 25 then
+      Alpha90MenuItem.Checked := true
+    end;
+end;
+
+procedure TLCDDisplayForm.Free;
+var
+  Loop : longint;
+begin
+  for Loop := 32 to 255 do begin
+    Font[Loop].Free;
+  end;
+  inherited;
+end;
+
+procedure TLCDDisplayForm.MenuItem1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TLCDDisplayForm.PaintBoxMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+  begin
+    ReleaseCapture;
+    SendMessage(Handle, WM_SYSCOMMAND, 61458, 0) ;
+  end
+  else
+  begin
+   popupmenu1.PopUp;
+  end;
+end;
+
+procedure TLCDDisplayForm.PaintBoxMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  Timer1Timer(nil);
 end;
 
 procedure TLCDDisplayForm.SetPosition(X,Y : integer);
@@ -343,7 +562,6 @@ end;
 
 procedure TLCDDisplayForm.ClearDisplay;
 begin
-  LCDPanel.Color := BackgroundColor;
   with BackgroundBitmap.Canvas do begin
     CopyMode := cmMergeCopy;
     Pen.Color := BackgroundColor;
@@ -362,20 +580,6 @@ begin
   Y := min(MaxHeight,Y);
   MyWidth := X;
   MyHeight := Y;
-  Width := WidthOffset + (X*(CharWidth+1)*2);
-  Height := HeightOffset + (Y*(CharHeight+1)*2);
-  Constraints.MinWidth := WidthOffset + X*(CharWidth+1);
-  Constraints.MinHeight := HeightOffset + Y*(CharHeight+1);
-  if assigned(BackgroundBitmap) then BackgroundBitmap.Free;
-  BackgroundBitmap := TBitmap.Create;
-  with BackgroundBitmap do begin
-    Width := X*(CharWidth+1);
-    Height := Y*(CharHeight+1);
-    Canvas.Pen.Color := BackgroundColor;
-    Canvas.Brush.Color := BackgroundColor;
-    Canvas.Rectangle(0,0,Width,Height);
-    ClearDisplay;
-  end;
 end;
 
 procedure TLCDDisplayForm.PaintBoxPaint(Sender: TObject);
@@ -383,12 +587,22 @@ var
   DestRect : TRect;
 begin
   with DestRect do begin
-    Top := 2;
-    Bottom := PaintBox.Height+1;
-    Left := 2;
-    Right := PaintBox.Width+1;
+    Top := 0;
+    Bottom := PaintBox.Height;
+    Left := 0;
+    Right := PaintBox.Width;
   end;
   PaintBox.Canvas.StretchDraw(DestRect,BackgroundBitmap);
+end;
+
+procedure TLCDDisplayForm.PopupMenu1Close(Sender: TObject);
+begin
+  timer1.Enabled:= true;
+end;
+
+procedure TLCDDisplayForm.PopupMenu1Popup(Sender: TObject);
+begin
+  timer1.Enabled:=false;
 end;
 
 procedure TLCDDisplayForm.SendChar(C : byte);
@@ -416,9 +630,9 @@ begin
     Bottom := CharHeight;
   end;
   with DestRect do begin
-    Top := (CurrentY-1)*(CharHeight+1);
+    Top := (CurrentY-1)*(CharHeight+1)+1;
     Bottom := Top + CharHeight;
-    Left := (CurrentX-1)*(CharWidth+1);
+    Left := (CurrentX-1)*(CharWidth+1)+1;
     Right := Left + CharWidth;
   end;
   BackgroundBitmap.Canvas.CopyRect(DestRect,CurChar.Canvas,SrcRect);

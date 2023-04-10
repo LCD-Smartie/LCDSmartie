@@ -40,7 +40,8 @@ const
   MaxActions = 99;
   MaxScreenSizes = 12;
   MaxEmailAccounts = 99;
-  maxBoincAccounts = 20;
+  MaxBoincAccounts = 20;
+  MaxPerfCounters = 50;
 
 type
   TScreenSize = record
@@ -117,6 +118,15 @@ type
     sFini: String;
     sGotoLine1, sGotoLine2, sGotoLine3, sGotoLine4: String;
     sCharMap: String;
+  end;
+
+type
+  TPerfSettings = record
+    PerfObject: string;
+    Counter: string;
+    Instance: string;
+    Format: integer;
+    Scaling: integer;
   end;
 
   TConfig = class(TObject)
@@ -198,13 +208,15 @@ type
     DisplayDLLParameters : string;
     DLL_Contrast: integer;
     DLL_Brightness: integer;
+
     EmulateLCD : boolean;
-	  EnableRemoteSend: boolean;
+    EnableRemoteSend: boolean;
     RemoteSendBindIP: string;
     RemoteSendPort: string;
     RemoteSendPassword: string;
     RemoteSendUseSSL: boolean;
     ActionsTimer: integer;
+    PerfSettings: Array[1..MaxPerfCounters] of TPerfSettings;
     function load: Boolean;
     procedure save;
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
@@ -259,7 +271,7 @@ end;
 function TConfig.loadINI: Boolean;
 var
   initfile: TINIFile;
-  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount: Integer;
+  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount, i: Integer;
 //  sConfigFileFormatVersion, sScreenTextSyntaxVersion: String;    // dont know why we read these as they're never used
   sScreen, sLine, sPOPAccount, sGameLine: String;
   iTemp: Integer;
@@ -497,6 +509,16 @@ begin
   RemoteSendPassword := initFile.ReadString('General Settings', 'RemoteSendPassword', 'password1234');
   RemoteSendUseSSL := initFile.ReadBool('General Settings', 'RemoteSendUseSSL', false);
   ActionsTimer := initFile.ReadInteger('General Settings', 'ActionsTimer', 250);
+
+  for i := 1 to MaxPerfCounters do
+  begin
+    PerfSettings[i].PerfObject := initfile.ReadString('PerfSettings', 'PerfObject'+Format('%.2u', [i], localeFormat), '');
+    PerfSettings[i].Counter := initfile.ReadString('PerfSettings', 'Counter'+Format('%.2u', [i], localeFormat), '');
+    PerfSettings[i].Instance := initfile.ReadString('PerfSettings', 'Instance'+Format('%.2u', [i], localeFormat), '');
+    PerfSettings[i].Format := initfile.ReadInteger('PerfSettings', 'Format'+Format('%.2u', [i], localeFormat), 0);
+    PerfSettings[i].Scaling := initfile.ReadInteger('PerfSettings', 'Scaling'+Format('%.2u', [i], localeFormat), 0);
+  end;
+
   result := true;
 
   initfile.Free;
@@ -508,7 +530,7 @@ procedure TConfig.saveINI;
 var
   initfile : TMemINIFile;
   sScreen, sLine, sPOPAccount, sGameLine: String;
-  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount: Integer;
+  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount, i: Integer;
   sPrefix: String;
 begin
   {$IFNDEF STANDALONESETUP}
@@ -712,6 +734,16 @@ begin
   initFile.WriteString('General Settings', 'RemoteSendPassword', RemoteSendPassword);
   initFile.WriteBool('General Settings', 'RemoteSendUseSSL', RemoteSendUseSSL);
   initFile.WriteInteger('General Settings', 'ActionsTimer', ActionsTimer);
+
+  for i := 1 to MaxPerfCounters do
+  begin
+    initfile.WriteString('PerfSettings', 'PerfObject'+Format('%.2u', [i], localeFormat), PerfSettings[i].PerfObject);
+    initfile.WriteString('PerfSettings', 'Counter'+Format('%.2u', [i], localeFormat), PerfSettings[i].Counter);
+    initfile.WriteString('PerfSettings', 'Instance'+Format('%.2u', [i], localeFormat), PerfSettings[i].Instance);
+    initfile.WriteInteger('PerfSettings', 'Format'+Format('%.2u', [i], localeFormat), PerfSettings[i].Format);
+    initfile.WriteInteger('PerfSettings', 'Scaling'+Format('%.2u', [i], localeFormat), PerfSettings[i].Scaling);
+  end;
+
   initfile.UpdateFile;
   initfile.Free;
 

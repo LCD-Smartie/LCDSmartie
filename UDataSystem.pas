@@ -20,7 +20,7 @@
  *****************************************************************************}
 unit UDataSystem;
 
-{$MODE Delphi}
+//{$MODE Delphi}
 
 interface
 
@@ -42,6 +42,8 @@ const
   CPUTypeKey = SysKey + 'CPUType';
   CPUSpeedMhzKey = SysKey + 'CPUSpeedMhz';
   CPUSpeedGhzKey = SysKey + 'CPUSpeedGhz';
+  CPUCoreUsageKey = SysKey + 'CPUCoreUsage';
+  CPUCoreSpeedKey = SysKey + 'CPUCoreSpeed';
 
   MemKey = '$Mem';
   MemFreeKey = MemKey + 'Free';
@@ -57,7 +59,10 @@ const
   PageUsedPercentKey = PageKey + 'U%';
 
   alpha = 0.5;
+  PDH_FMT_LONG   = $100;
   PDH_FMT_DOUBLE = $200;
+  PDH_FMT_LARGE  = $400;
+  PDH_MORE_DATA  = $FFFFFFFF800007D2;
 
 type
   TPROCESSOR_POWER_INFORMATION = record
@@ -70,16 +75,36 @@ type
   end;
 
 type
+  // Should be variant but the case command used can only handle up to a 32 bit space in 32bit code
+  // thats fine we can typecast to long or double
   PTPDH_FMT_COUNTERVALUE = ^TPDH_FMT_COUNTERVALUE;
-
   TPDH_FMT_COUNTERVALUE = record
-  CStatus: DWORD ;
-  case integer of
-    1: ( longValue: LONGINT; );
-    2: ( doubleValue: double; );
-    3: ( largeValue: Int64; );
-    4: ( AnsiStringValue: PAnsiChar; );
-    5: ( WideStringValue: PWideChar; );
+    CStatus: DWORD ;
+    LongValue: int64;
+    //case integer of
+    //  1: ( longValue: Int32; );
+    //  2: ( doubleValue: double; );
+    //  3: ( largeValue: Int64; );
+    //   4: ( AnsiStringValue: PAnsiChar; );
+    //  5: ( WideStringValue: PWideChar; );
+  end;
+
+type
+  PTPDH_FMT_COUNTERVALUE_ITEM_A = ^TPDH_FMT_COUNTERVALUE_ITEM_A;
+  TPDH_FMT_COUNTERVALUE_ITEM_A = record
+    szName: PChar;
+    PDH_FMT_COUNTERVALUE: TPDH_FMT_COUNTERVALUE;
+  end;
+
+type
+  TCPUUsage = record
+    name: string;
+    value: long;
+  end;
+type
+  TCPUPerformance = record
+    name: string;
+    value: long;
   end;
 
 {$M+}
@@ -102,11 +127,16 @@ type
     systeminfo: SYSTEM_INFO;
     PPIbuff: array of TPROCESSOR_POWER_INFORMATION;
     pdhQueryHandle: THANDLE;
-    pdhCounterHandle: THANDLE;
+    pdhCPUUsageCounterHandle: THANDLE;
+    pdhCPUPerformanceCounterHandle: THANDLE;
+    pdhCPUFrequencyCounterHandle: THANDLE;
     pdhCounterType: DWORD;
-    pdhFmtCounterValue: TPDH_FMT_COUNTERVALUE;
+    pdhCounterItemsBuffer: array of TPDH_FMT_COUNTERVALUE_ITEM_A; // needs to be global
+    pdhFmtCounterValue: TPDH_FMT_COUNTERVALUE; // needs to be global no time or patience to figure out why
+    CPUUsageArray: array of TCPUUsage;
+    CPUPerformanceArray: array of TCPUperformance;
     function getIsWin2kXP: Boolean;
-    function getIsWin11: Boolean;
+    function getIsWin10: Boolean;
     function getTotalPhysMemory: Int64;
     function getAvailPhysMemory: Int64;
     function getTotalPageFile: Int64;
@@ -122,7 +152,7 @@ type
     procedure  ResolveVariables(var Line : string); override;
   published
     property bIsWin2kXP: Boolean read getIsWin2kXP;
-    property bIsWin11: Boolean read getIsWin11;
+    property bIsWin10: Boolean read getIsWin10;
     property totalPhysmemory: Int64 read gettotalphysmemory;
     property AvailPhysmemory: Int64 read getavailphysmemory;
     property totalPageFile: Int64 read gettotalPageFile;
@@ -157,8 +187,6 @@ type
   {$EXTERNALSYM MEMORYSTATUSEX}
 
 var
-  FSnapshotHandle: THandle;
-  FProcessEntry32: TProcessEntry32;
   ProcList: TStringList;
   FLastIdleTime: Int64;
   FLastKernelTime: Int64;
@@ -169,9 +197,11 @@ uses
   UUtils, StrUtils;
 
 function PdhOpenQueryA( szDataSource : PAnsiChar; dwUserData : PDWORD; phQuery: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhOpenQueryA';
-function PdhAddCounterA( hQuery : THANDLE; szFullCounterPath : PAnsiChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterA';
+function PdhCloseQuery( hQuery: THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCloseQuery';
+function PdhAddEnglishCounterA( hQuery : THANDLE; szFullCounterPath : PAnsiChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterA';
 function PdhCollectQueryData( hQuery : THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCollectQueryData';
 function PdhGetFormattedCounterValue( hCounter : THANDLE; dwFormat : DWORD; lpdwType: pointer; pValue: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhGetFormattedCounterValue';
+function PdhGetFormattedCounterArrayA( hCounter : THANDLE; dwFormat : DWORD; lpdwBufferSize: PDWORD; lpdwItemCount: PDWORD; ItemBuffer : PTPDH_FMT_COUNTERVALUE_ITEM_A) : HRESULT; stdcall; external 'pdh' name 'PdhGetFormattedCounterArrayA';
 
 function SHQueryUserNotificationState( p : Pointer ) : HRESULT; stdcall; external shell32 name 'SHQueryUserNotificationState';
 
@@ -183,7 +213,7 @@ begin
   STComputername := Computername;
   STUsername := Username;
   ProcList := TStringList.Create;
-  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+
   Smbios := tsmbios.create;
     for LProcessorInfo in SMBios.ProcessorInfo do
       CPUType := LProcessorInfo.ProcessorVersionStr;
@@ -192,10 +222,17 @@ begin
 
   if ( PdhOpenQueryA(nil, nil, @pdhQueryHandle) >= 0 ) then
   begin
-    if getIsWin11 then
-      pdhRet := PdhAddCounterA(pdhQueryHandle, pchar('\Processor Information(_Total)\% Processor Utility'), nil, @pdhCounterHandle)
+    if getIsWin10 then
+    begin
+      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\% Processor Utility'), nil, @pdhCPUUsageCounterHandle);
+      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\% Processor Performance'), nil, @pdhCPUPerformanceCounterHandle);
+      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\Processor Frequency'), nil, @pdhCPUFrequencyCounterHandle);
+    end
     else
-      pdhRet := PdhAddCounterA(pdhQueryHandle, pchar('\Processor(_Total)\% Processor Time'), nil, @pdhCounterHandle);
+    begin
+      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\% Processor Time'), nil, @pdhCPUUsageCounterHandle);
+      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Performance(*)\frequency'), nil, @pdhCPUPerformanceCounterHandle);
+    end;
   end;
 
   inherited Create(100);
@@ -205,7 +242,7 @@ destructor TSystemDataThread.Destroy;
 begin
   ProcList.Free;
   Proclist := nil;
-  CloseHandle(FSnapshotHandle);
+  PdhCloseQuery(pdhQueryHandle);
   inherited;
 end;
 
@@ -251,7 +288,7 @@ begin
   else getIsWin2kXP := false;
 end;
 
-function TSystemDataThread.getIsWin11: Boolean;
+function TSystemDataThread.getIsWin10: Boolean;
 var
   oviVersionInfo: windows.TOSVERSIONINFO;
 begin
@@ -259,8 +296,8 @@ begin
   if not windows.GetVersionEx(oviVersionInfo) then raise
     Exception.Create('Can''t get the Windows version');
   if (oviVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and
-    (oviVersionInfo.dwMajorVersion >= 10) and (oviVersionInfo.dwBuildNumber >= 22621)then getIsWin11 := true
-  else getIsWin11 := false;
+    (oviVersionInfo.dwMajorVersion >= 10) then getIsWin10 := true
+  else getIsWin10 := false;
 end;
 
 function TSystemDataThread.gettotalphysmemory: Int64;
@@ -440,8 +477,13 @@ var
   y, mo, d, h, m, s : Cardinal;
   uiRemaining: Cardinal;
   sTempUptime: String;
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
   i: integer;
   NextCPUUse: Int64;
+  pdhItemCount: dword;
+  pdhBufferSize: dword;
+  ret: HRESULT;
 begin
   if (not Terminated) then begin
     fDataLock.Enter;
@@ -575,6 +617,7 @@ begin
   begin
     fDataLock.Enter;
     SnapTime := Now();
+    FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if  Process32First(FSnapshotHandle, FProcessEntry32)then
     begin
@@ -583,24 +626,69 @@ begin
         ProcList.Add(UpperCase(ExtractFileName(FProcessEntry32.szExeFile)));
       until not Process32Next(FSnapshotHandle, FProcessEntry32);
     end;
+    closehandle(FSnapshotHandle);
     fDataLock.Leave;
   end;
 
   fDataLock.Enter;
   PdhCollectQueryData(pdhQueryHandle);
-  PdhGetFormattedCounterValue(pdhCounterHandle, PDH_FMT_DOUBLE, @pdhCounterType, @pdhFmtCounterValue);
 
-  NextCPUUse := round(pdhFmtCounterValue.doubleValue);
-  CPUUse := alpha*NextCPUUse + (1-alpha)*CPUUse;
-  fDataLock.Leave;
-
-  fDataLock.Enter;
-  try
-    if CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, nil, NULL,
-        PPIbuff, sizeof(TPROCESSOR_POWER_INFORMATION) * ProcessorCount) = 0 then
-      CPUSpeed := inttostr(PPIbuff[0].CurrentMhz);
-  except
+  pdhBufferSize := 0;
+  ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, nil);
+  if ret = PDH_MORE_DATA then
+  begin
+    SetLength(pdhCounterItemsBuffer, pdhItemCount);
+    ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, @pdhCounterItemsBuffer[0]);
   end;
+
+  if pdhItemCount > 0 then
+  begin
+    SetLength(CPUUsageArray, pdhItemCount);
+    for i := 0 to pdhItemCount -1 do
+    begin
+      CPUUsageArray[i].name := strpas(pdhCounterItemsBuffer[i].szName);
+      CPUUsageArray[i].value := int32(pdhCounterItemsBuffer[i].PDH_FMT_COUNTERVALUE.longValue);
+    end;
+    NextCPUUse := int32(pdhCounterItemsBuffer[pdhItemCount - 1].PDH_FMT_COUNTERVALUE.longValue);
+  end;
+  pdhItemCount := 0;
+  pdhBufferSize := 0;
+  ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, nil);
+  if ret = PDH_MORE_DATA then
+  begin
+    SetLength(pdhCounterItemsBuffer, pdhItemCount);
+    ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, @pdhCounterItemsBuffer[0]);
+  end;
+
+  if getIsWin10 then
+  begin
+    if pdhItemCount > 0 then
+    begin
+      SetLength(CPUPerformanceArray, pdhItemCount);
+      for i := 0 to pdhItemCount -1 do
+      begin
+        ret := PdhGetFormattedCounterValue(pdhCPUFrequencyCounterHandle, PDH_FMT_LONG, @pdhCounterType, @pdhFmtCounterValue);
+        CPUPerformanceArray[i].name := strpas(pdhCounterItemsBuffer[i].szName);
+        CPUPerformanceArray[i].value := round((int32(pdhFmtCounterValue.longValue) / 100) * int32(pdhCounterItemsBuffer[i].PDH_FMT_COUNTERVALUE.longValue));
+      end;
+      CPUSpeed := inttostr(CPUPerformanceArray[pdhItemCount - 1].value);
+    end;
+  end
+  else
+  begin
+    if pdhItemCount > 0 then
+    begin
+      SetLength(CPUPerformanceArray, pdhItemCount);
+      for i := 0 to pdhItemCount -1 do
+      begin
+        CPUPerformanceArray[i].name := strpas(pdhCounterItemsBuffer[i].szName);
+        CPUPerformanceArray[i].value := int32(pdhCounterItemsBuffer[i].PDH_FMT_COUNTERVALUE.longValue);
+      end;
+      CPUSpeed := inttostr(CPUPerformanceArray[pdhItemCount - 1].value);
+    end;
+  end;
+
+  CPUUse := NextCPUUse;
   fDataLock.Leave;
 end;
 
@@ -610,7 +698,10 @@ var
   args: Array [1..maxArgs] of String;
   prefix, postfix: String;
   numArgs: Cardinal;
-
+  arg: string;
+  i: integer;
+  cpuname: string;
+  cpuval: string;
 begin
 
   fDataLock.Enter();
@@ -621,8 +712,64 @@ begin
       Line := prefix;
       Line := Line + inttostr(isapplicationactive(args[1])) + postfix;
     end;
-   end;
+  end;
+  fDataLock.Leave();
+  fDataLock.Enter();
+  if (pos(SysKey,Line) > 0) then
+  begin
+    while decodeArgs(line, CPUCoreUsageKey, maxArgs, args, prefix, postfix, numargs) do
+    begin
+      cpuval := '0';
+      try
+        RequiredParameters(numargs, 1, 2);
+        if numargs = 2 then
+          cpuname := stripspaces(args[1])+','+stripspaces(args[2])
+        else if numargs = 1 then
+          cpuname := stripspaces(args[1])
+        else
+          raise Exception.Create('Bad parameters');
 
+        for i := 0 to length(CPUUsageArray) - 1  do
+          if CPUUsageArray[i].name = cpuname then
+            cpuval := inttostr(CPUUsageArray[i].value);
+
+        Line := prefix + cpuval + postfix
+      except
+        on E: Exception do line := prefix + '[SysCPUCoreusage: '
+        + CleanString(E.Message) + ']' + postfix;
+      end;
+    end;
+  end;
+
+  fDataLock.Leave();
+  fDataLock.Enter();
+  if (pos(SysKey,Line) > 0) then
+  begin
+    while decodeArgs(line, CPUCoreSpeedKey, maxArgs, args, prefix, postfix, numargs) do
+    begin
+      cpuval := '0';
+      try
+        RequiredParameters(numargs, 1, 2);
+        if numargs = 2 then
+          cpuname := stripspaces(args[1])+','+stripspaces(args[2])
+        else if numargs = 1 then
+          cpuname := stripspaces(args[1])
+        else
+          raise Exception.Create('Bad parameters');
+
+        for i := 0 to length(CPUPerformanceArray) - 1  do
+          if CPUPerformanceArray[i].name = cpuname then
+            cpuval := inttostr(CPUPerformanceArray[i].value);
+
+        Line := prefix + cpuval + postfix
+      except
+        on E: Exception do line := prefix + '[SysCPUCoreSpeed: '
+        + CleanString(E.Message) + ']' + postfix;
+      end;
+    end;
+   end;
+  fDataLock.Leave();
+  fDataLock.Enter();
   if (pos(SysKey,Line) > 0) then
   begin
     Line := StringReplace(line, CPUTypeKey, CPUType, [rfReplaceAll]);
@@ -630,6 +777,8 @@ begin
     Line := StringReplace(line, CPUSpeedMhzKey, CPUSpeed, [rfReplaceAll]);
     Line := StringReplace(line, CPUSpeedGhzKey, Format('%.2f', [strtoint(CPUSpeed) / 1000]) , [rfReplaceAll]);
   end;
+  fDataLock.Leave();
+  fDataLock.Enter();
   if (pos(SysKey,Line) > 0) then
   begin
     Line := StringReplace(line, UserNameKey, STUsername, [rfReplaceAll]);
@@ -637,6 +786,8 @@ begin
     line := StringReplace(line, UpTimeKey, uptimereg, [rfReplaceAll]);
     line := StringReplace(line, UpTimeShortKey, uptimeregs, [rfReplaceAll]);
   end;
+  fDataLock.Leave();
+  fDataLock.Enter();
   if (pos(SysKey,Line) > 0) then
   begin
     Line := StringReplace(line, ScreensaverActiveKey, inttostr(isscreensaveractive), [rfReplaceAll]);

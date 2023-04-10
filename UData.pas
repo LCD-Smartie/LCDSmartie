@@ -38,7 +38,7 @@ type
   TFiniProc = procedure(); stdcall;
   TBridgeProc = function(iBridgeId: Integer; iFunc: Integer; param1: pchar; param2: pchar): Pchar; stdcall;
   {$IF Defined(CPUX64)}
-  TSharedMem=packed record
+  TSharedMem=record
     LibraryID: Integer;
     LibraryPath: Array[1..255] of char;
     LibraryFunc: Integer;
@@ -78,6 +78,7 @@ type
 
     // email thread
     EmailThread : TEmailDataThread;  // keep a copy for mainline "GotMail"
+
     DataThreads : TList;  // of TDataThread
 
     // other variables
@@ -96,6 +97,7 @@ type
     function  GetGotEmail : boolean;
   public
     cLastKeyPressed: Char;
+    storage: array [0..100] of string;
     procedure ScreenStart;
     procedure ScreenEnd;
     procedure NewScreen(bYes: Boolean);
@@ -124,8 +126,7 @@ uses
   UMain, UUtils, UConfig,
   DataThread, UDataNetwork, UDataDisk, UDataGame, UDataSystem,
   UDataBoinc,  UDataFolding, UDataRSS, UDataDNet,
-  UDataWinamp, UDataSender;
-
+  UDataWinamp, UDataSender, UDataPerf;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -203,6 +204,10 @@ begin
   DataThreads.Add(DataThread);
   
   DataThread := TSenderDataThread.Create;
+  DataThread.Start;
+  DataThreads.Add(DataThread);
+
+  DataThread := TPerfDataThread.Create;
   DataThread.Start;
   DataThreads.Add(DataThread);
 end;
@@ -317,24 +322,30 @@ label
   endChange;
 var
   Loop : longint;
+  startvarcount: integer;
 begin
   try
-    for Loop := 0 to DataThreads.Count-1 do begin
-      TDataThread(DataThreads[Loop]).ResolveVariables(Line);
-      if (Pos('$', line) = 0) then goto endChange;
-    end;
+    while true do
+    begin
+      startvarcount := line.CountChar('$');
+      for Loop := 0 to DataThreads.Count-1 do begin
+        TDataThread(DataThreads[Loop]).ResolveVariables(Line);
+        if (Pos('$', line) = 0) then goto endChange;
+      end;
 
-    ResolvePluginVariables(line, qstattemp, bCacheResults);
-    if (Pos('$', line) = 0) then goto endChange;
-    ResolveOtherVariables(Line);
-    ResolveFileVariables(Line);
-    if (Pos('$', line) = 0) then goto endChange;
-    ResolveLCDFunctionVariables(Line);
-    ResolveWinampVariables(line);
-    ResolveTimeVariable(Line);
-    if (Pos('$', line) = 0) then goto endChange;
-    ResolveStringFunctionVariables(Line);
+      ResolvePluginVariables(line, qstattemp, bCacheResults);
+      if (Pos('$', line) = 0) then goto endChange;
+      ResolveOtherVariables(Line);
+      ResolveFileVariables(Line);
+      if (Pos('$', line) = 0) then goto endChange;
+      ResolveLCDFunctionVariables(Line);
+      ResolveWinampVariables(line);
+      if (Pos('$', line) = 0) then goto endChange;
+      ResolveTimeVariable(Line);
+      if startvarcount = line.CountChar('$') then goto endChange
+    end;
 endChange:
+  ResolveStringFunctionVariables(Line); // only do these after all others resolved
   except
     on E: Exception do line := '[Unhandled Exception: '
       + CleanString(E.Message) + ']';
@@ -345,7 +356,7 @@ endChange:
   line := StringReplace(line, #226+#150+#136, #255, [rfReplaceAll]); // full Block
   line := StringReplace(line, #194+#176, #176, [rfReplaceAll]); // Degree - hd44780 only has a square degree in 223 so this is a custom
   line := StringReplace(line, #226+#128+#153, #39, [rfReplaceAll]); // Utf8 apostrophe
-
+  line := StringReplace(line, #239+#191+#189, '?', [rfReplaceAll]); // un-representable character
   result := line;
 end;
 
@@ -374,7 +385,6 @@ end;
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-
 procedure TData.ResolveOtherVariables(var line: String);
 var
   args: Array [1..maxArgs] of String;
@@ -385,6 +395,7 @@ var
   tempst : String;
   iPos1, iPos2 : Integer;
   screenResolution: String;
+  t: extended;
 begin
   if (pos('$ScreenReso', line) <> 0) then begin
     screenResolution := IntToStr(Screen.DesktopWidth) + 'x' +
@@ -393,7 +404,6 @@ begin
     line := StringReplace(line, '$ScreenReso', screenResolution,
       [rfReplaceAll]);
   end;
-
 
   if decodeArgs(line, '$MObutton', maxArgs, args, prefix, postfix, numargs)
     then
@@ -435,6 +445,93 @@ begin
       line := prefix + FloatToStr(ccount, localeFormat) + postfix;
     except
       on E: Exception do line := prefix + '[Count: '
+        + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
+  while decodeArgs(line, '$Store', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    try
+      RequiredParameters(numargs, 2, 2);
+      storage[strtoint(args[2])] := args[1];
+      line := prefix + postfix;
+    except
+      on E: Exception do line := prefix + '[Count: '
+          + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
+  while decodeArgs(line, '$Fetch', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    ccount := 0;
+    try
+      RequiredParameters(numargs, 1, 1);
+      line := prefix + storage[strtoint(args[1])] + postfix;
+    except
+      on E: Exception do line := prefix + '[Count: '
+        + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
+  while decodeArgs(line, '$Round', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    try
+      RequiredParameters(numargs, 2, 2);
+      t := power(10, strtoint(args[2]));
+      line := prefix + floattostr(round(strtofloat(args[1])*t)/t) + postfix;
+    except
+      on E: Exception do line := prefix + '[Round: '
+        + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
+  while decodeArgs(line, '$Add', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    try
+      RequiredParameters(numargs, 2, 2);
+      line := prefix + floattostr(strtofloat(args[1]) + strtofloat(args[2])) + postfix;
+    except
+      on E: Exception do line := prefix + '[Add: '
+        + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
+  while decodeArgs(line, '$Sub', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    try
+      RequiredParameters(numargs, 2, 2);
+      line := prefix + floattostr(strtofloat(args[1]) - strtofloat(args[2])) + postfix;
+    except
+      on E: Exception do line := prefix + '[Sub: '
+        + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
+  while decodeArgs(line, '$Mul', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    try
+      RequiredParameters(numargs, 2, 2);
+      line := prefix + floattostr(strtofloat(args[1]) * strtofloat(args[2])) + postfix;
+    except
+      on E: Exception do line := prefix + '[Mul: '
+        + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
+  while decodeArgs(line, '$Div', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    try
+      RequiredParameters(numargs, 2, 2);
+      line := prefix + floattostr(strtofloat(args[1]) / strtofloat(args[2])) + postfix;
+    except
+      on E: Exception do line := prefix + '[Div: '
         + CleanString(E.Message) + ']' + postfix;
     end;
   end;
@@ -1002,9 +1099,6 @@ begin
 
     if (bDotNet) then
     begin
-      // this to fix/work around a problem with lazarus and exceptions not being dealt with properly in DLLs
-      SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
-
       {$IF Defined(CPUX86)}
       @bridgeInitFunc := getprocaddress(dlls[uiDll].hDll, PChar('_BridgeInit@12'));
       {$ELSEIF Defined(CPUX64)}

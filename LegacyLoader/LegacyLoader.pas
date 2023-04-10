@@ -7,7 +7,7 @@ const
   iMaxPluginFuncs = 20;
 
 type
-    TSharedMem=packed record
+    TSharedMem=record
     LibraryID: Integer;
     LibraryPath: Array[1..255] of char;
     LibraryFunc: Integer;

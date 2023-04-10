@@ -1,16 +1,16 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 334
+  Left = 493
   Height = 91
-  Top = 147
-  Width = 241
+  Top = 140
+  Width = 240
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
   Anchors = []
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
+  BorderStyle = bsToolWindow
   Caption = 'LCD Smartie x.x.x.x'
   ClientHeight = 91
-  ClientWidth = 241
+  ClientWidth = 240
   Color = clBtnFace
   DoubleBuffered = True
   Font.CharSet = ANSI_CHARSET
@@ -26,9 +26,8 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
   ParentDoubleBuffered = False
   Position = poDefault
   ShowInTaskBar = stNever
-  LCLVersion = '2.2.4.0'
+  LCLVersion = '2.2.6.0'
   Scaled = False
-  Visible = True
   object BarLeftImage: TImage
     Left = 0
     Height = 27
@@ -46,6 +45,29 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Height = 27
     Top = 64
     Width = 97
+  end
+  object xLine1Panel: TPanel
+    Left = 32
+    Height = 17
+    Hint = 'Virtual display.'
+    Top = 0
+    Width = 161
+    Alignment = taLeftJustify
+    BevelOuter = bvNone
+    Color = clNone
+    DoubleBuffered = True
+    Font.CharSet = 4
+    Font.Color = clWindowText
+    Font.Height = -14
+    Font.Name = 'Modern'
+    Font.Pitch = fpFixed
+    ParentColor = False
+    ParentDoubleBuffered = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+    Visible = False
   end
   object LogoImage: TImage
     Left = 208
@@ -194,28 +216,6 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ParentShowHint = False
     ShowHint = True
   end
-  object xLine1Panel: TPanel
-    Left = 32
-    Height = 17
-    Hint = 'Virtual display.'
-    Top = 0
-    Width = 161
-    Alignment = taLeftJustify
-    BevelOuter = bvNone
-    Color = clNone
-    DoubleBuffered = True
-    Font.CharSet = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Fixedsys'
-    ParentColor = False
-    ParentDoubleBuffered = False
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 3
-    Visible = False
-  end
   object xLine2Panel: TPanel
     Left = 32
     Height = 17
@@ -226,10 +226,11 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     BevelOuter = bvNone
     Color = clNone
     DoubleBuffered = True
-    Font.CharSet = ANSI_CHARSET
+    Font.CharSet = 4
     Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Fixedsys'
+    Font.Height = -14
+    Font.Name = 'Modern'
+    Font.Pitch = fpFixed
     ParentColor = False
     ParentDoubleBuffered = False
     ParentFont = False
@@ -248,10 +249,11 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     BevelOuter = bvNone
     Color = clNone
     DoubleBuffered = True
-    Font.CharSet = ANSI_CHARSET
+    Font.CharSet = 4
     Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Fixedsys'
+    Font.Height = -14
+    Font.Name = 'Modern'
+    Font.Pitch = fpFixed
     ParentColor = False
     ParentDoubleBuffered = False
     ParentFont = False
@@ -270,10 +272,11 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     BevelOuter = bvNone
     Color = clNone
     DoubleBuffered = True
-    Font.CharSet = ANSI_CHARSET
+    Font.CharSet = 4
     Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Fixedsys'
+    Font.Height = -14
+    Font.Name = 'Modern'
+    Font.Pitch = fpFixed
     ParentColor = False
     ParentDoubleBuffered = False
     ParentFont = False
@@ -301,13 +304,13 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 7
   end
   inline Line1LCDPanel: TLCDLineFrame
     Left = 32
     Height = 18
     ClientHeight = 18
-    TabOrder = 4
+    TabOrder = 3
     DesignLeft = 1365
     DesignTop = 338
     inherited LCDPanel: TPanel
@@ -325,7 +328,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Height = 18
     Top = 16
     ClientHeight = 18
-    TabOrder = 5
+    TabOrder = 4
     DesignLeft = 1365
     DesignTop = 338
     inherited LCDPanel: TPanel
@@ -343,7 +346,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Height = 18
     Top = 32
     ClientHeight = 18
-    TabOrder = 7
+    TabOrder = 6
     DesignLeft = 1365
     DesignTop = 338
     inherited LCDPanel: TPanel
@@ -361,7 +364,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Height = 18
     Top = 48
     ClientHeight = 18
-    TabOrder = 6
+    TabOrder = 5
     DesignLeft = 1365
     DesignTop = 338
     inherited LCDPanel: TPanel

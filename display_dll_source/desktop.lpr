@@ -1,7 +1,7 @@
 library desktop;
 
 uses
-  SysUtils {Unit1},
+  SysUtils,
   Forms,
   Interfaces,
   dispform in 'dispform.pas' {LCDDisplayForm};
@@ -10,7 +10,7 @@ uses
 
 const
   DLLProjectName = 'Desktop Display DLL';
-  Version = 'v1.0';
+  Version = 'v2.0L';
 type
   pboolean = ^boolean;
   TCustomArray = array[0..7] of byte;
@@ -25,10 +25,8 @@ begin
   OK^ := true;
   Result := PChar(DLLProjectName + ' ' + Version + #0);
   try
-    LCDDisplayForm := TLCDDisplayForm.Create(nil);
     with LCDDisplayForm do begin
       SetSize(SizeX,SizeY);
-      Show;
     end;
   except
     on E: Exception do begin
@@ -169,5 +167,6 @@ exports
   DISPLAYDLL_Init;
 begin
   Application.Initialize;
+  Application.CreateForm(TLCDDisplayForm, LCDDisplayForm);
 end.
 

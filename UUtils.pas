@@ -152,6 +152,7 @@ end;
 // and returns true(found) and numArgs=3 and an array with: '20', '30', '10'
 // postfix=' jterlktjer(fsdfs)sfsdf(sdf)'
 // prefix='C:'
+// Return false if any args contain $variables allowing for another run at resolveVariables
 function decodeArgs(const str: String; const funcName: String; maxargs: Cardinal;
   var args: Array of String; var prefix: String; var postfix: String; var
   numArgs: Cardinal): Boolean;
@@ -159,7 +160,7 @@ var
   posParen, posFuncStart, posArgsStart, posArgsEnd, posComma, posComma2: Integer;
   posTemp: Integer;
   uiLevel: Cardinal;
-  iStrLen: Integer;
+  iStrLen, i: Integer;
 begin
   Result := true;
   numArgs := 0;
@@ -245,6 +246,12 @@ begin
         posComma2 := posComma;
       until (poscomma >= posArgsEnd) or (numArgs >= maxArgs);
     end;
+    for i := 0 to numargs - 1 do
+      if (Pos('$', args[i]) > 0) then
+      begin
+        Result := false;
+        exit;
+      end;
   end
   else Result := false;
 

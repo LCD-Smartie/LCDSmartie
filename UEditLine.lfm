@@ -11,17 +11,18 @@ object FormEdit: TFormEdit
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
-  LCLVersion = '2.2.0.4'
+  LCLVersion = '2.2.6.0'
   object Memo1: TMemo
     Left = 0
     Height = 141
     Top = 0
     Width = 366
     Anchors = [akTop, akLeft, akRight, akBottom]
-    Font.CharSet = ANSI_CHARSET
+    Font.CharSet = 4
     Font.Color = clWindowText
     Font.Height = -12
-    Font.Name = 'Fixedsys'
+    Font.Name = 'Modern'
+    Font.Pitch = fpFixed
     Lines.Strings = (
       'Memo1'
     )

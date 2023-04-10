@@ -20,7 +20,20 @@ While there is much information on the lcd smartie forums, any issues with this 
 - Some contrib plugins have not been ported yet. One in particular uses WMCopyData and I think Lazarus doesn't support that
 - There may/will be bugs
 
-### Done this log
+### Log and Information
+- ### 5.5.3.6
+- LCDSmartie.exe.Manifest must be kept alongside the program to be able to detect versions of Windows higher than 8
+- new functions: $SysCPUCoreUsage(CPU, Core) and $SysCPUCoreSpeed(CPU, Core) for % usage or MHz speed for a specific core. CPU is the physical core index. Core is the core index on the physical CPU. Example: $SysCPUCoreUsage(0,0) for physical CPU 0 core 0, $SysCPUCoreUsage(0,1) physical 0 core 1. You can use $SysCPUCoreUsage(_Total) for an overall total or $SysCPUCoreUsage(0,_Total) for the first physical CPU total.
+- Changed variable resolver. Variables were being resolved on a top down basis so while you could nest some variables it would only work in a certain order eg: you could $Dll($Sys()) but not $Sys($Dll()). Now attempts to resolve variables until no more can be resolved. However, without a complete re-write you cannot $Dll($Dll()) but, you can "$Store($Dll(),0) $Dll($Fetch(0))"
+- New functions: $Store(value, slot) to store a value. $Fetch(slot) to return a value from storage
+- New functions: $Round(num, places) for rounding decimal numbers. $Add(num1, Num2) for adding two numbers. $Sub(num1, num2) for subtracting numbers. $Mul(num1, num2) for multiplication. $Div(num1, num2) for division
+- New feature: perf counter tab
+- I have shown the desktop.dll display some love. It now has a config file to save its position, transparency and stay on top. Options can be found by right clicking the display. It is now frameless and taskbar buttonless for minimum intrusion and can be dragged around simply by left click and draging on the display.
+- Issue #7 Setup text fields not accepting foreign characters. Switched charset to Unicode from ANSI hoping this will fix the issue
+- Issue #6 LCD resets on apply. Change to only reset if a driver or driver parameter is changed
+- Issue #5 Incorrect cpu stats might be caused by using localized windows. Switch to using a language neutral function
+- Issue #4 Third party LCD2USB display driver not working. Not sure what caused this but re-compiling and linking to libusb available in vcpkg solved the issue. Driver is GPL licensed so will include it in LCD Smartie source
+- ### 5.5.3.4
 - Fixed Issue where Windows 11 reports incorrect cpu usage
 - New driver for EZIO serial display
 - Added option to start as administrator and use task scheduler for autostart
@@ -58,7 +71,7 @@ While there is much information on the lcd smartie forums, any issues with this 
 - Many more under the hood fixes
 
 ### Roadmap
-As I'm only one man that does this in my spare time I probably will not get to work on it as much as I'd like but, I will try to bring fixes and updates as often as i can.
+As I'm only one man that does this in my spare time I probably will not get to work on it as much as I'd like but, I will try to bring fixes and updates as often as I can.
 
 ### Get LCDSmartie
 download here - [latest](https://github.com/stokie-ant/lcdsmartie-laz/releases/latest)
