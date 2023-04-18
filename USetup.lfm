@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 567
+  Left = 392
   Height = 456
-  Top = 392
+  Top = 242
   Width = 823
   Anchors = []
   BorderIcons = []
@@ -1811,7 +1811,7 @@ object SetupForm: TSetupForm
             Top = 0
             Width = 235
             Directory = '.'
-            ItemHeight = 13
+            ItemHeight = 0
             Mask = '*.ini'
             OnClick = MiConfigsListBoxClick
             ParentShowHint = False
@@ -2104,6 +2104,22 @@ object SetupForm: TSetupForm
         Caption = 'Runtime'
         ParentColor = False
         WordWrap = True
+      end
+      object Label41: TLabel
+        Left = 312
+        Height = 26
+        Top = 48
+        Width = 66
+        Caption = 'Detected '#13#10'Windows ver:'
+        ParentColor = False
+      end
+      object WindowsVersionLabel: TLabel
+        Left = 384
+        Height = 13
+        Top = 61
+        Width = 103
+        Caption = 'WindowsVersionLabel'
+        ParentColor = False
       end
     end
   end
@@ -2994,7 +3010,7 @@ object SetupForm: TSetupForm
         Width = 209
         Directory = '.'
         ExtendedSelect = False
-        ItemHeight = 0
+        ItemHeight = 13
         Mask = '*.dll'
         OnClick = PluginListBoxClick
         OnDblClick = PluginListBoxDblClick
@@ -3429,9 +3445,14 @@ object SetupForm: TSetupForm
         Width = 212
         ExtendedSelect = False
         Enabled = False
+        Font.CharSet = 4
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
         ItemHeight = 0
         OnClick = PerfCountersListBoxClick
         ParentShowHint = False
+        ParentFont = False
         ShowHint = True
         Sorted = True
         TabOrder = 0
@@ -3448,7 +3469,12 @@ object SetupForm: TSetupForm
         AutoSelect = False
         AutoSize = False
         Enabled = False
+        Font.CharSet = 4
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
         ItemHeight = 13
+        ParentFont = False
         ParentShowHint = False
         ShowHint = True
         TabOrder = 1

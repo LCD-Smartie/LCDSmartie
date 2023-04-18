@@ -29,7 +29,7 @@ uses
   Commctrl,
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
-  ExtDlgs, CheckLst, ValEdit, Menus, SpinEx, RTTICtrls, Process, FileUtil,
+  ExtDlgs, CheckLst, Menus, SpinEx, RTTICtrls, Process, FileUtil,
   Windows, Types;
 
 const
@@ -51,9 +51,6 @@ type
   TCheckBoxArray = array of TCheckBox; // for custom character editor
 
 type
-  PPAnsiChar = ^PAnsiChar;
-
-type
   TSetupForm = class(TForm)
     ActionAddButton: TButton;
     ActionDeleteButton: TButton;
@@ -68,6 +65,8 @@ type
     BitBtn4: TBitBtn;
     AppendConfigNameCheckBox: TCheckBox;
     BoincServerIndexComboBox: TComboBox;
+    Label41: TLabel;
+    WindowsVersionLabel: TLabel;
     pdhRefreshButton: TButton;
     Button2: TButton;
     GroupBox6: TGroupBox;
@@ -479,6 +478,7 @@ type
     shdownmessagebutton: integer;
     CurrentlyShownEmailAccount: integer;
     CurrentScreen: integer;
+    DetectedOS: string;
     procedure FocusToInputField;
     procedure SaveScreen(scr: integer);
     procedure LoadScreen(scr: integer);
@@ -513,15 +513,15 @@ uses
   UIconUtils, UEditLine, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
 
 function PdhEnumObjectsA( szDataSource: PAnsiChar; szMachineName: PAnsiChar; mszObjectList: PPAnsiChar; pcchBufferSize: PDWORD; dwDetailLevel: DWORD; bRefresh: boolean ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectsA';
-function PdhEnumObjectItemsA( szDataSource: PAnsiChar;
-  szMachineName: PAnsiChar;
-  szObjectName: PAnsiChar;
-  mszCounterList: PPAnsiChar;
+function PdhEnumObjectItemsW( szDataSource: PAnsiString;
+  szMachineName: PAnsiString;
+  szObjectName: pointer;
+  mszCounterList: PPWideChar;
   pcchCounterListLength: PDWORD;
-  mszInstanceList: PPAnsiChar;
+  mszInstanceList: PPWideChar;
   pcchInstanceListLength: PDWORD;
   dwDetailLevel: DWORD;
-  dwFlags: DWORD ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectItemsA';
+  dwFlags: DWORD ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectItemsW';
 
 
 {$R *.lfm}
@@ -534,11 +534,13 @@ end;
 procedure TSetupForm.pdhRefreshButtonClick(Sender: TObject);
 var
   buffsize: DWORD;
-  buff: array of AnsiChar;
+  buff: array of byte;
   ret: HRESULT;
   list: array of string;
   i: integer;
 begin
+
+
   buffsize := 0;
   if (PdhEnumObjectsA(nil, nil, nil, @buffsize, PERF_DETAIL_WIZARD, true) = PDH_MORE_DATA) then
   begin
@@ -572,13 +574,14 @@ begin
   while length(buff) > 0 do
   begin
     SetLength(list, length(list)+1);
-    list[length(list) -1] := strpas(@buff[0]);
-    delete(buff, 0, length(list[length(list)-1]) +1);
+    list[length(list) -1] := PAnsiChar(buff);
+    delete(buff, 0, length(PAnsiChar(buff)) +1);
     if (list[length(list)-1] = '') then
       delete(list, length(list)-1, 1);
   end;
   PerfCountersListBox.Clear;
-  PerfCountersListBox.Items.AddStrings(list);
+  for i := 0 to length(list) -1 do
+  PerfCountersListBox.Items.AddText(TEncoding.ANSI.GetAnsiString(tbytes(list[i])));
 
   PerfSettingsIndexComboBox.Clear;
   for i := 1 to length(config.PerfSettings) do
@@ -593,23 +596,26 @@ var
   item: string;
   buff1size: DWORD;
   buff2size: DWORD;
-  buff1: array of AnsiChar;
-  buff2: array of AnsiChar;
+  buff1: array of widechar;
+  buff2: array of widechar;
   ret: HRESULT;
   list: array of string;
+  wideChars   : array[0..255] of WideChar;
 begin
   item := PerfCountersListBox.GetSelectedText;
+  StringToWideChar(rawbytestring(item), wideChars, 255);
   buff1size := 0;
   buff2size := 0;
   PerfCountersListBox.Hint := PerfCountersListBox.GetSelectedText;
-  if (PdhEnumObjectItemsA(nil, nil, pchar(item), nil, @buff1size, nil, @buff2size, PERF_DETAIL_WIZARD, 0) = PDH_MORE_DATA ) then
+
+  if ( PdhEnumObjectItemsW(nil, nil, pwidechar(wideChars), nil, @buff1size, nil, @buff2size, PERF_DETAIL_WIZARD, 0) = PDH_MORE_DATA ) then
   begin
     // according to https://learn.microsoft.com/en-us/windows/win32/api/pdh/nf-pdh-pdhenumobjectsa
     // We're only supposed to add 1 on xp and only to PdhEnumObjectsA buffer but we get a range check error
     // on certain counters without it here
     SetLength(buff1, buff1size+1);
     SetLength(buff2, buff2size+1);
-    ret := PdhEnumObjectItemsA(nil, nil, pchar(item), @buff1[0], @buff1size, @buff2[0], @buff2size, PERF_DETAIL_WIZARD, 0);
+    ret := PdhEnumObjectItemsW(nil, nil, pwidechar(wideChars), @buff1[0], @buff1size, @buff2[0], @buff2size, PERF_DETAIL_WIZARD, 0);
     if ret <> 0 then
     begin
       PerfCountersListBox.Clear;
@@ -631,8 +637,9 @@ begin
   while length(buff1) > 0 do
   begin
     SetLength(list, length(list)+1);
-    list[length(list) -1] := strpas(@buff1[0]);
-    delete(buff1, 0, length(list[length(list)-1]) +1);
+    list[length(list) -1] := PWideChar(buff1);
+
+    delete(buff1, 0, length(PWideChar(buff1))+1);
     if (list[length(list)-1] = '') then
       delete(list, length(list)-1, 1);
   end;
@@ -652,8 +659,8 @@ begin
   while length(buff2) > 0 do
   begin
     SetLength(list, length(list)+1);
-    list[length(list) -1] := strpas(@buff2[0]);
-    delete(buff2, 0, length(list[length(list)-1]) +1);
+    list[length(list) -1] := PWideChar(buff2);
+    delete(buff2, 0, length(PWideChar(buff2)) +1);
     if (list[length(list)-1] = '') then
       delete(list, length(list)-1, 1);
   end;
@@ -672,10 +679,8 @@ end;
 procedure TSetupForm.Button2Click(Sender: TObject);
 begin
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].PerfObject := PerfCountersListBox.GetSelectedText;
-
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Counter := CountersComboBox.Text;
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Instance := InstancesComboBox.Text;
-
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Format := FormatComboBox.ItemIndex;
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Scaling := ScalingComboBox.ItemIndex;
 end;
@@ -744,7 +749,8 @@ begin
     if LCDSmartieDisplayForm.Data.storage[i] <> '' then
       StorageStringGrid.Cells[1,i+1] :=  LCDSmartieDisplayForm.Data.storage[i];
 
-  RunTimeLabel.Caption :=  HumanReadableTime(secondsbetween(Now, LCDSmartieDisplayForm.StartTime))
+  RunTimeLabel.Caption :=  HumanReadableTime(secondsbetween(Now, LCDSmartieDisplayForm.StartTime));
+  WindowsVersionLabel.Caption := DetectedOS;
 end;
 
 
@@ -2820,6 +2826,7 @@ end;
 procedure TSetupForm.FormCreate(Sender: TObject);
 var
   pathssl: string;
+  oviVersionInfo: windows.TOSVERSIONINFO;
 begin
   {$IFDEF STANDALONESETUP}
   SetupForm.BorderStyle := bsSingle;
@@ -2831,6 +2838,12 @@ begin
 
   //point PluginListBox to the plugin dirs
   PluginListBox.Directory := ExtractFilePath(ParamStr(0)) + 'plugins\';
+  DetectedOs := 'Unknown';
+  oviVersionInfo.dwOSVersionInfoSize := SizeOf(oviVersionInfo);
+  if windows.GetVersionEx(oviVersionInfo) then
+    DetectedOs := inttostr(oviVersionInfo.dwMajorVersion)
+    +'.'+ inttostr(oviVersionInfo.dwMinorVersion)
+    +'.'+ inttostr(oviVersionInfo.dwBuildNumber);
 end;
 
 procedure TSetupForm.MainPageControlChange(Sender: TObject);

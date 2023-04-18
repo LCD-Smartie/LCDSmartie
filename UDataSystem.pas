@@ -80,7 +80,7 @@ type
   PTPDH_FMT_COUNTERVALUE = ^TPDH_FMT_COUNTERVALUE;
   TPDH_FMT_COUNTERVALUE = record
     CStatus: DWORD ;
-    LongValue: int64;
+    LargeValue: int64;
     //case integer of
     //  1: ( longValue: Int32; );
     //  2: ( doubleValue: double; );
@@ -130,9 +130,6 @@ type
     pdhCPUUsageCounterHandle: THANDLE;
     pdhCPUPerformanceCounterHandle: THANDLE;
     pdhCPUFrequencyCounterHandle: THANDLE;
-    pdhCounterType: DWORD;
-    pdhCounterItemsBuffer: array of TPDH_FMT_COUNTERVALUE_ITEM_A; // needs to be global
-    pdhFmtCounterValue: TPDH_FMT_COUNTERVALUE; // needs to be global no time or patience to figure out why
     CPUUsageArray: array of TCPUUsage;
     CPUPerformanceArray: array of TCPUperformance;
     function getIsWin2kXP: Boolean;
@@ -198,7 +195,8 @@ uses
 
 function PdhOpenQueryA( szDataSource : PAnsiChar; dwUserData : PDWORD; phQuery: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhOpenQueryA';
 function PdhCloseQuery( hQuery: THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCloseQuery';
-function PdhAddEnglishCounterA( hQuery : THANDLE; szFullCounterPath : PAnsiChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterA';
+//function PdhAddEnglishCounterA( hQuery : THANDLE; szFullCounterPath : PAnsiChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterA';
+function PdhAddCounterW( hQuery : THANDLE; szFullCounterPath : PWideChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterW';
 function PdhCollectQueryData( hQuery : THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCollectQueryData';
 function PdhGetFormattedCounterValue( hCounter : THANDLE; dwFormat : DWORD; lpdwType: pointer; pValue: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhGetFormattedCounterValue';
 function PdhGetFormattedCounterArrayA( hCounter : THANDLE; dwFormat : DWORD; lpdwBufferSize: PDWORD; lpdwItemCount: PDWORD; ItemBuffer : PTPDH_FMT_COUNTERVALUE_ITEM_A) : HRESULT; stdcall; external 'pdh' name 'PdhGetFormattedCounterArrayA';
@@ -207,8 +205,13 @@ function SHQueryUserNotificationState( p : Pointer ) : HRESULT; stdcall; externa
 
 constructor TSystemDataThread.Create;
 var
+  Reg: Tregistry;
   lprocessorinfo:TProcessorInformation;
   pdhRet: HRESULT;
+  st: tstringlist;
+  pos: integer;
+  PerfObject: array[0..255] of WideChar;
+  PerfCounter: array[0..255] of WideChar;
 begin
   STComputername := Computername;
   STUsername := Username;
@@ -222,17 +225,47 @@ begin
 
   if ( PdhOpenQueryA(nil, nil, @pdhQueryHandle) >= 0 ) then
   begin
+    st := tstringlist.create;
+    Reg := TRegistry.Create;
+    try
+      Reg.RootKey := HKEY_LOCAL_MACHINE;
+      if Reg.OpenKeyReadOnly('\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib\CurrentLanguage') then
+         Reg.ReadStringList('Counter', st);
+    finally
+      Reg.Free;
+    end;
+
     if getIsWin10 then
     begin
-      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\% Processor Utility'), nil, @pdhCPUUsageCounterHandle);
-      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\% Processor Performance'), nil, @pdhCPUPerformanceCounterHandle);
-      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\Processor Frequency'), nil, @pdhCPUFrequencyCounterHandle);
+      pos := st.indexof('2454');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfObject, 255);// localized 'Processor Information'
+      pos := st.indexof('2508');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized '% Processor Utility'
+      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUUsageCounterHandle);
+
+      pos := st.indexof('2504');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized '% Processor Performance'
+      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUPerformanceCounterHandle);
+
+      pos := st.indexof('2490');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized 'Processor Frequency'
+      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUFrequencyCounterHandle);
     end
     else
-    begin
-      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Information(*)\% Processor Time'), nil, @pdhCPUUsageCounterHandle);
-      pdhRet := PdhAddEnglishCounterA(pdhQueryHandle, pchar('\Processor Performance(*)\frequency'), nil, @pdhCPUPerformanceCounterHandle);
+    begin // < win10
+      pos := st.indexof('1848');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfObject, 255); // localized 'Processor Information'
+      pos := st.indexof('1850');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized '% Processor Time'
+      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUUsageCounterHandle);
+
+      pos := st.indexof('8910');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfObject, 255); // localized 'Processor Performance'
+      pos := st.indexof('8912');
+      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized string of 'frequency'
+      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUPerformanceCounterHandle);
     end;
+    st.Free;
   end;
 
   inherited Create(100);
@@ -481,7 +514,12 @@ var
   FProcessEntry32: TProcessEntry32;
   i: integer;
   NextCPUUse: Int64;
+  pdhCounterType: DWORD;
+  pdhCounterItems: array of TPDH_FMT_COUNTERVALUE_ITEM_A;
+  pdhFmtCounterValue: TPDH_FMT_COUNTERVALUE;
   pdhItemCount: dword;
+  pdhBuffer: pointer;
+  pp: pointer; // so we can move around in the above pointer
   pdhBufferSize: dword;
   ret: HRESULT;
 begin
@@ -633,12 +671,21 @@ begin
   fDataLock.Enter;
   PdhCollectQueryData(pdhQueryHandle);
 
+  // CPU Usage
   pdhBufferSize := 0;
   ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, nil);
   if ret = PDH_MORE_DATA then
   begin
-    SetLength(pdhCounterItemsBuffer, pdhItemCount);
-    ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, @pdhCounterItemsBuffer[0]);
+    pdhBuffer := getmem(pdhBufferSize); // we can't just pass CounterItems to PdhGetFormattedCounterArrayA as the pointer mem is tacked to the end of the structure
+    pp := pdhBuffer;
+    SetLength(pdhCounterItems, pdhItemCount);
+    ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, pdhBuffer);
+
+    for i := 0 to pdhItemCount -1 do
+    begin
+      pdhCounterItems[i] := TPDH_FMT_COUNTERVALUE_ITEM_A(pp^);
+      pp := pp + 24; // advance the pointer to the start of the next record.
+    end;
   end;
 
   if pdhItemCount > 0 then
@@ -646,18 +693,29 @@ begin
     SetLength(CPUUsageArray, pdhItemCount);
     for i := 0 to pdhItemCount -1 do
     begin
-      CPUUsageArray[i].name := strpas(pdhCounterItemsBuffer[i].szName);
-      CPUUsageArray[i].value := int32(pdhCounterItemsBuffer[i].PDH_FMT_COUNTERVALUE.longValue);
+      CPUUsageArray[i].name := strpas(pdhCounterItems[i].szName);
+      CPUUsageArray[i].value := int32(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue);
     end;
-    NextCPUUse := int32(pdhCounterItemsBuffer[pdhItemCount - 1].PDH_FMT_COUNTERVALUE.longValue);
+    NextCPUUse := int32(pdhCounterItems[pdhItemCount - 1].PDH_FMT_COUNTERVALUE.LargeValue);
   end;
+  freemem(pdhBuffer);
+
+  // CPU Clock
   pdhItemCount := 0;
   pdhBufferSize := 0;
   ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, nil);
   if ret = PDH_MORE_DATA then
   begin
-    SetLength(pdhCounterItemsBuffer, pdhItemCount);
-    ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, @pdhCounterItemsBuffer[0]);
+    pdhBuffer := getmem(pdhBufferSize);
+    pp := pdhBuffer;
+    SetLength(pdhCounterItems, pdhItemCount);
+    ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, pdhBuffer);
+
+    for i := 0 to pdhItemCount -1 do
+    begin
+      pdhCounterItems[i] := TPDH_FMT_COUNTERVALUE_ITEM_A(pp^);
+      pp := pp + 24; // advance the pointer to the start of the next record.
+    end;
   end;
 
   if getIsWin10 then
@@ -668,8 +726,8 @@ begin
       for i := 0 to pdhItemCount -1 do
       begin
         ret := PdhGetFormattedCounterValue(pdhCPUFrequencyCounterHandle, PDH_FMT_LONG, @pdhCounterType, @pdhFmtCounterValue);
-        CPUPerformanceArray[i].name := strpas(pdhCounterItemsBuffer[i].szName);
-        CPUPerformanceArray[i].value := round((int32(pdhFmtCounterValue.longValue) / 100) * int32(pdhCounterItemsBuffer[i].PDH_FMT_COUNTERVALUE.longValue));
+        CPUPerformanceArray[i].name := strpas(pdhCounterItems[i].szName);
+        CPUPerformanceArray[i].value := round((int32(pdhFmtCounterValue.LargeValue) / 100) * int32(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue));
       end;
       CPUSpeed := inttostr(CPUPerformanceArray[pdhItemCount - 1].value);
     end;
@@ -681,13 +739,13 @@ begin
       SetLength(CPUPerformanceArray, pdhItemCount);
       for i := 0 to pdhItemCount -1 do
       begin
-        CPUPerformanceArray[i].name := strpas(pdhCounterItemsBuffer[i].szName);
-        CPUPerformanceArray[i].value := int32(pdhCounterItemsBuffer[i].PDH_FMT_COUNTERVALUE.longValue);
+        CPUPerformanceArray[i].name := strpas(pdhCounterItems[i].szName);
+        CPUPerformanceArray[i].value := int32(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue);
       end;
       CPUSpeed := inttostr(CPUPerformanceArray[pdhItemCount - 1].value);
     end;
   end;
-
+  freemem(pdhBuffer);
   CPUUse := NextCPUUse;
   fDataLock.Leave;
 end;

@@ -119,9 +119,6 @@ type
 implementation
 
 uses
-  {$IF Defined(CPUX64)}
-  Process,
-  {$IFEND}
   Windows, Forms, Dialogs, StrUtils, Winsock,
   UMain, UUtils, UConfig,
   DataThread, UDataNetwork, UDataDisk, UDataGame, UDataSystem,
@@ -396,7 +393,11 @@ var
   iPos1, iPos2 : Integer;
   screenResolution: String;
   t: extended;
+  fmt: TFormatSettings;
 begin
+  fmt := DefaultFormatSettings;
+  fmt.DecimalSeparator := '.';
+
   if (pos('$ScreenReso', line) <> 0) then begin
     screenResolution := IntToStr(Screen.DesktopWidth) + 'x' +
       IntToStr(Screen.DesktopHeight);
@@ -442,7 +443,7 @@ begin
         iPos2 := PosEx('#', tempst, iPos1);
       until (iPos1 = 1);
 
-      line := prefix + FloatToStr(ccount, localeFormat) + postfix;
+      line := prefix + FloatToStr(ccount, fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Count: '
         + CleanString(E.Message) + ']' + postfix;
@@ -481,7 +482,7 @@ begin
     try
       RequiredParameters(numargs, 2, 2);
       t := power(10, strtoint(args[2]));
-      line := prefix + floattostr(round(strtofloat(args[1])*t)/t) + postfix;
+      line := prefix + floattostr(round(strtofloat(args[1],fmt)*t)/t,fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Round: '
         + CleanString(E.Message) + ']' + postfix;
@@ -493,7 +494,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1]) + strtofloat(args[2])) + postfix;
+      line := prefix + floattostr(strtofloat(args[1],fmt) + strtofloat(args[2],fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Add: '
         + CleanString(E.Message) + ']' + postfix;
@@ -505,7 +506,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1]) - strtofloat(args[2])) + postfix;
+      line := prefix + floattostr(strtofloat(args[1],fmt) - strtofloat(args[2],fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Sub: '
         + CleanString(E.Message) + ']' + postfix;
@@ -517,7 +518,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1]) * strtofloat(args[2])) + postfix;
+      line := prefix + floattostr(strtofloat(args[1],fmt) * strtofloat(args[2],fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Mul: '
         + CleanString(E.Message) + ']' + postfix;
@@ -529,7 +530,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1]) / strtofloat(args[2])) + postfix;
+      line := prefix + floattostr(strtofloat(args[1],fmt) / strtofloat(args[2],fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Div: '
         + CleanString(E.Message) + ']' + postfix;

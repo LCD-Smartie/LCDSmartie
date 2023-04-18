@@ -63,9 +63,9 @@ implementation
 uses
   UUtils, StrUtils, windows;
 
-function PdhOpenQueryA( szDataSource : PAnsiChar; dwUserData : PDWORD; phQuery: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhOpenQueryA';
+function PdhOpenQueryW( szDataSource : PAnsiChar; dwUserData : PDWORD; phQuery: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhOpenQueryW';
 function PdhCloseQuery( hQuery: THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCloseQuery';
-function PdhAddCounterA( hQuery : THANDLE; szFullCounterPath : PAnsiChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterA';
+function PdhAddCounterW( hQuery : THANDLE; szFullCounterPath : PWideChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterW';
 function PdhCollectQueryData( hQuery : THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCollectQueryData';
 function PdhGetFormattedCounterValue( hCounter : THANDLE; dwFormat : DWORD; lpdwType: pointer; pValue: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhGetFormattedCounterValue';
 
@@ -91,10 +91,11 @@ var
   pdhRet: HRESULT;
   pdhCounterPath: string;
   i: integer;
+  wideChars   : array[0..255] of WideChar;
 begin
   if pdhQueryHandle > 0 then CloseQuery;
 
-  pdhRet := PdhOpenQueryA(nil, nil, @pdhQueryHandle);
+  pdhRet := PdhOpenQueryW(nil, nil, @pdhQueryHandle);
   if pdhRet <> 0 then
   begin
     for i := 1 to length(config.PerfSettings) do
@@ -114,7 +115,8 @@ begin
       pdhCounterPath := pdhCounterPath + '(' + config.PerfSettings[i].Instance + ')';
 
     pdhCounterPath := pdhCounterPath + '\' + config.PerfSettings[i].Counter;
-    pdhRet := PdhAddCounterA(pdhQueryHandle, pchar(pdhCounterPath), nil, @pdhDataArray[i].Handle);
+    StringToWideChar(rawbytestring(pdhCounterPath), wideChars, 255);
+    pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar(wideChars), nil, @pdhDataArray[i].Handle);
 
     case config.PerfSettings[i].Format of
       0: pdhDataArray[i].format := PDH_FMT_LONG;
