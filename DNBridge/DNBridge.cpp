@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <msclr\auto_gcroot.h>
 #include <msclr\marshal_cppstd.h>
-
+ 
 using namespace System;
 using namespace System::Reflection;
 using namespace System::Text;
@@ -106,7 +106,6 @@ __declspec(dllexport) char * __stdcall BridgeInit(const char *param1, int *id, i
 		}
 	}
 	
-
 	static char buffer[1024];
 	buffer[0] = 0;
 	if (result != "")
@@ -117,44 +116,24 @@ __declspec(dllexport) char * __stdcall BridgeInit(const char *param1, int *id, i
 	return buffer;
 }
 
-char *ConvertAnsiToUtf8(const char *input)
-{
-	static unsigned char buffer[2048];
-	unsigned int n, nn, nLength;
-	unsigned const char *inputString = (unsigned const char *)input;
-
-	nLength = strlen(input);
-	nn = 0;
-	for (n=0; n<nLength && inputString[n]!=0; n++)
-	{
-		if (inputString[n] > 127)
-		{
-			buffer[nn++] = 192 + inputString[n]/64;
-			buffer[nn++] = 128 + inputString[n]%64;
-		}
-		else
-		{
-			buffer[nn++] = inputString[n];
-		}
-	}
-	buffer[nn] = '\0';
-	return (char *) buffer;
-}
-
 __declspec(dllexport) char * __stdcall BridgeFunc(int iBridgeId, int iFunc, const char *param1, const char *param2)
 {
 	char *param;
-	UTF8Encoding^ encoder = gcnew UTF8Encoding();
-	param = ConvertAnsiToUtf8(param1);
-	String^ managed_param1 = gcnew String(param, 0, strlen(param), encoder);
-	param = ConvertAnsiToUtf8(param2);
-	String^ managed_param2 = gcnew String(param, 0, strlen(param), encoder);
+	int wchars_num = MultiByteToWideChar(CP_UTF8, 0, param1, -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[wchars_num];
+	MultiByteToWideChar(CP_UTF8, 0, param1, -1, wstr, wchars_num);	
+	String^ managed_param1 = gcnew String(wstr);
+
+	wchars_num = MultiByteToWideChar(CP_UTF8, 0, param2, -1, NULL, 0);
+	wstr = new wchar_t[wchars_num];
+	MultiByteToWideChar(CP_UTF8, 0, param2, -1, wstr, wchars_num);
+	String^ managed_param2 = gcnew String(wstr);
+
 	String^ result = gcnew String("");
 	plugin^ current = globals::plugins[iBridgeId - 1];
 
 	// 0 based array
 	iFunc--;
-
 	try
 	{
 		if (!current->myMethods || !current->myMethods[iFunc])
@@ -174,13 +153,18 @@ __declspec(dllexport) char * __stdcall BridgeFunc(int iBridgeId, int iFunc, cons
 			result = String::Concat(result, ": ", e->InnerException->Message);
 		result = String::Concat(result, "]");
 	}
-
 	static char buffer[1024];
 	buffer[0] = 0;
 	if (result != "")
 	{
-		std::string value = msclr::interop::marshal_as<std::string>(result);
-		strcpy_s(buffer, value.c_str());
+		pin_ptr<const wchar_t> wch = PtrToStringChars(result);
+
+		size_t  sizeInBytes = ((result->Length + 1) * 2);
+		char* ch = (char*)malloc(sizeInBytes);
+
+		WideCharToMultiByte(CP_UTF8,0, wch, sizeInBytes,ch, sizeInBytes, NULL, NULL);
+
+		strcpy_s(buffer, ch);
 	}
 	return buffer;
 }

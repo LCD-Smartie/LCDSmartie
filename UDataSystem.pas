@@ -58,7 +58,6 @@ const
   PageFreePercentKey = PageKey + 'F%';
   PageUsedPercentKey = PageKey + 'U%';
 
-  alpha = 0.5;
   PDH_FMT_LONG   = $100;
   PDH_FMT_DOUBLE = $200;
   PDH_FMT_LARGE  = $400;
@@ -99,12 +98,12 @@ type
 type
   TCPUUsage = record
     name: string;
-    value: long;
+    value: double;
   end;
 type
   TCPUPerformance = record
     name: string;
-    value: long;
+    value: double;
   end;
 
 {$M+}
@@ -123,7 +122,7 @@ type
     CPUUse:double;
     SMBios: tsmbios;
     CPUType: string;
-    CPUSpeed: string;
+    CPUSpeed: double;
     systeminfo: SYSTEM_INFO;
     PPIbuff: array of TPROCESSOR_POWER_INFORMATION;
     pdhQueryHandle: THANDLE;
@@ -220,7 +219,7 @@ begin
   Smbios := tsmbios.create;
     for LProcessorInfo in SMBios.ProcessorInfo do
       CPUType := LProcessorInfo.ProcessorVersionStr;
-  CPUSpeed := '0';
+  CPUSpeed := 0;
   setLength(PPIbuff, ProcessorCount);
 
   if ( PdhOpenQueryA(nil, nil, @pdhQueryHandle) >= 0 ) then
@@ -268,7 +267,7 @@ begin
     st.Free;
   end;
 
-  inherited Create(100);
+  inherited Create(500);
 end;
 
 destructor TSystemDataThread.Destroy;
@@ -513,7 +512,6 @@ var
   FSnapshotHandle: THandle;
   FProcessEntry32: TProcessEntry32;
   i: integer;
-  NextCPUUse: Int64;
   pdhCounterType: DWORD;
   pdhCounterItems: array of TPDH_FMT_COUNTERVALUE_ITEM_A;
   pdhFmtCounterValue: TPDH_FMT_COUNTERVALUE;
@@ -647,39 +645,32 @@ begin
         FullScreenGameActive := '0';
     end;
 
-  // this is a hog. better to run in the refresh proc and limit it to every 300ms or more
-  // executing CreateToolhelp32Snapshot(), Process32First() and Process32Next() everytime
-  // actions call through here cause massive cpu usage and nearly 30ms delay. Possibly more
-  // depending on the type and quantity of actions called
-  if DateTimeToMilliseconds(Now() - SnapTime) >= 300 then
+  fDataLock.Enter;
+  SnapTime := Now();
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  if  Process32First(FSnapshotHandle, FProcessEntry32)then
   begin
-    fDataLock.Enter;
-    SnapTime := Now();
-    FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
-    FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if  Process32First(FSnapshotHandle, FProcessEntry32)then
-    begin
-      ProcList.Clear;
-      repeat
-        ProcList.Add(UpperCase(ExtractFileName(FProcessEntry32.szExeFile)));
-      until not Process32Next(FSnapshotHandle, FProcessEntry32);
-    end;
-    closehandle(FSnapshotHandle);
-    fDataLock.Leave;
+    ProcList.Clear;
+    repeat
+      ProcList.Add(UpperCase(ExtractFileName(FProcessEntry32.szExeFile)));
+    until not Process32Next(FSnapshotHandle, FProcessEntry32);
   end;
+  closehandle(FSnapshotHandle);
+  fDataLock.Leave;
 
   fDataLock.Enter;
   PdhCollectQueryData(pdhQueryHandle);
 
   // CPU Usage
   pdhBufferSize := 0;
-  ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, nil);
+  ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_DOUBLE, @pdhBufferSize, @pdhItemCount, nil);
   if ret = PDH_MORE_DATA then
   begin
     pdhBuffer := getmem(pdhBufferSize); // we can't just pass CounterItems to PdhGetFormattedCounterArrayA as the pointer mem is tacked to the end of the structure
     pp := pdhBuffer;
     SetLength(pdhCounterItems, pdhItemCount);
-    ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, pdhBuffer);
+    ret := PdhGetFormattedCounterArrayA(pdhCPUUsageCounterHandle, PDH_FMT_DOUBLE, @pdhBufferSize, @pdhItemCount, pdhBuffer);
 
     for i := 0 to pdhItemCount -1 do
     begin
@@ -694,22 +685,22 @@ begin
     for i := 0 to pdhItemCount -1 do
     begin
       CPUUsageArray[i].name := strpas(pdhCounterItems[i].szName);
-      CPUUsageArray[i].value := int32(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue);
+      CPUUsageArray[i].value := (double(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue) + CPUUsageArray[i].value) / 2;
     end;
-    NextCPUUse := int32(pdhCounterItems[pdhItemCount - 1].PDH_FMT_COUNTERVALUE.LargeValue);
+    CPUUse := CPUUsageArray[pdhItemCount - 1].Value;
   end;
   freemem(pdhBuffer);
 
   // CPU Clock
   pdhItemCount := 0;
   pdhBufferSize := 0;
-  ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, nil);
+  ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_DOUBLE, @pdhBufferSize, @pdhItemCount, nil);
   if ret = PDH_MORE_DATA then
   begin
     pdhBuffer := getmem(pdhBufferSize);
     pp := pdhBuffer;
     SetLength(pdhCounterItems, pdhItemCount);
-    ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_LONG, @pdhBufferSize, @pdhItemCount, pdhBuffer);
+    ret := PdhGetFormattedCounterArrayA(pdhCPUPerformanceCounterHandle, PDH_FMT_DOUBLE, @pdhBufferSize, @pdhItemCount, pdhBuffer);
 
     for i := 0 to pdhItemCount -1 do
     begin
@@ -725,11 +716,11 @@ begin
       SetLength(CPUPerformanceArray, pdhItemCount);
       for i := 0 to pdhItemCount -1 do
       begin
-        ret := PdhGetFormattedCounterValue(pdhCPUFrequencyCounterHandle, PDH_FMT_LONG, @pdhCounterType, @pdhFmtCounterValue);
+        ret := PdhGetFormattedCounterValue(pdhCPUFrequencyCounterHandle, PDH_FMT_DOUBLE, @pdhCounterType, @pdhFmtCounterValue);
         CPUPerformanceArray[i].name := strpas(pdhCounterItems[i].szName);
-        CPUPerformanceArray[i].value := round((int32(pdhFmtCounterValue.LargeValue) / 100) * int32(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue));
+        CPUPerformanceArray[i].value := (((double(pdhFmtCounterValue.LargeValue)  / 100) * double(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue)) + CPUPerformanceArray[i].value) /2;
       end;
-      CPUSpeed := inttostr(CPUPerformanceArray[pdhItemCount - 1].value);
+      CPUSpeed := CPUPerformanceArray[pdhItemCount - 1].value;
     end;
   end
   else
@@ -740,13 +731,12 @@ begin
       for i := 0 to pdhItemCount -1 do
       begin
         CPUPerformanceArray[i].name := strpas(pdhCounterItems[i].szName);
-        CPUPerformanceArray[i].value := int32(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue);
+        CPUPerformanceArray[i].value := (double(pdhCounterItems[i].PDH_FMT_COUNTERVALUE.LargeValue) + CPUPerformanceArray[i].value) / 2;
       end;
-      CPUSpeed := inttostr(CPUPerformanceArray[pdhItemCount - 1].value);
+      CPUSpeed := CPUPerformanceArray[pdhItemCount - 1].value;
     end;
   end;
   freemem(pdhBuffer);
-  CPUUse := NextCPUUse;
   fDataLock.Leave;
 end;
 
@@ -789,7 +779,7 @@ begin
 
         for i := 0 to length(CPUUsageArray) - 1  do
           if CPUUsageArray[i].name = cpuname then
-            cpuval := inttostr(CPUUsageArray[i].value);
+            cpuval := Format('%.0f', [CPUUsageArray[i].value]);
 
         Line := prefix + cpuval + postfix
       except
@@ -817,7 +807,7 @@ begin
 
         for i := 0 to length(CPUPerformanceArray) - 1  do
           if CPUPerformanceArray[i].name = cpuname then
-            cpuval := inttostr(CPUPerformanceArray[i].value);
+            cpuval := Format('%.0f', [CPUPerformanceArray[i].value]);
 
         Line := prefix + cpuval + postfix
       except
@@ -832,8 +822,8 @@ begin
   begin
     Line := StringReplace(line, CPUTypeKey, CPUType, [rfReplaceAll]);
     Line := StringReplace(line, CPUUseKey, Format('%.0f', [CPUUse]), [rfReplaceAll]);
-    Line := StringReplace(line, CPUSpeedMhzKey, CPUSpeed, [rfReplaceAll]);
-    Line := StringReplace(line, CPUSpeedGhzKey, Format('%.2f', [strtoint(CPUSpeed) / 1000]) , [rfReplaceAll]);
+    Line := StringReplace(line, CPUSpeedMhzKey, Format('%.0f', [CPUSpeed]), [rfReplaceAll]);
+    Line := StringReplace(line, CPUSpeedGhzKey, Format('%.2f', [CPUSpeed / 1000]) , [rfReplaceAll]);
   end;
   fDataLock.Leave();
   fDataLock.Enter();

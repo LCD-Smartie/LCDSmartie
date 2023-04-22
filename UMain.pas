@@ -2274,11 +2274,11 @@ begin
 
   TempTransitionTimerInterval := ascreen.TransitionTime*100;
 
-  TransitionTemp := TransitionTemp2;
-  TransitionTemp2 := ascreen.TransitionStyle;
+  //TransitionTemp := TransitionTemp2;
+  TransitionTemp := ascreen.TransitionStyle;
 
-  if not ascreen.enabled then TransitionTemp2 := tsNone;
-  if TransitionTemp2 = tsNone then TempTransitionTimerInterval := 1;
+  //if not ascreen.enabled then TransitionTemp2 := tsNone;
+  if TransitionTemp = tsNone then TransitionTimer.Interval := 1;
 
   if (config.width = 40) then
     ScreenNumberPanel.Caption := 'Theme: ' + IntToStr(activetheme + 1) + ' Screen: ' +
@@ -2340,6 +2340,7 @@ var
 begin
   // Changing screen - do any transitions required.
   //TransCycle := TransCycle + 1;
+
   now := GetTickCount();
   if (now < TransStart) then
     TransCycle := (now + (MAXDWORD-TransStart)) div timerRefresh.Interval

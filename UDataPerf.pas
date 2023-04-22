@@ -35,9 +35,9 @@ type
 type
   TCounterData = record
     Handle: THANDLE;
-    format: DWORD;
+    format: integer;
     Scale: DWORD;
-    Data: string;
+    Data: int64;
   end;
 
 type
@@ -99,7 +99,7 @@ begin
   if pdhRet <> 0 then
   begin
     for i := 1 to length(config.PerfSettings) do
-      pdhDataArray[i].Data := 'PERF: Couldn''t open perf query';
+      pdhDataArray[i].Data := 0;
     exit;
   end;
 
@@ -109,7 +109,7 @@ begin
     if (config.PerfSettings[i].PerfObject = '') or
        (config.PerfSettings[i].Counter = '') then
          continue;
-
+    pdhDataArray[i].Data := 0;
     pdhCounterPath := '\' + config.PerfSettings[i].PerfObject;
     if (config.PerfSettings[i].Instance <> '') then
       pdhCounterPath := pdhCounterPath + '(' + config.PerfSettings[i].Instance + ')';
@@ -131,11 +131,7 @@ begin
       3: pdhDataArray[i].Scale := PDH_FMT_NODATA;
       4: pdhDataArray[i].Scale := PDH_FMT_NOCAP100;
     end;
-
-    if pdhRet <> 0 then
-      pdhDataArray[i].Data := 'PERF: couldn''t open perf counter: ' + pdhCounterPath;
   end;
-
 end;
 
 procedure TPerfDataThread.CloseQuery;
@@ -167,23 +163,32 @@ begin
 
     pdhRet := PdhGetFormattedCounterValue(pdhDataArray[i].Handle,  pdhDataArray[i].format or pdhDataArray[i].Scale , @pdhCounterType, @pdhFmtCounterValue);
     if pdhRet = 0 then
+    begin
       case config.PerfSettings[i].Format of
-        0: pdhDataArray[i].Data := inttostr(int32(pdhFmtCounterValue.largeValue));
-        1: pdhDataArray[i].Data := floattostr(double(pdhFmtCounterValue.largeValue));
-        2: pdhDataArray[i].Data := inttostr(pdhFmtCounterValue.largeValue);
+        0: pdhDataArray[i].Data := round((int32(pdhFmtCounterValue.largeValue) + pdhDataArray[i].Data) / 2);
+        1: pdhDataArray[i].Data := int64((double(pdhFmtCounterValue.largeValue) + double(pdhDataArray[i].Data)) / 2);
+        2: pdhDataArray[i].Data := round((pdhFmtCounterValue.largeValue + pdhDataArray[i].Data) / 2);
       end;
+    end
   end;
 end;
 
 procedure TPerfDataThread.ResolveVariables(var Line : string);
 var
   i: integer;
+  fmt: TFormatSettings;
 begin
+  fmt := DefaultFormatSettings;
+  fmt.DecimalSeparator := '.';
+
   if (pos('$Perf',Line) > 0) then
     for i := 1 to length(config.PerfSettings) do
     begin
-    line := StringReplace(line, '$Perf(' + IntToStr(i) + ')',
-          pdhDataArray[i].Data, [rfReplaceAll]);
+      case config.PerfSettings[i].Format of
+        0: line := StringReplace(line, '$Perf(' + IntToStr(i) + ')', inttostr(pdhDataArray[i].Data), [rfReplaceAll]);
+        1: line := StringReplace(line, '$Perf(' + IntToStr(i) + ')', floattostr(double(pdhDataArray[i].Data), fmt), [rfReplaceAll]);
+        2: line := StringReplace(line, '$Perf(' + IntToStr(i) + ')', inttostr(pdhDataArray[i].Data), [rfReplaceAll]);
+      end;
     end;
 end;
 
