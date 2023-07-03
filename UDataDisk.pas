@@ -5,7 +5,7 @@ unit UDataDisk;
 interface
 
 uses
-  DataThread, windows;
+  DataThread, windows, UMain;
 
 const
   HDKey = '$HD';
@@ -237,7 +237,7 @@ begin
   while decodeArgs(Line, MyKey, maxArgs, args, prefix, postfix, numargs) do begin
     try
       RequiredParameters(numargs, 1, 1);
-      letter := ord(upcase(args[1][1]));
+      letter := ord(upcase(LCDSmartieDisplayForm.Data.change(args[1])[1]));
       Line := prefix;
       fDataLock.Enter();
       bDoDisk[letter] := true;

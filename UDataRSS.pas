@@ -5,7 +5,7 @@ unit UDataRSS;
 interface
 
 uses
-  SysUtils,URLThread;
+  SysUtils,URLThread, UMain;
 
 const
   MaxRSSItems = 40;
@@ -85,17 +85,17 @@ begin
     try
       while (RSSFeedIndex < RSSEntries) and (not found) do
       begin
-        if (RSS[RSSFeedIndex].url = args[1]) then found := true
+        if (RSS[RSSFeedIndex].url = LCDSmartieDisplayForm.Data.change(args[1])) then found := true
         else Inc(RSSFeedIndex);
       end;
 
       try
         if (found) and (RSS[RSSFeedIndex].items > 0)
-          and (Cardinal(StrToInt(args[3])) <= RSS[RSSFeedIndex].items) then
+          and (Cardinal(StrToInt(LCDSmartieDisplayForm.Data.change(args[3]))) <= RSS[RSSFeedIndex].items) then
         begin
 
-          ItemIndex := StrToInt(args[3]);
-          case (args[2][1]) of
+          ItemIndex := StrToInt(LCDSmartieDisplayForm.Data.change(args[3]));
+          case (LCDSmartieDisplayForm.Data.change(args[2])[1]) of
             't' : line := prefix + RSS[RSSFeedIndex].title[ItemIndex] + postfix;  // title
             'd' : line := prefix + RSS[RSSFeedIndex].desc[ItemIndex] + postfix; // description
             'b' : begin
@@ -284,13 +284,13 @@ begin
         // check if we have already seen this url:
         iFound := -1;
         for RSSLoop := 0 to MyRSSCount-1 do
-          if (RSS[RSSLoop].url = args[1]) then iFound := RSSLoop;
+          if (RSS[RSSLoop].url = LCDSmartieDisplayForm.Data.change(args[1])) then iFound := RSSLoop;
 
         iMaxFreq := 0;
         if (numargs >= 4) then
         begin
           try
-            iMaxFreq := StrToInt(args[4]) * 60;
+            iMaxFreq := StrToInt(LCDSmartieDisplayForm.Data.change(args[4])) * 60;
           except
           end;
         end;
@@ -304,9 +304,9 @@ begin
             if (MyRSSCount + 1 >= Length(RSS)) then
               SetLength(RSS, MyRSSCount + 10);
 
-            if (RSS[MyRSSCount].url <> args[1]) then
+            if (RSS[MyRSSCount].url <> LCDSmartieDisplayForm.Data.change(args[1])) then
             begin
-              RSS[MyRSSCount].url := args[1];
+              RSS[MyRSSCount].url := LCDSmartieDisplayForm.Data.change(args[1]);
               RSS[MyRSSCount].whole := '';
               RSS[MyRSSCount].items := 0;
             end;

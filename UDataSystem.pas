@@ -25,7 +25,7 @@ unit UDataSystem;
 interface
 
 uses
-  DataThread, Windows, SysUtils, Classes, Registry, shellapi, JwaWindows, jwatlhelp32, jwaWinBase, usmbios;
+  DataThread, Windows, SysUtils, Classes, Registry, shellapi, JwaWindows, jwatlhelp32, jwaWinBase, usmbios, UMain;
 
 const
   // lets put a prefix key to make it clear what they are
@@ -758,7 +758,7 @@ begin
     while decodeArgs(line, ApplicationActiveKey, maxArgs, args, prefix, postfix, numargs) do
     begin
       Line := prefix;
-      Line := Line + inttostr(isapplicationactive(args[1])) + postfix;
+      Line := Line + inttostr(isapplicationactive(LCDSmartieDisplayForm.Data.change(args[1]))) + postfix;
     end;
   end;
   fDataLock.Leave();
@@ -771,9 +771,9 @@ begin
       try
         RequiredParameters(numargs, 1, 2);
         if numargs = 2 then
-          cpuname := stripspaces(args[1])+','+stripspaces(args[2])
+          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]))+','+stripspaces(LCDSmartieDisplayForm.Data.change(args[2]))
         else if numargs = 1 then
-          cpuname := stripspaces(args[1])
+          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]))
         else
           raise Exception.Create('Bad parameters');
 
@@ -799,9 +799,9 @@ begin
       try
         RequiredParameters(numargs, 1, 2);
         if numargs = 2 then
-          cpuname := stripspaces(args[1])+','+stripspaces(args[2])
+          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]))+','+stripspaces(LCDSmartieDisplayForm.Data.change(args[2]))
         else if numargs = 1 then
-          cpuname := stripspaces(args[1])
+          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]))
         else
           raise Exception.Create('Bad parameters');
 

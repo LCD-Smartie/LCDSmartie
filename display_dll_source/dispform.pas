@@ -10,8 +10,8 @@ uses
   IniFiles;
 
 const
-  MaxWidth = 40;
-  MaxHeight = 4;
+  MaxWidth = 100;
+  MaxHeight = 8;
   CharWidth = 5;
   CharHeight = 8;
 
@@ -450,6 +450,8 @@ begin
     end;
 end;
 
+
+
 procedure TLCDDisplayForm.FormCreate(Sender: TObject);
 begin
   readconfig;
@@ -580,6 +582,7 @@ begin
   Y := min(MaxHeight,Y);
   MyWidth := X;
   MyHeight := Y;
+  FormShow(nil);
 end;
 
 procedure TLCDDisplayForm.PaintBoxPaint(Sender: TObject);

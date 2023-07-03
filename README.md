@@ -21,6 +21,10 @@ While there is much information on the lcd smartie forums, any issues with this 
 - There may/will be bugs
 
 ### Log and Information
+- ### 5.5.4.15
+- Issue #10 revert variable resolver behaviour and #12 Implement custom LCD size options
+- Also implemented recursive variable resolver for some other variables. Far from complete as some other resolver functions need complete re-write to take advantage.
+- Can now set custom screen sizes up to 8x100. Re-writing has allowed for even larger displays in future. Some plugins while will likely work it has to be remembered that they were written with only four lines in mind.
 - ### 5.5.3.6
 - LCDSmartie.exe.Manifest must be kept alongside the program to be able to detect versions of Windows higher than 8
 - new functions: $SysCPUCoreUsage(CPU, Core) and $SysCPUCoreSpeed(CPU, Core) for % usage or MHz speed for a specific core. CPU is the physical core index. Core is the core index on the physical CPU. Example: $SysCPUCoreUsage(0,0) for physical CPU 0 core 0, $SysCPUCoreUsage(0,1) physical 0 core 1. You can use $SysCPUCoreUsage(_Total) for an overall total or $SysCPUCoreUsage(0,_Total) for the first physical CPU total.

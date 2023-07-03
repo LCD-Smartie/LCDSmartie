@@ -114,8 +114,6 @@ type
     property GotEmail : boolean read GetGotEmail;
   end;
 
-
-
 implementation
 
 uses
@@ -322,9 +320,9 @@ var
   startvarcount: integer;
 begin
   try
-    while true do
-    begin
-      startvarcount := line.CountChar('$');
+    //while true do
+    //begin
+    //  startvarcount := line.CountChar('$');
       for Loop := 0 to DataThreads.Count-1 do begin
         TDataThread(DataThreads[Loop]).ResolveVariables(Line);
         if (Pos('$', line) = 0) then goto endChange;
@@ -339,8 +337,8 @@ begin
       ResolveWinampVariables(line);
       if (Pos('$', line) = 0) then goto endChange;
       ResolveTimeVariable(Line);
-      if startvarcount = line.CountChar('$') then goto endChange
-    end;
+     // if startvarcount = line.CountChar('$') then goto endChange
+    //end;
 endChange:
   ResolveStringFunctionVariables(Line); // only do these after all others resolved
   except
@@ -372,7 +370,6 @@ begin
   if assigned(EmailThread) then
     Result := EmailThread.GotEmail;
 end;
-
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -410,7 +407,7 @@ begin
     then
   begin
     spacecount := 0;
-    if (numargs = 1) and (cLastKeyPressed = args[1]) then spacecount := 1;
+    if (numargs = 1) and (cLastKeyPressed = change(args[1])) then spacecount := 1;
 
     line := prefix + intToStr(spacecount) + postfix;
   end;
@@ -430,7 +427,7 @@ begin
     ccount := 0;
     try
       RequiredParameters(numargs, 1, 1);
-      tempst := args[1];
+      tempst := change(args[1]);
       iPos1 := 1;
       iPos2 := pos('#', tempst);
 
@@ -455,7 +452,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      storage[strtoint(args[2])] := args[1];
+      storage[strtoint(change(args[2]))] := change(args[1]);
       line := prefix + postfix;
     except
       on E: Exception do line := prefix + '[Count: '
@@ -469,7 +466,7 @@ begin
     ccount := 0;
     try
       RequiredParameters(numargs, 1, 1);
-      line := prefix + storage[strtoint(args[1])] + postfix;
+      line := prefix + storage[strtoint(change(args[1]))] + postfix;
     except
       on E: Exception do line := prefix + '[Count: '
         + CleanString(E.Message) + ']' + postfix;
@@ -481,8 +478,8 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      t := power(10, strtoint(args[2]));
-      line := prefix + floattostr(round(strtofloat(args[1],fmt)*t)/t,fmt) + postfix;
+      t := power(10, strtoint(change(args[2])));
+      line := prefix + floattostr(round(strtofloat(change(args[1]),fmt)*t)/t,fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Round: '
         + CleanString(E.Message) + ']' + postfix;
@@ -494,7 +491,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1],fmt) + strtofloat(args[2],fmt),fmt) + postfix;
+      line := prefix + floattostr(strtofloat(change(args[1]),fmt) + strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Add: '
         + CleanString(E.Message) + ']' + postfix;
@@ -506,7 +503,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1],fmt) - strtofloat(args[2],fmt),fmt) + postfix;
+      line := prefix + floattostr(strtofloat(change(args[1]),fmt) - strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Sub: '
         + CleanString(E.Message) + ']' + postfix;
@@ -518,7 +515,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1],fmt) * strtofloat(args[2],fmt),fmt) + postfix;
+      line := prefix + floattostr(strtofloat(change(args[1]),fmt) * strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Mul: '
         + CleanString(E.Message) + ']' + postfix;
@@ -530,7 +527,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 2, 2);
-      line := prefix + floattostr(strtofloat(args[1],fmt) / strtofloat(args[2],fmt),fmt) + postfix;
+      line := prefix + floattostr(strtofloat(change(args[1]),fmt) / strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
       on E: Exception do line := prefix + '[Div: '
         + CleanString(E.Message) + ']' + postfix;
@@ -648,9 +645,9 @@ begin
     try
       RequiredParameters(numargs, 1, 2);
       if (numargs = 1) then spacecount := config.width
-      else spacecount := StrToInt(args[2]);
+      else spacecount := StrToInt(change(args[2]));
 
-      line := prefix + CenterText(args[1], spacecount) + postfix;
+      line := prefix + CenterText(change(args[1]), spacecount) + postfix;
     except
       on E: Exception do line := prefix + '[Center: '
         + CleanString(E.Message) + ']' + postfix;
@@ -661,7 +658,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 1, 1);
-      line := prefix + Chr(StrToInt(args[1])) + postfix;
+      line := prefix + Chr(StrToInt(change(args[1]))) + postfix;
     except
       on E: Exception do line := prefix + '[Chr: '
         + CleanString(E.Message) + ']' + postfix;
@@ -672,7 +669,7 @@ begin
   begin
     try
       RequiredParameters(numargs, 1, 1);
-      spacecount := StrToInt(args[1]);
+      spacecount := StrToInt(change(args[1]));
       spaceline := '';
 
       if spacecount > length(prefix) then
@@ -690,11 +687,11 @@ begin
   begin
     try
       RequiredParameters(numargs, 3, 3);
-      spacecount := strtoint(args[3])*3;
+      spacecount := strtoint(change(args[3]))*3;
 
-      if (StrToFloat(args[2], localeFormat) <> 0) then
-        x := round(StrToFloat(args[1], localeFormat)
-                  * spacecount / StrToFloat(args[2], localeFormat))
+      if (StrToFloat(change(args[2]), localeFormat) <> 0) then
+        x := round(StrToFloat(change(args[1]), localeFormat)
+                  * spacecount / StrToFloat(change(args[2]), localeFormat))
       else x := 0;
 
       if x > spacecount then x := spacecount;
@@ -747,7 +744,7 @@ begin
       if hdcounter > 4 then line := StringReplace(line, '$LogFile(',
         'error', []);
 
-      sFileloc := args[1];
+      sFileloc := change(args[1]);
       if (sFileloc[1] = '"') and (sFileloc[Length(sFileLoc)] = '"') then
         sFileloc := copy(sFileloc, 2, Length(sFileloc)-2);
 
@@ -755,7 +752,7 @@ begin
         raise Exception.Create('No such file');
 
       RequiredParameters(numargs, 2, 2);
-      iFileline := StrToInt(args[2]);
+      iFileline := StrToInt(change(args[2]));
 
       if iFileline > 3 then iFileline := 3;
       if iFileline < 0 then iFileline := 0;
@@ -788,13 +785,13 @@ begin
 
   while decodeArgs(line, '$File', maxArgs, args, prefix, postfix, numargs) do
   begin
-    sFileloc := args[1];
+    sFileloc := change(args[1]);
     if (sFileloc[1] = '"') and (sFileloc[Length(sFileLoc)] = '"') then
       sFileloc := copy(sFileloc, 2, Length(sFileloc)-2);
 
     try
       RequiredParameters(numargs, 2, 2);
-      iFileline := StrToInt(args[2]);
+      iFileline := StrToInt(change(args[2]));
       if (not FileExists(sFileloc)) then
         raise Exception.Create('No such file');
       assignfile(fFile3, sFileloc);
@@ -835,7 +832,7 @@ begin
     try
       RequiredParameters(numargs, 4, 4);
 
-      uiPlugin := FindPlugin(args[1]);
+      uiPlugin := FindPlugin(change(args[1]));
       if (bCacheResults) and (not bForceRefresh) then
       begin
         if (dlls[uiPlugin].uiMinRefreshInterval < Cardinal(config.dllPeriod)) then
@@ -858,10 +855,10 @@ begin
 
       if (bCallPlugin) then
       begin
-        sParam1 := change(args[3], qstattemp);
-        sParam2 := change(args[4], qstattemp);
+        //sParam1 := change(args[3], qstattemp);
+        //sParam2 := change(args[4], qstattemp);
         try
-          sAnswer := CallPlugin(uiPlugin, StrToInt(args[2]), sParam1, sParam2);
+          sAnswer := CallPlugin(uiPlugin, StrToInt(change(args[2])), change(args[3], qstattemp), change(args[4], qstattemp));
         except
           on E: Exception do
             sAnswer := '[Dll: ' + CleanString(E.Message) + ']';
@@ -900,7 +897,6 @@ begin
     Result := cacheresult_lastFindPlugin
   else
   begin
-
     // check if we have seen this dll before
     sLoadDllName := sDllName;
     if (Pos('.DLL', UpperCase(sLoadDllName)) = 0) then

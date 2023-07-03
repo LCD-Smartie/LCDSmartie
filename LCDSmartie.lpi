@@ -20,10 +20,11 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
-      <RevisionNr Value="3"/>
-      <BuildNr Value="7"/>
+      <RevisionNr Value="4"/>
+      <BuildNr Value="15"/>
       <CharSet Value="04B0"/>
     </VersionInfo>
     <BuildModes Count="3">

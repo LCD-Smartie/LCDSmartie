@@ -79,14 +79,6 @@ type
     LastTheme1: TMenuItem;
     N2: TMenuItem;
     Credits1: TMenuItem;
-    Line1RightScrollImage: TImage;
-    Line2RightScrollImage: TImage;
-    Line3RightScrollImage: TImage;
-    Line4RightScrollImage: TImage;
-    Line1LeftScrollImage: TImage;
-    Line2LeftScrollImage: TImage;
-    Line3LeftScrollImage: TImage;
-    Line4LeftScrollImage: TImage;
     NextScreenImage: TImage;
     PreviousImage: TImage;
     BarLeftImage: TImage;
@@ -100,14 +92,6 @@ type
     LeftManualScrollTimer: TTimer;
     RightManualScrollTimer: TTimer;
     TimerRefresh: TTimer;
-    xLine1Panel: TPanel;
-    xLine2Panel: TPanel;
-    xLine3Panel: TPanel;
-    xLine4Panel: TPanel;   // aka ScreenLCD[4]
-    Line1LCDPanel: TLCDLineFrame;
-    Line2LCDPanel: TLCDLineFrame;
-    Line4LCDPanel: TLCDLineFrame;
-    Line3LCDPanel: TLCDLineFrame;
     IdTCPServer1: TIdTCPServer;
     IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL;
     procedure FormCreate(Sender: TObject);
@@ -142,37 +126,13 @@ type
       TShiftState; X, Y: Integer);
     procedure HideImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
-    procedure Line1RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
+    procedure LineRightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
-    procedure Line1RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
+    procedure LineRightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
-    procedure Line2RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
+    procedure LineLeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
-    procedure Line3RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line4RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line1LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line2LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line3LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line4LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line2RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line3RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line4RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line1LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line2LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line3LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-      TShiftState; X, Y: Integer);
-    procedure Line4LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
+    procedure LineLeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
     procedure NextScreenImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
@@ -190,12 +150,16 @@ type
     procedure ServerExecute(AContext: TIdContext);
 
   private
+    LineRightScrollImages: Array[1..MaxLines] of TImage;
+    LineLCDPanels: Array[1..MaxLines] of TLCDLineFrame;
+    xLinePanels: Array[1..Maxlines] of TPanel;
+    LineLeftScrollImages: Array[1..MaxLines] of TImage;
     ScreenLCD: Array[1..MaxLines] of TOnScreenLineWrapper;
     parsedLine: Array[1..MaxLines] of String;
     scrollPos: Array[1..MaxLines] of Integer;
     Oldline: Array[1..MaxLines] of String;
     Newline: Array[1..MaxLines] of String;
-    LastLineLCD: array [1..4] of string;
+    LastLineLCD: array [1..MaxLines] of string;
     tmpline: Array [1..MaxLines] of String;
     GuessArray: Array[1..MaxLines, 1..MaxCols] of Boolean;
     canflash: Boolean;
@@ -390,27 +354,21 @@ var
   Loop : byte;
 begin
   if assigned(ScreenLCD[1]) and (ScreenLCD[1].fTrueLCD = TrueLCD) then exit;
+
   for Loop := 1 to MaxLines do begin
     if assigned(ScreenLCD[Loop]) then begin
       ScreenLCD[Loop].Visible := false;
       ScreenLCD[Loop].Free;
     end;
+
+    if TrueLCD then
+      ScreenLCD[loop] := TOnScreenLineWrapper.Create(@LineLCDPanels[loop],TrueLCD)
+    else
+      ScreenLCD[loop] := TOnScreenLineWrapper.Create(@xLinePanels[loop],TrueLCD);
+
+    ScreenLCD[loop].visible := config.height > loop - 1;
   end;
-  if TrueLCD then begin
-    ScreenLCD[1] := TOnScreenLineWrapper.Create(@Line1LCDPanel,TrueLCD);
-    ScreenLCD[2] := TOnScreenLineWrapper.Create(@Line2LCDPanel,TrueLCD);
-    ScreenLCD[3] := TOnScreenLineWrapper.Create(@Line3LCDPanel,TrueLCD);
-    ScreenLCD[4] := TOnScreenLineWrapper.Create(@Line4LCDPanel,TrueLCD);
-  end else begin
-    ScreenLCD[1] := TOnScreenLineWrapper.Create(@xLine1Panel,TrueLCD);
-    ScreenLCD[2] := TOnScreenLineWrapper.Create(@xLine2Panel,TrueLCD);
-    ScreenLCD[3] := TOnScreenLineWrapper.Create(@xLine3Panel,TrueLCD);
-    ScreenLCD[4] := TOnScreenLineWrapper.Create(@xLine4Panel,TrueLCD);
-  end;
-  ScreenLCD[1].visible := true;
-  ScreenLCD[2].visible := config.height > 1;
-  ScreenLCD[3].visible := config.height > 2;
-  ScreenLCD[4].visible := config.height > 3;
+
   SetOnscreenBacklight;
 end;
 
@@ -442,6 +400,7 @@ var
   hConfig: longint;
   i: integer;
   allParameters: string;
+  loop: byte;
 begin
   StartTime := now;
   // this to fix/work around a problem with lazarus and exceptions not being dealt with properly in DLLs
@@ -453,6 +412,69 @@ begin
 
   // keep all ssl related stuff in a sub dir
   IdOpenSSLSetLibPath('.\openssl\');
+
+  // construct virtual display
+  // create the form dynamically to allow for more lines in future
+    for Loop := 1 to MaxLines do begin
+
+      LineRightScrollImages[loop] := TImage.Create(nil);
+      LineRightScrollImages[loop].Parent := LCDSmartieDisplayForm;
+      LineRightScrollImages[loop].Left := 16;
+      LineRightScrollImages[loop].Height := 16;
+      LineRightScrollImages[loop].Hint := 'Scroll line right.';
+      LineRightScrollImages[loop].Top := 16 * (loop - 1);
+      LineRightScrollImages[loop].Width := 16;
+      LineRightScrollImages[loop].OnMouseDown := LineRightScrollImageMouseDown;
+      LineRightScrollImages[loop].OnMouseUp := LineRightScrollImageMouseUp;
+      LineRightScrollImages[loop].ParentShowHint := False;
+      LineRightScrollImages[loop].ShowHint := True;
+      LineRightScrollImages[loop].Name := 'ScrollR' + inttostr(loop); // this is parsed by LineScrollImageMouseDown
+
+      LineLCDPanels[loop] := TLCDLineFrame.Create(nil);
+      LineLCDPanels[loop].Parent := LCDSmartieDisplayForm;
+      LineLCDPanels[loop].Left := 32;
+      LineLCDPanels[loop].Top := 16 * (loop - 1);
+      LineLCDPanels[loop].Height := 16;
+      LineLCDPanels[loop].Hint := 'Virtual display.';
+      LineLCDPanels[loop].DoubleBuffered := True;
+      LineLCDPanels[loop].ShowHint := True;
+
+      xLinePanels[loop] := TPanel.Create(nil);
+      xLinePanels[loop].Parent := LCDSmartieDisplayForm;
+      xLinePanels[loop].Left := 32;
+      xLinePanels[loop].Top := 16 * (loop - 1);
+      xLinePanels[loop].Height := 16;
+      xLinePanels[loop].Visible := false;
+      xLinePanels[loop].BorderStyle := bsNone;
+      xLinePanels[loop].Hint := 'Virtual display.';
+      xLinePanels[loop].Alignment := taLeftJustify;
+      xLinePanels[loop].BevelOuter := bvNone;
+      xLinePanels[loop].Color := clNone;
+      xLinePanels[loop].DoubleBuffered := True;
+      xLinePanels[loop].Font.CharSet := 4;
+      xLinePanels[loop].Font.Color := clWindowText;
+      xLinePanels[loop].Font.Height := -14;
+      xLinePanels[loop].Font.Name := 'Modern';
+      xLinePanels[loop].Font.Pitch := fpFixed;
+      xLinePanels[loop].ParentColor := False;
+      xLinePanels[loop].ParentDoubleBuffered := False;
+      xLinePanels[loop].ParentFont := False;
+      xLinePanels[loop].ParentShowHint := False;
+      xLinePanels[loop].ShowHint := True;
+
+      LineLeftScrollImages[loop] := TImage.Create(nil);
+      LineLeftScrollImages[loop].Parent := LCDSmartieDisplayForm;
+      LineLeftScrollImages[loop].Left := 16;
+      LineLeftScrollImages[loop].Height := 16;
+      LineLeftScrollImages[loop].Hint := 'Scroll line left.';
+      LineLeftScrollImages[loop].Top := 16 * (loop - 1);
+      LineLeftScrollImages[loop].Width := 16;
+      LineLeftScrollImages[loop].OnMouseDown := LineLeftScrollImageMouseDown;
+      LineLeftScrollImages[loop].OnMouseUp := LineLeftScrollImageMouseUp;
+      LineLeftScrollImages[loop].ParentShowHint := False;
+      LineLeftScrollImages[loop].ShowHint := True;
+      LineLeftScrollImages[loop].Name := 'ScrollL' + inttostr(loop); // this is parsed by LineScrollImageMouseDown
+    end;
 
   fillchar(ScreenLCD,sizeof(ScreenLCD),$00);
   Randomize;
@@ -571,19 +593,19 @@ procedure TLCDSmartieDisplayForm.LoadSkin;
 var
   sSkinPath: String;
   hIcon: TIcon;
+  loop: byte;
 begin
   try
     sSkinPath := extractfilepath(application.exename) + config.sSkinPath;
 
     LogoImage.picture.LoadFromFile(sSkinPath + 'logo.bmp');
-    Line1RightScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_left_up1.bmp');
-    Line2RightScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_left_up2.bmp');
-    Line3RightScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_left_up3.bmp');
-    Line4RightScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_left_up4.bmp');
-    Line1LeftScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_right_up1.bmp');
-    Line2LeftScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_right_up2.bmp');
-    Line3LeftScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_right_up3.bmp');
-    Line4LeftScrollImage.picture.LoadFromFile(sSkinPath + 'small_arrow_right_up4.bmp');
+
+    for loop := 1 to MaxLines do
+    begin
+      LineRightScrollImages[loop].picture.LoadFromFile(sSkinPath + 'small_arrow_left_up'+inttostr(loop)+'.bmp');
+      LineLeftScrollImages[loop].picture.LoadFromFile(sSkinPath + 'small_arrow_right_up'+inttostr(loop)+'.bmp');
+    end;
+
     NextScreenImage.picture.LoadFromFile(sSkinPath + 'big_arrow_right_up.bmp');
     PreviousImage.picture.LoadFromFile(sSkinPath + 'big_arrow_left_up.bmp');
     BarLeftImage.picture.LoadFromFile(sSkinPath + 'bar_left.bmp');
@@ -766,35 +788,13 @@ end;
 procedure TLCDSmartieDisplayForm.ResizeHeight;
 var
   iDelta: Integer;
+  loop: byte;
 begin
-  ScreenLCD[1].visible := true;
-  ScreenLCD[2].visible := false;
-  ScreenLCD[3].visible := false;
-  ScreenLCD[4].visible := false;
-  Line2RightScrollImage.visible := false;
-  Line3RightScrollImage.visible := false;
-  Line4RightScrollImage.visible := false;
-  Line2LeftScrollImage.visible := false;
-  Line3LeftScrollImage.visible := false;
-  Line4LeftScrollImage.visible := false;
-
-  if config.height > 1 then
+  for loop := 2 to MaxLines do
   begin
-    ScreenLCD[2].visible := true;
-    Line2RightScrollImage.Visible := true;
-    Line2LeftScrollImage.Visible := true;
-  end;
-  if config.height > 2 then
-  begin
-    ScreenLCD[3].visible := true;
-    Line3RightScrollImage.Visible := true;
-    Line3LeftScrollImage.Visible := true;
-  end;
-  if config.height > 3 then
-  begin
-    ScreenLCD[4].visible := true;
-    Line4RightScrollImage.Visible := true;
-    Line4LeftScrollImage.Visible := true;
+    ScreenLCD[loop].visible := config.height > loop - 1;
+    LineRightScrollImages[loop].visible := config.height > loop - 1;
+    LineLeftScrollImages[loop].visible := config.height > loop - 1;
   end;
 
   iDelta := 16 * (4-config.height);
@@ -828,21 +828,18 @@ begin
   Width := 382 - iDelta;
   LogoImage.left := 356 - iDelta;
   NextScreenImage.left := 368 - iDelta;
-  Line1LeftScrollImage.left := 352 - iDelta;
-  Line2LeftScrollImage.left := 352 - iDelta;
-  Line3LeftScrollImage.left := 352 - iDelta;
-  Line4LeftScrollImage.left := 352 - iDelta;
   BarRightImage.left := 266 - iDelta;
   HideImage.left := 323 - iDelta;
   for h := 1 to MaxLines do
   begin
+    LineLeftScrollImages[h].Left := 352 - iDelta;
     ScreenLCD[h].LineWidth := iTempWidth;
   end;
   BarMiddleImage.width := 220 - iDelta;
-
-  if (config.width = 40) then
+  BarMiddleImage.Stretch := true;
+  if (config.width >= 40) then
   begin
-    ScreenNumberPanel.left := 115;
+    ScreenNumberPanel.left := (Width - 130)  div 2;//115;
     ScreenNumberPanel.width := 130;
     ScreenNumberPanel.Caption := 'Theme: ' + IntToStr(activetheme + 1) + ' Screen: ' +
       IntToStr(activeScreen)
@@ -1191,7 +1188,7 @@ begin
   for h := 1 to config.height do
   begin
     tmpline[h] := ScreenLCD[h].Caption;
-    tmpline[h] := copy(UnescapeAmp(tmpline[h]) + '                                        ', 1, config.width);
+    tmpline[h] := copy(UnescapeAmp(tmpline[h]) + '                                                                                                    ', 1, config.width);
 
     if tmpline[h] <> LastLineLCD[h] then
     begin
@@ -1366,154 +1363,68 @@ end;
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-procedure TLCDSmartieDisplayForm.Line1RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
+procedure TLCDSmartieDisplayForm.LineRightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
+var
+  Image: TImage;
+  thisLine: integer;
 begin
-  Line1RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_down1.bmp');
-  line2scroll := 1;
+  Image := Sender As TImage;
+  thisLine := strtoInt(copy(Image.Name, 8));
+
+  LineRightScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
+    config.sSkinPath + 'small_arrow_left_down' + inttostr(thisLine) + '.bmp');
+
+  line2scroll := thisLine;
   RightManualScrollTimer.enabled := true;
   timerRefresh.enabled := false;
 end;
 
-procedure TLCDSmartieDisplayForm.Line1RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
+procedure TLCDSmartieDisplayForm.LineRightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
+var
+  Image: TImage;
+  thisLine: integer;
 begin
-  Line1RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_up1.bmp');
+  Image := Sender As TImage;
+  thisLine := strtoInt(copy(Image.Name, 8));
+
+  LineRightScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
+    config.sSkinPath + 'small_arrow_left_up' + inttostr(thisLine) + '.bmp');
+
   RightManualScrollTimer.enabled := false;
   timerRefresh.enabled := true;
 end;
 
-procedure TLCDSmartieDisplayForm.Line1LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
+procedure TLCDSmartieDisplayForm.LineLeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
+var
+  Image: TImage;
+  thisLine: integer;
 begin
-  Line1LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_down1.bmp');
-  line2scroll := 1;
+  Image := Sender As TImage;
+  thisLine := strtoInt(copy(Image.Name, 8));
+
+  LineLeftScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
+    config.sSkinPath + 'small_arrow_right_down' + inttostr(thisLine) + '.bmp');
+
+  line2scroll := thisLine;
   LeftManualScrollTimer.enabled := true;
   timerRefresh.enabled := false;
 end;
 
-procedure TLCDSmartieDisplayForm.Line1LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
+procedure TLCDSmartieDisplayForm.LineLeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
+var
+  Image: TImage;
+  thisLine: integer;
 begin
-  Line1LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_up1.bmp');
-  LeftManualScrollTimer.enabled := false;
-  timerRefresh.enabled := true;
-end;
+  Image := Sender As TImage;
+  thisLine := strtoInt(copy(Image.Name, 8));
 
-procedure TLCDSmartieDisplayForm.Line2RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line2RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_down2.bmp');
-  line2scroll := 2;
-  RightManualScrollTimer.enabled := true;
-  timerRefresh.enabled := false;
-end;
+  LineLeftScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
+    config.sSkinPath + 'small_arrow_right_up' + inttostr(thisLine) + '.bmp');
 
-procedure TLCDSmartieDisplayForm.Line2RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line2RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_up2.bmp');
-  RightManualScrollTimer.enabled := false;
-  timerRefresh.enabled := true;
-end;
-
-procedure TLCDSmartieDisplayForm.Line2LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line2LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_down2.bmp');
-  line2scroll := 2;
-  LeftManualScrollTimer.enabled := true;
-  timerRefresh.enabled := false;
-end;
-
-procedure TLCDSmartieDisplayForm.Line2LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line2LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_up2.bmp');
-  LeftManualScrollTimer.enabled := false;
-  timerRefresh.enabled := true;
-end;
-
-procedure TLCDSmartieDisplayForm.Line3RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line3RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_down3.bmp');
-  line2scroll := 3;
-  RightManualScrollTimer.enabled := true;
-  timerRefresh.enabled := false;
-end;
-
-procedure TLCDSmartieDisplayForm.Line3RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line3RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_up3.bmp');
-  RightManualScrollTimer.enabled := false;
-  timerRefresh.enabled := true;
-end;
-
-procedure TLCDSmartieDisplayForm.Line3LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line3LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_down3.bmp');
-  line2scroll := 3;
-  LeftManualScrollTimer.enabled := true;
-  timerRefresh.enabled := false;
-end;
-
-procedure TLCDSmartieDisplayForm.Line3LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line3LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_up3.bmp');
-  LeftManualScrollTimer.enabled := false;
-  timerRefresh.enabled := true;
-end;
-
-procedure TLCDSmartieDisplayForm.Line4RightScrollImageMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line4RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_down4.bmp');
-  line2scroll := 4;
-  RightManualScrollTimer.enabled := true;
-  timerRefresh.enabled := false;
-end;
-
-procedure TLCDSmartieDisplayForm.Line4RightScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line4RightScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_up4.bmp');
-  RightManualScrollTimer.enabled := false;
-  timerRefresh.enabled := true;
-end;
-
-procedure TLCDSmartieDisplayForm.Line4LeftScrollImageMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  Line4LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_down4.bmp');
-  line2scroll := 4;
-  LeftManualScrollTimer.enabled := true;
-  timerRefresh.enabled := false;
-end;
-
-procedure TLCDSmartieDisplayForm.Line4LeftScrollImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  Line4LeftScrollImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_up4.bmp');
   LeftManualScrollTimer.enabled := false;
   timerRefresh.enabled := true;
 end;
@@ -2144,8 +2055,9 @@ procedure TLCDSmartieDisplayForm.scrollLine(line: Byte; direction: Integer);
 var
   tmpline: Array [1..MaxLines] of String;
 begin
+
   tmpline[line] := copy (scroll(parsedLine[line], line, direction)
-    + '                                        ', 1, config.width);
+    + '                                                                                                    ', 1, config.width);
   ScreenLCD[line].caption := EscapeAmp(tmpline[line]);
   Lcd.setPosition(1, line);
   Lcd.write(tmpline[line]);
@@ -2270,6 +2182,10 @@ begin
     GuessArray[2, y] := false;
     GuessArray[3, y] := false;
     GuessArray[4, y] := false;
+    GuessArray[5, y] := false;
+    GuessArray[6, y] := false;
+    GuessArray[7, y] := false;
+    GuessArray[8, y] := false;
   end;
 
   TempTransitionTimerInterval := ascreen.TransitionTime*100;
@@ -2280,7 +2196,7 @@ begin
   //if not ascreen.enabled then TransitionTemp2 := tsNone;
   if TransitionTemp = tsNone then TransitionTimer.Interval := 1;
 
-  if (config.width = 40) then
+  if (config.width >= 40) then
     ScreenNumberPanel.Caption := 'Theme: ' + IntToStr(activetheme + 1) + ' Screen: ' +
       IntToStr(activeScreen)
   else
@@ -2356,9 +2272,9 @@ begin
 
   for x := 1 to config.height do begin
     oldline[x] := copy(oldline[x] +
-      '                                        ', 1, config.width);
+      '                                                                                                               ', 1, config.width);
     newline[x] := copy(newline[x] +
-      '                                        ', 1, config.width);
+      '                                                                                                               ', 1, config.width);
   end;
 
   case TransitionTemp of
@@ -2367,8 +2283,7 @@ begin
 
       for x := 1 to config.height do
       begin
-        tempstr := copy(newline[x] + '|' + oldline[x], round((config.width +
-          2)-TransCycle*((config.width + 2)/maxTransCycles)), config.width);
+        tempstr := copy(newline[x] + '|' + oldline[x], round((config.width-2)-TransCycle*((config.width+2)/maxTransCycles)), config.width);
         ScreenLCD[x].Caption := EscapeAmp(tempstr);
       end;
     end;
@@ -2394,7 +2309,7 @@ begin
 
       if (line <= config.height) then
         ScreenLCD[line].Caption :=
-          copy('----------------------------------------', 1, config.width);
+          copy('---------------------------------------------------------------------------------------------------', 1, config.width);
 
       for x := line + 1 to config.height do
       begin
@@ -2412,7 +2327,7 @@ begin
 
       if (config.height-line + 1 > 0) then
         ScreenLCD[config.height-line + 1].Caption :=
-          copy('----------------------------------------', 1, config.width);
+          copy('---------------------------------------------------------------------------------------------------', 1, config.width);
 
       for x := config.height-line + 2 to config.height do
       begin
@@ -2426,7 +2341,7 @@ begin
       for x := 1 to MaxLines do
       begin
         GuessRegister[x] := copy(UnescapeAmp(ScreenLCD[x].caption) +
-          '                                        ', 1, config.width);
+          '                                                                                                   ', 1, config.width);
       end;
 
       for x := iLastRandomTranCycle to

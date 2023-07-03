@@ -34,11 +34,11 @@ const
   sMyScreenTextSyntaxVersion = '1.0';
 
   MaxScreens = 99;
-  MaxLines = 4;
-  MaxCols = 40;
+  MaxLines = 8;
+  MaxCols = 100;
   MaxThemes = 99;
   MaxActions = 99;
-  MaxScreenSizes = 12;
+  MaxScreenSizes = 13;
   MaxEmailAccounts = 99;
   MaxBoincAccounts = 20;
   MaxPerfCounters = 50;
@@ -63,7 +63,8 @@ const
     (SizeName : '2x40'; YSize : 2; XSize : 40),
     (SizeName : '4x16'; YSize : 4; XSize : 16),
     (SizeName : '4x20'; YSize : 4; XSize : 20),
-    (SizeName : '4x40'; YSize : 4; XSize : 40));
+    (SizeName : '4x40'; YSize : 4; XSize : 40),
+    (SizeName : 'Custom'; YSize : 0; XSize : 0));
 
 
 const
@@ -140,6 +141,8 @@ type
     procedure saveINI;
     procedure SetScreenSize(con: Integer);
   public
+    Custom_width: integer;
+    Custom_Height: integer;
     AppendConfigName: boolean;
     MainFormCaption: string;
     MainFormPosTop: integer;
@@ -244,8 +247,15 @@ end;
 procedure TConfig.SetScreenSize(con: Integer);
 begin
   fScreenSize := con;
-  P_width := ScreenSizes[fScreenSize].XSize;
-  P_height := ScreenSizes[fScreenSize].YSize;
+  if ScreenSizes[fScreenSize].XSize >0 then
+    P_width := ScreenSizes[fScreenSize].XSize
+  else
+    P_width := Custom_width;
+
+  if ScreenSizes[fScreenSize].YSize >0 then
+    P_height := ScreenSizes[fScreenSize].YSize
+  else
+    P_height := Custom_height;
 end;
 
 function TConfig.load: Boolean;
@@ -407,7 +417,9 @@ begin
     testDriver.sCharMap := initFile.ReadString('Test Driver', 'CharMap', '');
   end;
 }
-
+  // keep the next two lines before SetScreenSize()
+  Custom_width := initFile.ReadInteger('General Settings', 'CustomWidth', 10);
+  Custom_height := initFile.ReadInteger('General Settings', 'CustomHeight', 5);
   SetScreenSize(initFile.ReadInteger('General Settings', 'Size', 11));
 
   xcontrast := initFile.ReadInteger('General Settings', 'Contrast', 88);
@@ -638,6 +650,9 @@ begin
 
   initFile.WriteInteger('General Settings', 'LCDType', ord(xScreenType));
   initFile.WriteInteger('General Settings', 'Size', ScreenSize);
+  initFile.WriteInteger('General Settings', 'CustomHeight', Custom_Height);
+  initFile.WriteInteger('General Settings', 'CustomWidth', Custom_width);
+
   initFile.WriteInteger('General Settings', 'Contrast', xcontrast);
   initFile.WriteInteger('General Settings', 'Brightness', xbrightness);
 

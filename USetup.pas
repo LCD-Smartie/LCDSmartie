@@ -30,7 +30,7 @@ uses
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
   ExtDlgs, CheckLst, Menus, SpinEx, RTTICtrls, Process, FileUtil,
-  Windows, Types;
+  Windows, Types, UConfig;
 
 const
   NoVariable = 'Variable: ';
@@ -65,7 +65,83 @@ type
     BitBtn4: TBitBtn;
     AppendConfigNameCheckBox: TCheckBox;
     BoincServerIndexComboBox: TComboBox;
+    CenterLine1CheckBox: TCheckBox;
+    CenterLine5CheckBox: TCheckBox;
+    CenterLine2CheckBox: TCheckBox;
+    CenterLine6CheckBox: TCheckBox;
+    CenterLine3CheckBox: TCheckBox;
+    CenterLine7CheckBox: TCheckBox;
+    CenterLine4CheckBox: TCheckBox;
+    CenterLine8CheckBox: TCheckBox;
+    ContinueLine1CheckBox: TCheckBox;
+    ContinueLine4CheckBox: TCheckBox;
+    ContinueLine2CheckBox: TCheckBox;
+    ContinueLine5CheckBox: TCheckBox;
+    ContinueLine3CheckBox: TCheckBox;
+    ContinueLine6CheckBox: TCheckBox;
+    ContinueLine7CheckBox: TCheckBox;
+    ContinueLine8CheckBox: TCheckBox;
+    CustomCharsSizeEdit: TSpinEdit;
+    CustomLinesSizeEdit: TSpinEdit;
+    DontScrollLine1CheckBox: TCheckBox;
+    DontScrollLine5CheckBox: TCheckBox;
+    DontScrollLine2CheckBox: TCheckBox;
+    DontScrollLine6CheckBox: TCheckBox;
+    DontScrollLine3CheckBox: TCheckBox;
+    DontScrollLine7CheckBox: TCheckBox;
+    DontScrollLine4CheckBox: TCheckBox;
+    DontScrollLine8CheckBox: TCheckBox;
+    GroupBox11: TGroupBox;
+    GroupBox12: TGroupBox;
+    DontScrollGroupBox: TGroupBox;
+    CenterTextGroupBox: TGroupBox;
+    ContinueNextLineGroupBox: TGroupBox;
+    GroupBox9: TGroupBox;
+    Label18: TLabel;
+    Label4: TLabel;
     Label41: TLabel;
+    Label43: TLabel;
+    Label44: TLabel;
+    Label5: TLabel;
+    Label51: TLabel;
+    Label60: TLabel;
+    Label61: TLabel;
+    Label62: TLabel;
+    Label71: TLabel;
+    Line1EditButton: TSpeedButton;
+    Line5EditButton: TSpeedButton;
+    Line1MemoEdit: TMemo;
+    Line5MemoEdit: TMemo;
+    Line2EditButton: TSpeedButton;
+    Line6EditButton: TSpeedButton;
+    Line2MemoEdit: TMemo;
+    Line6MemoEdit: TMemo;
+    Line3EditButton: TSpeedButton;
+    Line7EditButton: TSpeedButton;
+    Line3MemoEdit: TMemo;
+    Line7MemoEdit: TMemo;
+    Line4EditButton: TSpeedButton;
+    Line8EditButton: TSpeedButton;
+    Line4MemoEdit: TMemo;
+    Line8MemoEdit: TMemo;
+    ScreenEnabledCheckBox: TCheckBox;
+    ScreenLabel: TLabel;
+    ScreenSpinEdit: TSpinEdit;
+    ScrollBox1: TScrollBox;
+    ScrollBox2: TScrollBox;
+    ShutdownEdit1: TMemo;
+    ShutdownEdit2: TMemo;
+    ShutdownEdit3: TMemo;
+    ShutdownEdit4: TMemo;
+    ShutdownEdit5: TMemo;
+    ShutdownEdit6: TMemo;
+    ShutdownEdit7: TMemo;
+    ShutdownEdit8: TMemo;
+    StickyCheckbox: TCheckBox;
+    ThemeNumberSpinEdit: TSpinEdit;
+    TimeToShowSpinEdit: TSpinEdit;
+    TransitionStyleComboBox: TComboBox;
+    TransitionTimeSpinEdit: TSpinEdit;
     WindowsVersionLabel: TLabel;
     pdhRefreshButton: TButton;
     Button2: TButton;
@@ -159,15 +235,8 @@ type
     CCharCheckBox8: TCheckBox;
     CCharCheckBox9: TCheckBox;
     CCharTabSheet: TTabSheet;
-    CenterLine1CheckBox: TCheckBox;
-    CenterLine2CheckBox: TCheckBox;
-    CenterLine3CheckBox: TCheckBox;
-    CenterLine4CheckBox: TCheckBox;
     ColorSchemeComboBox: TComboBox;
     ComPortsButton: TButton;
-    ContinueLine1CheckBox: TCheckBox;
-    ContinueLine2CheckBox: TCheckBox;
-    ContinueLine3CheckBox: TCheckBox;
     ContrastTrackBar: TTrackBar;
     CopyToScreenButton: TButton;
     CopyToScreenComboBox: TComboBox;
@@ -180,10 +249,6 @@ type
     DistributedNetBrowseButton: TSpeedButton;
     DistributedNetLogfileEdit: TEdit;
     DLLCheckIntervalSpinEdit: TSpinEdit;
-    DontScrollLine1CheckBox: TCheckBox;
-    DontScrollLine2CheckBox: TCheckBox;
-    DontScrollLine3CheckBox: TCheckBox;
-    DontScrollLine4CheckBox: TCheckBox;
     MiConfigNameEdit: TEdit;
     EmailAccountComboBox: TComboBox;
     EmailCheckTimeSpinEdit: TSpinEdit;
@@ -207,10 +272,7 @@ type
     GameStatsTabSheet: TTabSheet;
     GameTypeComboBox: TComboBox;
     GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
-    GroupBox4: TGroupBox;
-    GroupBox5: TGroupBox;
     GroupBox7: TGroupBox;
     GroupBox8: TGroupBox;
     HideOnStartup: TCheckBox;
@@ -226,7 +288,6 @@ type
     Label15: TLabel;
     Label16: TLabel;
     Label17: TLabel;
-    Label18: TLabel;
     Label19: TLabel;
     Label2: TLabel;
     Label20: TLabel;
@@ -250,26 +311,18 @@ type
     Label37: TLabel;
     Label38: TLabel;
     Label39: TLabel;
-    Label4: TLabel;
     Label40: TLabel;
     Label42: TLabel;
-    Label43: TLabel;
-    Label44: TLabel;
     Label45: TLabel;
     Label48: TLabel;
     Label49: TLabel;
-    Label5: TLabel;
     Label50: TLabel;
-    Label51: TLabel;
     Label55: TLabel;
     Label56: TLabel;
     Label57: TLabel;
     Label58: TLabel;
     Label59: TLabel;
     Label6: TLabel;
-    Label60: TLabel;
-    Label61: TLabel;
-    Label62: TLabel;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
@@ -277,14 +330,6 @@ type
     LCDFeaturesTabSheet: TTabSheet;
     LCDSizeComboBox: TComboBox;
     LeftPageControl: TPageControl;
-    Line1EditButton: TSpeedButton;
-    Line1MemoEdit: TMemo;
-    Line2EditButton: TSpeedButton;
-    Line2MemoEdit: TMemo;
-    Line3EditButton: TSpeedButton;
-    Line3MemoEdit: TMemo;
-    Line4EditButton: TSpeedButton;
-    Line4MemoEdit: TMemo;
     MainPageControl: TPageControl;
     MultiInstancePageControl: TPageControl;
     MiCopyToNewRadioButton: TRadioButton;
@@ -317,20 +362,13 @@ type
     RemoteSendPortEdit: TEdit;
     RemoteSendUseSSLCheckBox: TCheckBox;
     RssTypeComboBox: TComboBox;
-    ScreenEnabledCheckBox: TCheckBox;
-    ScreenLabel: TLabel;
     ScreenSettingsGroupBox: TGroupBox;
-    ScreenSpinEdit: TSpinEdit;
     ScreensTabSheet: TTabSheet;
     ScreenTabsheet: TTabSheet;
     ActionsGridScrollBar: TScrollBar;
     BOINCListBox: TListBox;
     BOINCTabSheet: TTabSheet;
     BOINCEnableCheckBox: TCheckBox;
-    ShutdownEdit1: TMemo;
-    ShutdownEdit2: TMemo;
-    ShutdownEdit3: TMemo;
-    ShutdownEdit4: TMemo;
     ShutdownMessageGroup: TGroupBox;
     SkinPath: TEdit;
     SkinPathBrowseButton: TSpeedButton;
@@ -339,7 +377,6 @@ type
     StartAsAdminCheckBox: TCheckBox;
     StartupTabSheet: TTabSheet;
     StayOnTopCheckBox: TCheckBox;
-    StickyCheckbox: TCheckBox;
     MiRunningInstancesListGrid: TStringGrid;
     SwapWithScreenButton: TButton;
     SwapWithScreenComboBox: TComboBox;
@@ -350,11 +387,7 @@ type
     MiConfigsTabSheet: TTabSheet;
     MiRunningProcessesTabSheet: TTabSheet;
     MiStartupItemsTabSheet: TTabSheet;
-    ThemeNumberSpinEdit: TSpinEdit;
     CustomTitleTIEdit1: TTIEdit;
-    TimeToShowSpinEdit: TSpinEdit;
-    TransitionStyleComboBox: TComboBox;
-    TransitionTimeSpinEdit: TSpinEdit;
     TrayIcon: TEdit;
     TrayIconBrowseButton: TSpeedButton;
     TrayIconPreview16: TImage;
@@ -432,9 +465,7 @@ type
     procedure BOINCListBoxClick(Sender: TObject);
     procedure DistributedNetBrowseButtonClick(Sender: TObject);
     procedure EmailAccountComboBoxChange(Sender: TObject);
-    procedure ContinueLine1CheckBoxClick(Sender: TObject);
-    procedure ContinueLine2CheckBoxClick(Sender: TObject);
-    procedure ContinueLine3CheckBoxClick(Sender: TObject);
+    procedure ContinueLineCheckBoxClick(Sender: TObject);
     procedure WinampLocationBrowseButtonClick(Sender: TObject);
     procedure GamestatsListBoxClick(Sender: TObject);
     procedure LineEditEnter(Sender: TObject);
@@ -473,6 +504,12 @@ type
     procedure BOINCEnableCheckBoxClick(Sender: TObject);
 
   private
+    LineEditArray: Array[1..MaxLines] of TMemo;
+    LineEditButtonArray: Array[1..MaxLines] of TSpeedButton;
+    ContinueLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
+    DontScrollLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
+    CenterLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
+    ShutdownEditArray: Array[1..MaxLines] of TMemo;
     DLLPath: string;
     setupbutton: integer;
     shdownmessagebutton: integer;
@@ -509,7 +546,7 @@ uses
   JwaTlHelp32,
   strutils,
 {$ENDIF}
-  UConfig, UDataNetwork, UDataWinamp, UData,
+   UDataNetwork, UDataWinamp, UData,
   UIconUtils, UEditLine, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
 
 function PdhEnumObjectsA( szDataSource: PAnsiChar; szMachineName: PAnsiChar; mszObjectList: PPAnsiChar; pcchBufferSize: PDWORD; dwDetailLevel: DWORD; bRefresh: boolean ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectsA';
@@ -790,6 +827,12 @@ begin
   begin
     try
       MyDLL := LoadLibrary(PChar(DisplayDLLName));
+      if GetLastError = 193 then
+      {$IF Defined(CPUX64)}
+        IDLabel.Caption := 'Warning: 32 bit DLL is not compatible!';
+      {$ELSEIF Defined(CPUX86)}
+        IDLabel.Caption := 'Warning: 64 bit DLL is not compatible!';
+      {$IFEND}
       if not (MyDll = 0) then
       begin
         UsageFunc := GetProcAddress(MyDLL, PChar('DISPLAYDLL_Usage'));
@@ -829,8 +872,6 @@ begin
   exitprocess(1);
   {$ENDIF}
   LoadSettings(Sender);
-
-
 
   { The below is commented out as it is reading/writing directly to the device.
     We need to know more details so we can move it in to the lcd code.
@@ -1041,6 +1082,8 @@ begin
   for i := 1 to MaxScreenSizes do
     LCDSizeComboBox.Items.Add(ScreenSizes[i].SizeName);
   LCDSizeComboBox.ItemIndex := config.ScreenSize - 1;
+  CustomLinesSizeEdit.Value := config.Custom_Height;
+  CustomCharsSizeEdit.Value := config.Custom_width;
   LCDSizeComboBoxChange(Sender);
 
   // put display plugin settings on screen
@@ -1282,74 +1325,52 @@ begin
 end;
 
 procedure TSetupForm.LCDSizeComboBoxChange(Sender: TObject);
+var
+  LineCount: integer;
+  loop: integer;
 begin
   if LCDSizeComboBox.ItemIndex < 0 then LCDSizeComboBox.ItemIndex := 0;
 
-  if LCDSizeComboBox.ItemIndex < 5 then
+  if ScreenSizes[LCDSizeComboBox.ItemIndex+1].XSize = 0 then
   begin
-    ContinueLine1CheckBox.Checked := False;
-    Line2MemoEdit.Visible := False;
-    Line3MemoEdit.Visible := False;
-    Line4MemoEdit.Visible := False;
-    Line2EditButton.Visible := False;
-    Line3EditButton.Visible := False;
-    Line4EditButton.Visible := False;
-    ShutdownEdit2.Visible := False;
-    ShutdownEdit3.Visible := False;
-    ShutdownEdit4.Visible := False;
-    DontScrollLine2CheckBox.Visible := False;
-    DontScrollLine3CheckBox.Visible := False;
-    DontScrollLine4CheckBox.Visible := False;
-    ContinueLine1CheckBox.Visible := False;
-    ContinueLine2CheckBox.Visible := False;
-    ContinueLine3CheckBox.Visible := False;
-    CenterLine2CheckBox.Visible := False;
-    CenterLine3CheckBox.Visible := False;
-    CenterLine4CheckBox.Visible := False;
-  end;
-  if (LCDSizeComboBox.ItemIndex < 9) and (LCDSizeComboBox.ItemIndex > 4) then
+    LineCount := CustomLinesSizeEdit.Value;
+    CustomLinesSizeEdit.Enabled := true;
+    CustomCharsSizeEdit.Enabled := true;
+  end else
   begin
-    if ContinueLine1CheckBox.Checked = False then Line2MemoEdit.Visible := True;
-    ContinueLine2CheckBox.Checked := False;
-    Line3MemoEdit.Visible := False;
-    Line4MemoEdit.Visible := False;
-    Line2EditButton.Visible := True;
-    Line3EditButton.Visible := False;
-    Line4EditButton.Visible := False;
-    ShutdownEdit2.Visible := True;
-    ShutdownEdit3.Visible := False;
-    ShutdownEdit4.Visible := False;
-    DontScrollLine2CheckBox.Visible := True;
-    DontScrollLine3CheckBox.Visible := False;
-    DontScrollLine4CheckBox.Visible := False;
-    ContinueLine1CheckBox.Visible := True;
-    ContinueLine2CheckBox.Visible := False;
-    ContinueLine3CheckBox.Visible := False;
-    CenterLine2CheckBox.Visible := True;
-    CenterLine3CheckBox.Visible := False;
-    CenterLine4CheckBox.Visible := False;
+    LineCount := ScreenSizes[LCDSizeComboBox.ItemIndex+1].YSize;
+    CustomLinesSizeEdit.Enabled := false;
+    CustomCharsSizeEdit.Enabled := false;
   end;
-  if LCDSizeComboBox.ItemIndex > 8 then
+
+  if LineCount < 1 then LineCount := 1;
+  DontScrollGroupBox.Height := 10 + (23 * LineCount);
+  ContinueNextLineGroupBox.Height := DontScrollGroupBox.Height;
+  CenterTextGroupBox.Height := DontScrollGroupBox.Height;
+
+  for loop :=1 to MaxLines do
   begin
-    if ContinueLine1CheckBox.Checked = False then Line2MemoEdit.Visible := True;
-    if ContinueLine2CheckBox.Checked = False then Line3MemoEdit.Visible := True;
-    if ContinueLine3CheckBox.Checked = False then Line4MemoEdit.Visible := True;
-    Line2EditButton.Visible := True;
-    Line3EditButton.Visible := True;
-    Line4EditButton.Visible := True;
-    ShutdownEdit2.Visible := True;
-    ShutdownEdit3.Visible := True;
-    ShutdownEdit4.Visible := True;
-    DontScrollLine2CheckBox.Visible := True;
-    DontScrollLine3CheckBox.Visible := True;
-    DontScrollLine4CheckBox.Visible := True;
-    ContinueLine1CheckBox.Visible := True;
-    ContinueLine2CheckBox.Visible := True;
-    ContinueLine3CheckBox.Visible := True;
-    CenterLine2CheckBox.Visible := True;
-    CenterLine3CheckBox.Visible := True;
-    CenterLine4CheckBox.Visible := True;
+    LineEditArray[loop].Visible := False;
+    LineEditArray[loop].Enabled := True;
+    LineEditButtonArray[loop].Visible := False;
+    ContinueLineCheckBoxArray[loop].Visible := False;
+    DontScrollLineCheckBoxArray[loop].Visible := False;
+    CenterLineCheckBoxArray[loop].Visible := False;
+    ShutdownEditArray[loop].Visible := False;
   end;
+
+  for loop := 1 to LineCount do
+  begin
+    LineEditArray[loop].Visible := True;
+    LineEditButtonArray[loop].Visible := True;
+    if (ContinueLineCheckBoxArray[loop].Checked = true) and (loop < LineCount) then LineEditArray[loop+1].Enabled := False;
+    if LineEditArray[loop].Visible = True then LineEditButtonArray[loop].Visible := True;
+    ContinueLineCheckBoxArray[loop].Visible := True;
+    DontScrollLineCheckBoxArray[loop].Visible := True;
+    CenterLineCheckBoxArray[loop].Visible := True;
+    ShutdownEditArray[loop].Visible := True;
+  end;
+  ContinueLineCheckBoxArray[loop].Visible := False;
 end;
 
 // Multi instance manager
@@ -1924,12 +1945,17 @@ end;
 ////// end multi instance manager
 
 procedure TSetupForm.SaveScreen(scr: integer);
+var
+  loop: integer;
 begin
   if scr = 0 then Exit;
-  config.screen[scr].line[1].Text := Line1MemoEdit.Text;
-  config.screen[scr].line[2].Text := Line2MemoEdit.Text;
-  config.screen[scr].line[3].Text := Line3MemoEdit.Text;
-  config.screen[scr].line[4].Text := Line4MemoEdit.Text;
+  for loop := 1 to MaxLines do
+  begin
+    config.screen[scr].line[loop].Text := LineEditArray[loop].Text;
+    config.screen[scr].line[loop].center := CenterLineCheckBoxArray[loop].Checked;
+    config.screen[scr].line[loop].noscroll := DontScrollLineCheckBoxArray[loop].Checked;
+    config.screen[scr].line[loop].contNextLine := ContinueLineCheckBoxArray[loop].Checked;
+  end;
 
   config.screen[scr].settings.Enabled := ScreenEnabledCheckBox.Checked;
   try
@@ -1944,22 +1970,9 @@ begin
   end;
   config.screen[scr].settings.bSticky := StickyCheckbox.Checked;
 
-  config.screen[scr].line[1].center := CenterLine1CheckBox.Checked;
-  config.screen[scr].line[2].center := CenterLine2CheckBox.Checked;
-  config.screen[scr].line[3].center := CenterLine3CheckBox.Checked;
-  config.screen[scr].line[4].center := CenterLine4CheckBox.Checked;
-
-  config.screen[scr].line[1].noscroll := DontScrollLine1CheckBox.Checked;
-  config.screen[scr].line[2].noscroll := DontScrollLine2CheckBox.Checked;
-  config.screen[scr].line[3].noscroll := DontScrollLine3CheckBox.Checked;
-  config.screen[scr].line[4].noscroll := DontScrollLine4CheckBox.Checked;
 {$IFNDEF STANDALONESETUP}
   LCDSmartieDisplayForm.ResetScrollPositions();
 {$ENDIF}
-  config.screen[scr].line[1].contNextLine := ContinueLine1CheckBox.Checked;
-  config.screen[scr].line[2].contNextLine := ContinueLine2CheckBox.Checked;
-  config.screen[scr].line[3].contNextLine := ContinueLine3CheckBox.Checked;
-  config.screen[scr].line[4].contNextLine := False;
 
   config.screen[scr].settings.TransitionStyle :=
     TTransitionStyle(TransitionStyleComboBox.ItemIndex);
@@ -1969,6 +1982,7 @@ end;
 procedure TSetupForm.LoadScreen(scr: integer);
 var
   ascreen: TScreen;
+  loop: integer;
 begin
   ascreen := config.screen[scr];
   ScreenEnabledCheckBox.Checked := ascreen.settings.Enabled;
@@ -1977,70 +1991,35 @@ begin
   StickyCheckbox.Checked := ascreen.settings.bSticky;
   TimeToShowSpinEdit.Enabled := not ascreen.settings.bSticky;
 
-  DontScrollLine1CheckBox.Checked := False;
-  DontScrollLine2CheckBox.Checked := False;
-  DontScrollLine3CheckBox.Checked := False;
-  DontScrollLine4CheckBox.Checked := False;
-  ContinueLine1CheckBox.Checked := False;
-  ContinueLine2CheckBox.Checked := False;
-  ContinueLine3CheckBox.Checked := False;
-  DontScrollLine1CheckBox.Enabled := True;
-  DontScrollLine1CheckBox.Checked := False;
-  Line2MemoEdit.Enabled := True;
-  DontScrollLine2CheckBox.Enabled := True;
-  DontScrollLine2CheckBox.Checked := False;
-  Line3MemoEdit.Enabled := True;
-  DontScrollLine3CheckBox.Enabled := True;
-  DontScrollLine3CheckBox.Checked := False;
-  Line4MemoEdit.Enabled := True;
+  for loop := 1 to MaxLines do
+  begin
+    DontScrollLineCheckBoxArray[loop].Enabled := True;
+    DontScrollLineCheckBoxArray[loop].Checked := False;
+    ContinueLineCheckBoxArray[loop].Checked := False;
+    LineEditArray[loop].Enabled := True;
+    LineEditArray[loop].color := clWhite;
+  end;
 
   Line1MemoEdit.color := $00A1D7A4;
-  Line2MemoEdit.color := clWhite;
-  Line3MemoEdit.color := clWhite;
-  Line4MemoEdit.color := clWhite;
   setupbutton := 1;
   GameServerEdit.Text := config.gameServer[scr, 1];
 
   ascreen := config.screen[scr];
-  DontScrollLine1CheckBox.Checked := ascreen.line[1].noscroll;
-  if ascreen.line[1].contNextLine then
-  begin
-    ContinueLine1CheckBox.Checked := True;
-    DontScrollLine1CheckBox.Checked := True;
-    DontScrollLine1CheckBox.Enabled := False;
-    Line2MemoEdit.Enabled := False;
-    Line2MemoEdit.color := $00BBBBFF;
-  end;
-  Line1MemoEdit.Text := ascreen.line[1].Text;
-  CenterLine1CheckBox.Checked := ascreen.line[1].center;
 
-  DontScrollLine2CheckBox.Checked := ascreen.line[2].noscroll;
-  if ascreen.line[2].contNextLine then
+  for loop := 1 to MaxLines do
   begin
-    ContinueLine2CheckBox.Checked := True;
-    DontScrollLine2CheckBox.Checked := True;
-    DontScrollLine2CheckBox.Enabled := False;
-    Line3MemoEdit.Enabled := False;
-    Line3MemoEdit.color := $00BBBBFF;
+    LineEditArray[loop].Text := ascreen.line[loop].Text;
+    CenterLineCheckBoxArray[loop].Checked := ascreen.line[loop].center;
+    DontScrollLineCheckBoxArray[loop].Checked := ascreen.line[loop].noscroll;
+    if ascreen.line[loop].contNextLine and (loop < MaxLines) then
+    begin
+      ContinueLineCheckBoxArray[loop].Checked := True;
+      DontScrollLineCheckBoxArray[loop].Checked := True;
+      DontScrollLineCheckBoxArray[loop].Enabled := False;
+      LineEditArray[loop+1].Enabled := False;
+      LineEditArray[loop+1].color := $00BBBBFF;
+    end;
   end;
-  Line2MemoEdit.Text := ascreen.line[2].Text;
-  CenterLine2CheckBox.Checked := ascreen.line[2].center;
-
-  DontScrollLine3CheckBox.Checked := ascreen.line[3].noscroll;
-  if ascreen.line[3].contNextLine then
-  begin
-    ContinueLine3CheckBox.Checked := True;
-    DontScrollLine3CheckBox.Checked := True;
-    DontScrollLine3CheckBox.Enabled := False;
-    Line4MemoEdit.Enabled := False;
-    Line4MemoEdit.color := $00BBBBFF;
-  end;
-  Line3MemoEdit.Text := ascreen.line[3].Text;
-  CenterLine3CheckBox.Checked := ascreen.line[3].center;
-
-  DontScrollLine4CheckBox.Checked := ascreen.line[4].noscroll;
-  Line4MemoEdit.Text := ascreen.line[4].Text;
-  CenterLine4CheckBox.Checked := ascreen.line[4].center;
 
   TransitionStyleComboBox.ItemIndex := Ord(ascreen.settings.TransitionStyle);
   TransitionTimeSpinEdit.Value := ascreen.settings.TransitionTime;
@@ -2093,94 +2072,42 @@ end;
 procedure TSetupForm.FocusToInputField;
 var
   tempint1, tempint2: integer;
+  loop: integer;
 begin
   if (ScreensTabSheet.Visible) then // in Screens tab
   begin
-    // not all the lines will be enabled/visible because of different size displays.
-    if (setupbutton = 2) and (Line2MemoEdit.Enabled) and (Line2MemoEdit.Visible) then
-    begin
-      tempint1 := Line2MemoEdit.SelStart;
-      tempint2 := Line2MemoEdit.SelLength;
-      Line2MemoEdit.SetFocus;
-      Line2MemoEdit.SelStart := tempint1;
-      Line2MemoEdit.SelLength := tempint2;
-    end
-    else if (setupbutton = 3) and (Line3MemoEdit.Enabled) and
-      (Line3MemoEdit.Visible) then
-    begin
-      tempint1 := Line3MemoEdit.SelStart;
-      tempint2 := Line3MemoEdit.SelLength;
-      Line3MemoEdit.SetFocus;
-      Line3MemoEdit.SelStart := tempint1;
-      Line3MemoEdit.SelLength := tempint2;
-    end
-    else if (setupbutton = 4) and (Line4MemoEdit.Enabled) and
-      (Line4MemoEdit.Visible) then
-    begin
-      tempint1 := Line4MemoEdit.SelStart;
-      tempint2 := Line4MemoEdit.SelLength;
-      Line4MemoEdit.SetFocus;
-      Line4MemoEdit.SelStart := tempint1;
-      Line4MemoEdit.SelLength := tempint2;
-    end
-    else if (Line1MemoEdit.Enabled) and (Line1MemoEdit.Visible) then
-      // default to line 1 of screen section
-    begin // setupbutton = 1
-      tempint1 := Line1MemoEdit.SelStart;
-      tempint2 := Line1MemoEdit.SelLength;
-      Line1MemoEdit.SetFocus;
-      Line1MemoEdit.SelStart := tempint1;
-      Line1MemoEdit.SelLength := tempint2;
-    end;
+    for loop := 1 to MaxLines do
+      if (loop = setupbutton) and (LineEditArray[loop].Enabled) and (LineEditArray[loop].Visible) then
+      begin
+      tempint1 := LineEditArray[loop].SelStart;
+      tempint2 := LineEditArray[loop].SelLength;
+      LineEditArray[loop].SetFocus;
+      LineEditArray[loop].SelStart := tempint1;
+      LineEditArray[loop].SelLength := tempint2;
+      end;
   end;
 end;
 
 procedure TSetupForm.InsertButtonClick(Sender: TObject);
 var
   tempint: integer;
+  loop: integer;
 begin
   if VariableEdit.Text <> NoVariable then
   begin
     if (ScreensTabSheet.Visible) then // in Screens tab
     begin
-      if (setupbutton = 2) and (Line2MemoEdit.Enabled) and (Line2MemoEdit.Visible) then
+      for loop := 1 to MaxLines do
       begin
-        tempint := Line2MemoEdit.SelStart;
-        Line2MemoEdit.Text := utf8copy(Line2MemoEdit.Text, 1, Line2MemoEdit.SelStart) +
-          VariableEdit.Text + utf8copy(Line2MemoEdit.Text, Line2MemoEdit.SelStart +
-          1 + Line2MemoEdit.SelLength, UTF8Length(Line2MemoEdit.Text));
-        Line2MemoEdit.SetFocus;
-        Line2MemoEdit.selstart := tempint + utf8length(VariableEdit.Text);
-      end
-      else if (setupbutton = 3) and (Line3MemoEdit.Enabled) and
-        (Line3MemoEdit.Visible) then
-      begin
-        tempint := Line3MemoEdit.SelStart;
-        Line3MemoEdit.Text := utf8copy(Line3MemoEdit.Text, 1, Line3MemoEdit.SelStart) +
-          VariableEdit.Text + utf8copy(Line3MemoEdit.Text, Line3MemoEdit.SelStart +
-          1 + Line3MemoEdit.SelLength, UTF8Length(Line3MemoEdit.Text));
-        Line3MemoEdit.SetFocus;
-        Line3MemoEdit.selstart := tempint + UTF8Length(VariableEdit.Text);
-      end
-      else if (setupbutton = 4) and (Line4MemoEdit.Enabled) and
-        (Line4MemoEdit.Visible) then
-      begin
-        tempint := Line4MemoEdit.SelStart;
-        Line4MemoEdit.Text := utf8copy(Line4MemoEdit.Text, 1, Line4MemoEdit.SelStart) +
-          VariableEdit.Text + utf8copy(Line4MemoEdit.Text, Line4MemoEdit.SelStart +
-          1 + Line4MemoEdit.SelLength, UTF8Length(Line4MemoEdit.Text));
-        Line4MemoEdit.SetFocus;
-        Line4MemoEdit.selstart := tempint + UTF8Length(VariableEdit.Text);
-      end
-      else if (Line1MemoEdit.Enabled) and (Line1MemoEdit.Visible) then
-        // default to line 1
-      begin
-        tempint := Line1MemoEdit.SelStart;
-        Line1MemoEdit.Text := utf8copy(Line1MemoEdit.Text, 1, tempint) +
-          VariableEdit.Text + utf8copy(Line1MemoEdit.Text, tempint +
-          1 + Line1MemoEdit.SelLength, UTF8Length(Line1MemoEdit.Text));
-        Line1MemoEdit.SetFocus;
-        Line1MemoEdit.selstart := tempint + UTF8Length(VariableEdit.Text);
+        if (loop = setupbutton) and (LineEditArray[loop].Enabled) and (LineEditArray[loop].Visible) then
+        begin
+          tempint := LineEditArray[loop].SelStart;
+          LineEditArray[loop].Text := utf8copy(LineEditArray[loop].Text, 1, LineEditArray[loop].SelStart) +
+          VariableEdit.Text + utf8copy(LineEditArray[loop].Text, LineEditArray[loop].SelStart +
+            1 + LineEditArray[loop].SelLength, UTF8Length(LineEditArray[loop].Text));
+            LineEditArray[loop].SetFocus;
+          LineEditArray[loop].selstart := tempint + utf8length(VariableEdit.Text);
+        end;
       end;
     end
     else if (ActionsTabSheet.Visible) then // in Actions tab
@@ -2198,41 +2125,17 @@ begin
     end
     else if (StartupTabSheet.Visible) then // in startup/shutdown tab
     begin
-      if (shdownmessagebutton = 2) and (ShutdownEdit2.Enabled) then
+      for loop := 1 to MaxLines do
       begin
-        tempint := ShutdownEdit2.SelStart;
-        ShutdownEdit2.Text := utf8copy(ShutdownEdit2.Text, 1, ShutdownEdit2.SelStart) +
-          VariableEdit.Text + utf8copy(ShutdownEdit2.Text, ShutdownEdit2.SelStart +
-          1 + ShutdownEdit2.SelLength, UTF8Length(ShutdownEdit2.Text));
-        ShutdownEdit2.SetFocus;
-        ShutdownEdit2.selstart := tempint + utf8length(VariableEdit.Text);
-      end
-      else if (shdownmessagebutton = 3) and (ShutdownEdit3.Enabled) then
-      begin
-        tempint := ShutdownEdit3.SelStart;
-        ShutdownEdit3.Text := utf8copy(ShutdownEdit3.Text, 1, ShutdownEdit3.SelStart) +
-          VariableEdit.Text + utf8copy(ShutdownEdit3.Text, ShutdownEdit3.SelStart +
-          1 + ShutdownEdit3.SelLength, UTF8Length(ShutdownEdit3.Text));
-        ShutdownEdit3.SetFocus;
-        ShutdownEdit3.selstart := tempint + UTF8Length(VariableEdit.Text);
-      end
-      else if (shdownmessagebutton = 4) and (ShutdownEdit4.Enabled) then
-      begin
-        tempint := ShutdownEdit4.SelStart;
-        ShutdownEdit4.Text := utf8copy(ShutdownEdit4.Text, 1, ShutdownEdit4.SelStart) +
-          VariableEdit.Text + utf8copy(ShutdownEdit4.Text, ShutdownEdit4.SelStart +
-          1 + ShutdownEdit4.SelLength, UTF8Length(ShutdownEdit4.Text));
-        ShutdownEdit4.SetFocus;
-        ShutdownEdit4.selstart := tempint + UTF8Length(VariableEdit.Text);
-      end
-      else if (ShutdownEdit1.Enabled) then // default to line 1
-      begin
-        tempint := ShutdownEdit1.SelStart;
-        ShutdownEdit1.Text := utf8copy(ShutdownEdit1.Text, 1, tempint) +
-          VariableEdit.Text + utf8copy(ShutdownEdit1.Text, tempint +
-          1 + ShutdownEdit1.SelLength, UTF8Length(ShutdownEdit1.Text));
-        ShutdownEdit1.SetFocus;
-        ShutdownEdit1.selstart := tempint + UTF8Length(VariableEdit.Text);
+        if (loop = shdownmessagebutton) and (ShutdownEditArray[loop].Enabled) and (ShutdownEditArray[loop].Visible) then
+        begin
+          tempint := ShutdownEditArray[loop].SelStart;
+          ShutdownEditArray[loop].Text := utf8copy(ShutdownEditArray[loop].Text, 1, ShutdownEditArray[loop].SelStart) +
+          VariableEdit.Text + utf8copy(ShutdownEditArray[loop].Text, ShutdownEditArray[loop].SelStart +
+            1 + ShutdownEditArray[loop].SelLength, UTF8Length(ShutdownEditArray[loop].Text));
+            ShutdownEditArray[loop].SetFocus;
+          ShutdownEditArray[loop].selstart := tempint + utf8length(VariableEdit.Text);
+        end;
       end;
     end;
   end;
@@ -2485,84 +2388,33 @@ begin
     FocusToInputField();
 end;
 
-procedure TSetupForm.ContinueLine1CheckBoxClick(Sender: TObject);
+procedure TSetupForm.ContinueLineCheckBoxClick(Sender: TObject);
 var
   tempint1: integer;
-
+  loop: integer;
 begin
-  if ContinueLine1CheckBox.Checked = True then
+  for loop := 1 to MaxLines do
   begin
-    DontScrollLine1CheckBox.Checked := True;
-    DontScrollLine1CheckBox.Enabled := False;
-    if setupbutton = 2 then
+    if ContinueLineCheckBoxArray[loop].Checked = true then
     begin
-      tempint1 := Line1MemoEdit.SelStart;
-      Line1MemoEdit.SetFocus;
-      Line1MemoEdit.SelStart := tempint1;
-    end;
-    Line2MemoEdit.Enabled := False;
-    Line2MemoEdit.color := $00BBBBFF;
-  end
-  else
-  begin
-    DontScrollLine1CheckBox.Enabled := True;
-    DontScrollLine1CheckBox.Checked := False;
-    Line2MemoEdit.Enabled := True;
-    Line2MemoEdit.color := clWhite;
-  end;
-end;
-
-procedure TSetupForm.ContinueLine2CheckBoxClick(Sender: TObject);
-var
-  tempint1: integer;
-
-begin
-  if ContinueLine2CheckBox.Checked = True then
-  begin
-    DontScrollLine2CheckBox.Checked := True;
-    DontScrollLine2CheckBox.Enabled := False;
-    if setupbutton = 3 then
+      DontScrollLineCheckBoxArray[loop].Checked := True;
+      DontScrollLineCheckBoxArray[loop].Enabled := False;
+      if loop < MaxLines then
+      begin
+      LineEditArray[loop+1].Enabled := False;
+      LineEditArray[loop+1].color := $00BBBBFF;
+      end;
+    end
+    else
     begin
-      tempint1 := Line1MemoEdit.SelStart;
-      Line1MemoEdit.SetFocus;
-      Line1MemoEdit.SelStart := tempint1;
+      DontScrollLineCheckBoxArray[loop].Enabled := True;
+      DontScrollLineCheckBoxArray[loop].Checked := False;
+      if loop < MaxLines then
+      begin
+      LineEditArray[loop+1].Enabled := True;
+      LineEditArray[loop+1].color := clWhite;
+      end;
     end;
-    Line3MemoEdit.Enabled := False;
-    Line3MemoEdit.color := $00BBBBFF;
-  end
-  else
-  begin
-    DontScrollLine2CheckBox.Enabled := True;
-    DontScrollLine2CheckBox.Checked := False;
-    Line3MemoEdit.Enabled := True;
-    Line3MemoEdit.color := clWhite;
-  end;
-end;
-
-procedure TSetupForm.ContinueLine3CheckBoxClick(Sender: TObject);
-var
-  tempint1: integer;
-
-begin
-  if ContinueLine3CheckBox.Checked = True then
-  begin
-    DontScrollLine3CheckBox.Checked := True;
-    DontScrollLine3CheckBox.Enabled := False;
-    if setupbutton = 4 then
-    begin
-      tempint1 := Line1MemoEdit.SelStart;
-      Line1MemoEdit.SetFocus;
-      Line1MemoEdit.SelStart := tempint1;
-    end;
-    Line4MemoEdit.Enabled := False;
-    Line4MemoEdit.color := $00BBBBFF;
-  end
-  else
-  begin
-    DontScrollLine3CheckBox.Enabled := True;
-    DontScrollLine3CheckBox.Checked := False;
-    Line4MemoEdit.Enabled := True;
-    Line4MemoEdit.color := clWhite;
   end;
 end;
 
@@ -2595,44 +2447,20 @@ begin
 end;
 
 procedure TSetupForm.LineEditEnter(Sender: TObject);
+var
+  loop: integer;
 begin
-
-  if (Line1MemoEdit <> Sender) and Line1MemoEdit.Enabled = True then
-    Line1MemoEdit.color := clWhite
-  else
-  if Line1MemoEdit.Enabled = True then
+  for loop := 1 to MaxLines do
   begin
-    Line1MemoEdit.color := $00A1D7A4;
-    setupbutton := 1;
+    if (LineEditArray[loop] <> Sender) and LineEditArray[loop].Enabled = True then
+      LineEditArray[loop].color := clWhite
+    else
+    if LineEditArray[loop].Enabled = True then
+    begin
+      LineEditArray[loop].color := $00A1D7A4;
+      setupbutton := loop;
+    end;
   end;
-
-  if (Line2MemoEdit <> Sender) and Line2MemoEdit.Enabled = True then
-    Line2MemoEdit.color := clWhite
-  else
-  if Line2MemoEdit.Enabled = True then
-  begin
-    Line2MemoEdit.color := $00A1D7A4;
-    setupbutton := 2;
-  end;
-
-  if (Line3MemoEdit <> Sender) and Line3MemoEdit.Enabled = True then
-    Line3MemoEdit.color := clWhite
-  else
-  if Line3MemoEdit.Enabled = True then
-  begin
-    Line3MemoEdit.color := $00A1D7A4;
-    setupbutton := 3;
-  end;
-
-  if (Line4MemoEdit <> Sender) and Line4MemoEdit.Enabled = True then
-    Line4MemoEdit.color := clWhite
-  else
-  if Line4MemoEdit.Enabled = True then
-  begin
-    Line4MemoEdit.color := $00A1D7A4;
-    setupbutton := 4;
-  end;
-
 end;
 
 procedure TSetupForm.NetworkStatsListBoxClick(Sender: TObject);
@@ -2680,12 +2508,14 @@ var
   ReInitLCD, ReloadSkin: boolean;
   x, y: integer;
   iMaxUsedRow: integer;
+  loop: integer;
 begin
   ReInitLCD := False;
   if (DisplayPluginList.Caption <> config.DisplayDLLName) or (ParametersEdit.Caption <> config.DisplayDLLParameters) or
-    (LCDSizeComboBox.ItemIndex +1  <> config.ScreenSize) then
+    (LCDSizeComboBox.ItemIndex +1  <> config.ScreenSize) or (CustomLinesSizeEdit.Value <> config.Custom_Height) or (CustomCharsSizeEdit.Value <> config.Custom_width) then
     ReInitLCD := True;
-
+  config.Custom_height := CustomLinesSizeEdit.Value;
+  config.Custom_width := CustomCharsSizeEdit.Value;
   ReloadSkin := False;
 
   iMaxUsedRow := -1;
@@ -2726,6 +2556,8 @@ begin
   config.winampLocation := WinampLocationEdit.Text;
   config.refreshRate := ProgramRefreshIntervalSpinEdit.Value;
   config.ScreenSize := LCDSizeComboBox.ItemIndex + 1;
+  config.Custom_Height := CustomLinesSizeEdit.Value;
+  config.Custom_width := CustomCharsSizeEdit.Value;
   config.randomScreens := RandomizeScreensCheckBox.Checked;
   config.foldUserid := FoldingAtHomeEmailEdit.Text;
   config.gameRefresh := GamestatsRefreshTimeSpinEdit.Value;
@@ -2741,10 +2573,9 @@ begin
   config.bStartAsAdmin := StartAsAdminCheckBox.Checked;
   config.bUseTaskScheduler := UseTaskSchedulerCheckBox.Checked;
   config.EmulateLCD := EmulateLCDCheckbox.Checked;
-  config.ShutdownMessage[1] := ShutdownEdit1.Text;
-  config.ShutdownMessage[2] := ShutdownEdit2.Text;
-  config.ShutdownMessage[3] := ShutdownEdit3.Text;
-  config.ShutdownMessage[4] := ShutdownEdit4.Text;
+
+  for loop := 1 to MaxLines do
+    config.ShutdownMessage[loop] := ShutdownEditArray[loop].text;
 
   config.DLL_contrast := ContrastTrackBar.position;
   config.DLL_brightness := BrightnessTrackBar.position;
@@ -2831,6 +2662,39 @@ begin
   {$IFDEF STANDALONESETUP}
   SetupForm.BorderStyle := bsSingle;
   {$ENDIF}
+
+  // putting all these into an array makes things easier
+  // it'd be nicer to generate these programatically though
+  LineEditArray[1] := Line1MemoEdit; LineEditArray[2] := Line2MemoEdit;
+  LineEditArray[3] := Line3MemoEdit; LineEditArray[4] := Line4MemoEdit;
+  LineEditArray[5] := Line5MemoEdit; LineEditArray[6] := Line6MemoEdit;
+  LineEditArray[7] := Line7MemoEdit; LineEditArray[8] := Line8MemoEdit;
+
+  LineEditButtonArray[1] := Line1EditButton; LineEditButtonArray[2] := Line2EditButton;
+  LineEditButtonArray[3] := Line3EditButton; LineEditButtonArray[4] := Line4EditButton;
+  LineEditButtonArray[5] := Line5EditButton; LineEditButtonArray[6] := Line6EditButton;
+  LineEditButtonArray[7] := Line7EditButton; LineEditButtonArray[8] := Line8EditButton;
+
+  ContinueLineCheckBoxArray[1] := ContinueLine1CheckBox; ContinueLineCheckBoxArray[2] := ContinueLine2CheckBox;
+  ContinueLineCheckBoxArray[3] := ContinueLine3CheckBox; ContinueLineCheckBoxArray[4] := ContinueLine4CheckBox;
+  ContinueLineCheckBoxArray[5] := ContinueLine5CheckBox; ContinueLineCheckBoxArray[6] := ContinueLine6CheckBox;
+  ContinueLineCheckBoxArray[7] := ContinueLine7CheckBox; ContinueLineCheckBoxArray[8] := ContinueLine8CheckBox;
+
+  DontScrollLineCheckBoxArray[1] := DontScrollLine1CheckBox; DontScrollLineCheckBoxArray[2] := DontScrollLine2CheckBox;
+  DontScrollLineCheckBoxArray[3] := DontScrollLine3CheckBox; DontScrollLineCheckBoxArray[4] := DontScrollLine4CheckBox;
+  DontScrollLineCheckBoxArray[5] := DontScrollLine5CheckBox; DontScrollLineCheckBoxArray[6] := DontScrollLine6CheckBox;
+  DontScrollLineCheckBoxArray[7] := DontScrollLine7CheckBox; DontScrollLineCheckBoxArray[8] := DontScrollLine8CheckBox;
+
+  CenterLineCheckBoxArray[1] := CenterLine1CheckBox; CenterLineCheckBoxArray[2] := CenterLine2CheckBox;
+  CenterLineCheckBoxArray[3] := CenterLine3CheckBox; CenterLineCheckBoxArray[4] := CenterLine4CheckBox;
+  CenterLineCheckBoxArray[5] := CenterLine5CheckBox; CenterLineCheckBoxArray[6] := CenterLine6CheckBox;
+  CenterLineCheckBoxArray[7] := CenterLine7CheckBox; CenterLineCheckBoxArray[8] := CenterLine8CheckBox;
+
+  ShutdownEditArray[1] := ShutdownEdit1; ShutdownEditArray[2] := ShutdownEdit2;
+  ShutdownEditArray[3] := ShutdownEdit3; ShutdownEditArray[4] := ShutdownEdit4;
+  ShutdownEditArray[5] := ShutdownEdit5; ShutdownEditArray[6] := ShutdownEdit6;
+  ShutdownEditArray[7] := ShutdownEdit7; ShutdownEditArray[8] := ShutdownEdit8;
+
   pathssl := ExtractFilePath(ParamStr(0)) + 'openssl\';
   // check if ssl dll exists , if not block the ssl edit !!!
   if not fileExists(pathssl + 'libeay32.dll') or not
@@ -2848,7 +2712,6 @@ end;
 
 procedure TSetupForm.MainPageControlChange(Sender: TObject);
 begin
-
   if MainPageControl.ActivePage = ScreensTabSheet then
   begin
     if LeftPageControl.ActivePage = LCDFeaturesTabSheet then
@@ -2858,16 +2721,7 @@ begin
     end;
     GameServerEdit.Text := config.gameServer[ScreenSpinEdit.Value, 1];
     setupbutton := 1;
-    Line1MemoEdit.color := $00A1D7A4;
-    if Line2MemoEdit.Enabled = True then Line2MemoEdit.color := clWhite
-    else
-      Line2MemoEdit.color := $00BBBBFF;
-    if Line3MemoEdit.Enabled = True then Line3MemoEdit.color := clWhite
-    else
-      Line3MemoEdit.color := $00BBBBFF;
-    if Line4MemoEdit.Enabled = True then Line4MemoEdit.color := clWhite
-    else
-      Line4MemoEdit.color := $00BBBBFF;
+    LineEditEnter(Line1MemoEdit);
   end;
 end;
 
@@ -2944,42 +2798,16 @@ end;
 procedure TSetupForm.ShutdownEditEnter(Sender: TObject);
 var
   oEdit: TMemo;
+  loop: integer;
 begin
-
   oEdit := Sender as TMemo;
   oEdit.Color := $00A1D7A4;
 
-  if (ShutdownEdit1 <> Sender) and ShutdownEdit1.Enabled = True then
-    ShutdownEdit1.color := clWhite
+  for loop := 1 to MaxLines do
+  if (ShutdownEditArray[loop] <> Sender) and ShutdownEditArray[loop].Enabled = True then
+    ShutdownEditArray[loop].color := clWhite
   else
-  begin
-    ShutdownEdit1.color := $00BBBBFF;
-    shdownmessagebutton := 1;
-  end;
-
-  if (ShutdownEdit2 <> Sender) and ShutdownEdit2.Enabled = True then
-    ShutdownEdit2.color := clWhite
-  else
-  begin
-    ShutdownEdit2.color := $00BBBBFF;
-    shdownmessagebutton := 2;
-  end;
-
-  if (ShutdownEdit3 <> Sender) and ShutdownEdit3.Enabled = True then
-    ShutdownEdit3.color := clWhite
-  else
-  begin
-    ShutdownEdit3.color := $00BBBBFF;
-    shdownmessagebutton := 3;
-  end;
-
-  if (ShutdownEdit4 <> Sender) and ShutdownEdit4.Enabled = True then
-    ShutdownEdit4.color := clWhite
-  else
-  begin
-    ShutdownEdit4.color := $00BBBBFF;
-    shdownmessagebutton := 4;
-  end;
+    shdownmessagebutton := loop;
 end;
 
 /////////////////////////////////////////////////////////////////
@@ -3120,13 +2948,14 @@ end;
 /////////////////////////////////////////////////////////////////
 
 procedure TSetupForm.LineEditClick(Sender: TObject);
+var
+  loop: integer;
 begin
-  FormEdit := tFormEdit.Create(self);
+  FormEdit := TFormEdit.Create(self);
 
-  if Sender = Line1EditButton then FormEdit.Memo1.Text := Line1MemoEdit.Text;
-  if Sender = Line2EditButton then FormEdit.Memo1.Text := Line2MemoEdit.Text;
-  if Sender = Line3EditButton then FormEdit.Memo1.Text := Line3MemoEdit.Text;
-  if Sender = Line4EditButton then FormEdit.Memo1.Text := Line4MemoEdit.Text;
+  for loop := 1 to MaxLines do
+    if Sender = LineEditButtonArray[loop] then
+      FormEdit.Memo1.Text := LineEditArray[loop].Text;
 
   FormEdit.Top := config.EditFormPosTop;
   FormEdit.Left := config.EditFormPosLeft;
@@ -3139,11 +2968,9 @@ begin
     begin
       config.EditFormPosTop := FormEdit.Top;
       config.EditFormPosLeft := FormEdit.Left;
-
-      if Sender = Line1EditButton then Line1MemoEdit.Text := FormEdit.Memo1.Text;
-      if Sender = Line2EditButton then Line2MemoEdit.Text := FormEdit.Memo1.Text;
-      if Sender = Line3EditButton then Line3MemoEdit.Text := FormEdit.Memo1.Text;
-      if Sender = Line4EditButton then Line4MemoEdit.Text := FormEdit.Memo1.Text;
+      for loop := 1 to MaxLines do
+        if Sender = LineEditButtonArray[loop] then
+          LineEditArray[loop].Text := FormEdit.Memo1.Text;
     end;
   end;
 

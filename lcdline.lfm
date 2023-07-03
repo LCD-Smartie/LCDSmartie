@@ -1,6 +1,6 @@
 object LCDLineFrame: TLCDLineFrame
   Left = 0
-  Height = 20
+  Height = 16
   Top = 0
   Width = 160
   ClientHeight = 20
@@ -11,7 +11,7 @@ object LCDLineFrame: TLCDLineFrame
   DesignTop = 306
   object LCDPanel: TPanel
     Left = 0
-    Height = 20
+    Height = 16
     Top = 0
     Width = 160
     Align = alClient
@@ -23,7 +23,7 @@ object LCDLineFrame: TLCDLineFrame
     TabOrder = 0
     object PaintBox: TPaintBox
       Left = 0
-      Height = 20
+      Height = 16
       Top = 0
       Width = 160
       Align = alClient

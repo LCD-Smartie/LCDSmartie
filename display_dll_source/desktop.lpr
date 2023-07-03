@@ -10,7 +10,7 @@ uses
 
 const
   DLLProjectName = 'Desktop Display DLL';
-  Version = 'v2.0L';
+  Version = 'v3.0L';
 type
   pboolean = ^boolean;
   TCustomArray = array[0..7] of byte;

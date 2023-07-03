@@ -5,7 +5,7 @@ unit UDataNetwork;
 interface
 
 uses
-  SysUtils, DataThread;
+  SysUtils, DataThread, UMain;
 
 type
   TNetworkStatistics =
@@ -280,7 +280,7 @@ begin
   while decodeArgs(Line, VarKey, maxArgs, args, prefix, postfix, numargs) do begin
     try
       RequiredParameters(numargs, 1, 1);
-      adapterNum := StrToInt(args[1]);
+      adapterNum := StrToInt(LCDSmartieDisplayForm.Data.change(args[1]));
       Line := prefix;
       fDataLock.Enter();
       with NetworkAdapterStats[adapterNum] do begin

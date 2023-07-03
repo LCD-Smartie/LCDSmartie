@@ -1,7 +1,7 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 493
+  Left = 498
   Height = 91
-  Top = 140
+  Top = 150
   Width = 240
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
@@ -46,29 +46,6 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Top = 64
     Width = 97
   end
-  object xLine1Panel: TPanel
-    Left = 32
-    Height = 17
-    Hint = 'Virtual display.'
-    Top = 0
-    Width = 161
-    Alignment = taLeftJustify
-    BevelOuter = bvNone
-    Color = clNone
-    DoubleBuffered = True
-    Font.CharSet = 4
-    Font.Color = clWindowText
-    Font.Height = -14
-    Font.Name = 'Modern'
-    Font.Pitch = fpFixed
-    ParentColor = False
-    ParentDoubleBuffered = False
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 8
-    Visible = False
-  end
   object LogoImage: TImage
     Left = 208
     Height = 27
@@ -77,94 +54,6 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Width = 32
     OnClick = LogoImageClick
     OnDblClick = LogoImageDblClick
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line1RightScrollImage: TImage
-    Left = 16
-    Height = 16
-    Hint = 'Scroll line right.'
-    Top = 0
-    Width = 16
-    OnMouseDown = Line1RightScrollImageMouseDown
-    OnMouseUp = Line1RightScrollImageMouseUp
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line2RightScrollImage: TImage
-    Left = 16
-    Height = 16
-    Hint = 'Scroll line right.'
-    Top = 16
-    Width = 16
-    OnMouseDown = Line2RightScrollImageMouseDown
-    OnMouseUp = Line2RightScrollImageMouseUp
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line3RightScrollImage: TImage
-    Left = 16
-    Height = 16
-    Hint = 'Scroll line right.'
-    Top = 32
-    Width = 16
-    OnMouseDown = Line3RightScrollImageMouseDown
-    OnMouseUp = Line3RightScrollImageMouseUp
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line4RightScrollImage: TImage
-    Left = 16
-    Height = 16
-    Hint = 'Scroll line right.'
-    Top = 48
-    Width = 16
-    OnMouseDown = Line4RightScrollImageMouseDown
-    OnMouseUp = Line4RightScrollImageMouseUp
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line1LeftScrollImage: TImage
-    Left = 208
-    Height = 17
-    Hint = 'Scroll line left.'
-    Top = 0
-    Width = 16
-    OnMouseDown = Line1LeftScrollImageMouseDown
-    OnMouseUp = Line1LeftScrollImageMouseUp
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line2LeftScrollImage: TImage
-    Left = 208
-    Height = 16
-    Hint = 'Scroll line left.'
-    Top = 16
-    Width = 16
-    OnMouseDown = Line2LeftScrollImageMouseDown
-    OnMouseUp = Line2LeftScrollImageMouseUp
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line3LeftScrollImage: TImage
-    Left = 208
-    Height = 16
-    Hint = 'Scroll line left.'
-    Top = 32
-    Width = 16
-    OnMouseDown = Line3LeftScrollImageMouseDown
-    OnMouseUp = Line3LeftScrollImageMouseUp
-    ParentShowHint = False
-    ShowHint = True
-  end
-  object Line4LeftScrollImage: TImage
-    Left = 208
-    Height = 16
-    Hint = 'Scroll line left.'
-    Top = 48
-    Width = 16
-    OnMouseDown = Line4LeftScrollImageMouseDown
-    OnMouseUp = Line4LeftScrollImageMouseUp
     ParentShowHint = False
     ShowHint = True
   end
@@ -216,75 +105,6 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ParentShowHint = False
     ShowHint = True
   end
-  object xLine2Panel: TPanel
-    Left = 32
-    Height = 17
-    Hint = 'Virtual display.'
-    Top = 16
-    Width = 161
-    Alignment = taLeftJustify
-    BevelOuter = bvNone
-    Color = clNone
-    DoubleBuffered = True
-    Font.CharSet = 4
-    Font.Color = clWindowText
-    Font.Height = -14
-    Font.Name = 'Modern'
-    Font.Pitch = fpFixed
-    ParentColor = False
-    ParentDoubleBuffered = False
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 0
-    Visible = False
-  end
-  object xLine3Panel: TPanel
-    Left = 32
-    Height = 17
-    Hint = 'Virtual display.'
-    Top = 32
-    Width = 161
-    Alignment = taLeftJustify
-    BevelOuter = bvNone
-    Color = clNone
-    DoubleBuffered = True
-    Font.CharSet = 4
-    Font.Color = clWindowText
-    Font.Height = -14
-    Font.Name = 'Modern'
-    Font.Pitch = fpFixed
-    ParentColor = False
-    ParentDoubleBuffered = False
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 1
-    Visible = False
-  end
-  object xLine4Panel: TPanel
-    Left = 32
-    Height = 17
-    Hint = 'Virtual display.'
-    Top = 48
-    Width = 161
-    Alignment = taLeftJustify
-    BevelOuter = bvNone
-    Color = clNone
-    DoubleBuffered = True
-    Font.CharSet = 4
-    Font.Color = clWindowText
-    Font.Height = -14
-    Font.Name = 'Modern'
-    Font.Pitch = fpFixed
-    ParentColor = False
-    ParentDoubleBuffered = False
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 2
-    Visible = False
-  end
   object ScreenNumberPanel: TPanel
     Left = 84
     Height = 17
@@ -304,90 +124,19 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
-  end
-  inline Line1LCDPanel: TLCDLineFrame
-    Left = 32
-    Height = 18
-    ClientHeight = 18
-    TabOrder = 3
-    DesignLeft = 1365
-    DesignTop = 338
-    inherited LCDPanel: TPanel
-      Height = 18
-      ClientHeight = 18
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
-      inherited PaintBox: TPaintBox
-        Height = 18
-      end
-    end
-  end
-  inline Line2LCDPanel: TLCDLineFrame
-    Left = 32
-    Height = 18
-    Top = 16
-    ClientHeight = 18
-    TabOrder = 4
-    DesignLeft = 1365
-    DesignTop = 338
-    inherited LCDPanel: TPanel
-      Height = 18
-      ClientHeight = 18
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
-      inherited PaintBox: TPaintBox
-        Height = 18
-      end
-    end
-  end
-  inline Line3LCDPanel: TLCDLineFrame
-    Left = 32
-    Height = 18
-    Top = 32
-    ClientHeight = 18
-    TabOrder = 6
-    DesignLeft = 1365
-    DesignTop = 338
-    inherited LCDPanel: TPanel
-      Height = 18
-      ClientHeight = 18
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
-      inherited PaintBox: TPaintBox
-        Height = 18
-      end
-    end
-  end
-  inline Line4LCDPanel: TLCDLineFrame
-    Left = 32
-    Height = 18
-    Top = 48
-    ClientHeight = 18
-    TabOrder = 5
-    DesignLeft = 1365
-    DesignTop = 338
-    inherited LCDPanel: TPanel
-      Height = 18
-      ClientHeight = 18
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
-      inherited PaintBox: TPaintBox
-        Height = 18
-      end
-    end
+    TabOrder = 0
   end
   object TimerRefresh: TTimer
     Enabled = False
     Interval = 200
     OnTimer = TimerRefreshTimer
     Left = 168
-    Top = 92
+    Top = 96
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
-    Left = 56
-    Top = 120
+    Left = 28
+    Top = 144
     object ShowWindow1: TMenuItem
       Caption = '&Show'
       Default = True
@@ -440,52 +189,52 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Interval = 50
     OnTimer = LeftManualScrollTimerTimer
     Left = 56
-    Top = 92
+    Top = 96
   end
   object RightManualScrollTimer: TTimer
     Enabled = False
     Interval = 50
     OnTimer = RightManualScrollTimerTimer
     Left = 112
-    Top = 92
+    Top = 96
   end
   object NextScreenTimer: TTimer
     Enabled = False
     OnTimer = NextScreenTimerTimer
     Left = 140
-    Top = 92
+    Top = 96
   end
   object ActionsTimer: TTimer
     Enabled = False
     Interval = 250
     OnTimer = ActionsTimerTimer
-    Top = 92
+    Top = 96
   end
   object TransitionTimer: TTimer
     Enabled = False
     Interval = 10
     OnTimer = TransitionTimerTimer
     Left = 84
-    Top = 92
+    Top = 96
   end
   object ScrollFlashTimer: TTimer
     Enabled = False
     OnTimer = ScrollFlashTimerTimer
     Left = 28
-    Top = 92
+    Top = 96
   end
   object IdTCPServer1: TIdTCPServer
     Bindings = <>
     DefaultPort = 8080
-    Left = 112
-    Top = 120
+    Left = 84
+    Top = 144
   end
   object IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL
     SSLOptions.Mode = sslmUnassigned
     SSLOptions.VerifyMode = []
     SSLOptions.VerifyDepth = 0
-    Left = 140
-    Top = 120
+    Left = 112
+    Top = 144
   end
   object TrayIcon1: TTrayIcon
     PopUpMenu = PopupMenu1
@@ -564,18 +313,17 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     }
     Visible = True
     OnDblClick = ShowWindow1Click
-    Left = 84
-    Top = 120
+    Left = 56
+    Top = 144
   end
   object WinampCtrl1: TWinampCtrl
     FreeLists = True
     WinampLocation = 'C:\Program Files\Winamp\winamp.exe'
-    Left = 28
-    Top = 120
+    Top = 144
   end
   object ExceptionLogger1: TExceptionLogger
     MaxCallStackDepth = 60
-    Left = 168
-    Top = 120
+    Left = 140
+    Top = 144
   end
 end

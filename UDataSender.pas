@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, DataThread, IdGlobal, classes,
-  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL;
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, UMain;
 
 const
   SenderKeyPrefix = '$Sender';
@@ -179,13 +179,13 @@ begin
   while decodeArgs(line, '$Sender', maxArgs, args, prefix, postfix, numargs) do
   begin
     RequiredParameters(numargs, 5, 5); //ipaddr,port,pass,ssl,line
-    SenderInfo.ClientIP := args[1];
-    SenderInfo.ClientPort := args[2];
-    SenderInfo.Password := args[3];
-    SenderInfo.ClientSSL := boolean(strtoint(args[4]));
+    SenderInfo.ClientIP := LCDSmartieDisplayForm.Data.change(args[1]);
+    SenderInfo.ClientPort := LCDSmartieDisplayForm.Data.change(args[2]);
+    SenderInfo.Password := LCDSmartieDisplayForm.Data.change(args[3]);
+    SenderInfo.ClientSSL := boolean(strtoint(LCDSmartieDisplayForm.Data.change(args[4])));
 
   Line := prefix;
-     case (strtoint(args[5][1])) of
+     case (strtoint(LCDSmartieDisplayForm.Data.change(args[5][1]))) of
             1 : line := line+RLine[1];
             2 : line := line+RLine[2];
             3 : line := line+RLine[3];
