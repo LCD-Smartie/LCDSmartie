@@ -251,8 +251,25 @@ begin
 end;
 
 procedure TLCD_DLL.Write(Str: String);
+var
+  i: byte;
 begin
   if OK then begin
+    if assigned(CustomIndex) then begin
+      for i:= 1 to Length(str) do
+      begin
+        case byte(str[i]) of
+          176 : str[i] := Chr(CustomCharIndex[1]);
+          158 : str[i] := Chr(CustomCharIndex[2]);
+          131 : str[i] := Chr(CustomCharIndex[3]);
+          132 : str[i] := Chr(CustomCharIndex[4]);
+          133 : str[i] := Chr(CustomCharIndex[5]);
+          134 : str[i] := Chr(CustomCharIndex[6]);
+          135 : str[i] := Chr(CustomCharIndex[7]);
+          136 : str[i] := Chr(CustomCharIndex[8]);
+        end;
+      end;
+    end;
     if assigned(WriteProc) then begin
       try
         WriteProc(pchar(Str));

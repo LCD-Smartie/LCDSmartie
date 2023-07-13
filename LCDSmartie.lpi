@@ -24,7 +24,7 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="4"/>
-      <BuildNr Value="16"/>
+      <BuildNr Value="21"/>
       <CharSet Value="04B0"/>
     </VersionInfo>
     <BuildModes Count="3">
@@ -365,10 +365,16 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="1">
+    <Exceptions Count="3">
       <Item1>
         <Name Value="EIdHTTPProtocolException"/>
       </Item1>
+      <Item2>
+        <Name Value="EIdSocketError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EIdConnClosedGracefully"/>
+      </Item3>
     </Exceptions>
   </Debugging>
 </CONFIG>

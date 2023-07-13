@@ -21,6 +21,10 @@ While there is much information on the lcd smartie forums, any issues with this 
 - There may/will be bugs
 
 ### Log and Information
+- ### 5.5.4.21
+- Issue #7 A couple of issues but seems to be fixed now. Fixed the DISPLAYDLL_CustomCharIndex dll function handler
+- Issue #8 Is now fixed. Thanks to limbo666 and rdoursenaud for testing and confirming this.
+- Issue #14 A bit of silliness in the way the client area was calculated. Fix by manually specifying paintbox size
 - ### 5.5.4.15
 - Issue #10 revert variable resolver behaviour and #12 Implement custom LCD size options
 - Also implemented recursive variable resolver for some other variables. Far from complete as some other resolver functions need complete re-write to take advantage.

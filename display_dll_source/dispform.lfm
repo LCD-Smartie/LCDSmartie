@@ -3,7 +3,6 @@ object LCDDisplayForm: TLCDDisplayForm
   Height = 65
   Top = 137
   Width = 327
-  Align = alClient
   BorderIcons = []
   BorderStyle = bsToolWindow
   Caption = 'LCD Display'
@@ -21,11 +20,11 @@ object LCDDisplayForm: TLCDDisplayForm
   LCLVersion = '2.2.6.0'
   Scaled = False
   object PaintBox: TPaintBox
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 65
     Top = 0
     Width = 327
-    Align = alClient
     BorderSpacing.CellAlignHorizontal = ccaCenter
     BorderSpacing.CellAlignVertical = ccaCenter
     DragMode = dmAutomatic

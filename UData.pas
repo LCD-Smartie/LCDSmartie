@@ -317,12 +317,8 @@ label
   endChange;
 var
   Loop : longint;
-  startvarcount: integer;
 begin
   try
-    //while true do
-    //begin
-    //  startvarcount := line.CountChar('$');
       for Loop := 0 to DataThreads.Count-1 do begin
         TDataThread(DataThreads[Loop]).ResolveVariables(Line);
         if (Pos('$', line) = 0) then goto endChange;
@@ -337,8 +333,7 @@ begin
       ResolveWinampVariables(line);
       if (Pos('$', line) = 0) then goto endChange;
       ResolveTimeVariable(Line);
-     // if startvarcount = line.CountChar('$') then goto endChange
-    //end;
+
 endChange:
   ResolveStringFunctionVariables(Line); // only do these after all others resolved
   except

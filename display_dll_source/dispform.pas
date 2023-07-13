@@ -275,7 +275,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Free;
-    procedure MenuItem1Click(Sender: TObject);
     procedure PaintBoxMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure PaintBoxMouseUp(Sender: TObject; Button: TMouseButton;
@@ -294,6 +293,8 @@ type
     BackgroundBitmap : TBitmap;
     BackgroundColor : TColor;
     FrameBuffer : array[1..MaxWidth*MaxHeight] of byte;
+    CaptionHeight: long;
+    BorderWidth: long;
     procedure readconfig;
     procedure writeconfig;
     procedure WMNCHitTest(var Msg: TWMNCHitTest) ; message WM_NCHitTest;
@@ -354,7 +355,7 @@ begin
    if StayOnTopMenuItem.Checked then
      SetWindowPos(Handle, HWND_TOPMOST,	0,0,0,0, dwSWPflags)
    else
-     SetWindowPos(Handle, HWND_NOTOPMOST,	0,0,0,0, dwSWPflags);
+     SetWindowPos(Handle, HWND_NOTOPMOST, 0,0,0,0, dwSWPflags);
 
    if (config.StayOnTop <> StayOnTopMenuItem.Checked) or (config.AlphaBlend <> AlphaBlend) or
         (config.AlphaBlendValue <> AlphaBlendValue) or (config.PosY <> Top) or (config.PosX <> Left) then
@@ -366,7 +367,6 @@ begin
      config.PosX := Left;
      writeconfig;
    end;
-
 end;
 
 procedure TLCDDisplayForm.WMNCHitTest(var Msg: TWMNCHitTest) ;
@@ -421,7 +421,6 @@ begin
   end;
 end;
 
-
 procedure TLCDDisplayForm.AlphaMenuItemClick(Sender: TObject);
 begin
   if TMenuItem(Sender).Name = 'AlphaOffMenuItem' then
@@ -450,8 +449,6 @@ begin
     end;
 end;
 
-
-
 procedure TLCDDisplayForm.FormCreate(Sender: TObject);
 begin
   readconfig;
@@ -472,13 +469,13 @@ end;
 procedure TLCDDisplayForm.FormShow(Sender: TObject);
 var
   Style: long;
-  CaptionHeight: long;
 begin
   Left := config.PosX;
   Top := config.PosY;
   StayOnTopMenuItem.Checked := config.StayOnTop;
   Width := (MyWidth*(CharWidth+1)*2);
   Height := (MyHeight*(CharHeight+1)*2);
+
   if assigned(BackgroundBitmap) then BackgroundBitmap.Free;
   BackgroundBitmap := TBitmap.Create;
   with BackgroundBitmap do begin
@@ -489,10 +486,11 @@ begin
     Canvas.Rectangle(1,1,Width,Height);
     ClearDisplay;
   end;
+
   Style:=GetWindowLong(Handle, GWL_STYLE);
   CaptionHeight := GetSystemMetrics(SM_CYCAPTION);
+  BorderWidth := GetSystemMetrics(SM_CXFIXEDFRAME); // making the assumption horizontal and vertical frame are the same
   SetWindowLong(Handle,GWL_STYLE, Style and (not WS_CAPTION));
-  changebounds(left,top, width - 4 , Height - CaptionHeight - 4, false);
   AlphaBlendValue := config.AlphaBlendValue;
   Alphablend := config.AlphaBlend;
 
@@ -531,18 +529,13 @@ begin
   inherited;
 end;
 
-procedure TLCDDisplayForm.MenuItem1Click(Sender: TObject);
-begin
-
-end;
-
 procedure TLCDDisplayForm.PaintBoxMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
   begin
     ReleaseCapture;
-    SendMessage(Handle, WM_SYSCOMMAND, 61458, 0) ;
+    SendMessage(Handle, WM_SYSCOMMAND, $F012, 0) ; //  61458
   end
   else
   begin
@@ -582,7 +575,21 @@ begin
   Y := min(MaxHeight,Y);
   MyWidth := X;
   MyHeight := Y;
-  FormShow(nil);
+  Height := (MyHeight*(CharHeight+1)*2) - captionheight - borderwidth;
+  Width := (MyWidth*(CharWidth+1)*2) - borderwidth - 1; // not sure where the extra dimensions come from
+  PaintBox.Height := Height + captionheight + borderwidth + borderwidth;
+  PaintBox.Width := Width + borderwidth + 3;
+
+  if assigned(BackgroundBitmap) then BackgroundBitmap.Free;
+  BackgroundBitmap := TBitmap.Create;
+  with BackgroundBitmap do begin
+    Width := 1+ MyWidth*(CharWidth+1);
+    Height := 1 + MyHeight*(CharHeight+1);
+    Canvas.Pen.Color := BackgroundColor;
+    Canvas.Brush.Color := BackgroundColor;
+    Canvas.Rectangle(1,1,Width,Height);
+    ClearDisplay;
+  end;
 end;
 
 procedure TLCDDisplayForm.PaintBoxPaint(Sender: TObject);
@@ -614,16 +621,6 @@ var
   DestRect : TRect;
   SrcRect : TRect;
 begin
-  if (C > 128) then begin
-    case C of
-      176 : C := 0;
-      158 : C := 1;
-      131..136 : dec(C);
-      else C := C;
-    end;
-    if (C < 32) then C := 128 + (C mod 8);
-  end;
-
   FrameBuffer[CurrentX+(CurrentY-1)*MyWidth] := C;
   CurChar := Font[C];
   with SrcRect do begin
@@ -633,9 +630,9 @@ begin
     Bottom := CharHeight;
   end;
   with DestRect do begin
-    Top := (CurrentY-1)*(CharHeight+1)+1;
+    Top := ((CurrentY-1)*(CharHeight+1))+1;
     Bottom := Top + CharHeight;
-    Left := (CurrentX-1)*(CharWidth+1)+1;
+    Left := ((CurrentX-1)*(CharWidth+1))+1;
     Right := Left + CharWidth;
   end;
   BackgroundBitmap.Canvas.CopyRect(DestRect,CurChar.Canvas,SrcRect);
@@ -681,10 +678,21 @@ end;
 
 procedure TLCDDisplayForm.CustomChar(Index : byte; Bytes : array of byte);
 var
-  X,Y : byte;
+  X,Y,C : byte;
 begin
+  case index of
+    1: C:=176;
+    2: C:=158;
+    3: C:=131;
+    4: C:=132;
+    5: C:=133;
+    6: C:=134;
+    7: C:=135;
+    8: C:=136;
+  end;
+
   Index := min(8,max(1,Index));
-  with Font[127+Index].Canvas do begin
+  with Font[C].Canvas do begin
     for X := 0 to CharWidth-1 do begin
       for Y := 0 to CharHeight-1 do begin
         if ((Bytes[Y] and (1 shl X)) > 0) then

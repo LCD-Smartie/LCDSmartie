@@ -447,3 +447,4 @@ backup
 *.pem
 x64/release-dir/openssl/.rnd
 *.sys
+release-dir/displays/desktop.dll

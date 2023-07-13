@@ -35,8 +35,10 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <HeapSize Value="400000"/>
-            <StackSize Value="400000"/>
+            <RelocatableUnit Value="True"/>
+            <Checks>
+              <RangeChecks Value="True"/>
+            </Checks>
             <TargetCPU Value="i386"/>
             <TargetOS Value="win32"/>
             <Optimizations>
@@ -105,6 +107,10 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
+            <RelocatableUnit Value="True"/>
+            <Checks>
+              <RangeChecks Value="True"/>
+            </Checks>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
             <Optimizations>
@@ -114,6 +120,7 @@
           <Linking>
             <Debugging>
               <DebugInfoType Value="dsDwarf2Set"/>
+              <TrashVariables Value="True"/>
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
@@ -153,8 +160,10 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <HeapSize Value="400000"/>
-            <StackSize Value="400000"/>
+            <RelocatableUnit Value="True"/>
+            <Checks>
+              <RangeChecks Value="True"/>
+            </Checks>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
             <Optimizations>
@@ -250,6 +259,10 @@
     </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
+      <RelocatableUnit Value="True"/>
+      <Checks>
+        <RangeChecks Value="True"/>
+      </Checks>
       <TargetCPU Value="i386"/>
       <TargetOS Value="win32"/>
       <Optimizations>

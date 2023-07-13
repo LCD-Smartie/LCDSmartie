@@ -96,6 +96,35 @@ type
   end;
 
 type
+  PTPDH_COUNTER_PATH_ELEMENTS_W = ^TPDH_COUNTER_PATH_ELEMENTS_W;
+  TPDH_COUNTER_PATH_ELEMENTS_W =record
+    szMachineName: LPSTR;
+    szObjectName: LPSTR;
+    szInstanceName: LPSTR;
+    szParentInstance: LPSTR;
+    dwInstanceIndex: DWORD;
+    szCounterName: LPSTR;
+  end;
+
+type
+  PTPDH_COUNTER_INFO_W = ^TPDH_COUNTER_INFO_W;
+  TPDH_COUNTER_INFO_W = record
+    dwLength: DWORD;
+    dwType: DWORD;
+    CVersion: DWORD;
+    CStatus: DWORD;
+    lScale: LONG;
+    lDefaultScale: LONG;
+    dwUserData: PDWORD;
+    dwQueryUserData: PDWORD;
+    szFullPath: PWideChar;
+    PDH_COUNTER_PATH_ELEMENTS_W: TPDH_COUNTER_PATH_ELEMENTS_W;
+    szExplainText:  PWideChar;
+    //DataBuffer[1]:  DWORD;
+  end;
+
+
+type
   TCPUUsage = record
     name: string;
     value: double;
@@ -133,6 +162,7 @@ type
     CPUPerformanceArray: array of TCPUperformance;
     function getIsWin2kXP: Boolean;
     function getIsWin10: Boolean;
+    function getIsWin11: Boolean;
     function getTotalPhysMemory: Int64;
     function getAvailPhysMemory: Int64;
     function getTotalPageFile: Int64;
@@ -149,6 +179,7 @@ type
   published
     property bIsWin2kXP: Boolean read getIsWin2kXP;
     property bIsWin10: Boolean read getIsWin10;
+    property bIsWin11: Boolean read getIsWin11;
     property totalPhysmemory: Int64 read gettotalphysmemory;
     property AvailPhysmemory: Int64 read getavailphysmemory;
     property totalPageFile: Int64 read gettotalPageFile;
@@ -192,9 +223,12 @@ implementation
 uses
   UUtils, StrUtils;
 
-function PdhOpenQueryA( szDataSource : PAnsiChar; dwUserData : PDWORD; phQuery: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhOpenQueryA';
+function PdhOpenQueryW( szDataSource : PAnsiChar; dwUserData : PDWORD; phQuery: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhOpenQueryW';
 function PdhCloseQuery( hQuery: THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCloseQuery';
-//function PdhAddEnglishCounterA( hQuery : THANDLE; szFullCounterPath : PAnsiChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterA';
+function PdhAddEnglishCounterW( hQuery : THANDLE; szFullCounterPath : PWideChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddEnglishCounterW';
+function PdhGetCounterInfoW( hCounter : THANDLE; bRetrieveExplainText : boolean; lpdwBufferSize: PDWORD; lpBuffer : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhGetCounterInfoW';
+function PdhExpandWildCardPathW( szDataSource : PWideChar; szWildCardPath : PWideChar; mszExpandedPathList : PPWideChar; pcchPathListLength : PDWORD; dwFlags: DWORD) : HRESULT; stdcall; external 'pdh' name 'PdhExpandWildCardPathW';
+
 function PdhAddCounterW( hQuery : THANDLE; szFullCounterPath : PWideChar; dwUserData: PDWORD; phCounter : pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhAddCounterW';
 function PdhCollectQueryData( hQuery : THANDLE ) : HRESULT; stdcall; external 'pdh' name 'PdhCollectQueryData';
 function PdhGetFormattedCounterValue( hCounter : THANDLE; dwFormat : DWORD; lpdwType: pointer; pValue: pointer ) : HRESULT; stdcall; external 'pdh' name 'PdhGetFormattedCounterValue';
@@ -204,13 +238,7 @@ function SHQueryUserNotificationState( p : Pointer ) : HRESULT; stdcall; externa
 
 constructor TSystemDataThread.Create;
 var
-  Reg: Tregistry;
   lprocessorinfo:TProcessorInformation;
-  pdhRet: HRESULT;
-  st: tstringlist;
-  pos: integer;
-  PerfObject: array[0..255] of WideChar;
-  PerfCounter: array[0..255] of WideChar;
 begin
   STComputername := Computername;
   STUsername := Username;
@@ -222,51 +250,20 @@ begin
   CPUSpeed := 0;
   setLength(PPIbuff, ProcessorCount);
 
-  if ( PdhOpenQueryA(nil, nil, @pdhQueryHandle) >= 0 ) then
+  if ( PdhOpenQueryW(nil, nil, @pdhQueryHandle) >= 0 ) then
   begin
-    st := tstringlist.create;
-    Reg := TRegistry.Create;
-    try
-      Reg.RootKey := HKEY_LOCAL_MACHINE;
-      if Reg.OpenKeyReadOnly('\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib\CurrentLanguage') then
-         Reg.ReadStringList('Counter', st);
-    finally
-      Reg.Free;
-    end;
-
-    if getIsWin10 then
+    if getIsWin10 then // >= win10
     begin
-      pos := st.indexof('2454');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfObject, 255);// localized 'Processor Information'
-      pos := st.indexof('2508');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized '% Processor Utility'
-      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUUsageCounterHandle);
-
-      pos := st.indexof('2504');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized '% Processor Performance'
-      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUPerformanceCounterHandle);
-
-      pos := st.indexof('2490');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized 'Processor Frequency'
-      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUFrequencyCounterHandle);
+      PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\Processor Information(*)\% Processor Utility'), nil, @pdhCPUUsageCounterHandle);
+      PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\Processor Information(*)\% Processor Performance'), nil, @pdhCPUPerformanceCounterHandle);
+      PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\Processor Information(*)\Processor Frequency'), nil, @pdhCPUFrequencyCounterHandle);
     end
     else
-    begin // < win10
-      pos := st.indexof('1848');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfObject, 255); // localized 'Processor Information'
-      pos := st.indexof('1850');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized '% Processor Time'
-      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUUsageCounterHandle);
-
-      pos := st.indexof('8910');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfObject, 255); // localized 'Processor Performance'
-      pos := st.indexof('8912');
-      StringToWideChar(rawbytestring(st.Strings[pos+1]), PerfCounter, 255); // localized string of 'frequency'
-      pdhRet := PdhAddCounterW(pdhQueryHandle, pwidechar('\'+PerfObject+'(*)\'+PerfCounter), nil, @pdhCPUPerformanceCounterHandle);
+    begin // < win10 Needs testing
+      PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\Processor Information(*)\% Processor Time'), nil, @pdhCPUUsageCounterHandle);
+      PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\Processor Performance(*)\frequency'), nil, @pdhCPUPerformanceCounterHandle);
     end;
-    st.Free;
   end;
-
   inherited Create(500);
 end;
 
@@ -305,9 +302,9 @@ begin
   end;
 end;
 
-// TODO: This may not be needed anymore as alot has changed in the years from
-// when it was needed. Many new features of LCDSmartie require at least Vista
-// maybe even 7
+// Get windows versions
+// TODO: Need to look into this more. we need to determine which version of windows we have
+// Maybe rewrite some stuff to make this check simpler
 function TSystemDataThread.getIsWin2kXP: Boolean;
 var
   oviVersionInfo: windows.TOSVERSIONINFO;
@@ -331,6 +328,19 @@ begin
     (oviVersionInfo.dwMajorVersion >= 10) then getIsWin10 := true
   else getIsWin10 := false;
 end;
+
+function TSystemDataThread.getIsWin11: Boolean;
+var
+  oviVersionInfo: windows.TOSVERSIONINFO;
+begin
+  oviVersionInfo.dwOSVersionInfoSize := SizeOf(oviVersionInfo);
+  if not windows.GetVersionEx(oviVersionInfo) then raise
+    Exception.Create('Can''t get the Windows version');
+  if (oviVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and
+    (oviVersionInfo.dwMajorVersion >= 10) and (oviVersionInfo.dwBuildNumber >=22000) then getIsWin11 := true
+  else getIsWin11 := false;
+end;
+// end get windows versions
 
 function TSystemDataThread.gettotalphysmemory: Int64;
 var

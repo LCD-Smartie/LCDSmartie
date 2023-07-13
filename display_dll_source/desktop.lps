@@ -3,16 +3,16 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Release x32"/>
-    <Units Count="5">
+    <BuildModes Active="Release x64"/>
+    <Units Count="6">
       <Unit0>
         <Filename Value="desktop.lpr"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="100"/>
-        <CursorPos X="35" Y="19"/>
-        <UsageCount Value="20"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="120"/>
+        <CursorPos X="31" Y="160"/>
+        <UsageCount Value="41"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="dispform.pas"/>
@@ -21,22 +21,19 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DISPFORM"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="307"/>
-        <CursorPos X="35" Y="338"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="624"/>
+        <CursorPos X="31" Y="380"/>
+        <UsageCount Value="41"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit1>
       <Unit2>
         <Filename Value="dispform.lfm"/>
         <HasResources Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="4" Y="41"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit2>
       <Unit3>
@@ -46,7 +43,7 @@
         <ResourceBaseClass Value="Frame"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="31"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit3>
       <Unit4>
@@ -55,9 +52,17 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="..\UData.pas"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="326"/>
+        <CursorPos Y="322"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit5>
     </Units>
     <OtherDefines Count="5">
       <Define0 Value="Borland"/>
@@ -66,39 +71,123 @@
       <Define3 Value="Compiler6_Up"/>
       <Define4 Value="PUREPASCAL"/>
     </OtherDefines>
-    <JumpHistory Count="8" HistoryIndex="7">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="101" Column="83" TopLine="81"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="606" Column="3" TopLine="568"/>
       </Position1>
       <Position2>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="102" Column="15" TopLine="73"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="598" Column="30" TopLine="576"/>
       </Position2>
       <Position3>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="75" Column="3" TopLine="59"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="594" Column="30" TopLine="579"/>
       </Position3>
       <Position4>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="76" Column="5" TopLine="54"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="496" Column="62" TopLine="470"/>
       </Position4>
       <Position5>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="94" Column="16" TopLine="71"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="586" Column="28" TopLine="563"/>
       </Position5>
       <Position6>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="93" Column="21" TopLine="69"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="589" Column="28" TopLine="560"/>
       </Position6>
       <Position7>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="32" Column="37" TopLine="13"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="587" Column="4" TopLine="550"/>
       </Position7>
       <Position8>
-        <Filename Value="desktop.lpr"/>
-        <Caret Line="25"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="587" Column="3" TopLine="562"/>
       </Position8>
+      <Position9>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="586" Column="56" TopLine="562"/>
+      </Position9>
+      <Position10>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="589" Column="27" TopLine="562"/>
+      </Position10>
+      <Position11>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="595" Column="32" TopLine="562"/>
+      </Position11>
+      <Position12>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="588" Column="44" TopLine="562"/>
+      </Position12>
+      <Position13>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="494" Column="42" TopLine="471"/>
+      </Position13>
+      <Position14>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="497" Column="56" TopLine="472"/>
+      </Position14>
+      <Position15>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="589" Column="48" TopLine="562"/>
+      </Position15>
+      <Position16>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="494" Column="52" TopLine="476"/>
+      </Position16>
+      <Position17>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="498" Column="5" TopLine="485"/>
+      </Position17>
+      <Position18>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="651" Column="41" TopLine="627"/>
+      </Position18>
+      <Position19>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="588" Column="70" TopLine="569"/>
+      </Position19>
+      <Position20>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="591" Column="40" TopLine="569"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\UData.pas"/>
+        <Caret Line="322" TopLine="296"/>
+      </Position21>
+      <Position22>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="589" Column="37" TopLine="560"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\UData.pas"/>
+        <Caret Line="322" TopLine="296"/>
+      </Position23>
+      <Position24>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="591" Column="54" TopLine="560"/>
+      </Position24>
+      <Position25>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="588" Column="70" TopLine="560"/>
+      </Position25>
+      <Position26>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="603" Column="15" TopLine="559"/>
+      </Position26>
+      <Position27>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="591" Column="44" TopLine="565"/>
+      </Position27>
+      <Position28>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="533" Column="5" TopLine="527"/>
+      </Position28>
+      <Position29>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="380" Column="31" TopLine="366"/>
+      </Position29>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

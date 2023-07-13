@@ -157,7 +157,7 @@ exports
   DISPLAYDLL_SetBacklight,
   DISPLAYDLL_ReadKey,
   DISPLAYDLL_CustomChar,
-  DISPLAYDLL_CustomCharIndex,
+//  DISPLAYDLL_CustomCharIndex,
   DISPLAYDLL_Write,
   DISPLAYDLL_SetPosition,
   DISPLAYDLL_DefaultParameters,
