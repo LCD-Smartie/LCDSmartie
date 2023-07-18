@@ -111,51 +111,6 @@ object SetupForm: TSetupForm
           ShowHint = True
           TabOrder = 2
         end
-        object CopyToScreenComboBox: TComboBox
-          Left = 84
-          Height = 21
-          Top = 186
-          Width = 49
-          Anchors = [akLeft, akBottom]
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          OnChange = ScreenSpinEditChange
-          ParentFont = False
-          TabOrder = 3
-        end
-        object MoveToScreenComboBox: TComboBox
-          Left = 210
-          Height = 21
-          Top = 186
-          Width = 49
-          Anchors = [akLeft, akBottom]
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          OnChange = ScreenSpinEditChange
-          ParentFont = False
-          TabOrder = 4
-        end
-        object SwapWithScreenComboBox: TComboBox
-          Left = 336
-          Height = 21
-          Top = 186
-          Width = 49
-          Anchors = [akLeft, akBottom]
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ItemHeight = 13
-          OnChange = ScreenSpinEditChange
-          ParentFont = False
-          TabOrder = 5
-        end
         object ScrollBox1: TScrollBox
           Left = -1
           Height = 104
@@ -166,7 +121,7 @@ object SetupForm: TSetupForm
           BorderStyle = bsNone
           ClientHeight = 104
           ClientWidth = 543
-          TabOrder = 6
+          TabOrder = 3
           object Line1MemoEdit: TMemo
             Left = 9
             Height = 23
@@ -728,7 +683,7 @@ object SetupForm: TSetupForm
           MinValue = 1
           OnChange = ScreenSpinEditChange
           ParentFont = False
-          TabOrder = 7
+          TabOrder = 4
           Value = 1
         end
         object Label18: TLabel
@@ -756,7 +711,7 @@ object SetupForm: TSetupForm
           MaxValue = 10
           MinValue = 1
           ParentFont = False
-          TabOrder = 8
+          TabOrder = 5
           Value = 1
         end
         object Label5: TLabel
@@ -788,7 +743,7 @@ object SetupForm: TSetupForm
           ParentFont = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 9
+          TabOrder = 6
           Value = 3
         end
         object Label43: TLabel
@@ -818,7 +773,7 @@ object SetupForm: TSetupForm
           ParentFont = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 10
+          TabOrder = 7
         end
         object StickyCheckbox: TCheckBox
           Left = 133
@@ -836,7 +791,7 @@ object SetupForm: TSetupForm
           ParentShowHint = False
           ParentBidiMode = False
           ShowHint = True
-          TabOrder = 11
+          TabOrder = 8
         end
         object Label61: TLabel
           Left = 210
@@ -885,7 +840,7 @@ object SetupForm: TSetupForm
           )
           ParentFont = False
           Style = csDropDownList
-          TabOrder = 12
+          TabOrder = 9
         end
         object TransitionTimeSpinEdit: TSpinEdit
           Left = 290
@@ -899,7 +854,7 @@ object SetupForm: TSetupForm
           MaxValue = 99
           MinValue = 1
           ParentFont = False
-          TabOrder = 13
+          TabOrder = 10
           Value = 1
         end
         object Label62: TLabel
@@ -922,7 +877,7 @@ object SetupForm: TSetupForm
           Width = 48
           ClientHeight = 62
           ClientWidth = 44
-          TabOrder = 14
+          TabOrder = 11
           object Label44: TLabel
             Left = 8
             Height = 52
@@ -947,7 +902,7 @@ object SetupForm: TSetupForm
           Width = 48
           ClientHeight = 62
           ClientWidth = 44
-          TabOrder = 15
+          TabOrder = 12
           object Label51: TLabel
             Left = 8
             Height = 52
@@ -972,7 +927,7 @@ object SetupForm: TSetupForm
           Width = 48
           ClientHeight = 62
           ClientWidth = 44
-          TabOrder = 16
+          TabOrder = 13
           object Label4: TLabel
             Left = 3
             Height = 26
@@ -989,6 +944,51 @@ object SetupForm: TSetupForm
             ParentFont = False
             WordWrap = True
           end
+        end
+        object CopyToScreenSpinEdit: TSpinEdit
+          Left = 84
+          Height = 21
+          Top = 186
+          Width = 49
+          Anchors = [akLeft, akBottom]
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnChange = ScreenSpinEditChange
+          ParentFont = False
+          TabOrder = 14
+          Value = 1
+        end
+        object MoveToScreenSpinEdit: TSpinEdit
+          Left = 210
+          Height = 21
+          Top = 186
+          Width = 49
+          Anchors = [akLeft, akBottom]
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnChange = ScreenSpinEditChange
+          ParentFont = False
+          TabOrder = 15
+          Value = 1
+        end
+        object SwapWithScreenSpinEdit: TSpinEdit
+          Left = 336
+          Height = 21
+          Top = 186
+          Width = 49
+          Anchors = [akLeft, akBottom]
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          OnChange = ScreenSpinEditChange
+          ParentFont = False
+          TabOrder = 16
+          Value = 1
         end
       end
       object ProgramSettingsGroupBox: TGroupBox
@@ -1212,7 +1212,7 @@ object SetupForm: TSetupForm
             Height = 142
             Top = 3
             Width = 326
-            ActivePage = ScreenTabsheet
+            ActivePage = PluginTabsheet
             Align = alClient
             Font.CharSet = ANSI_CHARSET
             Font.Color = clBlack
@@ -1221,7 +1221,7 @@ object SetupForm: TSetupForm
             MultiLine = True
             ParentFont = False
             TabHeight = 16
-            TabIndex = 1
+            TabIndex = 0
             TabOrder = 0
             TabPosition = tpLeft
             Options = [nboMultiLine]

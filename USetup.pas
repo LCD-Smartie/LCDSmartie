@@ -30,7 +30,7 @@ uses
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
   ExtDlgs, CheckLst, Menus, SpinEx, RTTICtrls, Process, FileUtil,
-  Windows, Types, UConfig;
+  Windows, Types, UConfig, UEditLine;
 
 const
   NoVariable = 'Variable: ';
@@ -81,6 +81,7 @@ type
     ContinueLine6CheckBox: TCheckBox;
     ContinueLine7CheckBox: TCheckBox;
     ContinueLine8CheckBox: TCheckBox;
+    CopyToScreenSpinEdit: TSpinEdit;
     CustomCharsSizeEdit: TSpinEdit;
     CustomLinesSizeEdit: TSpinEdit;
     DontScrollLine1CheckBox: TCheckBox;
@@ -124,6 +125,7 @@ type
     Line8EditButton: TSpeedButton;
     Line4MemoEdit: TMemo;
     Line8MemoEdit: TMemo;
+    MoveToScreenSpinEdit: TSpinEdit;
     ScreenEnabledCheckBox: TCheckBox;
     ScreenLabel: TLabel;
     ScreenSpinEdit: TSpinEdit;
@@ -138,6 +140,7 @@ type
     ShutdownEdit7: TMemo;
     ShutdownEdit8: TMemo;
     StickyCheckbox: TCheckBox;
+    SwapWithScreenSpinEdit: TSpinEdit;
     ThemeNumberSpinEdit: TSpinEdit;
     TimeToShowSpinEdit: TSpinEdit;
     TransitionStyleComboBox: TComboBox;
@@ -239,7 +242,6 @@ type
     ComPortsButton: TButton;
     ContrastTrackBar: TTrackBar;
     CopyToScreenButton: TButton;
-    CopyToScreenComboBox: TComboBox;
     CreateCCharLocSpinEdit: TSpinEdit;
     CreateCCharRadioButton: TRadioButton;
     DisplayGroup2: TGroupBox;
@@ -338,7 +340,6 @@ type
     MiscListBox: TListBox;
     MiscTabSheet: TTabSheet;
     MoveToScreenButton: TButton;
-    MoveToScreenComboBox: TComboBox;
     MyTabSheet: TTabSheet;
     NetworkStatsAdapterListButton: TButton;
     NetworkStatsListBox: TListBox;
@@ -379,7 +380,6 @@ type
     StayOnTopCheckBox: TCheckBox;
     MiRunningInstancesListGrid: TStringGrid;
     SwapWithScreenButton: TButton;
-    SwapWithScreenComboBox: TComboBox;
     SysInfoListBox: TListBox;
     SysInfoTabSheet: TTabSheet;
     TabSheet1: TTabSheet;
@@ -502,8 +502,13 @@ type
     procedure RemoteSendUseSSLCheckBoxClick(Sender: TObject);
     procedure FoldEnableCheckBoxClick(Sender: TObject);
     procedure BOINCEnableCheckBoxClick(Sender: TObject);
-
+    procedure FormEditApply(Sender: TObject);
+    procedure FormEditOk(Sender: TObject);
+    procedure FormEditCancel(Sender: TObject);
+    procedure FormEditMemoEnter(Sender: TObject);
+    procedure FormEditMemoOnClick(Sender: TObject);
   private
+    FormEditArray: Array [1..MaxLines] of TFormEdit;
     LineEditArray: Array[1..MaxLines] of TMemo;
     LineEditButtonArray: Array[1..MaxLines] of TSpeedButton;
     ContinueLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
@@ -512,6 +517,7 @@ type
     ShutdownEditArray: Array[1..MaxLines] of TMemo;
     DLLPath: string;
     setupbutton: integer;
+    FormEditbutton: integer;
     shdownmessagebutton: integer;
     CurrentlyShownEmailAccount: integer;
     CurrentScreen: integer;
@@ -547,7 +553,7 @@ uses
   strutils,
 {$ENDIF}
    UDataNetwork, UDataWinamp, UData,
-  UIconUtils, UEditLine, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
+  UIconUtils, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
 
 function PdhEnumObjectsA( szDataSource: PAnsiChar; szMachineName: PAnsiChar; mszObjectList: PPAnsiChar; pcchBufferSize: PDWORD; dwDetailLevel: DWORD; bRefresh: boolean ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectsA';
 function PdhEnumObjectItemsW( szDataSource: PAnsiString;
@@ -1138,19 +1144,10 @@ begin
   LCDFeaturesTabSheet.Enabled := True;
   ButtonsListBox.Items.Add('FanSpeed(1,1) (nr,divider)');
 
-  // Screen re-arrange populate combo boxes
-  CopyToScreenComboBox.Clear;
-  MoveToScreenComboBox.Clear;
-  SwapWithScreenComboBox.Clear;
-  for i := 1 to MaxScreens do
-  begin
-    CopyToScreenComboBox.Items.Add(IntToStr(i));
-    MoveToScreenComboBox.Items.Add(IntToStr(i));
-    SwapWithScreenComboBox.Items.Add(IntToStr(i));
-  end;
-  CopyToScreenComboBox.ItemIndex := 0;
-  MoveToScreenComboBox.ItemIndex := 0;
-  SwapWithScreenComboBox.ItemIndex := 0;
+  // Screen re-arrange populate SpinEdits
+  CopyToScreenSpinEdit.Value := 1;
+  MoveToScreenSpinEdit.Value := 1;
+  SwapWithScreenSpinEdit.Value := 1;
 
   ActionsTimerSpinEdit.Value := config.ActionsTimer;
 
@@ -2090,12 +2087,30 @@ end;
 
 procedure TSetupForm.InsertButtonClick(Sender: TObject);
 var
+  b: boolean;
   tempint: integer;
   loop: integer;
 begin
   if VariableEdit.Text <> NoVariable then
   begin
-    if (ScreensTabSheet.Visible) then // in Screens tab
+    if setupbutton > MaxLines then  // in a line edit form
+    begin
+    for loop := 1 to MaxLines do
+    begin
+      if assigned(FormEditArray[Loop]) then
+      begin
+        if Loop = setupbutton - MaxLines then
+
+        tempint := FormEditArray[Loop].Memo1.SelStart;
+          FormEditArray[Loop].Memo1.Text := utf8copy(FormEditArray[Loop].Memo1.Text, 1, FormEditArray[Loop].Memo1.SelStart) +
+          VariableEdit.Text + utf8copy(FormEditArray[Loop].Memo1.Text, FormEditArray[Loop].Memo1.SelStart +
+            1 + FormEditArray[Loop].Memo1.SelLength, UTF8Length(FormEditArray[Loop].Memo1.Text));
+            FormEditArray[Loop].Memo1.SetFocus;
+          FormEditArray[Loop].Memo1.selstart := tempint + utf8length(VariableEdit.Text);
+      end;
+    end;
+    end
+    else if (ScreensTabSheet.Visible) then // in Screens tab
     begin
       for loop := 1 to MaxLines do
       begin
@@ -2951,29 +2966,87 @@ procedure TSetupForm.LineEditClick(Sender: TObject);
 var
   loop: integer;
 begin
-  FormEdit := TFormEdit.Create(self);
-
   for loop := 1 to MaxLines do
     if Sender = LineEditButtonArray[loop] then
-      FormEdit.Memo1.Text := LineEditArray[loop].Text;
-
-  FormEdit.Top := config.EditFormPosTop;
-  FormEdit.Left := config.EditFormPosLeft;
-
-  with FormEdit do
-  begin
-    showmodal;
-
-    if ModalResult = mrOk then
     begin
-      config.EditFormPosTop := FormEdit.Top;
-      config.EditFormPosLeft := FormEdit.Left;
-      for loop := 1 to MaxLines do
-        if Sender = LineEditButtonArray[loop] then
-          LineEditArray[loop].Text := FormEdit.Memo1.Text;
+      if not assigned(FormEditArray[Loop]) then
+      begin
+        FormEditArray[Loop] := TFormEdit.Create(self);
+        FormEditArray[Loop].Apply.OnClick := FormEditApply;
+        FormEditArray[Loop].OK.OnClick := FormEditOk;
+        FormEditArray[Loop].Cancel.OnClick := FormEditCancel;
+        FormEditArray[Loop].Memo1.OnEnter := FormEditMemoEnter;
+        FormEditArray[Loop].Memo1.OnClick := FormEditMemoOnClick;
+        FormEditArray[Loop].Memo1.Text := LineEditArray[loop].Text;
+        FormEditArray[Loop].Caption := FormEditArray[Loop].Caption + ' ' + inttostr(loop);
+        FormEditArray[Loop].Top := config.EditFormPosTop;
+        FormEditArray[Loop].Left := config.EditFormPosLeft;
+        FormEditArray[Loop].Show;
+      end;
     end;
-  end;
+end;
 
+procedure TSetupForm.FormEditApply(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to MaxLines do
+    if assigned(FormEditArray[Loop]) then
+      if Sender = FormEditArray[loop].Apply then
+      begin
+        LineEditArray[FormEditArray[loop].LineNumber].Text := FormEditArray[loop].Memo1.Text;
+      end;
+end;
+
+procedure TSetupForm.FormEditOk(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to MaxLines do
+    if assigned(FormEditArray[Loop]) then
+      if Sender = FormEditArray[loop].OK then
+      begin
+        LineEditArray[FormEditArray[loop].LineNumber].Text := FormEditArray[loop].Memo1.Text;
+        FormEditArray[loop].Close;
+        freeandnil(FormEditArray[loop]);
+      end;
+end;
+
+procedure TSetupForm.FormEditCancel(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to MaxLines do
+    if assigned(FormEditArray[Loop]) then
+      if Sender = FormEditArray[loop].Cancel then
+      begin
+        FormEditArray[loop].Close;
+        freeandnil(FormEditArray[loop]);
+      end;
+end;
+
+procedure TSetupForm.FormEditMemoEnter(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to MaxLines do
+    if assigned(FormEditArray[Loop]) then
+      if Sender = FormEditArray[loop].Memo1 then
+      begin
+        setupbutton := loop + MaxLines;
+      end;
+end;
+
+procedure TSetupForm.FormEditMemoOnClick(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to MaxLines do
+    if assigned(FormEditArray[Loop]) then
+      if Sender = FormEditArray[loop].Memo1 then
+      begin
+        setupbutton := loop + MaxLines;
+      end;
 end;
 
 /////////////////////////////////////////////////////////////////
@@ -3107,24 +3180,44 @@ end;
 ////////////////////////////////////////////////////////
 procedure TSetupForm.CopyToScreenButtonClick(Sender: TObject);
 begin
-  if ScreenSpinEdit.Value = CopyToScreenComboBox.ItemIndex + 1 then
+  if (CopyToScreenSpinEdit.Value > MaxScreens) or (CopyToScreenSpinEdit.Value < 0) then
+  begin
+    CopyToScreenSpinEdit.Value := 1;
+    ShowMessage('Destination screen value should be between 0 and ' + inttostr(MaxScreens) +
+      #13#10 + 'Choose another Value');
+    exit;
+  end;
+  if ScreenSpinEdit.Value = CopyToScreenSpinEdit.Value then
   begin
     ShowMessage('Destination screen is the same as this screen' +
       #13#10 + 'Choose another destination');
     exit;
   end;
-  config.screen[CopyToScreenComboBox.ItemIndex + 1] := config.screen[screenspinedit.Value];
+  if ScreenSpinEdit.Value = CopyToScreenSpinEdit.Value then
+  begin
+    ShowMessage('Destination screen is the same as this screen' +
+      #13#10 + 'Choose another destination');
+    exit;
+  end;
+  config.screen[CopyToScreenSpinEdit.Value] := config.screen[screenspinedit.Value];
 end;
 
 procedure TSetupForm.MoveToScreenButtonClick(Sender: TObject);
 begin
-  if ScreenSpinEdit.Value = MoveToScreenComboBox.ItemIndex + 1 then
+  if (MoveToScreenSpinEdit.Value > MaxScreens) or (MoveToScreenSpinEdit.Value < 0) then
+  begin
+    MoveToScreenSpinEdit.Value := 1;
+    ShowMessage('Destination screen value should be between 0 and ' + inttostr(MaxScreens) +
+      #13#10 + 'Choose another Value');
+    exit;
+  end;
+  if ScreenSpinEdit.Value = MoveToScreenSpinEdit.Value then
   begin
     ShowMessage('Destination screen is the same as this screen' +
       #13#10 + 'Choose another destination');
     exit;
   end;
-  config.screen[MoveToScreenComboBox.ItemIndex + 1] := config.screen[ScreenSpinEdit.Value];
+  config.screen[MoveToScreenSpinEdit.Value] := config.screen[ScreenSpinEdit.Value];
   config.screen[ScreenSpinEdit.Value] := Default(TScreen);
   LoadScreen(ScreenSpinEdit.Value);
 end;
@@ -3133,7 +3226,14 @@ procedure TSetupForm.SwapWithScreenButtonClick(Sender: TObject);
 var
   TempScreen: Tscreen;
 begin
-  if ScreenSpinEdit.Value = SwapWithScreenComboBox.ItemIndex + 1 then
+  if (SwapWithScreenSpinEdit.Value > MaxScreens) or (SwapWithScreenSpinEdit.Value < 0) then
+  begin
+    SwapWithScreenSpinEdit.Value := 1;
+    ShowMessage('Destination screen value should be between 0 and ' + inttostr(MaxScreens) +
+      #13#10 + 'Choose another Value');
+    exit;
+  end;
+  if ScreenSpinEdit.Value = SwapWithScreenSpinEdit.Value then
   begin
     ShowMessage('Destination screen is the same as this screen' +
       #13#10 + 'Choose another destination');
@@ -3141,8 +3241,8 @@ begin
   end;
   TempScreen := config.screen[ScreenSpinEdit.Value];
   config.screen[ScreenSpinEdit.Value] :=
-    config.screen[SwapWithScreenComboBox.ItemIndex + 1];
-  config.screen[SwapWithScreenComboBox.ItemIndex + 1] := TempScreen;
+    config.screen[SwapWithScreenSpinEdit.Value];
+  config.screen[SwapWithScreenSpinEdit.Value] := TempScreen;
   LoadScreen(ScreenSpinEdit.Value);
 end;
 

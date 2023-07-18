@@ -1,8 +1,9 @@
 object FormEdit: TFormEdit
-  Left = 864
+  Left = 1199
   Height = 177
-  Top = 239
+  Top = 204
   Width = 366
+  BorderIcons = []
   BorderStyle = bsSizeToolWin
   Caption = 'Edit LCD line'
   ClientHeight = 177
@@ -11,6 +12,7 @@ object FormEdit: TFormEdit
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
+  FormStyle = fsStayOnTop
   LCLVersion = '2.2.6.0'
   object Memo1: TMemo
     Left = 0
@@ -30,12 +32,11 @@ object FormEdit: TFormEdit
     TabOrder = 0
   end
   object OK: TBitBtn
-    Left = 200
+    Left = 208
     Height = 30
     Top = 144
     Width = 75
     Anchors = [akRight, akBottom]
-    Default = True
     DefaultCaption = True
     Kind = bkOK
     ModalResult = 1
@@ -52,5 +53,16 @@ object FormEdit: TFormEdit
     Kind = bkCancel
     ModalResult = 2
     TabOrder = 2
+  end
+  object Apply: TBitBtn
+    Left = 131
+    Height = 30
+    Top = 144
+    Width = 75
+    Caption = '&Apply'
+    Default = True
+    Kind = bkYes
+    ModalResult = 6
+    TabOrder = 3
   end
 end

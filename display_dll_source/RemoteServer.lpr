@@ -83,7 +83,6 @@ begin
         j := 1;
         for i := 1 to szY do
         begin
-          l := i div SzX;
           contexts[loop].Connection.IOHandler.Write(Chr($FE)+'G'+Chr(1)+Chr(i));
           for j := j to j + SzX do
             contexts[loop].Connection.IOHandler.Write(FrameBuffer[j]);

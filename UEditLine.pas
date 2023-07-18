@@ -11,6 +11,7 @@ type
   { TFormEdit }
 
   TFormEdit = class(TForm)
+    Apply: TBitBtn;
     Cancel: TBitBtn;
     Memo1: TMemo;
     OK: TBitBtn;
@@ -18,6 +19,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    LineNumber : integer;
   end;
 
 var
@@ -34,11 +36,15 @@ var
   EditLineForm: TFormEdit;
 begin
 
-  EditLineForm := TFormEdit.Create(nil);
+  {EditLineForm := TFormEdit.Create(nil);
   with EditLineForm do begin
     ShowModal;
     Free;
-  end;
+  end;}
 end;
+
+{ TFormEdit }
+
+{ TFormEdit }
 
 end.
