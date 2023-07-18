@@ -30,7 +30,11 @@ interface
 uses Forms, ExtCtrls, Classes, StdCtrls, Graphics, Controls;
 
 type
+
+  { TCreditsForm }
+
   TCreditsForm = class(TForm)
+    ThisVersion: TLabel;
     RootPanel: TPanel;
     ScrollPanel: TPanel;
     CreditPaintBox: TPaintBox;
@@ -44,6 +48,7 @@ type
     procedure HTMLLabelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ThisVersionClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure ForumLabelClick(Sender: TObject);
   private
@@ -82,13 +87,19 @@ end;
 
 procedure TCreditsForm.HTMLLabelClick(Sender: TObject);
 begin
-  ShellExecute(0, Nil, pchar('http://lcdsmartie.sourceforge.net'), Nil, Nil,
+  ShellExecute(0, Nil, pchar('https://lcdsmartie.sourceforge.net'), Nil, Nil,
     SW_NORMAL);
 end;
 
 procedure TCreditsForm.ForumLabelClick(Sender: TObject);
 begin
-  ShellExecute(0, Nil, pchar('http://lcdsmartie.org/phpBB3/'), Nil, Nil,
+  ShellExecute(0, Nil, pchar('https://www.lcdsmartie.org'), Nil, Nil,
+    SW_NORMAL);
+end;
+
+procedure TCreditsForm.ThisVersionClick(Sender: TObject);
+begin
+  ShellExecute(0, Nil, pchar('https://github.com/stokie-ant/lcdsmartie-laz'), Nil, Nil,
     SW_NORMAL);
 end;
 
@@ -102,6 +113,7 @@ begin
     Add('Chris Lansley');
     Add('Cristiano Vaccarini');
     Add('Mike van Meeteren');
+    Add('Anthony Blakemore');
     Add(' ');
     Add('Program Support:');
     Add('Nikos Georgousis (Limbo)');

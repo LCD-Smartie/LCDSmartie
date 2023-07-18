@@ -2100,13 +2100,14 @@ begin
       if assigned(FormEditArray[Loop]) then
       begin
         if Loop = setupbutton - MaxLines then
-
-        tempint := FormEditArray[Loop].Memo1.SelStart;
+        begin
+          tempint := FormEditArray[Loop].Memo1.SelStart;
           FormEditArray[Loop].Memo1.Text := utf8copy(FormEditArray[Loop].Memo1.Text, 1, FormEditArray[Loop].Memo1.SelStart) +
-          VariableEdit.Text + utf8copy(FormEditArray[Loop].Memo1.Text, FormEditArray[Loop].Memo1.SelStart +
+            VariableEdit.Text + utf8copy(FormEditArray[Loop].Memo1.Text, FormEditArray[Loop].Memo1.SelStart +
             1 + FormEditArray[Loop].Memo1.SelLength, UTF8Length(FormEditArray[Loop].Memo1.Text));
-            FormEditArray[Loop].Memo1.SetFocus;
+          FormEditArray[Loop].Memo1.SetFocus;
           FormEditArray[Loop].Memo1.selstart := tempint + utf8length(VariableEdit.Text);
+        end;
       end;
     end;
     end
@@ -2978,9 +2979,12 @@ begin
         FormEditArray[Loop].Memo1.OnEnter := FormEditMemoEnter;
         FormEditArray[Loop].Memo1.OnClick := FormEditMemoOnClick;
         FormEditArray[Loop].Memo1.Text := LineEditArray[loop].Text;
+        FormEditArray[Loop].LineNumber := loop;
         FormEditArray[Loop].Caption := FormEditArray[Loop].Caption + ' ' + inttostr(loop);
         FormEditArray[Loop].Top := config.EditFormPosTop;
         FormEditArray[Loop].Left := config.EditFormPosLeft;
+        FormEditArray[Loop].Height := config.EditFormPosHeight;
+        FormEditArray[Loop].Width := config.EditFormPosWidth;
         FormEditArray[Loop].Show;
       end;
     end;
@@ -3007,6 +3011,11 @@ begin
       if Sender = FormEditArray[loop].OK then
       begin
         LineEditArray[FormEditArray[loop].LineNumber].Text := FormEditArray[loop].Memo1.Text;
+        config.EditFormPosTop := FormEditArray[loop].Top;
+        config.EditFormPosLeft := FormEditArray[loop].Left;
+        config.EditFormPosHeight := FormEditArray[loop].Height;
+        config.EditFormPosWidth := FormEditArray[loop].Width;
+        config.save();
         FormEditArray[loop].Close;
         freeandnil(FormEditArray[loop]);
       end;

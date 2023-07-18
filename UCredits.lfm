@@ -1,12 +1,12 @@
 object CreditsForm: TCreditsForm
-  Left = 612
-  Height = 323
-  Top = 323
+  Left = 591
+  Height = 345
+  Top = 279
   Width = 285
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'LCD Smartie Info'
-  ClientHeight = 323
+  ClientHeight = 345
   ClientWidth = 285
   Color = clBtnFace
   Font.Color = clWindowText
@@ -16,15 +16,15 @@ object CreditsForm: TCreditsForm
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.2.0.4'
+  LCLVersion = '2.2.6.0'
   object RootPanel: TPanel
     Left = 0
-    Height = 323
+    Height = 345
     Top = 0
     Width = 285
     Align = alClient
     BevelInner = bvRaised
-    ClientHeight = 323
+    ClientHeight = 345
     ClientWidth = 285
     TabOrder = 0
     OnClick = CloseClick
@@ -38,6 +38,7 @@ object CreditsForm: TCreditsForm
       Font.Height = -13
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
       OnClick = CloseClick
     end
@@ -690,42 +691,6 @@ object CreditsForm: TCreditsForm
         800A28A2803FFFD9
       }
     end
-    object HTMLLabel: TLabel
-      Cursor = crHandPoint
-      Left = 16
-      Height = 13
-      Hint = 'http://lcdsmartie.sourceforge.net'
-      Top = 302
-      Width = 100
-      Caption = 'LCD Smartie Website'
-      Font.CharSet = ANSI_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsUnderline]
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = HTMLLabelClick
-    end
-    object ForumLabel: TLabel
-      Cursor = crHandPoint
-      Left = 172
-      Height = 13
-      Hint = 'http://lcdsmartie.org/phpBB3/'
-      Top = 302
-      Width = 96
-      Caption = 'LCD Smartie Forums'
-      Font.CharSet = ANSI_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsUnderline]
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = ForumLabelClick
-    end
     object Label3: TLabel
       Left = 14
       Height = 13
@@ -736,8 +701,66 @@ object CreditsForm: TCreditsForm
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
       OnClick = CloseClick
+    end
+    object HTMLLabel: TLabel
+      Cursor = crHandPoint
+      Left = 16
+      Height = 13
+      Hint = 'https://lcdsmartie.sourceforge.net'
+      Top = 302
+      Width = 100
+      Caption = 'LCD Smartie Website'
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clBlue
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsUnderline]
+      ParentColor = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HTMLLabelClick
+    end
+    object ForumLabel: TLabel
+      Cursor = crHandPoint
+      Left = 172
+      Height = 13
+      Hint = 'https://www.lcdsmartie.org'
+      Top = 302
+      Width = 96
+      Caption = 'LCD Smartie Forums'
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clBlue
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsUnderline]
+      ParentColor = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ForumLabelClick
+    end
+    object ThisVersion: TLabel
+      Cursor = crHandPoint
+      Left = 16
+      Height = 13
+      Hint = 'https://github.com/stokie-ant/lcdsmartie-laz'
+      Top = 320
+      Width = 116
+      Caption = 'LCDSmartie Lazarus dev'
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clBlue
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsUnderline]
+      ParentColor = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ThisVersionClick
     end
     object ScrollPanel: TPanel
       Left = 14

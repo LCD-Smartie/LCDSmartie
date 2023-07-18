@@ -59,6 +59,7 @@ object FormEdit: TFormEdit
     Height = 30
     Top = 144
     Width = 75
+    Anchors = [akRight, akBottom]
     Caption = '&Apply'
     Default = True
     Kind = bkYes

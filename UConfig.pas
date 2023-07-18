@@ -151,6 +151,8 @@ type
     SettingsFormPosLeft: integer;
     EditFormPosTop: integer;
     EditFormPosLeft: integer;
+    EditFormPosHeight: integer;
+    EditFormPosWidth: integer;
 
     sSkinPath: String;
     sTrayIcon: String;
@@ -314,6 +316,8 @@ begin
   SettingsFormPosLeft := initfile.ReadInteger('General Settings', 'SettingsFormPosLeft', 500);
   EditFormPosTop := initfile.ReadInteger('General Settings', 'EditFormPosTop', 600);
   EditFormPosLeft := initfile.ReadInteger('General Settings', 'EditFormPosLeft', 600);
+  EditFormPosHeight := initfile.ReadInteger('General Settings', 'EditFormPosHeight', 177);
+  EditFormPosWidth := initfile.ReadInteger('General Settings', 'EditFormPosWidth', 366);
 
   sSkinPath := initfile.ReadString('General Settings', 'SkinPath', 'images\default\');
   sSkinPath := IncludeTrailingPathDelimiter(sSkinPath);
@@ -564,6 +568,8 @@ begin
   initfile.WriteInteger('General Settings', 'SettingsFormPosLeft', SettingsFormPosLeft);
   initfile.WriteInteger('General Settings', 'EditFormPosTop', EditFormPosTop);
   initfile.WriteInteger('General Settings', 'EditFormPosLeft', EditFormPosLeft);
+  initfile.WriteInteger('General Settings', 'EditFormPosHeight', EditFormPosHeight);
+  initfile.WriteInteger('General Settings', 'EditFormPosWidth', EditFormPosWidth);
 
   initfile.WriteString('General Settings', 'SkinPath', sSkinPath);
   initfile.WriteInteger('General Settings', 'LastTab',LastTabIndex);
