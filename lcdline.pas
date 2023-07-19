@@ -9,13 +9,17 @@ uses
   Dialogs, ExtCtrls, FONTMGR;
 
 const
-  MaxWidth = 40;
+  MaxWidth = 100;
   DefaultWidth = 20;
 
 type
+
+  { TLCDLineFrame }
+
   TLCDLineFrame = class(TFrame)
     LCDPanel: TPanel;
     PaintBox: TPaintBox;
+    procedure PaintBoxClick(Sender: TObject);
     procedure PaintBoxPaint(Sender: TObject);
   private
     { Private declarations }
@@ -24,6 +28,8 @@ type
     fCaption : string;
     fLineWidth : integer;
     BackgroundBitmap : TBitmap;
+    FOnLineClicked   : TNotifyEvent;
+
     procedure CreateBackground;
     procedure SendChar(C : byte; CurrentX : byte);
     procedure ScreenWrite(S : string);
@@ -32,6 +38,7 @@ type
     procedure SetForegroundColor(Color : TColor);
   public
     { Public declarations }
+    Property OnLineClicked : TNotifyEvent Read FOnLineClicked write FOnLineClicked ;
     property Caption : string read fCaption write ScreenWrite;
     property LineWidth : integer read fLineWidth write SetLineWidth;
     property LineColor : TColor read fBackgroundColor write SetBackgroundColor;
@@ -118,6 +125,12 @@ begin
   PaintBox.Canvas.StretchDraw(DestRect,BackgroundBitmap);
 end;
 
+procedure TLCDLineFrame.PaintBoxClick(Sender: TObject);
+begin
+  If Assigned(FOnLineClicked) Then
+    Self.OnLineClicked(Self);
+end;
+
 procedure TLCDLineFrame.SendChar(C : byte; CurrentX : byte);
 var
   CurChar : TBitmap;
@@ -160,9 +173,8 @@ var
   Index : integer;
   bAmpersand : boolean;
 begin
-
   fCaption := S;
-  S := Copy(S+'                                        ', 1, fLineWidth);
+  S := Copy(S+'                                                                                                   ', 1, fLineWidth);
   bAmpersand := false;
   Index:=1;
   for Loop := 1 to length(S) do begin

@@ -210,6 +210,7 @@ type
     procedure ProcessCommandLineParams;
     procedure AssignOnscreenDisplay(TrueLCD : boolean);
     procedure OnEndSession(Sender:Tobject);
+    procedure LineLCDPanelsOnClick(Sender: Tobject);
   public
     doesflash: Boolean;
     lcd: TLCD;
@@ -349,6 +350,11 @@ begin
   close;
 end;
 
+procedure TLCDSmartieDisplayForm.LineLCDPanelsOnClick(Sender: Tobject);
+begin
+  backlit();
+end;
+
 procedure TLCDSmartieDisplayForm.AssignOnscreenDisplay(TrueLCD : boolean);
 var
   Loop : byte;
@@ -362,10 +368,15 @@ begin
     end;
 
     if TrueLCD then
-      ScreenLCD[loop] := TOnScreenLineWrapper.Create(@LineLCDPanels[loop],TrueLCD)
+    begin
+      LineLCDPanels[loop].OnLineClicked := LineLCDPanelsOnClick; // so we can click on the virtual display for lights out
+      ScreenLCD[loop] := TOnScreenLineWrapper.Create(@LineLCDPanels[loop],TrueLCD);
+    end
     else
+    begin
+      xLinePanels[loop].OnClick := LineLCDPanelsOnClick;
       ScreenLCD[loop] := TOnScreenLineWrapper.Create(@xLinePanels[loop],TrueLCD);
-
+    end;
     ScreenLCD[loop].visible := config.height > loop - 1;
   end;
 
@@ -696,6 +707,9 @@ end;
 
 procedure TLCDSmartieDisplayForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  config.MainFormPosTop := LCDSmartieDisplayForm.Top;
+  config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
+  config.save;
   bTerminating := true;
   while timerRefresh.enabled = true do timerRefresh.enabled := false;
   while ActionsTimer.enabled = true do ActionsTimer.enabled := false;
@@ -1253,12 +1267,17 @@ begin
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   EXStyle:= GetWindowLong(AppHandle, GWL_EXSTYLE);
   if LCDSmartieDisplayForm.Visible then
-  begin
+  begin // hide
+    config.MainFormPosTop := LCDSmartieDisplayForm.Top;
+    config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
+    config.save;
     SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and not WS_EX_APPWINDOW);
     LCDSmartieDisplayForm.Visible:=false;
   end
   else
-  begin
+  begin // show
+    LCDSmartieDisplayForm.Top := config.MainFormPosTop;
+    LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
     SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and WS_EX_APPWINDOW);
     LCDSmartieDisplayForm.Visible:=true;
     ResizeHeight;

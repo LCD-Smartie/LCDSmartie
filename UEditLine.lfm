@@ -12,7 +12,6 @@ object FormEdit: TFormEdit
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
-  FormStyle = fsStayOnTop
   LCLVersion = '2.2.6.0'
   object Memo1: TMemo
     Left = 0
@@ -32,7 +31,7 @@ object FormEdit: TFormEdit
     TabOrder = 0
   end
   object OK: TBitBtn
-    Left = 208
+    Left = 128
     Height = 30
     Top = 144
     Width = 75
@@ -43,7 +42,7 @@ object FormEdit: TFormEdit
     TabOrder = 1
   end
   object Cancel: TBitBtn
-    Left = 284
+    Left = 208
     Height = 30
     Top = 144
     Width = 75
@@ -55,7 +54,7 @@ object FormEdit: TFormEdit
     TabOrder = 2
   end
   object Apply: TBitBtn
-    Left = 131
+    Left = 288
     Height = 30
     Top = 144
     Width = 75
