@@ -1,14 +1,13 @@
 object SetupForm: TSetupForm
-  Left = 645
-  Height = 463
-  Top = 239
-  Width = 858
+  Left = 433
+  Height = 448
+  Top = 188
+  Width = 881
   Anchors = []
   BorderIcons = []
-  BorderStyle = bsDialog
   Caption = 'LCD Smartie 5.x Setup'
-  ClientHeight = 463
-  ClientWidth = 858
+  ClientHeight = 448
+  ClientWidth = 881
   Color = clBtnFace
   DoubleBuffered = True
   Font.CharSet = ANSI_CHARSET
@@ -23,12 +22,15 @@ object SetupForm: TSetupForm
   Position = poScreenCenter
   LCLVersion = '2.2.6.0'
   object MainPageControl: TPageControl
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
     Left = 264
-    Height = 432
+    Height = 413
     Top = 0
-    Width = 592
+    Width = 614
     TabStop = False
     ActivePage = ScreensTabSheet
+    Anchors = [akTop, akLeft, akRight, akBottom]
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
     Font.Height = -11
@@ -39,16 +41,19 @@ object SetupForm: TSetupForm
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
       Caption = 'Screens'
-      ClientHeight = 406
-      ClientWidth = 584
+      ClientHeight = 387
+      ClientWidth = 606
       object ScreenSettingsGroupBox: TGroupBox
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
         Left = 3
-        Height = 231
+        Height = 215
         Top = 169
-        Width = 573
+        Width = 597
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Screens settings'
-        ClientHeight = 213
-        ClientWidth = 569
+        ClientHeight = 197
+        ClientWidth = 593
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -61,7 +66,7 @@ object SetupForm: TSetupForm
           Left = 8
           Height = 25
           Hint = 'Copy this screen to another screen leaving this screen intact. CAUTION: Changes remain in  memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
-          Top = 184
+          Top = 168
           Width = 75
           Anchors = [akLeft, akBottom]
           Caption = 'Copy to'
@@ -79,7 +84,7 @@ object SetupForm: TSetupForm
           Left = 134
           Height = 25
           Hint = 'Move this screen to another screen leaving this one blank. CAUTION: Changes remain in  memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
-          Top = 184
+          Top = 168
           Width = 75
           Anchors = [akLeft, akBottom]
           Caption = 'Move to'
@@ -97,7 +102,7 @@ object SetupForm: TSetupForm
           Left = 260
           Height = 25
           Hint = 'Swap this screen with another screen. CAUTION: Changes remain in memory until Apply or Close is clicked. If you make a mistake, cancel the settings window and close smartie to prevent changes being written to disk'
-          Top = 184
+          Top = 168
           Width = 75
           Anchors = [akLeft, akBottom]
           Caption = 'Swap with'
@@ -112,21 +117,27 @@ object SetupForm: TSetupForm
           TabOrder = 2
         end
         object ScrollBox1: TScrollBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
           Left = -1
-          Height = 104
+          Height = 88
           Top = 73
-          Width = 560
-          HorzScrollBar.Page = 537
-          VertScrollBar.Page = 104
+          Width = 582
+          HorzScrollBar.Page = 173
+          VertScrollBar.Page = 88
+          VertScrollBar.Smooth = True
+          VertScrollBar.Tracking = True
+          Anchors = [akTop, akLeft, akRight, akBottom]
           BorderStyle = bsNone
-          ClientHeight = 104
-          ClientWidth = 543
+          ClientHeight = 88
+          ClientWidth = 565
           TabOrder = 3
           object Line1MemoEdit: TMemo
             Left = 9
             Height = 23
             Top = 2
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Font.CharSet = 4
             Font.Height = 18
             Font.Name = 'Modern'
@@ -144,7 +155,8 @@ object SetupForm: TSetupForm
             Left = 9
             Height = 23
             Top = 25
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Font.CharSet = 4
             Font.Height = 18
             Font.Name = 'Modern'
@@ -162,7 +174,8 @@ object SetupForm: TSetupForm
             Left = 9
             Height = 23
             Top = 48
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Font.CharSet = 4
             Font.Height = 18
             Font.Name = 'Modern'
@@ -180,7 +193,8 @@ object SetupForm: TSetupForm
             Left = 9
             Height = 23
             Top = 71
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Constraints.MinHeight = 23
             Font.CharSet = 4
             Font.Height = 18
@@ -199,7 +213,8 @@ object SetupForm: TSetupForm
             Left = 9
             Height = 23
             Top = 94
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Font.CharSet = 4
             Font.Height = 18
             Font.Name = 'Modern'
@@ -217,7 +232,8 @@ object SetupForm: TSetupForm
             Left = 9
             Height = 23
             Top = 117
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Font.CharSet = 4
             Font.Height = 18
             Font.Name = 'Modern'
@@ -235,7 +251,8 @@ object SetupForm: TSetupForm
             Left = 9
             Height = 23
             Top = 140
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Font.CharSet = 4
             Font.Height = 18
             Font.Name = 'Modern'
@@ -253,7 +270,8 @@ object SetupForm: TSetupForm
             Left = 9
             Height = 23
             Top = 163
-            Width = 344
+            Width = 369
+            Anchors = [akTop, akLeft, akRight]
             Constraints.MinHeight = 23
             Font.CharSet = 4
             Font.Height = 18
@@ -269,10 +287,13 @@ object SetupForm: TSetupForm
             WordWrap = False
           end
           object DontScrollGroupBox: TGroupBox
-            Left = 393
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideRight.Side = asrCenter
+            Left = 419
             Height = 192
             Top = -6
             Width = 48
+            Anchors = [akTop, akRight]
             ClientHeight = 174
             ClientWidth = 44
             TabOrder = 4
@@ -374,10 +395,12 @@ object SetupForm: TSetupForm
             end
           end
           object ContinueNextLineGroupBox: TGroupBox
-            Left = 441
+            AnchorSideRight.Side = asrCenter
+            Left = 467
             Height = 192
             Top = -6
             Width = 48
+            Anchors = [akTop, akRight]
             ClientHeight = 174
             ClientWidth = 44
             TabOrder = 5
@@ -488,10 +511,12 @@ object SetupForm: TSetupForm
             end
           end
           object CenterTextGroupBox: TGroupBox
-            Left = 489
+            AnchorSideRight.Side = asrCenter
+            Left = 515
             Height = 192
             Top = -6
             Width = 48
+            Anchors = [akTop, akRight]
             ClientHeight = 174
             ClientWidth = 44
             TabOrder = 6
@@ -593,7 +618,9 @@ object SetupForm: TSetupForm
             end
           end
           object Line1EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line1MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 2
             Width = 23
@@ -601,7 +628,9 @@ object SetupForm: TSetupForm
             OnClick = LineEditClick
           end
           object Line2EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line2MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 25
             Width = 23
@@ -609,7 +638,9 @@ object SetupForm: TSetupForm
             OnClick = LineEditClick
           end
           object Line3EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line3MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 48
             Width = 23
@@ -617,7 +648,9 @@ object SetupForm: TSetupForm
             OnClick = LineEditClick
           end
           object Line4EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line4MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 71
             Width = 23
@@ -625,7 +658,9 @@ object SetupForm: TSetupForm
             OnClick = LineEditClick
           end
           object Line5EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line5MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 94
             Width = 23
@@ -633,7 +668,9 @@ object SetupForm: TSetupForm
             OnClick = LineEditClick
           end
           object Line6EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line6MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 117
             Width = 23
@@ -641,7 +678,9 @@ object SetupForm: TSetupForm
             OnClick = LineEditClick
           end
           object Line7EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line7MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 140
             Width = 23
@@ -649,7 +688,9 @@ object SetupForm: TSetupForm
             OnClick = LineEditClick
           end
           object Line8EditButton: TSpeedButton
-            Left = 361
+            AnchorSideLeft.Control = Line8MemoEdit
+            AnchorSideLeft.Side = asrBottom
+            Left = 378
             Height = 23
             Top = 163
             Width = 23
@@ -871,10 +912,12 @@ object SetupForm: TSetupForm
           ParentFont = False
         end
         object GroupBox9: TGroupBox
-          Left = 392
+          AnchorSideRight.Side = asrBottom
+          Left = 435
           Height = 80
           Top = -8
           Width = 48
+          Anchors = [akTop, akRight]
           ClientHeight = 62
           ClientWidth = 44
           TabOrder = 11
@@ -896,10 +939,12 @@ object SetupForm: TSetupForm
           end
         end
         object GroupBox11: TGroupBox
-          Left = 440
+          AnchorSideRight.Side = asrCenter
+          Left = 483
           Height = 80
           Top = -8
           Width = 48
+          Anchors = [akTop, akRight]
           ClientHeight = 62
           ClientWidth = 44
           TabOrder = 12
@@ -921,10 +966,12 @@ object SetupForm: TSetupForm
           end
         end
         object GroupBox12: TGroupBox
-          Left = 488
+          AnchorSideRight.Side = asrCenter
+          Left = 531
           Height = 80
           Top = -8
           Width = 48
+          Anchors = [akTop, akRight]
           ClientHeight = 62
           ClientWidth = 44
           TabOrder = 13
@@ -948,7 +995,7 @@ object SetupForm: TSetupForm
         object CopyToScreenSpinEdit: TSpinEdit
           Left = 84
           Height = 21
-          Top = 186
+          Top = 170
           Width = 49
           Anchors = [akLeft, akBottom]
           Font.CharSet = ANSI_CHARSET
@@ -963,7 +1010,7 @@ object SetupForm: TSetupForm
         object MoveToScreenSpinEdit: TSpinEdit
           Left = 210
           Height = 21
-          Top = 186
+          Top = 170
           Width = 49
           Anchors = [akLeft, akBottom]
           Font.CharSet = ANSI_CHARSET
@@ -978,7 +1025,7 @@ object SetupForm: TSetupForm
         object SwapWithScreenSpinEdit: TSpinEdit
           Left = 336
           Height = 21
-          Top = 186
+          Top = 170
           Width = 49
           Anchors = [akLeft, akBottom]
           Font.CharSet = ANSI_CHARSET
@@ -1449,15 +1496,16 @@ object SetupForm: TSetupForm
     end
     object ActionsTabSheet: TTabSheet
       Caption = 'Actions'
-      ClientHeight = 406
-      ClientWidth = 584
+      ClientHeight = 387
+      ClientWidth = 606
       ImageIndex = 1
       object ActionsStringGrid: TStringGrid
         Left = 0
-        Height = 349
+        Height = 331
         Hint = 'These actions are run on a timer'
         Top = 0
-        Width = 536
+        Width = 598
+        Anchors = [akTop, akLeft, akRight, akBottom]
         DefaultColWidth = 77
         DefaultRowHeight = 16
         DoubleBuffered = True
@@ -1480,11 +1528,12 @@ object SetupForm: TSetupForm
         OnSelection = ActionsStringGridSelection
       end
       object ActionAddButton: TButton
-        Left = 392
+        Left = 443
         Height = 25
         Hint = 'Insert a new action after the current selection'
-        Top = 360
+        Top = 342
         Width = 75
+        Anchors = [akRight, akBottom]
         Caption = 'New'
         OnClick = ActionAddButtonClick
         ParentShowHint = False
@@ -1492,11 +1541,12 @@ object SetupForm: TSetupForm
         TabOrder = 1
       end
       object ActionDeleteButton: TButton
-        Left = 472
+        Left = 523
         Height = 25
         Hint = 'Delete selected action'
-        Top = 360
+        Top = 342
         Width = 75
+        Anchors = [akRight, akBottom]
         Caption = '&Delete'
         OnClick = ActionDeleteButtonClick
         ParentShowHint = False
@@ -1506,8 +1556,9 @@ object SetupForm: TSetupForm
       object Label24: TLabel
         Left = 1
         Height = 13
-        Top = 372
+        Top = 354
         Width = 168
+        Anchors = [akLeft, akBottom]
         Caption = 'Actions timer interval(milliseconds):'
         ParentColor = False
       end
@@ -1515,8 +1566,9 @@ object SetupForm: TSetupForm
         Left = 170
         Height = 21
         Hint = 'A higher value will decrease CPU usage slightly but will cause more of a delay in button detection'
-        Top = 364
+        Top = 346
         Width = 65
+        Anchors = [akLeft, akBottom]
         MaxValue = 2000
         MinValue = 150
         ParentShowHint = False
@@ -1525,10 +1577,11 @@ object SetupForm: TSetupForm
         Value = 150
       end
       object ActionsGridScrollBar: TScrollBar
-        Left = 536
-        Height = 349
+        Left = 581
+        Height = 328
         Top = 0
         Width = 17
+        Anchors = [akTop, akRight, akBottom]
         Kind = sbVertical
         PageSize = 0
         TabOrder = 4
@@ -1537,8 +1590,8 @@ object SetupForm: TSetupForm
     end
     object StartupTabSheet: TTabSheet
       Caption = 'Startup/Shutdown'
-      ClientHeight = 406
-      ClientWidth = 584
+      ClientHeight = 387
+      ClientWidth = 606
       ImageIndex = 2
       object GroupBox7: TGroupBox
         Left = 8
@@ -1661,14 +1714,14 @@ object SetupForm: TSetupForm
       end
       object ShutdownMessageGroup: TGroupBox
         Left = 8
-        Height = 128
+        Height = 98
         Hint = 'Custom message to be displayed when LCD Smartie is shut down.'
         Top = 200
-        Width = 467
-        Anchors = [akTop, akLeft, akRight]
+        Width = 595
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Shut down message'
-        ClientHeight = 110
-        ClientWidth = 463
+        ClientHeight = 80
+        ClientWidth = 591
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -1680,20 +1733,22 @@ object SetupForm: TSetupForm
         TabOrder = 2
         object ScrollBox2: TScrollBox
           Left = 4
-          Height = 104
+          Height = 75
           Top = 0
-          Width = 454
-          HorzScrollBar.Page = 424
-          VertScrollBar.Page = 104
+          Width = 585
+          HorzScrollBar.Page = 150
+          VertScrollBar.Page = 75
+          Anchors = [akTop, akLeft, akRight, akBottom]
           BorderStyle = bsNone
-          ClientHeight = 104
-          ClientWidth = 437
+          ClientHeight = 75
+          ClientWidth = 568
           TabOrder = 0
           object ShutdownEdit1: TMemo
             Left = 0
             Height = 23
             Top = 0
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Color = clWhite
             Constraints.MinHeight = 23
             DoubleBuffered = True
@@ -1710,7 +1765,8 @@ object SetupForm: TSetupForm
             Left = 0
             Height = 23
             Top = 24
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Color = clWhite
             Constraints.MinHeight = 23
             Font.CharSet = ANSI_CHARSET
@@ -1725,7 +1781,8 @@ object SetupForm: TSetupForm
             Left = 0
             Height = 23
             Top = 48
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Constraints.MinHeight = 23
             Font.CharSet = ANSI_CHARSET
             Font.Color = clBlack
@@ -1739,7 +1796,8 @@ object SetupForm: TSetupForm
             Left = 0
             Height = 23
             Top = 72
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Constraints.MinHeight = 23
             Font.CharSet = ANSI_CHARSET
             Font.Color = clBlack
@@ -1753,7 +1811,8 @@ object SetupForm: TSetupForm
             Left = 0
             Height = 23
             Top = 96
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Color = clWhite
             Constraints.MinHeight = 23
             DoubleBuffered = True
@@ -1770,7 +1829,8 @@ object SetupForm: TSetupForm
             Left = 0
             Height = 23
             Top = 120
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Color = clWhite
             Constraints.MinHeight = 23
             Font.CharSet = ANSI_CHARSET
@@ -1785,7 +1845,8 @@ object SetupForm: TSetupForm
             Left = 0
             Height = 23
             Top = 144
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Constraints.MinHeight = 23
             Font.CharSet = ANSI_CHARSET
             Font.Color = clBlack
@@ -1799,7 +1860,8 @@ object SetupForm: TSetupForm
             Left = 0
             Height = 23
             Top = 168
-            Width = 424
+            Width = 567
+            Anchors = [akTop, akLeft, akRight]
             Constraints.MinHeight = 23
             Font.CharSet = ANSI_CHARSET
             Font.Color = clBlack
@@ -1814,8 +1876,8 @@ object SetupForm: TSetupForm
     end
     object MyTabSheet: TTabSheet
       Caption = 'Miscellaneous'
-      ClientHeight = 406
-      ClientWidth = 584
+      ClientHeight = 387
+      ClientWidth = 606
       ImageIndex = 3
       object Label9: TLabel
         Left = 5
@@ -1855,7 +1917,7 @@ object SetupForm: TSetupForm
       object TrayIconPreview16: TImage
         Left = 312
         Height = 16
-        Top = 106
+        Top = 87
         Width = 16
         Anchors = [akLeft, akBottom]
         AutoSize = True
@@ -1949,7 +2011,7 @@ object SetupForm: TSetupForm
         TabOrder = 2
       end
       object WebProxyPortEdit: TEdit
-        Left = 37
+        Left = 59
         Height = 21
         Hint = 'Web proxy port for web access (such as for Rss feeds).'
         Top = 248
@@ -1970,7 +2032,7 @@ object SetupForm: TSetupForm
         Height = 21
         Hint = 'Web proxy for web access (such as for Rss feeds).'
         Top = 193
-        Width = 150
+        Width = 172
         Anchors = [akTop, akLeft, akRight]
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWindowText
@@ -2036,8 +2098,8 @@ object SetupForm: TSetupForm
     end
     object TabSheet1: TTabSheet
       Caption = 'Remote Display'
-      ClientHeight = 406
-      ClientWidth = 584
+      ClientHeight = 387
+      ClientWidth = 606
       ImageIndex = 4
       object Label16: TLabel
         Left = 20
@@ -2178,8 +2240,8 @@ object SetupForm: TSetupForm
     end
     object MultiInstanceTabSheet: TTabSheet
       Caption = 'Multi Instance'
-      ClientHeight = 406
-      ClientWidth = 584
+      ClientHeight = 387
+      ClientWidth = 606
       TabVisible = False
       object MultiInstancePageControl: TPageControl
         Left = 0
@@ -2467,8 +2529,8 @@ object SetupForm: TSetupForm
     end
     object InfoTabSheet: TTabSheet
       Caption = 'Info'
-      ClientHeight = 406
-      ClientWidth = 584
+      ClientHeight = 387
+      ClientWidth = 606
       object GroupBox6: TGroupBox
         Left = 0
         Height = 347
@@ -2552,11 +2614,12 @@ object SetupForm: TSetupForm
   end
   object LeftPageControl: TPageControl
     Left = 0
-    Height = 461
+    Height = 446
     Top = 3
     Width = 265
     TabStop = False
-    ActivePage = MiscTabSheet
+    ActivePage = PerfTabSheet
+    Anchors = [akTop, akLeft, akBottom]
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -2565,21 +2628,22 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 8
+    TabIndex = 12
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
     Options = [nboMultiLine]
     object SysInfoTabSheet: TTabSheet
       Caption = 'Sysinfo'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 1
       object SysInfoListBox: TListBox
         Left = 0
-        Height = 329
+        Height = 376
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Items.Strings = (
           'Username'
           'Computername'
@@ -2630,13 +2694,14 @@ object SetupForm: TSetupForm
     end
     object WinampTabSheet: TTabSheet
       Caption = 'Winamp'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       object WinampLocationBrowseButton: TSpeedButton
         Left = 160
         Height = 22
-        Top = 320
+        Top = 367
         Width = 23
+        Anchors = [akLeft, akBottom]
         Glyph.Data = {
           F6000000424DF600000000000000760000002800000010000000100000000100
           0400000000008000000000000000000000001000000000000000000000000000
@@ -2652,16 +2717,18 @@ object SetupForm: TSetupForm
       object WinampLocationLabel: TLabel
         Left = 8
         Height = 13
-        Top = 304
+        Top = 351
         Width = 104
+        Anchors = [akLeft, akBottom]
         Caption = 'Winamp.exe location:'
         ParentColor = False
       end
       object WinampListBox: TListBox
         Left = 0
-        Height = 265
+        Height = 328
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         ItemHeight = 0
         OnClick = WinampListBoxClick
         OnDblClick = InsertButtonClick
@@ -2670,22 +2737,24 @@ object SetupForm: TSetupForm
       object WinampLocationEdit: TEdit
         Left = 8
         Height = 21
-        Top = 320
+        Top = 367
         Width = 153
+        Anchors = [akLeft, akBottom]
         TabOrder = 1
         Text = 'WinampLocationEdit'
       end
     end
     object InternetTabSheet: TTabSheet
       Caption = 'RSS'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 5
       object InternetListBox: TListBox
         Left = 0
-        Height = 216
+        Height = 233
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Items.Strings = (
           'BBC World News'
           'BBC UK News'
@@ -2712,8 +2781,9 @@ object SetupForm: TSetupForm
       object RssTMemoEdit: TMemo
         Left = 0
         Height = 24
-        Top = 240
+        Top = 257
         Width = 209
+        Anchors = [akLeft, akBottom]
         OnChange = RssPageChange
         TabOrder = 1
         WantReturns = False
@@ -2722,8 +2792,9 @@ object SetupForm: TSetupForm
       object RssMaxFreqSpinedit: TSpinEdit
         Left = 96
         Height = 21
-        Top = 336
+        Top = 353
         Width = 50
+        Anchors = [akLeft, akBottom]
         MaxValue = 24
         MinValue = 1
         OnChange = RssPageChange
@@ -2733,8 +2804,9 @@ object SetupForm: TSetupForm
       object RssItemNumSpinEdit: TSpinEdit
         Left = 96
         Height = 21
-        Top = 304
+        Top = 321
         Width = 50
+        Anchors = [akLeft, akBottom]
         MaxValue = 100
         OnChange = RssPageChange
         TabOrder = 3
@@ -2742,24 +2814,27 @@ object SetupForm: TSetupForm
       object Label17: TLabel
         Left = 48
         Height = 13
-        Top = 280
+        Top = 297
         Width = 28
+        Anchors = [akLeft, akBottom]
         Caption = 'Type:'
         ParentColor = False
       end
       object Label25: TLabel
         Left = 39
         Height = 13
-        Top = 312
+        Top = 329
         Width = 37
+        Anchors = [akLeft, akBottom]
         Caption = 'Item #:'
         ParentColor = False
       end
       object Label26: TLabel
         Left = 27
         Height = 13
-        Top = 344
+        Top = 361
         Width = 49
+        Anchors = [akLeft, akBottom]
         Caption = 'Max Freq:'
         ParentColor = False
       end
@@ -2774,8 +2849,9 @@ object SetupForm: TSetupForm
       object RssTypeComboBox: TComboBox
         Left = 96
         Height = 21
-        Top = 272
+        Top = 289
         Width = 50
+        Anchors = [akLeft, akBottom]
         ItemHeight = 13
         ItemIndex = 0
         Items.Strings = (
@@ -2790,30 +2866,33 @@ object SetupForm: TSetupForm
     end
     object GameStatsTabSheet: TTabSheet
       Caption = 'Gamestats'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 4
       object Label11: TLabel
         Left = 8
         Height = 13
-        Top = 304
+        Top = 240
         Width = 36
+        Anchors = [akLeft, akBottom]
         Caption = 'Server:'
         ParentColor = False
       end
       object Label12: TLabel
         Left = 8
         Height = 13
-        Top = 120
+        Top = 56
         Width = 149
+        Anchors = [akLeft, akBottom]
         Caption = 'The gamestats are made by an'
         ParentColor = False
       end
       object Label13: TLabel
         Left = 8
         Height = 13
-        Top = 136
+        Top = 72
         Width = 87
+        Anchors = [akLeft, akBottom]
         Caption = 'external program;'
         ParentColor = False
       end
@@ -2829,8 +2908,9 @@ object SetupForm: TSetupForm
         Cursor = crHandPoint
         Left = 100
         Height = 13
-        Top = 136
+        Top = 72
         Width = 28
+        Anchors = [akLeft, akBottom]
         Caption = 'QStat'
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlue
@@ -2844,8 +2924,9 @@ object SetupForm: TSetupForm
       object Label37: TLabel
         Left = 8
         Height = 13
-        Top = 236
+        Top = 172
         Width = 97
+        Anchors = [akLeft, akBottom]
         Caption = 'Refresh time (mins):'
         ParentColor = False
       end
@@ -2859,8 +2940,9 @@ object SetupForm: TSetupForm
       object Label40: TLabel
         Left = 8
         Height = 13
-        Top = 264
+        Top = 200
         Width = 56
+        Anchors = [akLeft, akBottom]
         Caption = 'Game type:'
         ParentColor = False
       end
@@ -2868,8 +2950,9 @@ object SetupForm: TSetupForm
         Left = 16
         Height = 21
         Hint = 'servername:portnumber portnumber is optional.'
-        Top = 320
+        Top = 256
         Width = 161
+        Anchors = [akLeft, akBottom]
         OnExit = GameServerEditExit
         ParentShowHint = False
         ShowHint = True
@@ -2879,8 +2962,9 @@ object SetupForm: TSetupForm
       object GameTypeComboBox: TComboBox
         Left = 16
         Height = 21
-        Top = 280
+        Top = 216
         Width = 161
+        Anchors = [akLeft, akBottom]
         ItemHeight = 13
         Items.Strings = (
           'Half-life'
@@ -2895,8 +2979,9 @@ object SetupForm: TSetupForm
       object GamestatsRefreshTimeSpinEdit: TSpinEdit
         Left = 122
         Height = 21
-        Top = 232
+        Top = 168
         Width = 55
+        Anchors = [akLeft, akBottom]
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2909,9 +2994,10 @@ object SetupForm: TSetupForm
       end
       object GamestatsListBox: TListBox
         Left = 0
-        Height = 57
+        Height = 0
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Items.Strings = (
           'server name'
           'current map'
@@ -2926,14 +3012,15 @@ object SetupForm: TSetupForm
     end
     object BOINCTabSheet: TTabSheet
       Caption = 'BOINC'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 7
       object BOINCListBox: TListBox
         Left = -1
-        Height = 177
+        Height = 202
         Top = 0
         Width = 212
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Items.Strings = (
           'id'
           'cpid'
@@ -2975,8 +3062,9 @@ object SetupForm: TSetupForm
         Left = 0
         Height = 19
         Hint = 'it can be disabled so it''s not sending requests for no reason'
-        Top = 336
+        Top = 361
         Width = 52
+        Anchors = [akLeft, akBottom]
         Caption = 'Enable'
         OnClick = BOINCEnableCheckBoxClick
         ParentShowHint = False
@@ -2987,8 +3075,9 @@ object SetupForm: TSetupForm
         Left = 2
         Height = 21
         Hint = 'Always leave the trailing ''/'''
-        Top = 232
+        Top = 257
         Width = 209
+        Anchors = [akLeft, akBottom]
         OnChange = BoincServerEditChange
         ParentShowHint = False
         ShowHint = True
@@ -2997,8 +3086,9 @@ object SetupForm: TSetupForm
       object BoincServerIndexComboBox: TComboBox
         Left = 58
         Height = 21
-        Top = 184
+        Top = 209
         Width = 40
+        Anchors = [akLeft, akBottom]
         ItemHeight = 13
         OnChange = BoincServerIndexComboBoxChange
         TabOrder = 3
@@ -3007,8 +3097,9 @@ object SetupForm: TSetupForm
       object BoincUserNameEdit: TEdit
         Left = 2
         Height = 21
-        Top = 272
+        Top = 297
         Width = 208
+        Anchors = [akLeft, akBottom]
         OnChange = BoincUserNameEditChange
         TabOrder = 4
       end
@@ -3016,8 +3107,9 @@ object SetupForm: TSetupForm
         Left = 2
         Height = 21
         Hint = 'Although the password is masked here it is stored plaintext in the config. Be careful'
-        Top = 312
+        Top = 337
         Width = 208
+        Anchors = [akLeft, akBottom]
         EchoMode = emPassword
         OnChange = BoincPasswordEditChange
         ParentShowHint = False
@@ -3028,63 +3120,70 @@ object SetupForm: TSetupForm
       object Label52: TLabel
         Left = 4
         Height = 13
-        Top = 192
+        Top = 217
         Width = 47
+        Anchors = [akLeft, akBottom]
         Caption = 'Server id:'
         ParentColor = False
       end
       object Label53: TLabel
         Left = 4
         Height = 13
-        Top = 216
+        Top = 241
         Width = 83
+        Anchors = [akLeft, akBottom]
         Caption = 'Server adddress:'
         ParentColor = False
       end
       object Label54: TLabel
         Left = 4
         Height = 13
-        Top = 256
+        Top = 281
         Width = 94
+        Anchors = [akLeft, akBottom]
         Caption = 'User email address:'
         ParentColor = False
       end
       object Label63: TLabel
         Left = 4
         Height = 13
-        Top = 296
+        Top = 321
         Width = 50
+        Anchors = [akLeft, akBottom]
         Caption = 'Password:'
         ParentColor = False
       end
     end
     object FoldingAtHomeTabSheet: TTabSheet
       Caption = 'Folding@Home'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 9
       object Label23: TLabel
         Left = 0
         Height = 13
-        Top = 304
+        Top = 331
         Width = 131
+        Anchors = [akLeft, akBottom]
         Caption = 'User ID for Folding@Home:'
         ParentColor = False
       end
       object FoldingAtHomeEmailEdit: TEdit
         Left = 0
         Height = 21
-        Top = 320
+        Top = 347
         Width = 209
+        Anchors = [akLeft, akBottom]
         MaxLength = 16
         TabOrder = 1
         Text = '                '
       end
       object FoldingAtHomeListBox: TListBox
         Left = 0
-        Height = 265
+        Height = 292
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Items.Strings = (
           'User Name'
           'WU'
@@ -3107,8 +3206,9 @@ object SetupForm: TSetupForm
         Left = 0
         Height = 19
         Hint = 'This can be disabled so it''s not sending requests for no reason'
-        Top = 280
+        Top = 307
         Width = 52
+        Anchors = [akLeft, akBottom]
         Caption = 'Enable'
         OnClick = FoldEnableCheckBoxClick
         ParentShowHint = False
@@ -3118,7 +3218,7 @@ object SetupForm: TSetupForm
     end
     object EmailTabSheet: TTabSheet
       Caption = 'Email'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 7
       object Label31: TLabel
@@ -3280,14 +3380,15 @@ object SetupForm: TSetupForm
     end
     object NetworkStatsTabSheet: TTabSheet
       Caption = 'Net Stats'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 8
       object NetworkStatsListBox: TListBox
         Left = 0
-        Height = 305
+        Height = 326
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         ItemHeight = 0
         OnClick = NetworkStatsListBoxClick
         OnDblClick = InsertButtonClick
@@ -3295,9 +3396,10 @@ object SetupForm: TSetupForm
       end
       object NetworkStatsAdapterListButton: TButton
         Left = 56
-        Height = 25
-        Top = 312
+        Height = 29
+        Top = 329
         Width = 75
+        Anchors = [akLeft, akRight, akBottom]
         Caption = 'Adapter List'
         OnClick = NetworkStatsAdapterListButtonClick
         TabOrder = 1
@@ -3305,14 +3407,15 @@ object SetupForm: TSetupForm
     end
     object MiscTabSheet: TTabSheet
       Caption = 'Misc.'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 6
       object MiscListBox: TListBox
         Left = 0
-        Height = 349
+        Height = 369
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
@@ -3354,7 +3457,7 @@ object SetupForm: TSetupForm
     end
     object LCDFeaturesTabSheet: TTabSheet
       Caption = 'LCD Features'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       Enabled = False
       Font.CharSet = ANSI_CHARSET
@@ -3365,48 +3468,54 @@ object SetupForm: TSetupForm
       object Label27: TLabel
         Left = 8
         Height = 13
-        Top = 184
+        Top = 204
         Width = 169
+        Anchors = [akLeft, akBottom]
         Caption = 'When you insert a button please'
         ParentColor = False
       end
       object Label29: TLabel
         Left = 8
         Height = 13
-        Top = 200
+        Top = 220
         Width = 170
+        Anchors = [akLeft, akBottom]
         Caption = 'first press the button (see below)'
         ParentColor = False
       end
       object Label56: TLabel
         Left = 8
         Height = 13
-        Top = 320
+        Top = 340
         Width = 86
+        Anchors = [akLeft, akBottom]
         Caption = 'Last key pressed:'
         ParentColor = False
       end
       object Label30: TLabel
         Left = 8
         Height = 13
-        Top = 232
+        Top = 252
         Width = 180
+        Anchors = [akLeft, akBottom]
         Caption = 'The buttons get the value ''1'' when'
         ParentColor = False
       end
       object Label57: TLabel
         Left = 8
         Height = 13
-        Top = 248
+        Top = 268
         Width = 86
+        Anchors = [akLeft, akBottom]
         Caption = 'they are pushed.'
         ParentColor = False
       end
       object ButtonsListBox: TListBox
         Left = 0
-        Height = 177
+        Height = 197
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Items.Strings = (
           'Buttons'
         )
@@ -3418,8 +3527,9 @@ object SetupForm: TSetupForm
       object LastKeyPressedEdit: TEdit
         Left = 96
         Height = 21
-        Top = 316
+        Top = 336
         Width = 33
+        Anchors = [akLeft, akBottom]
         Enabled = False
         MaxLength = 1
         TabOrder = 1
@@ -3427,17 +3537,18 @@ object SetupForm: TSetupForm
     end
     object PluginsTabSheet: TTabSheet
       Caption = 'Plugins'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       ImageIndex = 11
       object PluginListBox: TFileListBox
         Left = 0
-        Height = 281
+        Height = 345
         Top = 0
         Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
         Directory = '.'
         ExtendedSelect = False
-        ItemHeight = 0
+        ItemHeight = 13
         Mask = '*.dll'
         OnClick = PluginListBoxClick
         OnDblClick = PluginListBoxDblClick
@@ -3446,8 +3557,9 @@ object SetupForm: TSetupForm
       object Btn_PluginRefresh: TButton
         Left = 0
         Height = 25
-        Top = 288
+        Top = 352
         Width = 75
+        Anchors = [akLeft, akBottom]
         Caption = 'Refresh'
         OnClick = Btn_PluginRefreshClick
         TabOrder = 1
@@ -3455,7 +3567,7 @@ object SetupForm: TSetupForm
     end
     object CCharTabSheet: TTabSheet
       Caption = 'Char editor'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       Font.CharSet = ANSI_CHARSET
       Font.Color = clWindowText
@@ -3862,14 +3974,15 @@ object SetupForm: TSetupForm
     end
     object PerfTabSheet: TTabSheet
       Caption = 'Perf'
-      ClientHeight = 453
+      ClientHeight = 438
       ClientWidth = 217
       object PerfCountersListBox: TListBox
         Left = 0
-        Height = 176
+        Height = 186
         Hint = 'Objects: A list of perf counter objects'#13#10'Click an object to populate the list of counters and instances'
         Top = 32
         Width = 212
+        Anchors = [akTop, akLeft, akRight, akBottom]
         ExtendedSelect = False
         Enabled = False
         Font.CharSet = 4
@@ -3888,8 +4001,9 @@ object SetupForm: TSetupForm
         Left = 0
         Height = 21
         Hint = 'Counter: A list of perf object counters'
-        Top = 224
+        Top = 234
         Width = 212
+        Anchors = [akLeft, akRight, akBottom]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         AutoDropDown = True
@@ -3910,8 +4024,9 @@ object SetupForm: TSetupForm
         Left = 0
         Height = 21
         Hint = 'Instance: A list of perf counter instances'
-        Top = 264
+        Top = 274
         Width = 212
+        Anchors = [akLeft, akRight, akBottom]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         AutoDropDown = True
@@ -3927,8 +4042,9 @@ object SetupForm: TSetupForm
         Left = 76
         Height = 21
         Hint = 'Format: Type of number returned by this counter'#13#10'PDH_FMT_LONG - For whole numbers between -2147483648 and 2147483647'#13#10'PDH_FMT_DOUBLE - For decimal point numbers'#13#10'PDH_FMT_LARGE - For whole numbers between -9223372036854775808 and 9223372036854775807 '
-        Top = 288
+        Top = 298
         Width = 136
+        Anchors = [akLeft, akRight, akBottom]
         Enabled = False
         ItemHeight = 13
         ItemIndex = 0
@@ -3961,8 +4077,9 @@ object SetupForm: TSetupForm
         Left = 76
         Height = 21
         Hint = 'Scaling: Automatic scaling applied to the number'#13#10'NONE - Default scaling'#13#10'PDH_FMT_NOSCALE - Do not apply the counter''s default scaling factor'#13#10'PDH_FMT_1000 - Multiply the actual value by 1,000'#13#10'PDH_FMT_NODATA - Unknown but here for completeness'#13#10'PDH_FMT_NOCAP100 - Do not cap number to 100 for certain counters '
-        Top = 312
+        Top = 322
         Width = 136
+        Anchors = [akLeft, akRight, akBottom]
         Enabled = False
         ItemHeight = 13
         ItemIndex = 0
@@ -3983,32 +4100,36 @@ object SetupForm: TSetupForm
       object Label64: TLabel
         Left = 0
         Height = 13
-        Top = 208
+        Top = 218
         Width = 43
+        Anchors = [akLeft, akRight, akBottom]
         Caption = 'Counter:'
         ParentColor = False
       end
       object Label65: TLabel
         Left = 0
         Height = 13
-        Top = 248
+        Top = 258
         Width = 46
+        Anchors = [akLeft, akRight, akBottom]
         Caption = 'Instance:'
         ParentColor = False
       end
       object Label66: TLabel
         Left = 0
         Height = 13
-        Top = 296
+        Top = 306
         Width = 38
+        Anchors = [akLeft, akRight, akBottom]
         Caption = 'Format:'
         ParentColor = False
       end
       object Label67: TLabel
         Left = 0
         Height = 13
-        Top = 320
+        Top = 330
         Width = 37
+        Anchors = [akLeft, akRight, akBottom]
         Caption = 'Scaling:'
         ParentColor = False
       end
@@ -4016,8 +4137,9 @@ object SetupForm: TSetupForm
         Left = 76
         Height = 25
         Hint = 'Save: Save the counter to the slot selected by index'
-        Top = 336
+        Top = 346
         Width = 64
+        Anchors = [akLeft, akRight, akBottom]
         Caption = 'Save'
         Enabled = False
         OnClick = Button2Click
@@ -4048,11 +4170,13 @@ object SetupForm: TSetupForm
     end
   end
   object InsertButton: TButton
+    AnchorSideLeft.Side = asrCenter
     Left = 77
     Height = 25
     Hint = 'Insert the above chosen variable into the currently active screen line.'
-    Top = 391
+    Top = 416
     Width = 59
+    Anchors = [akLeft, akBottom]
     Caption = '&Insert -->'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
@@ -4064,11 +4188,14 @@ object SetupForm: TSetupForm
     TabOrder = 0
   end
   object BitBtn1: TBitBtn
-    Left = 616
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 639
     Height = 30
     Hint = 'Save and close settings'
-    Top = 432
+    Top = 417
     Width = 75
+    Anchors = [akRight, akBottom]
     DefaultCaption = True
     Kind = bkOK
     ModalResult = 1
@@ -4078,11 +4205,14 @@ object SetupForm: TSetupForm
     TabOrder = 2
   end
   object BitBtn2: TBitBtn
-    Left = 696
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 719
     Height = 30
     Hint = 'Discard changes and close'
-    Top = 432
+    Top = 417
     Width = 75
+    Anchors = [akRight, akBottom]
     Cancel = True
     DefaultCaption = True
     Kind = bkCancel
@@ -4092,11 +4222,14 @@ object SetupForm: TSetupForm
     TabOrder = 3
   end
   object BitBtn3: TBitBtn
-    Left = 776
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 799
     Height = 30
     Hint = 'Save settings'
-    Top = 432
+    Top = 417
     Width = 75
+    Anchors = [akRight, akBottom]
     Caption = '&Apply'
     Kind = bkOK
     OnClick = ApplyButtonClick
@@ -4105,10 +4238,13 @@ object SetupForm: TSetupForm
     TabOrder = 4
   end
   object BitBtn4: TBitBtn
-    Left = 536
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 559
     Height = 30
-    Top = 432
+    Top = 417
     Width = 75
+    Anchors = [akRight, akBottom]
     Caption = '&Load'
     Kind = bkRetry
     OnClick = BitBtn4Click
@@ -4116,11 +4252,13 @@ object SetupForm: TSetupForm
     Visible = False
   end
   object VariableEdit: TEdit
+    AnchorSideLeft.Side = asrCenter
     Left = 8
     Height = 13
     Hint = '[Variable]'
-    Top = 369
+    Top = 394
     Width = 200
+    Anchors = [akLeft, akBottom]
     BorderStyle = bsNone
     Color = clBtnFace
     Font.CharSet = ANSI_CHARSET
@@ -4141,16 +4279,14 @@ object SetupForm: TSetupForm
     DefaultExt = '.*.*'
     Filter = 'All files (*.*)|*.*|Text files (*.txt)|*.txt|Log files (*.log)|*.log'
     InitialDir = 'C:\'
-    Left = 336
-    Top = 432
+    Left = 824
   end
   object OpenDialog1: TOpenDialog
     DefaultExt = '.exe'
     FileName = 'Winamp.exe'
     Filter = 'Executables (*.exe)|*.exe|All Files (*.*)|*.*'
     InitialDir = 'C:\program files\winamp'
-    Left = 304
-    Top = 432
+    Left = 792
   end
   object OpenIco: TOpenPictureDialog
     Title = 'Choose Icon for Tray Area'
@@ -4158,18 +4294,15 @@ object SetupForm: TSetupForm
     Filter = 'Icons (*.ico)|*.ico'
     Options = [ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofNoNetworkButton, ofEnableSizing]
     OnFolderChange = OpeIcoFolderChange
-    Left = 272
-    Top = 432
+    Left = 760
   end
   object OpenDialog3: TOpenDialog
     Title = 'Open existing or create new file'
     InitialDir = '.'
-    Left = 368
-    Top = 432
+    Left = 856
   end
   object InfoTimer: TTimer
     OnTimer = InfoTimerTimer
-    Left = 400
-    Top = 432
+    Left = 888
   end
 end
