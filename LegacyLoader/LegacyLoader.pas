@@ -4,7 +4,11 @@ uses
   Classes, SysUtils, CustApp,  Windows, fpTimer;
 
 const
+// if this is increased, increase the 3 legacyloader function ID's also
   iMaxPluginFuncs = 20;
+  finiFuncId = 21;
+  infoFuncId = 22;
+  demoFuncId = 23;
 
 type
     TSharedMem=record
@@ -16,16 +20,17 @@ type
     LibraryResult: Array[1..2048] of char;
   end;
 
-  TMyProc = function(param1: pchar; param2: pchar): Pchar; stdcall;
+  TFunctionProc = function(param1: pchar; param2: pchar): Pchar; stdcall;
+  TinfoProc = function(InfoType: PChar): Pchar; stdcall;
+  TdemoProc = function(DemoNum: integer): Pchar; stdcall;
   TFiniProc = procedure(); stdcall;
 
   TDll = Record
     sName: String;
     hDll: HMODULE;
-//    bBridge: Boolean;  // leave 32bit .net for now
-//    iBridgeId: Integer;  // as above
-    functions: Array [1..iMaxPluginFuncs] of TMyProc;
-//    bridgeFunc: TBridgeProc;
+    functions: Array [1..iMaxPluginFuncs] of TFunctionProc;
+    infoFunc: TinfoProc;
+    demoFunc: TdemoProc;
     finiFunc: TFiniProc;
     uiMinRefreshInterval: Cardinal;
   end;
@@ -104,7 +109,7 @@ begin
           end;
       1 : begin
             try
-              ExecuteFunction( LegacySharedMem^.LibraryID, LegacySharedMem^.LibraryFunc, LegacySharedMem^.LibraryParam1, LegacySharedMem^.LibraryParam2);
+                ExecuteFunction( LegacySharedMem^.LibraryID, LegacySharedMem^.LibraryFunc, LegacySharedMem^.LibraryParam1, LegacySharedMem^.LibraryParam2)
             except
               on E: Exception do
               begin
@@ -145,6 +150,14 @@ begin
     dlls[uiDll].finiFunc := getprocaddress(dlls[uiDll].hDll, PChar('SmartieFini'));
     if (not Assigned(dlls[uiDll].finiFunc)) then
       dlls[uiDll].finiFunc := getprocaddress(dlls[uiDll].hDll, PChar('_SmartieFini@0'));
+
+    dlls[uiDll].infoFunc := getprocaddress(dlls[uiDll].hDll, PChar('SmartieInfo'));
+    if (not Assigned(dlls[uiDll].infoFunc)) then
+      dlls[uiDll].infoFunc := getprocaddress(dlls[uiDll].hDll, PChar('_SmartieInfo@0'));
+
+    dlls[uiDll].demoFunc := getprocaddress(dlls[uiDll].hDll, PChar('SmartieDemo'));
+    if (not Assigned(dlls[uiDll].demoFunc)) then
+      dlls[uiDll].demoFunc := getprocaddress(dlls[uiDll].hDll, PChar('_SmartieDemo@0'));
 
     if (Assigned(initFunc)) then
     begin
@@ -198,17 +211,48 @@ begin
 end;
 
 procedure LegacyPluginLoader.ExecuteFunction(ID: integer; iFunc: integer; sParam1: string; sparam2: string);
+var
+  s: string;
 begin
   if iFunc <= iMaxPluginFuncs then
     LegacySharedMem^.LibraryResult := strpas(dlls[ID].functions[iFunc]( pchar(sParam1), pchar(sParam2)))
-  else
+  else if iFunc = finiFuncId then
+  begin
+    if assigned(dlls[ID].finiFunc) then
     try
       dlls[ID].finiFunc();
     except
       on E: Exception do
         raise Exception.Create('Plugin '+dlls[ID].sName+' had an exception during closedown: '
               + E.Message);
-    end;
+    end
+  end
+  else if iFunc = infoFuncId then
+  begin
+    if assigned(dlls[ID].infoFunc) then
+      try
+        LegacySharedMem^.LibraryResult := strpas(dlls[ID].infoFunc(pchar(sParam1)))
+      except
+      on E: Exception do
+        raise Exception.Create('Plugin '+dlls[ID].sName+' had an exception during closedown: '
+              + E.Message);
+      end
+    else
+      LegacySharedMem^.LibraryResult := '';
+  end
+  else if iFunc = demoFuncId then
+  begin
+    if assigned(dlls[ID].demoFunc) then
+      try
+        LegacySharedMem^.LibraryResult := strpas(dlls[ID].demoFunc(strtoint(pchar(sParam1))));
+      except
+        on E: Exception do
+          raise Exception.Create('Plugin '+dlls[ID].sName+' had an exception during closedown: '
+                + E.Message);
+      end
+    else
+      LegacySharedMem^.LibraryResult := '';
+  end;
 
   setevent(hLegacyRecvEvent);
 end;

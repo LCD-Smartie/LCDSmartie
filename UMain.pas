@@ -186,19 +186,16 @@ type
     flashdelay: Cardinal;
     bNewScreen: Boolean;
     frozen: Boolean;
-    Backlight: boolean;
     NumberOfScreensToShift: Integer;
     iLastRandomTranCycle: Integer;
     ConfigFileName: String;
     RestartAsAdmin: boolean;
-    procedure SetOnscreenBacklight();
     function DoGuess(line: Integer): Integer;
     procedure freeze();
     procedure DoGPO(const ftemp1, ftemp2: Integer);
     function scroll(const scrollvar: String;const line, speed: Integer): String;
     procedure scrollLine(line: Byte; direction: Integer);
     procedure DoTransitions;
-    procedure backlit(iOn: Integer = -1);
     function EscapeAmp(const sStr: string):String;
     function UnescapeAmp(const sStr: string): String;
     procedure SendCustomChars;
@@ -212,6 +209,7 @@ type
     procedure OnEndSession(Sender:Tobject);
     procedure LineLCDPanelsOnClick(Sender: Tobject);
   public
+    Backlight: boolean;
     doesflash: Boolean;
     lcd: TLCD;
     Data: TData;
@@ -224,6 +222,8 @@ type
     ShowWindowFlag: Boolean;
     DisplayError: boolean;
     StartTime: TDATETIME;
+    procedure SetOnscreenBacklight();
+    procedure backlit(iOn: Integer = -1);
     procedure DoFullDisplayDraw;
     procedure UpdateTimersState(InSetupState : boolean);
     procedure ChangeScreen(scr: Integer);

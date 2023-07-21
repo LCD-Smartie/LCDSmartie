@@ -31,12 +31,20 @@ uses
   Classes, SysUtils, UDataEmail,math;
 
 const
+  // if this is increased, increase the 3 legacyloader function ID's also
   iMaxPluginFuncs = 20;
+  finiFuncId = 21;
+  infoFuncId = 22;
+  demoFuncId = 23;
 
 type
   TMyProc = function(param1: pchar; param2: pchar): Pchar; stdcall;
   TFiniProc = procedure(); stdcall;
+  TinfoProc = function(InfoType: PChar): Pchar; stdcall;
+  TdemoProc = function(DemoNum: integer): Pchar; stdcall;
   TBridgeProc = function(iBridgeId: Integer; iFunc: Integer; param1: pchar; param2: pchar): Pchar; stdcall;
+  TBridgeInfoProc = function(iBridgeId: Integer; InfoType: PChar): Pchar; stdcall;
+  TBridgeDemoProc = function(iBridgeId: Integer; DemoNum: integer): Pchar; stdcall;
   {$IF Defined(CPUX64)}
   TSharedMem=record
     LibraryID: Integer;
@@ -57,7 +65,11 @@ type
     iBridgeId: Integer;
     functions: Array [1..iMaxPluginFuncs] of TMyProc;
     bridgeFunc: TBridgeProc;
+    bridgeInfoFunc: TBridgeInfoProc;
+    bridgeDemoFunc: TBridgeDemoProc;
     finiFunc: TFiniProc;
+    infoFunc:  TinfoProc;
+    demoFunc:  TdemoProc;
     uiLastRefreshed: Cardinal;  // time when Dll results were refreshed.
     uiMinRefreshInterval: Cardinal; // min Refresh interval between refreshes.
   end;
@@ -106,6 +118,8 @@ type
     function CallPlugin(uiDll: Integer; iFunc: Integer;
                     const sParam1: String; const sParam2:String) : String;
     function FindPlugin(const sDllName: String): Cardinal;
+    function GetPluginInfo(dllName: string; InfoType: string) : String;
+    function GetPluginDemos(dllName: string; DemoNum: integer) : String;
     constructor Create;
     destructor Destroy; override;
     function CanExit: Boolean;
@@ -190,10 +204,6 @@ begin
   DataThread.Start;
   DataThreads.Add(DataThread);
 
-  DataThread := TRSSDataThread.Create;
-  DataThread.Start;
-  DataThreads.Add(DataThread);
-
   DataThread := TDNetDataThread.Create;
   DataThread.Start;
   DataThreads.Add(DataThread);
@@ -203,6 +213,10 @@ begin
   DataThreads.Add(DataThread);
 
   DataThread := TPerfDataThread.Create;
+  DataThread.Start;
+  DataThreads.Add(DataThread);
+
+  DataThread := TRSSDataThread.Create;
   DataThread.Start;
   DataThreads.Add(DataThread);
 end;
@@ -227,7 +241,7 @@ begin
       if dlls[uiDll-1].legacyDll then
       begin
         LegacySharedMem^.LibraryID := dlls[uiDll-1].iBridgeId;
-        LegacySharedMem^.LibraryFunc := 21;
+        LegacySharedMem^.LibraryFunc := finiFuncId;
         setevent(hLegacyCallFunctionEvent);
         waitresult := WaitForSingleObject(hLegacyRecvEvent,10000);
         if (waitresult = WAIT_TIMEOUT) then
@@ -994,7 +1008,7 @@ var
   GUID: TGUID;
   ShMemID: string;
   {$IFEND}
-
+   le: integer;
 begin
   bFound := false;
 
@@ -1077,6 +1091,14 @@ begin
     if (not Assigned(dlls[uiDll].finiFunc)) then
       dlls[uiDll].finiFunc := getprocaddress(dlls[uiDll].hDll, PChar('_SmartieFini@0'));
 
+    dlls[uiDll].infoFunc := getprocaddress(dlls[uiDll].hDll, PChar('SmartieInfo'));
+    if (not Assigned(dlls[uiDll].infoFunc)) then
+      dlls[uiDll].infoFunc := getprocaddress(dlls[uiDll].hDll, PChar('_SmartieInfo@0'));
+
+    dlls[uiDll].demoFunc := getprocaddress(dlls[uiDll].hDll, PChar('SmartieDemo'));
+    if (not Assigned(dlls[uiDll].demoFunc)) then
+      dlls[uiDll].demoFunc := getprocaddress(dlls[uiDll].hDll, PChar('_SmartieDemo@0'));
+
     // Call SmartieInit if it exists.
     if (Assigned(initFunc)) then
     begin
@@ -1117,9 +1139,20 @@ begin
       {$IF Defined(CPUX86)}
       @dlls[uiDll].BridgeFunc := getprocaddress(dlls[uiDll].hDll,
         PChar('_BridgeFunc@16'));
+      @dlls[uiDll].BridgeInfoFunc := getprocaddress(dlls[uiDll].hDll,
+        PChar('_BridgeInfoFunc@8'));
+      le := GetLastError;
+      @dlls[uiDll].BridgeDemoFunc := getprocaddress(dlls[uiDll].hDll,
+        PChar('_BridgeDemoFunc@8'));
       {$ELSEIF Defined(CPUX64)}
       @dlls[uiDll].BridgeFunc := getprocaddress(dlls[uiDll].hDll,
         PChar('BridgeFunc'));
+
+      @dlls[uiDll].BridgeInfoFunc := getprocaddress(dlls[uiDll].hDll,
+        PChar('BridgeInfoFunc'));
+
+      @dlls[uiDll].BridgeDemoFunc := getprocaddress(dlls[uiDll].hDll,
+        PChar('BridgeDemoFunc'));
       {$IFEND}
 
       if (@dlls[uiDll].BridgeFunc = nil) then
@@ -1166,6 +1199,94 @@ begin
   end
   else
     raise Exception.Create('LoadLibrary failed with ' + ErrMsg(GetLastError));
+end;
+
+function TData.GetPluginInfo(dllName: string; InfoType: string) : String;
+var
+  {$IF Defined(CPUX64)}
+  waitresult: integer;
+  {$IFEND}
+  uiPlugin: integer;
+  R: string;
+begin
+  result := '';
+  uiPlugin := FindPlugin(dllName);
+  {$IF Defined(CPUX64)}
+  if dlls[uiPlugin].legacyDll then
+  begin
+    LegacySharedMem^.LibraryID := dlls[uiPlugin].iBridgeId;
+    LegacySharedMem^.LibraryFunc := infoFuncId;
+    LegacySharedMem^.LibraryParam1 := InfoType;
+    setevent(hLegacyCallFunctionEvent);
+    waitresult := WaitForSingleObject(hLegacyRecvEvent,4000);
+    if (waitresult = WAIT_TIMEOUT) then
+      result := ''
+    else
+    begin
+      result := strpas(@LegacySharedMem.LibraryResult[1]);
+    end;
+  end
+  else
+  {$IFEND}
+  if (dlls[uiPlugin].bBridge) then
+  begin
+    if (@dlls[uiPlugin].bridgeFunc = nil) then
+      Exit;
+
+    R := dlls[uiPlugin].bridgeInfoFunc( dlls[uiPlugin].iBridgeId, pchar(InfoType));
+    if length(R) > 0 then
+      result := R;
+
+  end
+  else
+  if (Assigned(dlls[uiPlugin].infoFunc)) then
+  begin
+    result := dlls[uiPlugin].infoFunc(pchar(InfoType));
+  end;
+end;
+
+function TData.GetPluginDemos(dllName: string; DemoNum: integer) : String;
+var
+  {$IF Defined(CPUX64)}
+  waitresult: integer;
+  {$IFEND}
+  uiPlugin: integer;
+  R: string;
+begin
+  result := '';
+  uiPlugin := FindPlugin(dllName);
+  {$IF Defined(CPUX64)}
+  if dlls[uiPlugin].legacyDll then
+  begin
+    LegacySharedMem^.LibraryID := dlls[uiPlugin].iBridgeId;
+    LegacySharedMem^.LibraryFunc := demoFuncId;
+    LegacySharedMem^.LibraryParam1 := inttostr(DemoNum);
+    setevent(hLegacyCallFunctionEvent);
+    waitresult := WaitForSingleObject(hLegacyRecvEvent,4000);
+    if (waitresult = WAIT_TIMEOUT) then
+      result := ''
+    else
+    begin
+      result := strpas(@LegacySharedMem.LibraryResult[1]);
+    end;
+  end
+  else
+  {$IFEND}
+  if (dlls[uiPlugin].bBridge) then
+  begin
+    if (@dlls[uiPlugin].bridgeFunc = nil) then
+      Exit;
+
+    R := dlls[uiPlugin].bridgeDemoFunc(dlls[uiPlugin].iBridgeId, DemoNum);
+    if length(R) > 0 then
+      result := R;
+
+  end
+  else
+  if (Assigned(dlls[uiPlugin].demoFunc)) then
+  begin
+    result := dlls[uiPlugin].demoFunc(DemoNum);
+  end;
 end;
 
 end.

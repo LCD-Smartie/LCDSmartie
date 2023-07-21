@@ -149,6 +149,8 @@ type
     MainFormPosLeft: integer;
     SettingsFormPosTop: integer;
     SettingsFormPosLeft: integer;
+    SettingsFormPosHeight: integer;
+    SettingsFormPosWidth: integer;
     EditFormPosTop: integer;
     EditFormPosLeft: integer;
     EditFormPosHeight: integer;
@@ -314,6 +316,8 @@ begin
   MainFormPosLeft := initfile.ReadInteger('General Settings', 'MainFormPosLeft', 200);
   SettingsFormPosTop := initfile.ReadInteger('General Settings', 'SettingsFormPosTop', 500);
   SettingsFormPosLeft := initfile.ReadInteger('General Settings', 'SettingsFormPosLeft', 500);
+  SettingsFormPosHeight := initfile.ReadInteger('General Settings', 'SettingsFormPosHeight', 560);
+  SettingsFormPosWidth := initfile.ReadInteger('General Settings', 'SettingsFormPosWidth', 850);
   EditFormPosTop := initfile.ReadInteger('General Settings', 'EditFormPosTop', 600);
   EditFormPosLeft := initfile.ReadInteger('General Settings', 'EditFormPosLeft', 600);
   EditFormPosHeight := initfile.ReadInteger('General Settings', 'EditFormPosHeight', 177);
@@ -567,6 +571,8 @@ begin
   initfile.WriteInteger('General Settings', 'SettingsFormPosTop', SettingsFormPosTop);
   initfile.WriteInteger('General Settings', 'SettingsFormPosLeft', SettingsFormPosLeft);
   initfile.WriteInteger('General Settings', 'EditFormPosTop', EditFormPosTop);
+  initfile.WriteInteger('General Settings', 'SettingsFormPosHeight', SettingsFormPosHeight);
+  initfile.WriteInteger('General Settings', 'SettingsFormPosWidth', SettingsFormPosWidth);
   initfile.WriteInteger('General Settings', 'EditFormPosLeft', EditFormPosLeft);
   initfile.WriteInteger('General Settings', 'EditFormPosHeight', EditFormPosHeight);
   initfile.WriteInteger('General Settings', 'EditFormPosWidth', EditFormPosWidth);

@@ -64,6 +64,7 @@ type
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
     AppendConfigNameCheckBox: TCheckBox;
+    BacklightBitBtn: TBitBtn;
     BoincServerIndexComboBox: TComboBox;
     CenterLine1CheckBox: TCheckBox;
     CenterLine5CheckBox: TCheckBox;
@@ -109,6 +110,10 @@ type
     Label61: TLabel;
     Label62: TLabel;
     Label71: TLabel;
+    Label74: TLabel;
+    PluginVersionLabel: TLabel;
+    Label73: TLabel;
+    PluginDeveloperLabel: TLabel;
     Line1EditButton: TSpeedButton;
     Line5EditButton: TSpeedButton;
     Line1MemoEdit: TMemo;
@@ -125,6 +130,7 @@ type
     Line8EditButton: TSpeedButton;
     Line4MemoEdit: TMemo;
     Line8MemoEdit: TMemo;
+    PluginDemoListBox: TListBox;
     MoveToScreenSpinEdit: TSpinEdit;
     ScreenEnabledCheckBox: TCheckBox;
     ScreenLabel: TLabel;
@@ -407,11 +413,15 @@ type
     WinampLocationEdit: TEdit;
     WinampLocationLabel: TLabel;
     WinampTabSheet: TTabSheet;
+    procedure BacklightBitBtnClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure InfoTimerTimer(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
     procedure PerfCountersListBoxClick(Sender: TObject);
     procedure PerfSettingsIndexComboBoxChange(Sender: TObject);
+    procedure PluginDemoListBoxClick(Sender: TObject);
+    procedure ListBoxKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure VariableEditChange(Sender: TObject);
     procedure ActionsGridScrollBarScroll(Sender: TObject;
       ScrollCode: TScrollCode; var ScrollPos: Integer);
@@ -485,7 +495,6 @@ type
     procedure ContrastTrackBarChange(Sender: TObject);
     procedure BrightnessTrackBarChange(Sender: TObject);
     procedure Btn_PluginRefreshClick(Sender: TObject);
-    procedure PluginListBoxDblClick(Sender: TObject);
     procedure PluginListBoxClick(Sender: TObject);
     procedure ShutdownEditEnter(Sender: TObject);
     procedure TrayIconBrowseButtonClick(Sender: TObject);
@@ -726,6 +735,20 @@ begin
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Instance := InstancesComboBox.Text;
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Format := FormatComboBox.ItemIndex;
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Scaling := ScalingComboBox.ItemIndex;
+end;
+
+procedure TSetupForm.BacklightBitBtnClick(Sender: TObject);
+begin
+  if LCDSmartieDisplayForm.Backlight then
+  begin
+    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off';
+    LCDSmartieDisplayForm.backlit();
+  end
+  else
+  begin
+    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'On';
+    LCDSmartieDisplayForm.backlit();
+  end;
 end;
 
 function CorrectPlural(const s: string; Count: Integer): string;
@@ -978,6 +1001,8 @@ begin
   {$IFNDEF STANDALONESETUP}
   SetupForm.Top := config.SettingsFormPosTop;
   SetupForm.Left := config.SettingsFormPosLeft;
+  SetupForm.Height := config.SettingsFormPosHeight;
+  SetupForm.Width := config.SettingsFormPosWidth;
 
   MainPageControl.ActivePage := ScreensTabSheet;
   LeftPageControl.ActivePageIndex := config.LastTabIndex;
@@ -1153,6 +1178,11 @@ begin
 
   for i := 0 to length(LCDSmartieDisplayForm.Data.storage) - 1 do
     StorageStringGrid.Cells[0,i+1] := inttostr(i);
+
+  if LCDSmartieDisplayForm.Backlight then
+    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'On'
+  else
+    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off'
 end;
 
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
@@ -2059,13 +2089,14 @@ begin
   else
     VariableEdit.Text := NoVariable;
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 
 // Select currently active text field that will receive variable if 'insert'
 // is pressed.
+// I dont think this is neccessary. Also it prevents the arrow keys from being used to move through list boxes
 procedure TSetupForm.FocusToInputField;
 var
   tempint1, tempint2: integer;
@@ -2204,8 +2235,8 @@ begin
       VariableEdit.Text := NoVariable;
   end; // case
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 procedure TSetupForm.InternetListBoxClick(Sender: TObject);
@@ -2239,8 +2270,8 @@ begin
       VariableEdit.Text := NoVariable;
   end; // case
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 procedure TSetupForm.QStatLabelClick(Sender: TObject);
@@ -2281,8 +2312,8 @@ begin
       VariableEdit.Text := NoVariable;
   end; // case
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 procedure TSetupForm.BOINCListBoxClick(Sender: TObject);
@@ -2322,8 +2353,8 @@ begin
       VariableEdit.Text := NoVariable;
   end; // case
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 procedure TSetupForm.LeftPageControlChange(Sender: TObject);
@@ -2400,8 +2431,8 @@ begin
   else if EmailLastFromRadioButton.Checked then
     VariableEdit.Text := '$EmailFrom(' + IntToStr(CurrentlyShownEmailAccount + 1) + ')';
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 procedure TSetupForm.ContinueLineCheckBoxClick(Sender: TObject);
@@ -2441,25 +2472,23 @@ begin
 end;
 
 procedure TSetupForm.GamestatsListBoxClick(Sender: TObject);
-var
-  S: string;
 begin
   case GameTypeComboBox.ItemIndex of
-    0: S := '$Half-life';
-    1: S := '$QuakeII';
-    2: S := '$QuakeIII';
-    3: S := '$Unreal';
+    0: VariableEdit.Text := '$Half-life';
+    1: VariableEdit.Text := '$QuakeII';
+    2: VariableEdit.Text := '$QuakeIII';
+    3: VariableEdit.Text := '$Unreal';
     else
-      S := NoVariable;
+      VariableEdit.Text := NoVariable;
   end; // case
 
-  if not (S = NoVariable) then
+  {if not (S = NoVariable) then
   begin
     VariableEdit.Text := S + IntToStr(GamestatsListBox.ItemIndex + 1);
     FocusToInputField();
   end
   else
-    VariableEdit.Text := S;
+    VariableEdit.Text := S; }
 end;
 
 procedure TSetupForm.LineEditEnter(Sender: TObject);
@@ -2491,8 +2520,8 @@ begin
   else
     VariableEdit.Text := NoVariable;
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 procedure TSetupForm.FoldingAtHomeListBoxClick(Sender: TObject);
@@ -2513,10 +2542,17 @@ begin
       VariableEdit.Text := NoVariable;
   end; // case
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
+// for detecting Enter being pressed in a list box
+procedure TSetupForm.ListBoxKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    InsertButtonClick(nil);
+end;
 
 // Apply pressed.
 procedure TSetupForm.ApplyButtonClick(Sender: TObject);
@@ -2644,6 +2680,8 @@ begin
   Config.MainFormCaption := CustomTitleTIEdit1.Text;
   config.SettingsFormPosTop := SetupForm.Top;
   config.SettingsFormPosLeft := SetupForm.Left;
+  config.SettingsFormPosHeight := SetupForm.Height;
+  config.SettingsFormPosWidth := SetupForm.Width;
   config.ActionsTimer := ActionsTimerSpinEdit.Value;
   config.save();
   {$IFNDEF STANDALONESETUP}
@@ -2775,8 +2813,8 @@ begin
       VariableEdit.Text := NoVariable;
   end; // case
 
-  if not (VariableEdit.Text = NoVariable) then
-    FocusToInputField();
+  //if not (VariableEdit.Text = NoVariable) then
+  //  FocusToInputField();
 end;
 
 procedure TSetupForm.StickyCheckboxClick(Sender: TObject);
@@ -2840,23 +2878,89 @@ begin
   PluginListBox.Refresh;
 end;
 
-procedure TSetupForm.PluginListBoxDblClick(Sender: TObject);
-var
-  plugin_name: string;
-begin
-  plugin_name := ExtractFileName(PluginListBox.FileName);
-  plugin_name := copy(plugin_name, 0, Length(plugin_name) - 4) + '.txt';
-  if FileExists(ExtractFilePath(ParamStr(0)) + 'plugins\' + plugin_name) then
-    ShellExecute(0, nil, PChar(plugin_name), nil, nil, SW_NORMAL)
-  else
-    ShowMessage('File : ' + plugin_name + ' does not exist');
-end;
-
-
+// We're gonna need to update DotNetBridge too
 procedure TSetupForm.PluginListBoxClick(Sender: TObject);
+type
+  TinfoProc = function(param1: PChar): Pchar; stdcall;
+  TdemoProc = function(param1: integer): Pchar; stdcall;
+var
+  PluginName: string;
+  Reply: string;
+  loop : integer;
+  maxdemolines: integer;
 begin
-  VariableEdit.Text := '$dll(' + ExtractFileName(PluginListBox.FileName) + ',1,0,0)';
+  // make this a const
+  maxdemolines := 200;
+  PluginDeveloperLabel.Caption := 'N/A';
+  PluginVersionLabel.Caption := 'N/A';
+
+  // lets have some fun
+  PluginName := ExtractFileName(PluginListBox.FileName);
+  PluginDemoListBox.Clear;
+
+  // Should cause plugin to be loaded
+  LCDSmartieDisplayForm.Data.FindPlugin(PluginName);
+
+  try
+    PluginDeveloperLabel.Caption := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName, pchar('developer'));
+    PluginVersionLabel.Caption := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName, pchar('version'));
+  except
+      //on E: Exception do
+      //    raise Exception.Create('Plugin '+sDllName+' had an exception during Init: '
+      //      + E.Message);
+  end;
+
+  try
+    // a loop up to maxdemolines(say 200) calling infoFunc(loop) until it returns an empty string then break?
+    // each line can start with some text but only from $ to end of line will be parsed as a variable/function
+    // so you can have a list like
+    {
+    Func 1 ball
+    throw ball
+    up $(ball.dll, 1,1,1)
+    down $(ball.dll, 1,1,2)
+    catch ball
+    left hand $(ball.dll, 1,2,1)
+    right hand $(ball.dll, 1,2,2)
+    func 2 Boomerang
+    .....
+    }
+    // in pascal you could add strings to a tstringlist then dump each string
+    // pretty much the same with c# list<string>
+    // I suppose something similar could be done with arrays in c and c++
+    for loop := 0 to maxdemolines do
+    begin
+      reply := LCDSmartieDisplayForm.Data.GetPluginDemos(PluginName, loop);
+      if reply = '' then break;
+      PluginDemoListBox.Items.Add(reply);
+    end;
+  except
+  end;
 end;
+
+procedure TSetupForm.PluginDemoListBoxClick(Sender: TObject);
+var
+  S: String;
+  P: integer;
+begin
+  VariableEdit.Text := NoVariable;
+  if PluginDemoListBox.ItemIndex > 0 then
+  begin
+    S := PluginDemoListBox.Items[PluginDemoListBox.ItemIndex];
+
+    if ((Pos('http://', lowercase(S)) = 1) or (Pos('https://', lowercase(S)) = 1)) and (GetKeyState(VK_SHIFT) < 0) then
+    Begin
+      ShellExecute(0, Nil, pchar(S), Nil, Nil, SW_NORMAL);
+      Exit;
+    end;
+
+
+    P := Pos('$', S);
+    if P > 0 then
+      VariableEdit.Text := copy(S, P, length(S) - P+1);
+  end;
+end;
+
 
 /////////////////////////////////////////////////////////////////
 ////////////////////////// ICON PATH ////////////////////////////
