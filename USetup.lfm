@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 580
+  Left = 521
   Height = 464
-  Top = 161
+  Top = 198
   Width = 918
   Anchors = []
   BorderIcons = []
@@ -22,7 +22,7 @@ object SetupForm: TSetupForm
   ParentBiDiMode = False
   ParentDoubleBuffered = False
   Position = poScreenCenter
-  LCLVersion = '2.2.6.0'
+  LCLVersion = '3.0.0.1'
   object MainPageControl: TPageControl
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
@@ -61,6 +61,7 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentBackground = False
         ParentBidiMode = False
         ParentFont = False
         TabOrder = 2
@@ -134,6 +135,7 @@ object SetupForm: TSetupForm
           BorderStyle = bsNone
           ClientHeight = 176
           ClientWidth = 606
+          ParentBackground = False
           TabOrder = 3
           object Line1MemoEdit: TMemo
             Left = 16
@@ -299,13 +301,14 @@ object SetupForm: TSetupForm
             Anchors = [akTop, akRight]
             ClientHeight = 174
             ClientWidth = 44
+            ParentBackground = False
             TabOrder = 4
             object DontScrollLine1CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = -6
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -313,11 +316,11 @@ object SetupForm: TSetupForm
               TabOrder = 0
             end
             object DontScrollLine2CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = 17
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -325,11 +328,11 @@ object SetupForm: TSetupForm
               TabOrder = 1
             end
             object DontScrollLine3CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = 40
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -337,11 +340,11 @@ object SetupForm: TSetupForm
               TabOrder = 2
             end
             object DontScrollLine4CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = 63
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -349,11 +352,11 @@ object SetupForm: TSetupForm
               TabOrder = 3
             end
             object DontScrollLine5CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = 86
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -361,11 +364,11 @@ object SetupForm: TSetupForm
               TabOrder = 7
             end
             object DontScrollLine6CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = 109
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -373,11 +376,11 @@ object SetupForm: TSetupForm
               TabOrder = 6
             end
             object DontScrollLine7CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = 132
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -385,11 +388,11 @@ object SetupForm: TSetupForm
               TabOrder = 5
             end
             object DontScrollLine8CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Don''t scroll this line.'
               Top = 155
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -406,13 +409,14 @@ object SetupForm: TSetupForm
             Anchors = [akTop, akRight]
             ClientHeight = 174
             ClientWidth = 44
+            ParentBackground = False
             TabOrder = 5
             object ContinueLine1CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
               Top = -6
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -421,11 +425,11 @@ object SetupForm: TSetupForm
               TabOrder = 2
             end
             object ContinueLine2CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
               Top = 17
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -434,11 +438,11 @@ object SetupForm: TSetupForm
               TabOrder = 1
             end
             object ContinueLine3CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
               Top = 40
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -447,11 +451,11 @@ object SetupForm: TSetupForm
               TabOrder = 0
             end
             object ContinueLine4CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
               Top = 63
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -460,11 +464,11 @@ object SetupForm: TSetupForm
               TabOrder = 3
             end
             object ContinueLine5CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
               Top = 86
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -473,11 +477,11 @@ object SetupForm: TSetupForm
               TabOrder = 4
             end
             object ContinueLine6CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
               Top = 109
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -486,11 +490,11 @@ object SetupForm: TSetupForm
               TabOrder = 5
             end
             object ContinueLine7CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
               Top = 132
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -499,11 +503,11 @@ object SetupForm: TSetupForm
               TabOrder = 6
             end
             object ContinueLine8CheckBox: TCheckBox
-              Left = 13
-              Height = 19
+              Left = 14
+              Height = 17
               Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
               Top = 155
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               OnClick = ContinueLineCheckBoxClick
@@ -522,13 +526,14 @@ object SetupForm: TSetupForm
             Anchors = [akTop, akRight]
             ClientHeight = 174
             ClientWidth = 44
+            ParentBackground = False
             TabOrder = 6
             object CenterLine1CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = -6
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -536,11 +541,11 @@ object SetupForm: TSetupForm
               TabOrder = 0
             end
             object CenterLine2CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = 17
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -548,11 +553,11 @@ object SetupForm: TSetupForm
               TabOrder = 1
             end
             object CenterLine3CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = 40
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -560,11 +565,11 @@ object SetupForm: TSetupForm
               TabOrder = 2
             end
             object CenterLine4CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = 63
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -572,11 +577,11 @@ object SetupForm: TSetupForm
               TabOrder = 3
             end
             object CenterLine5CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = 86
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -584,11 +589,11 @@ object SetupForm: TSetupForm
               TabOrder = 4
             end
             object CenterLine6CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = 109
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -596,11 +601,11 @@ object SetupForm: TSetupForm
               TabOrder = 5
             end
             object CenterLine7CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = 132
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -608,11 +613,11 @@ object SetupForm: TSetupForm
               TabOrder = 6
             end
             object CenterLine8CheckBox: TCheckBox
-              Left = 11
-              Height = 19
+              Left = 12
+              Height = 17
               Hint = 'Center the text in this line (if it''s shorter than a full line).'
               Top = 155
-              Width = 23
+              Width = 21
               Anchors = [akTop]
               Caption = ' '
               ParentShowHint = False
@@ -840,10 +845,10 @@ object SetupForm: TSetupForm
           end
           object ScreenEnabledCheckBox: TCheckBox
             Left = 133
-            Height = 19
+            Height = 17
             Hint = 'Show this screen automatically'
             Top = 30
-            Width = 58
+            Width = 56
             Caption = 'Enabled'
             Font.CharSet = ANSI_CHARSET
             Font.Color = clWindowText
@@ -856,10 +861,10 @@ object SetupForm: TSetupForm
           end
           object StickyCheckbox: TCheckBox
             Left = 133
-            Height = 19
+            Height = 17
             Hint = 'Don''t automatically change from this screen.'
             Top = 46
-            Width = 48
+            Width = 46
             Caption = 'Sticky'
             Font.CharSet = ANSI_CHARSET
             Font.Color = clWindowText
@@ -922,6 +927,7 @@ object SetupForm: TSetupForm
             Anchors = [akTop, akRight]
             ClientHeight = 62
             ClientWidth = 44
+            ParentBackground = False
             TabOrder = 18
             object Label44: TLabel
               Left = 8
@@ -949,6 +955,7 @@ object SetupForm: TSetupForm
             Anchors = [akTop, akRight]
             ClientHeight = 62
             ClientWidth = 44
+            ParentBackground = False
             TabOrder = 19
             object Label51: TLabel
               Left = 8
@@ -976,6 +983,7 @@ object SetupForm: TSetupForm
             Anchors = [akTop, akRight]
             ClientHeight = 62
             ClientWidth = 44
+            ParentBackground = False
             TabOrder = 20
             object Label4: TLabel
               Left = 3
@@ -1054,6 +1062,7 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentBackground = False
         ParentFont = False
         TabOrder = 0
         object Label1: TLabel
@@ -1162,9 +1171,9 @@ object SetupForm: TSetupForm
         end
         object EmulateLCDCheckbox: TCheckBox
           Left = 8
-          Height = 19
+          Height = 17
           Top = 73
-          Width = 187
+          Width = 185
           Caption = 'Emulate LCD  (more CPU intensive)'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clWindowText
@@ -1175,9 +1184,9 @@ object SetupForm: TSetupForm
         end
         object StayOnTopCheckBox: TCheckBox
           Left = 144
-          Height = 19
+          Height = 17
           Top = 95
-          Width = 76
+          Width = 74
           Caption = '&Stay on top'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clWindowText
@@ -1188,10 +1197,10 @@ object SetupForm: TSetupForm
         end
         object RandomizeScreensCheckBox: TCheckBox
           Left = 8
-          Height = 19
+          Height = 17
           Hint = 'Rather than automatically selecting in sequence, chose them randomly.'
           Top = 95
-          Width = 112
+          Width = 110
           Caption = '&Randomize screens'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clWindowText
@@ -1244,6 +1253,7 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentBackground = False
         ParentFont = False
         TabOrder = 1
         object Panel1: TPanel
@@ -1256,6 +1266,7 @@ object SetupForm: TSetupForm
           BorderWidth = 3
           ClientHeight = 148
           ClientWidth = 332
+          ParentBackground = False
           TabOrder = 0
           object DisplayPageControl: TPageControl
             Left = 3
@@ -1408,6 +1419,7 @@ object SetupForm: TSetupForm
                 Font.Height = -11
                 Font.Name = 'Tahoma'
                 Font.Style = [fsBold]
+                ParentBackground = False
                 ParentFont = False
                 TabOrder = 1
                 object ContrastTrackBar: TTrackBar
@@ -1441,6 +1453,7 @@ object SetupForm: TSetupForm
                 Font.Height = -11
                 Font.Name = 'Tahoma'
                 Font.Style = [fsBold]
+                ParentBackground = False
                 ParentFont = False
                 TabOrder = 2
                 object BrightnessTrackBar: TTrackBar
@@ -1610,15 +1623,16 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentBackground = False
         ParentFont = False
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
         object NoAutoStart: TRadioButton
           Left = 8
-          Height = 19
+          Height = 17
           Top = 0
-          Width = 160
+          Width = 158
           Caption = 'Don''t autostart with windows'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
@@ -1629,9 +1643,9 @@ object SetupForm: TSetupForm
         end
         object AutoStart: TRadioButton
           Left = 8
-          Height = 19
+          Height = 17
           Top = 16
-          Width = 66
+          Width = 64
           Caption = 'Autostart'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
@@ -1642,9 +1656,9 @@ object SetupForm: TSetupForm
         end
         object AutoStartHide: TRadioButton
           Left = 8
-          Height = 19
+          Height = 17
           Top = 32
-          Width = 180
+          Width = 178
           Caption = 'Autostart hidden (in system tray)'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
@@ -1655,10 +1669,10 @@ object SetupForm: TSetupForm
         end
         object StartAsAdminCheckBox: TCheckBox
           Left = 8
-          Height = 19
+          Height = 17
           Hint = 'Causes LCDSmartie to relaunch itself with elevated privileges.'#13#10'Windows 10 doesn''t allow starting of startup items with run as administrator set.'#13#10'Use this if you have plugins, etc. that need administrator privileges. This has the side effect of '#13#10'causing a UAC notification if UAC is enabled'
           Top = 56
-          Width = 146
+          Width = 144
           Caption = 'Autostart as administrator'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
@@ -1669,10 +1683,10 @@ object SetupForm: TSetupForm
         end
         object UseTaskSchedulerCheckBox: TCheckBox
           Left = 8
-          Height = 19
+          Height = 17
           Hint = 'Uses windows task scheduler instead of startup folder to launch LCD Smartie.'#13#10'It can be used to launch as Administrator without the UAC nag'
           Top = 72
-          Width = 113
+          Width = 111
           Caption = 'Use Task Scheduler'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
@@ -1697,15 +1711,16 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentBackground = False
         ParentFont = False
         ParentShowHint = False
         ShowHint = True
         TabOrder = 1
         object HideOnStartup: TCheckBox
           Left = 8
-          Height = 19
+          Height = 17
           Top = 8
-          Width = 115
+          Width = 113
           Caption = 'Always start hidden'
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
@@ -1730,6 +1745,7 @@ object SetupForm: TSetupForm
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
+        ParentBackground = False
         ParentFont = False
         ParentShowHint = False
         ShowHint = True
@@ -1745,6 +1761,7 @@ object SetupForm: TSetupForm
           BorderStyle = bsNone
           ClientHeight = 91
           ClientWidth = 605
+          ParentBackground = False
           TabOrder = 0
           object ShutdownEdit1: TMemo
             Left = 0
@@ -2092,9 +2109,9 @@ object SetupForm: TSetupForm
       end
       object AppendConfigNameCheckBox: TCheckBox
         Left = 232
-        Height = 19
+        Height = 17
         Top = 306
-        Width = 226
+        Width = 224
         Caption = 'Append configuration file name to title text'
         TabOrder = 6
       end
@@ -2178,10 +2195,10 @@ object SetupForm: TSetupForm
       end
       object EnableRemoteSendCheckBox: TCheckBox
         Left = 16
-        Height = 19
+        Height = 17
         Hint = 'You can make this smartie send screens to another smartie instance to show on its screen. Use the $Sender variable in the misc. tab on the remote smartie'
         Top = 40
-        Width = 208
+        Width = 206
         Caption = 'Listen for incoming Smartie connections'
         ParentShowHint = False
         ShowHint = True
@@ -2209,10 +2226,10 @@ object SetupForm: TSetupForm
       end
       object RemoteSendUseSSLCheckBox: TCheckBox
         Left = 32
-        Height = 19
+        Height = 17
         Hint = 'Encrypt screen data sent by smartie'
         Top = 176
-        Width = 58
+        Width = 56
         Caption = 'Use SSL'
         OnClick = RemoteSendUseSSLCheckBoxClick
         ParentShowHint = False
@@ -2466,6 +2483,7 @@ object SetupForm: TSetupForm
         Width = 281
         ClientHeight = 110
         ClientWidth = 277
+        ParentBackground = False
         TabOrder = 1
         object Label46: TLabel
           Left = 32
@@ -2487,9 +2505,9 @@ object SetupForm: TSetupForm
         end
         object MiCopyToNewRadioButton: TRadioButton
           Left = 32
-          Height = 19
+          Height = 17
           Top = 8
-          Width = 231
+          Width = 229
           Caption = 'Use current config (will rename to config.ini)'
           Checked = True
           TabOrder = 1
@@ -2497,9 +2515,9 @@ object SetupForm: TSetupForm
         end
         object RadioButton2: TRadioButton
           Left = 32
-          Height = 19
+          Height = 17
           Top = 32
-          Width = 135
+          Width = 133
           Caption = 'Use a new empty config'
           TabOrder = 2
         end
@@ -2542,6 +2560,7 @@ object SetupForm: TSetupForm
         Caption = 'Value storage'
         ClientHeight = 329
         ClientWidth = 292
+        ParentBackground = False
         TabOrder = 0
         object StorageStringGrid: TStringGrid
           Left = 2
@@ -3068,10 +3087,10 @@ object SetupForm: TSetupForm
       end
       object BOINCEnableCheckBox: TCheckBox
         Left = 0
-        Height = 19
+        Height = 17
         Hint = 'it can be disabled so it''s not sending requests for no reason'
-        Top = 377
-        Width = 52
+        Top = 379
+        Width = 50
         Anchors = [akLeft, akBottom]
         Caption = 'Enable'
         OnClick = BOINCEnableCheckBoxClick
@@ -3213,10 +3232,10 @@ object SetupForm: TSetupForm
       end
       object FoldEnableCheckBox: TCheckBox
         Left = 0
-        Height = 19
+        Height = 17
         Hint = 'This can be disabled so it''s not sending requests for no reason'
-        Top = 323
-        Width = 52
+        Top = 325
+        Width = 50
         Anchors = [akLeft, akBottom]
         Caption = 'Enable'
         OnClick = FoldEnableCheckBoxClick
@@ -3361,27 +3380,27 @@ object SetupForm: TSetupForm
       end
       object EmailLastSubjectRadioButton: TRadioButton
         Left = 64
-        Height = 19
+        Height = 17
         Top = 200
-        Width = 78
+        Width = 76
         Caption = 'Last subject'
         OnClick = EmailAccountComboBoxChange
         TabOrder = 6
       end
       object EmailLastFromRadioButton: TRadioButton
         Left = 64
-        Height = 19
+        Height = 17
         Top = 224
-        Width = 65
+        Width = 63
         Caption = 'Last from'
         OnClick = EmailAccountComboBoxChange
         TabOrder = 7
       end
       object EmailMessageCountRadioButton: TRadioButton
         Left = 64
-        Height = 19
+        Height = 17
         Top = 176
-        Width = 92
+        Width = 90
         Caption = 'Message count'
         OnClick = EmailAccountComboBoxChange
         TabOrder = 8
@@ -3588,7 +3607,7 @@ object SetupForm: TSetupForm
         OnDblClick = InsertButtonClick
         OnKeyUp = ListBoxKeyUp
         ParentShowHint = False
-        ScrollWidth = 300
+        ScrollWidth = 500
         ShowHint = True
         TabOrder = 2
       end
@@ -3605,8 +3624,9 @@ object SetupForm: TSetupForm
         Left = 80
         Height = 13
         Top = 328
-        Width = 18
+        Width = 130
         Anchors = [akLeft, akBottom]
+        AutoSize = False
         Caption = 'N/A'
         ParentColor = False
       end
@@ -3623,8 +3643,9 @@ object SetupForm: TSetupForm
         Left = 80
         Height = 13
         Top = 344
-        Width = 18
+        Width = 128
         Anchors = [akLeft, akBottom]
+        AutoSize = False
         Caption = 'N/A'
         ParentColor = False
       end
@@ -3662,324 +3683,325 @@ object SetupForm: TSetupForm
         Width = 105
         ClientHeight = 145
         ClientWidth = 105
+        ParentBackground = False
         TabOrder = 0
         object CCharCheckBox1: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 8
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 0
         end
         object CCharCheckBox2: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 8
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 1
         end
         object CCharCheckBox3: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 8
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 2
         end
         object CCharCheckBox4: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 8
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 3
         end
         object CCharCheckBox5: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 8
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 4
         end
         object CCharCheckBox6: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 24
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 5
         end
         object CCharCheckBox7: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 24
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 6
         end
         object CCharCheckBox8: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 24
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 7
         end
         object CCharCheckBox9: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 24
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 8
         end
         object CCharCheckBox10: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 24
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 9
         end
         object CCharCheckBox11: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 40
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 10
         end
         object CCharCheckBox12: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 40
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 11
         end
         object CCharCheckBox13: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 40
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 12
         end
         object CCharCheckBox14: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 40
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 13
         end
         object CCharCheckBox15: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 40
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 14
         end
         object CCharCheckBox16: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 56
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 15
         end
         object CCharCheckBox17: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 56
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 16
         end
         object CCharCheckBox18: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 56
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 17
         end
         object CCharCheckBox19: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 56
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 18
         end
         object CCharCheckBox20: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 56
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 19
         end
         object CCharCheckBox21: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 72
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 20
         end
         object CCharCheckBox22: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 72
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 21
         end
         object CCharCheckBox23: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 72
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 22
         end
         object CCharCheckBox24: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 72
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 23
         end
         object CCharCheckBox25: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 72
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 24
         end
         object CCharCheckBox26: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 88
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 25
         end
         object CCharCheckBox27: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 88
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 26
         end
         object CCharCheckBox28: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 88
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 27
         end
         object CCharCheckBox29: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 88
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 28
         end
         object CCharCheckBox30: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 88
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 29
         end
         object CCharCheckBox31: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 104
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 30
         end
         object CCharCheckBox32: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 104
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 31
         end
         object CCharCheckBox33: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 104
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 32
         end
         object CCharCheckBox34: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 104
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 33
         end
         object CCharCheckBox35: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 104
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 34
         end
         object CCharCheckBox36: TCheckBox
           Left = 16
-          Height = 19
+          Height = 17
           Top = 120
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 35
         end
         object CCharCheckBox37: TCheckBox
           Left = 32
-          Height = 19
+          Height = 17
           Top = 120
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 36
         end
         object CCharCheckBox38: TCheckBox
           Left = 48
-          Height = 19
+          Height = 17
           Top = 120
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 37
         end
         object CCharCheckBox39: TCheckBox
           Left = 64
-          Height = 19
+          Height = 17
           Top = 120
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 38
         end
         object CCharCheckBox40: TCheckBox
           Left = 80
-          Height = 19
+          Height = 17
           Top = 120
-          Width = 20
+          Width = 18
           OnClick = CCharEditGridChange
           TabOrder = 39
         end
@@ -4002,9 +4024,9 @@ object SetupForm: TSetupForm
       end
       object CreateCCharRadioButton: TRadioButton
         Left = 8
-        Height = 19
+        Height = 17
         Top = 8
-        Width = 20
+        Width = 18
         Checked = True
         OnClick = CCharEditGridChange
         TabOrder = 2
@@ -4012,9 +4034,9 @@ object SetupForm: TSetupForm
       end
       object UseCCharRadioButton2: TRadioButton
         Left = 8
-        Height = 19
+        Height = 17
         Top = 200
-        Width = 20
+        Width = 18
         OnClick = CCharEditGridChange
         TabOrder = 3
       end
@@ -4336,7 +4358,7 @@ object SetupForm: TSetupForm
     ShowHint = True
     TabStop = False
     TabOrder = 1
-    Text = '[Variable]'
+    Text = ' Variable:'
   end
   object BacklightBitBtn: TBitBtn
     Left = 268

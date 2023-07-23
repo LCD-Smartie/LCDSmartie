@@ -1,5 +1,7 @@
 library demo;
 
+{$MODE Delphi}
+
 { Important note about DLL memory management: ShareMem must be the
   first unit in your library's USES clause AND your project's (select
   Project-View Source) USES clause if your DLL exports any procedures or
@@ -13,8 +15,6 @@ library demo;
 uses
   SysUtils,
   Classes;
-
-{$R *.res}
 
 // Smartie will call this when the plugin is 1st loaded
 // This function is optional
@@ -176,7 +176,7 @@ begin
 end;
 
 Function function9(param1:pchar;param2:pchar):pchar; stdcall;
-// this one replaces the blocks( ž ) and the underscores ( _ ) from the bars
+// this one replaces the blocks( â–ˆ ) and the underscores ( _ ) from the bars
 // to custom chars (defined as the first char of param2 and the second char)
 var
   regel:String;
@@ -184,7 +184,7 @@ begin
   try
 
     regel:=param1;
-    regel:=StringReplace(regel,'ž',param2[0],[rfReplaceAll]);
+    regel:=StringReplace(regel,chr(255),param2[0],[rfReplaceAll]);
     regel:=StringReplace(regel,'_',param2[1],[rfReplaceAll]);
     result:=pchar(regel);
 

@@ -24,7 +24,7 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="4"/>
-      <BuildNr Value="28"/>
+      <BuildNr Value="29"/>
       <CharSet Value="04B0"/>
     </VersionInfo>
     <BuildModes Count="3">
@@ -135,7 +135,7 @@
           </CodeGeneration>
           <Linking>
             <Debugging>
-              <DebugInfoType Value="dsDwarf2Set"/>
+              <DebugInfoType Value="dsDwarf3"/>
               <TrashVariables Value="True"/>
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
@@ -372,7 +372,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="6">
       <Item1>
         <Name Value="EIdHTTPProtocolException"/>
       </Item1>
@@ -382,6 +382,15 @@
       <Item3>
         <Name Value="EIdConnClosedGracefully"/>
       </Item3>
+      <Item4>
+        <Name Value="Exception"/>
+      </Item4>
+      <Item5>
+        <Name Value="EConvertError"/>
+      </Item5>
+      <Item6>
+        <Name Value="EListError"/>
+      </Item6>
     </Exceptions>
   </Debugging>
 </CONFIG>

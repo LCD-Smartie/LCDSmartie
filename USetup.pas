@@ -30,10 +30,10 @@ uses
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
   ExtDlgs, CheckLst, Menus, SpinEx, RTTICtrls, Process, FileUtil,
-  Windows, Types, UConfig, UEditLine;
+  Windows, Types, UConfig, UEditLine, LazFileUtils;
 
 const
-  NoVariable = 'Variable: ';
+  NoVariable = 'Variable:';
   PERF_DETAIL_WIZARD = $400;
   PDH_MORE_DATA  = $FFFFFFFF800007D2;
 
@@ -741,12 +741,12 @@ procedure TSetupForm.BacklightBitBtnClick(Sender: TObject);
 begin
   if LCDSmartieDisplayForm.Backlight then
   begin
-    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off';
+    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'On';
     LCDSmartieDisplayForm.backlit();
   end
   else
   begin
-    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'On';
+    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off';
     LCDSmartieDisplayForm.backlit();
   end;
 end;
@@ -1180,9 +1180,11 @@ begin
     StorageStringGrid.Cells[0,i+1] := inttostr(i);
 
   if LCDSmartieDisplayForm.Backlight then
-    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'On'
-  else
     BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off'
+  else
+    BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'On';
+
+  VariableEdit.Text := NoVariable;
 end;
 
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
@@ -1942,7 +1944,7 @@ begin
   MiStartupItemsCheckListBox.Clear;
   for i := 0 to Items.Count - 1 do
   begin
-    MiStartupItemsCheckListBox.AddItem(ExtractFileNameWithoutExt(
+    MiStartupItemsCheckListBox.AddItem(ExtractFileNameOnly(
       ExtractFileName(Items[i])), nil);
   end;
   Items.Free;
@@ -2878,36 +2880,58 @@ begin
   PluginListBox.Refresh;
 end;
 
-// We're gonna need to update DotNetBridge too
 procedure TSetupForm.PluginListBoxClick(Sender: TObject);
-type
-  TinfoProc = function(param1: PChar): Pchar; stdcall;
-  TdemoProc = function(param1: integer): Pchar; stdcall;
 var
-  PluginName: string;
-  Reply: string;
-  loop : integer;
-  maxdemolines: integer;
+  PluginName, Reply, TextFileName, tfcLine: string;
+  GotInfo, GotDemo: boolean;
+  TextFileContent: TStrings;
+  loop, i, maxdemolines, indexStart, indexEnd, p: integer;
+  InfoList: TStringList;
 begin
+  VariableEdit.Text := NoVariable;
   // make this a const
   maxdemolines := 200;
+  GotInfo := false;
+  GotDemo := false;
+  PluginName := ExtractFileName(PluginListBox.FileName);
+  PluginDemoListBox.Clear;
+  LCDSmartieDisplayForm.Data.FindPlugin(PluginName);
   PluginDeveloperLabel.Caption := 'N/A';
   PluginVersionLabel.Caption := 'N/A';
 
-  // lets have some fun
-  PluginName := ExtractFileName(PluginListBox.FileName);
-  PluginDemoListBox.Clear;
-
-  // Should cause plugin to be loaded
-  LCDSmartieDisplayForm.Data.FindPlugin(PluginName);
-
   try
-    PluginDeveloperLabel.Caption := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName, pchar('developer'));
-    PluginVersionLabel.Caption := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName, pchar('version'));
+    reply := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName);
+
+    if not (reply = '') then begin
+      InfoList := TStringList.Create;
+      InfoList.AddDelimitedText(reply, #10, true);
+
+      for i := 0 to InfoList.Count - 1 do begin
+        tfcLine := lowercase(InfoList[i]);
+        p := pos('dev', tfcLine);
+        if p > 0 then begin
+          p := pos(':', tfcLine);
+          reply := copy(InfoList[i], p+1, length(InfoList[i]) - p + 1);
+          if reply[1] = ' ' then
+            delete(reply, 1, 1);
+          PluginDeveloperLabel.Caption := reply;
+        end;
+        p := pos('ver', tfcLine);
+        if p > 0 then begin
+          p := pos(':', tfcLine);
+          reply := copy(InfoList[i], p+1, length(InfoList[i]) - p + 1);
+          if reply[1] = ' ' then
+            delete(reply, 1, 1);
+          PluginVersionLabel.Caption := reply;
+        end;
+      end;
+      GotInfo := true;
+    end;
+
+    //PluginVersionLabel.Caption := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName, pchar('version'));
   except
-      //on E: Exception do
-      //    raise Exception.Create('Plugin '+sDllName+' had an exception during Init: '
-      //      + E.Message);
+      on E: Exception do
+          showmessage('Plugin '+PluginName+ E.Message);
   end;
 
   try
@@ -2928,13 +2952,63 @@ begin
     // in pascal you could add strings to a tstringlist then dump each string
     // pretty much the same with c# list<string>
     // I suppose something similar could be done with arrays in c and c++
-    for loop := 0 to maxdemolines do
-    begin
-      reply := LCDSmartieDisplayForm.Data.GetPluginDemos(PluginName, loop);
-      if reply = '' then break;
-      PluginDemoListBox.Items.Add(reply);
-    end;
+
+      reply := LCDSmartieDisplayForm.Data.GetPluginDemos(PluginName);
+      if not (reply = '') then begin
+        PluginDemoListBox.Items.AddDelimitedText(reply,#10,true);
+        GotDemo := true;
+      end;
   except
+      on E: Exception do
+          showmessage('Plugin '+PluginName+ E.Message);
+  end;
+
+  if (GotInfo = false) and (GotDemo = false) then
+  begin
+    // we can try reading the info and demos from a .txt file
+    TextFileName := 'plugins\'+ExtractFileNameOnly(PluginName)+'.txt';
+    if FileExists(TextFileName, false) then
+    begin
+      TextFileContent := TStringlist.Create;
+      TextFileContent.LoadFromFile(TextFileName);
+      indexStart := TextFileContent.IndexOf('[[INFO]]');
+      indexEnd := TextFileContent.IndexOf('[[END]]', indexStart);
+
+      if not ((indexEnd < 0) or (indexStart < 0) or ( indexEnd < indexStart)) then
+      begin
+        for i := indexStart+1 to  indexEnd - 1 do
+        begin
+          tfcLine := lowercase(TextFileContent[i]);
+          p := pos('dev', tfcLine);
+          if p > 0 then begin
+            p := pos(':', tfcLine);
+            reply := copy(TextFileContent[i], p+1, length(TextFileContent[i]) - p + 1);
+            if reply[1] = ' ' then
+               delete(reply, 1, 1);
+            PluginDeveloperLabel.Caption := reply;
+          end;
+          p := pos('ver', tfcLine);
+          if p > 0 then begin
+            p := pos(':', tfcLine);
+            reply := copy(TextFileContent[i], p+1, length(TextFileContent[i]) - p + 1);
+            if reply[1] = ' ' then
+              delete(reply, 1, 1);
+            PluginVersionLabel.Caption := reply;
+          end;
+        end;
+      end;
+
+      indexStart := TextFileContent.IndexOf('[[DEMO]]', 0);
+      indexEnd := TextFileContent.IndexOf('[[END]]', indexStart);
+      if not ((indexEnd < 0) or (indexStart < 0) or ( indexEnd < indexStart)) then
+      begin
+        for i := indexStart+1 to indexEnd - 1 do
+        begin
+          PluginDemoListBox.Items.Add(TextFileContent[i]);
+        end;
+      end;
+      TextFileContent.Free;
+    end;
   end;
 end;
 

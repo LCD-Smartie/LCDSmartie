@@ -175,20 +175,21 @@ extern "C"
 		return buffer;
 	}
 
-	__declspec(dllexport) char* __stdcall BridgeInfoFunc(int iBridgeId, const char* InfoType)
+	__declspec(dllexport) char* __stdcall BridgeInfoFunc(int iBridgeId)
 	{
 		plugin^ current = globals::plugins[iBridgeId - 1];
 		if (!current->InfoFunc)
 			return "";
 
-		String^ managed_param1 = gcnew String(InfoType);
-		array<String^>^ args = gcnew array<String^>(1);
-		args[0] = managed_param1;
+		array <Object^>^ noargs = gcnew array<Object^>(0);
 		String^ result = gcnew String("");
 
-		result = reinterpret_cast<String^>(current->InfoFunc->Invoke(current->myObject, args));
+		result = reinterpret_cast<String^>(current->InfoFunc->Invoke(current->myObject, noargs));
 
-		static char buffer[1024];
+		if (result->Length >= 1024 * 8)
+			result = "DNBridge buffer too small for data";
+
+		static char buffer[1024*8];
 		buffer[0] = 0;
 		if (result != "")
 		{
@@ -198,19 +199,21 @@ extern "C"
 		return buffer;
 	}
 
-	__declspec(dllexport) char* __stdcall BridgeDemoFunc(int iBridgeId, int DemoNum)
+	__declspec(dllexport) char* __stdcall BridgeDemoFunc(int iBridgeId)
 	{
 		plugin^ current = globals::plugins[iBridgeId - 1];
 		if (!current->DemoFunc)
 			return "";
 
-		array<int^>^ args = gcnew array<int^>(1);
-		args[0] = DemoNum;
+		array <Object^>^ noargs = gcnew array<Object^>(0);
 		String^ result = gcnew String("");
 
-		result = reinterpret_cast<String^>(current->DemoFunc->Invoke(current->myObject, args));
+		result = reinterpret_cast<String^>(current->DemoFunc->Invoke(current->myObject, noargs));
 
-		static char buffer[1024];
+		if (result->Length >= 1024 * 8)
+			result = "DNBridge buffer too small for data";
+
+		static char buffer[1024*8];
 		buffer[0] = 0;
 		if (result != "")
 		{

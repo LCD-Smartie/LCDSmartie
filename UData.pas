@@ -40,11 +40,11 @@ const
 type
   TMyProc = function(param1: pchar; param2: pchar): Pchar; stdcall;
   TFiniProc = procedure(); stdcall;
-  TinfoProc = function(InfoType: PChar): Pchar; stdcall;
-  TdemoProc = function(DemoNum: integer): Pchar; stdcall;
+  TinfoProc = function(): Pchar; stdcall;
+  TdemoProc = function(): Pchar; stdcall;
   TBridgeProc = function(iBridgeId: Integer; iFunc: Integer; param1: pchar; param2: pchar): Pchar; stdcall;
-  TBridgeInfoProc = function(iBridgeId: Integer; InfoType: PChar): Pchar; stdcall;
-  TBridgeDemoProc = function(iBridgeId: Integer; DemoNum: integer): Pchar; stdcall;
+  TBridgeInfoProc = function(iBridgeId: Integer): Pchar; stdcall;
+  TBridgeDemoProc = function(iBridgeId: Integer): Pchar; stdcall;
   {$IF Defined(CPUX64)}
   TSharedMem=record
     LibraryID: Integer;
@@ -118,8 +118,8 @@ type
     function CallPlugin(uiDll: Integer; iFunc: Integer;
                     const sParam1: String; const sParam2:String) : String;
     function FindPlugin(const sDllName: String): Cardinal;
-    function GetPluginInfo(dllName: string; InfoType: string) : String;
-    function GetPluginDemos(dllName: string; DemoNum: integer) : String;
+    function GetPluginInfo(dllName: string) : String;
+    function GetPluginDemos(dllName: string) : String;
     constructor Create;
     destructor Destroy; override;
     function CanExit: Boolean;
@@ -404,7 +404,15 @@ begin
   fmt := DefaultFormatSettings;
   fmt.DecimalSeparator := '.';
 
-  if (pos('$ScreenReso', line) <> 0) then begin
+  while decodeArgs(line, '$ScreenReso', maxArgs, args, prefix, postfix, numargs) do begin
+    screenResolution := IntToStr(Screen.Monitors[strtoint(args[1])].Width) + 'x' +
+      IntToStr(Screen.Monitors[strtoint(args[1])].Height);
+
+    line := prefix + screenResolution  + postfix;
+  end;
+
+  if (pos('$ScreenReso', line) <> 0) then
+  begin
     screenResolution := IntToStr(Screen.DesktopWidth) + 'x' +
       IntToStr(Screen.DesktopHeight);
 
@@ -1140,10 +1148,10 @@ begin
       @dlls[uiDll].BridgeFunc := getprocaddress(dlls[uiDll].hDll,
         PChar('_BridgeFunc@16'));
       @dlls[uiDll].BridgeInfoFunc := getprocaddress(dlls[uiDll].hDll,
-        PChar('_BridgeInfoFunc@8'));
+        PChar('_BridgeInfoFunc@4'));
       le := GetLastError;
       @dlls[uiDll].BridgeDemoFunc := getprocaddress(dlls[uiDll].hDll,
-        PChar('_BridgeDemoFunc@8'));
+        PChar('_BridgeDemoFunc@4'));
       {$ELSEIF Defined(CPUX64)}
       @dlls[uiDll].BridgeFunc := getprocaddress(dlls[uiDll].hDll,
         PChar('BridgeFunc'));
@@ -1201,7 +1209,7 @@ begin
     raise Exception.Create('LoadLibrary failed with ' + ErrMsg(GetLastError));
 end;
 
-function TData.GetPluginInfo(dllName: string; InfoType: string) : String;
+function TData.GetPluginInfo(dllName: string) : String;
 var
   {$IF Defined(CPUX64)}
   waitresult: integer;
@@ -1216,14 +1224,20 @@ begin
   begin
     LegacySharedMem^.LibraryID := dlls[uiPlugin].iBridgeId;
     LegacySharedMem^.LibraryFunc := infoFuncId;
-    LegacySharedMem^.LibraryParam1 := InfoType;
+    //LegacySharedMem^.LibraryParam1 := InfoType;
     setevent(hLegacyCallFunctionEvent);
     waitresult := WaitForSingleObject(hLegacyRecvEvent,4000);
     if (waitresult = WAIT_TIMEOUT) then
-      result := ''
+      raise Exception.Create('Plugin '+dllName+' exception Legacy Loader timed out')
     else
     begin
+      try
       result := strpas(@LegacySharedMem.LibraryResult[1]);
+      except
+        on E: Exception do
+          raise Exception.Create('Plugin '+dllName+' Legacy Loader had an exception fetching info: '
+            + E.Message);
+      end;
     end;
   end
   else
@@ -1232,20 +1246,30 @@ begin
   begin
     if (@dlls[uiPlugin].bridgeFunc = nil) then
       Exit;
-
-    R := dlls[uiPlugin].bridgeInfoFunc( dlls[uiPlugin].iBridgeId, pchar(InfoType));
-    if length(R) > 0 then
-      result := R;
-
+    try
+      R := dlls[uiPlugin].bridgeInfoFunc( dlls[uiPlugin].iBridgeId);
+      if length(R) > 0 then
+        result := R;
+    except
+      on E: Exception do
+      raise Exception.Create('Plugin '+dllName+' DNBridge had an exception fetching info: '
+            + E.Message);
+    end;
   end
   else
   if (Assigned(dlls[uiPlugin].infoFunc)) then
   begin
-    result := dlls[uiPlugin].infoFunc(pchar(InfoType));
+    try
+      result := dlls[uiPlugin].infoFunc;
+    except
+      on E: Exception do
+          raise Exception.Create('Plugin '+dllName+' had an exception fetching info: '
+            + E.Message);
+    end;
   end;
 end;
 
-function TData.GetPluginDemos(dllName: string; DemoNum: integer) : String;
+function TData.GetPluginDemos(dllName: string) : String;
 var
   {$IF Defined(CPUX64)}
   waitresult: integer;
@@ -1260,14 +1284,20 @@ begin
   begin
     LegacySharedMem^.LibraryID := dlls[uiPlugin].iBridgeId;
     LegacySharedMem^.LibraryFunc := demoFuncId;
-    LegacySharedMem^.LibraryParam1 := inttostr(DemoNum);
+    //LegacySharedMem^.LibraryParam1 := inttostr(DemoNum);
     setevent(hLegacyCallFunctionEvent);
     waitresult := WaitForSingleObject(hLegacyRecvEvent,4000);
     if (waitresult = WAIT_TIMEOUT) then
-      result := ''
+      raise Exception.Create('Plugin '+dllName+' exception Legacy Loader timed out')
     else
     begin
+      try
       result := strpas(@LegacySharedMem.LibraryResult[1]);
+      except
+        on E: Exception do
+          raise Exception.Create('Plugin '+dllName+' Legacy Loader had an exception fetching demos: '
+            + E.Message);
+      end;
     end;
   end
   else
@@ -1277,15 +1307,28 @@ begin
     if (@dlls[uiPlugin].bridgeFunc = nil) then
       Exit;
 
-    R := dlls[uiPlugin].bridgeDemoFunc(dlls[uiPlugin].iBridgeId, DemoNum);
-    if length(R) > 0 then
+    try
+      R := dlls[uiPlugin].bridgeDemoFunc(dlls[uiPlugin].iBridgeId);
+      if length(R) > 0 then
       result := R;
+    except
+      on E: Exception do
+          raise Exception.Create('Plugin '+dllName+' DNBridge had an exception fetching demos: '
+            + E.Message);
+    end;
+
 
   end
   else
   if (Assigned(dlls[uiPlugin].demoFunc)) then
   begin
-    result := dlls[uiPlugin].demoFunc(DemoNum);
+    try
+      result := dlls[uiPlugin].demoFunc;
+    except
+      on E: Exception do
+          raise Exception.Create('Plugin '+dllName+' had an exception fetching demos: '
+            + E.Message);
+    end;
   end;
 end;
 

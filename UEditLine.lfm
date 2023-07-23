@@ -1,7 +1,7 @@
 object FormEdit: TFormEdit
-  Left = 1199
+  Left = 1202
   Height = 177
-  Top = 204
+  Top = 207
   Width = 366
   BorderIcons = []
   BorderStyle = bsSizeToolWin
@@ -12,7 +12,7 @@ object FormEdit: TFormEdit
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
-  LCLVersion = '2.2.6.0'
+  LCLVersion = '3.0.0.1'
   object Memo1: TMemo
     Left = 0
     Height = 141

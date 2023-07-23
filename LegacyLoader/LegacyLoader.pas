@@ -21,8 +21,8 @@ type
   end;
 
   TFunctionProc = function(param1: pchar; param2: pchar): Pchar; stdcall;
-  TinfoProc = function(InfoType: PChar): Pchar; stdcall;
-  TdemoProc = function(DemoNum: integer): Pchar; stdcall;
+  TinfoProc = function(): Pchar; stdcall;
+  TdemoProc = function(): Pchar; stdcall;
   TFiniProc = procedure(); stdcall;
 
   TDll = Record
@@ -231,7 +231,7 @@ begin
   begin
     if assigned(dlls[ID].infoFunc) then
       try
-        LegacySharedMem^.LibraryResult := strpas(dlls[ID].infoFunc(pchar(sParam1)))
+        LegacySharedMem^.LibraryResult := strpas(dlls[ID].infoFunc)
       except
       on E: Exception do
         raise Exception.Create('Plugin '+dlls[ID].sName+' had an exception during closedown: '
@@ -244,7 +244,7 @@ begin
   begin
     if assigned(dlls[ID].demoFunc) then
       try
-        LegacySharedMem^.LibraryResult := strpas(dlls[ID].demoFunc(strtoint(pchar(sParam1))));
+        LegacySharedMem^.LibraryResult := strpas(dlls[ID].demoFunc);
       except
         on E: Exception do
           raise Exception.Create('Plugin '+dlls[ID].sName+' had an exception during closedown: '

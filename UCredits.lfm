@@ -1,7 +1,7 @@
 object CreditsForm: TCreditsForm
-  Left = 591
+  Left = 594
   Height = 345
-  Top = 279
+  Top = 282
   Width = 285
   BorderIcons = []
   BorderStyle = bsNone
@@ -16,7 +16,7 @@ object CreditsForm: TCreditsForm
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.2.6.0'
+  LCLVersion = '3.0.0.1'
   object RootPanel: TPanel
     Left = 0
     Height = 345
@@ -26,6 +26,7 @@ object CreditsForm: TCreditsForm
     BevelInner = bvRaised
     ClientHeight = 345
     ClientWidth = 285
+    ParentBackground = False
     TabOrder = 0
     OnClick = CloseClick
     object OrigLabel: TLabel
@@ -769,6 +770,7 @@ object CreditsForm: TCreditsForm
       Width = 253
       ClientHeight = 93
       ClientWidth = 253
+      ParentBackground = False
       TabOrder = 0
       object CreditPaintBox: TPaintBox
         Left = 1

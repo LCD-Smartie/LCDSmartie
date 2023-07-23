@@ -3,7 +3,7 @@ library testdll;
 {$MODE Delphi}
 
 uses
-  Windows, SysUtils, Classes, Wininet;
+  SysUtils, Classes;
 
 var
   demolist: TStringList;
@@ -44,34 +44,17 @@ result := pchar(inttostr(strtoint(param1) + strtoint(param2)));
 
 end;
 
-function SmartieInfo(param1:pchar):pchar; stdcall;
+function SmartieInfo():pchar; stdcall;
 begin
-  case (Param1[0]) of
-    'd': result := PChar('Stokie-Ant');
-    'v': result := PChar('1.0');
-  end;
-
-
+  result := PChar('Developer:Stokie-Ant'+#13#10+'Version:1.0');
 end;
 
-function SmartieDemo(param1:integer):pchar; stdcall;
-var
-  S: String;
+function SmartieDemo():pchar; stdcall;
 begin
   // many ways this can be done. Get creative
-  // Using case statement
-  {case (param1) of
-       0: S := 'Title';
-       1: S := 'Funtion title';
-       2: S := 'func 1 does this $dll(dll,1,2,3)';
-       3: S := 'and so on...';
-       4: S := ''; // empty string marks the end
-  end;
-  result := PChar(S);}
-
   // Using a TStringList
   if assigned(demolist) then
-    result := pchar(demolist.Strings[param1]);
+    result := pchar(demolist.Text);
 end;
 
 // don't forget to export the funtions, else nothing works :)

@@ -1,7 +1,7 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 498
+  Left = 501
   Height = 91
-  Top = 150
+  Top = 153
   Width = 240
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
@@ -26,7 +26,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
   ParentDoubleBuffered = False
   Position = poDefault
   ShowInTaskBar = stNever
-  LCLVersion = '2.2.6.0'
+  LCLVersion = '3.0.0.1'
   Scaled = False
   object BarLeftImage: TImage
     Left = 0
@@ -119,6 +119,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Font.Color = clWhite
     Font.Height = -11
     Font.Name = 'Tahoma'
+    ParentBackground = False
     ParentColor = False
     ParentDoubleBuffered = False
     ParentFont = False

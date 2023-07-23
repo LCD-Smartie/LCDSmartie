@@ -43,7 +43,7 @@ var
   contexts: Array[1..MaxConnections] of TIdContext;
   CustomChars: TCustomChars;
   SzX,SzY: byte;
-  CurrentX: byte;
+  //CurrentX: byte;
   CurrentY: byte;
   FrameBuffer : array[1..MaxWidth*MaxHeight] of byte;
 /////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ procedure DISPLAYDLL_SetPosition(X, Y: byte); stdcall;
 var
   loop: integer;
 begin
-  CurrentX := X;
+  //CurrentX := X;
   CurrentY := Y;
   try
     for loop := 1 to MaxConnections do
@@ -199,7 +199,6 @@ end;
 function DISPLAYDLL_ReadKey : word; stdcall;
 // return 00xx upon success, FF00 on fail
 var
-  B : byte;
   loop: integer;
 begin
   Result := $FF00;
@@ -221,10 +220,10 @@ function DISPLAYDLL_Init(SizeX,SizeY : byte; StartupParameters : pchar; OK : pbo
 begin
   OK^ := true;
   Result := PChar(DLLProjectName + ' ' + Version + #0);
-  //try
+  try
     RemoteServer.InitDisplay(SizeX, SizeY);
-  //except
-  //end;
+  except
+  end;
 end;
 
 procedure DISPLAYDLL_Done(); stdcall;
@@ -244,12 +243,12 @@ end;
 
 function DISPLAYDLL_DefaultParameters : pchar; stdcall;
 begin
-  DISPLAYDLL_DefaultParameters := pchar('COM1,9600,8,N,1' + #0);
+  DISPLAYDLL_DefaultParameters := pchar('0.0.0.0' + #0);
 end;
 
 function DISPLAYDLL_Usage : pchar; stdcall;
 begin
-  Result := pchar('Usage: COM1,9600,8,N,1' + #0);
+  Result := pchar('Usage: listen ip address(TBD)' + #0);
 end;
 
 function DISPLAYDLL_DriverName : pchar; stdcall;
