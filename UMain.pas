@@ -1680,6 +1680,10 @@ end;
 
 
 procedure TLCDSmartieDisplayForm.ProcessAction(bDoAction: Boolean; sAction: String);
+const
+  APPCOMMAND_VOLUME_UP = $A0000;
+  APPCOMMAND_VOLUME_DOWN = $90000;
+  APPCOMMAND_VOLUME_MUTE = $80000;
 var
   temp1, temp2: String;
   iTemp: Integer;
@@ -1954,6 +1958,21 @@ begin
         on EConvertError do begin {ignore} end;
         else raise;
       end;
+    end;
+
+    if pos('SystemVolumeDown', sAction) <> 0 then
+    begin
+      SendMessage(Self.Handle, WM_APPCOMMAND, Self.Handle, APPCOMMAND_VOLUME_DOWN);
+    end;
+
+    if pos('SystemVolumeMute', sAction) <> 0 then
+    begin
+      SendMessage(Self.Handle, WM_APPCOMMAND, Self.Handle, APPCOMMAND_VOLUME_MUTE);
+    end;
+
+    if pos('SystemVolumeUp', sAction) <> 0 then
+    begin
+      SendMessage(Self.Handle, WM_APPCOMMAND, Self.Handle, APPCOMMAND_VOLUME_UP);
     end;
 
     if pos('Fan(', sAction) <> 0 then

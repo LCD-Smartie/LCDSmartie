@@ -22,7 +22,6 @@ unit USetup;
  *  $Source: /root/lcdsmartie-cvsbackup/lcdsmartie/USetup.pas,v $
  *  $Revision: 1.64 $ $Date: 2011/06/04 16:48:30 $
  *****************************************************************************}
-{.DEFINE VCORP}
 interface
 
 uses
@@ -145,6 +144,7 @@ type
     ShutdownEdit6: TMemo;
     ShutdownEdit7: TMemo;
     ShutdownEdit8: TMemo;
+    Splitter1: TSplitter;
     StickyCheckbox: TCheckBox;
     SwapWithScreenSpinEdit: TSpinEdit;
     ThemeNumberSpinEdit: TSpinEdit;
@@ -415,6 +415,7 @@ type
     WinampTabSheet: TTabSheet;
     procedure BacklightBitBtnClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure FormChangeBounds(Sender: TObject);
     procedure InfoTimerTimer(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
     procedure PerfCountersListBoxClick(Sender: TObject);
@@ -422,6 +423,8 @@ type
     procedure PluginDemoListBoxClick(Sender: TObject);
     procedure ListBoxKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure ScrollBox1Resize(Sender: TObject);
+    procedure Splitter1ChangeBounds(Sender: TObject);
     procedure VariableEditChange(Sender: TObject);
     procedure ActionsGridScrollBarScroll(Sender: TObject;
       ScrollCode: TScrollCode; var ScrollPos: Integer);
@@ -526,7 +529,6 @@ type
     ShutdownEditArray: Array[1..MaxLines] of TMemo;
     DLLPath: string;
     setupbutton: integer;
-    FormEditbutton: integer;
     shdownmessagebutton: integer;
     CurrentlyShownEmailAccount: integer;
     CurrentScreen: integer;
@@ -735,6 +737,19 @@ begin
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Instance := InstancesComboBox.Text;
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Format := FormatComboBox.ItemIndex;
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Scaling := ScalingComboBox.ItemIndex;
+end;
+
+
+// fix some silliness in the way controls are resized(or rather, not resized)
+procedure TSetupForm.FormChangeBounds(Sender: TObject);
+var
+  i: integer;
+begin
+  While MainPageControl.Width > width - MainPageControl.Left do
+    begin
+      i := width - (MainPageControl.Left + MainPageControl.Width);
+      Splitter1.MoveSplitter(i);
+    end;
 end;
 
 procedure TSetupForm.BacklightBitBtnClick(Sender: TObject);
@@ -947,8 +962,6 @@ nextpacket:
 end;
 
 procedure TSetupForm.LoadConfig(Sender: TObject);
-var
-  hConfig: longint;
 begin
   {$IFDEF STANDALONESETUP}
   if (ConfigFileName = '') or (not FileExists(ConfigFileName)) then
@@ -1190,7 +1203,7 @@ end;
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
   aCol, aRow: integer; var Editor: TWinControl);
 var
-  Items: array [0..29] of string = ('NextTheme', 'LastTheme',
+  Items: array [0..32] of string = ('NextTheme', 'LastTheme',
     'NextScreen', 'LastScreen', 'GotoTheme(2)',
     'GotoScreen(2)', 'FreezeScreen', 'UnfreezeScreen', 'ToggleFreeze',
     'Refresh all data', 'Backlight(0/1) (0=off 1=on)',
@@ -1201,7 +1214,8 @@ var
     'WinampShuffle (toggle)', 'WinampVolumeDown',
     'WinampVolumeUp', 'EnableScreen(1-20)',
     'DisableScreen(1-20)', '$dll(name.dll,2,param1,param2)',
-    'GPO(1-8,0/1) (0=off 1=on)', 'GPOToggle(1-8)',
+    'GPO(1-8,0/1) (0=off 1=on)', 'GPOToggle(1-8)', 'SystemVolumeDown',
+    'SystemVolumeMute', 'SystemVolumeUp',
     'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)');
 begin
   if aCol = 2 then
@@ -2120,7 +2134,6 @@ end;
 
 procedure TSetupForm.InsertButtonClick(Sender: TObject);
 var
-  b: boolean;
   tempint: integer;
   loop: integer;
 begin
@@ -2439,7 +2452,6 @@ end;
 
 procedure TSetupForm.ContinueLineCheckBoxClick(Sender: TObject);
 var
-  tempint1: integer;
   loop: integer;
 begin
   for loop := 1 to MaxLines do
@@ -2554,6 +2566,18 @@ procedure TSetupForm.ListBoxKeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
     InsertButtonClick(nil);
+end;
+
+procedure TSetupForm.ScrollBox1Resize(Sender: TObject);
+begin
+  ScrollBox1.Invalidate;
+end;
+
+procedure TSetupForm.Splitter1ChangeBounds(Sender: TObject);
+begin
+  if Splitter1.Left < LeftPageControl.Constraints.MinWidth then
+     Splitter1.Left := LeftPageControl.Width;
+  self.Update;
 end;
 
 // Apply pressed.
@@ -2885,12 +2909,10 @@ var
   PluginName, Reply, TextFileName, tfcLine: string;
   GotInfo, GotDemo: boolean;
   TextFileContent: TStrings;
-  loop, i, maxdemolines, indexStart, indexEnd, p: integer;
+  i, indexStart, indexEnd, p: integer;
   InfoList: TStringList;
 begin
   VariableEdit.Text := NoVariable;
-  // make this a const
-  maxdemolines := 200;
   GotInfo := false;
   GotDemo := false;
   PluginName := ExtractFileName(PluginListBox.FileName);

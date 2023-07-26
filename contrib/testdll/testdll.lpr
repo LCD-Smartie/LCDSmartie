@@ -17,7 +17,6 @@ begin
   demolist.Add('> Adds two numbers <');
   demolist.Add('2+3 $dll(testdll,1,2,3)');
   demolist.Add('5+7 $dll(testdll,1,5,7)');
-  demolist.Add(''); // empty string to mark the end
 end;
 
 // Smartie will call this just before the plugin is unloaded
