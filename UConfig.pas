@@ -27,7 +27,7 @@ unit UConfig;
 
 interface
 
-Uses  Windows,SysUtils;
+Uses  Windows, SysUtils, Classes;
 
 const
   sMyConfigFileFormatVersion = '1.0';
@@ -130,6 +130,11 @@ type
     Scaling: integer;
   end;
 
+  TRSSList = record
+    Names: TStringList;
+    Addresses: TStringList;
+  end;
+
   TConfig = class(TObject)
   private
     fScreenSize: Integer;
@@ -224,6 +229,7 @@ type
     RemoteSendUseSSL: boolean;
     ActionsTimer: integer;
     PerfSettings: Array[1..MaxPerfCounters] of TPerfSettings;
+    RSSList: TRSSList;
     function load: Boolean;
     procedure save;
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
@@ -245,6 +251,8 @@ begin
   sFileName := filename;
   xiMinFadeContrast := 0;
   GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, localeFormat);
+  RSSList.Names := TStringList.Create;
+  RSSList.Addresses := TStringList.Create;
   inherited Create();
 end;
 
@@ -287,7 +295,7 @@ var
   initfile: TINIFile;
   ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount, i: Integer;
 //  sConfigFileFormatVersion, sScreenTextSyntaxVersion: String;    // dont know why we read these as they're never used
-  sScreen, sLine, sPOPAccount, sGameLine: String;
+  sScreen, sLine, sPOPAccount, sGameLine, sRSS: String;
   iTemp: Integer;
 begin
 
@@ -539,6 +547,48 @@ begin
     PerfSettings[i].Scaling := initfile.ReadInteger('PerfSettings', 'Scaling'+Format('%.2u', [i], localeFormat), 0);
   end;
 
+  initfile.ReadSection('RSS', RSSList.Names);
+
+  if RSSList.Names.Count = 0 then
+  begin
+    RSSList.Names.Add('BBC World News');
+    RSSList.Names.Add('BBC UK News');
+    RSSList.Names.Add('Tweakers.net headlines (Dutch)');
+    RSSList.Names.Add('The Register headlines');
+    RSSList.Names.Add('Slashdot');
+    RSSList.Names.Add('Wired News');
+    RSSList.Names.Add('Latest LCD Smartie News');
+    RSSList.Names.Add('Latest PalmOrb News');
+    RSSList.Names.Add('BBC News business');
+    RSSList.Names.Add('The Washington Post business');
+    RSSList.Names.Add('Yahoo! entertainment');
+    RSSList.Names.Add('New York Times health');
+    RSSList.Names.Add('New York Times sports');
+    RSSList.Names.Add('Volkskrant economie (Dutch)');
+    RSSList.Names.Add('3voor12 (Dutch)');
+    RSSList.Names.Add('Algemeen Dagblad (Dutch)');
+
+    RSSList.Addresses.Add('https://news.bbc.co.uk/rss/newsonline_uk_edition/world/rss091.xml');
+    RSSList.Addresses.Add('https://news.bbc.co.uk/rss/newsonline_uk_edition/uk/rss091.xml');
+    RSSList.Addresses.Add('https://feeds.feedburner.com/tweakers/mixed');
+    RSSList.Addresses.Add('https://www.theregister.com/headlines.rss');
+    RSSList.Addresses.Add('http://rss.slashdot.org/Slashdot/slashdot');
+    RSSList.Addresses.Add('https://www.wired.com/feed/rss');
+    RSSList.Addresses.Add('https://sourceforge.net/p/lcdsmartie/news/feed');
+    RSSList.Addresses.Add('https://sourceforge.net/p/palmorb/news/feed');
+    RSSList.Addresses.Add('https://news.bbc.co.uk/rss/newsonline_world_edition/business/rss091.xml');
+    RSSList.Addresses.Add('https://www.washingtonpost.com/wp-srv/business/rssheadlines.xml');
+    RSSList.Addresses.Add('https://news.yahoo.com/rss/entertainment');
+    RSSList.Addresses.Add('https://www.nytimes.com/services/xml/rss/nyt/Health.xml');
+    RSSList.Addresses.Add('https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml');
+    RSSList.Addresses.Add('https://www.volkskrant.nl/economie/rss.xml');
+    RSSList.Addresses.Add('https://rs.vpro.nl/v3/api/feeds/3voor12/section/3voor12%20Landelijk');
+    RSSList.Addresses.Add('https://www.ad.nl/home/rss.xml');
+  end
+  else
+  for i := 0 to RSSList.Names.Count - 1 do
+    RSSList.Addresses.Add(initfile.ReadString('RSS', RSSList.Names[i], ''));
+
   result := true;
 
   initfile.Free;
@@ -770,6 +820,9 @@ begin
     initfile.WriteInteger('PerfSettings', 'Format'+Format('%.2u', [i], localeFormat), PerfSettings[i].Format);
     initfile.WriteInteger('PerfSettings', 'Scaling'+Format('%.2u', [i], localeFormat), PerfSettings[i].Scaling);
   end;
+
+  for i := 0 to RSSList.Names.Count - 1  do
+    initfile.WriteString('RSS', RSSList.Names[i], RSSList.Addresses[i]);
 
   initfile.UpdateFile;
   initfile.Free;

@@ -65,6 +65,9 @@ type
     AppendConfigNameCheckBox: TCheckBox;
     BacklightBitBtn: TBitBtn;
     BoincServerIndexComboBox: TComboBox;
+    AddRSSButton: TButton;
+    UpdateRSSButton: TButton;
+    DeleteRSSButton: TButton;
     CenterLine1CheckBox: TCheckBox;
     CenterLine5CheckBox: TCheckBox;
     CenterLine2CheckBox: TCheckBox;
@@ -92,6 +95,7 @@ type
     DontScrollLine7CheckBox: TCheckBox;
     DontScrollLine4CheckBox: TCheckBox;
     DontScrollLine8CheckBox: TCheckBox;
+    RSSNameEdit: TEdit;
     GroupBox11: TGroupBox;
     GroupBox12: TGroupBox;
     DontScrollGroupBox: TGroupBox;
@@ -109,6 +113,7 @@ type
     Label61: TLabel;
     Label62: TLabel;
     Label71: TLabel;
+    Label72: TLabel;
     Label74: TLabel;
     PluginVersionLabel: TLabel;
     Label73: TLabel;
@@ -342,7 +347,7 @@ type
     MultiInstancePageControl: TPageControl;
     MiCopyToNewRadioButton: TRadioButton;
     RadioButton2: TRadioButton;
-    RssTMemoEdit: TMemo;
+    RSSAddressTMemoEdit: TMemo;
     MiscListBox: TListBox;
     MiscTabSheet: TTabSheet;
     MoveToScreenButton: TButton;
@@ -413,8 +418,10 @@ type
     WinampLocationEdit: TEdit;
     WinampLocationLabel: TLabel;
     WinampTabSheet: TTabSheet;
+    procedure AddRSSButtonClick(Sender: TObject);
     procedure BacklightBitBtnClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure DeleteRSSButtonClick(Sender: TObject);
     procedure FormChangeBounds(Sender: TObject);
     procedure InfoTimerTimer(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
@@ -425,6 +432,7 @@ type
       Shift: TShiftState);
     procedure ScrollBox1Resize(Sender: TObject);
     procedure Splitter1ChangeBounds(Sender: TObject);
+    procedure UpdateRSSButtonClick(Sender: TObject);
     procedure VariableEditChange(Sender: TObject);
     procedure ActionsGridScrollBarScroll(Sender: TObject;
       ScrollCode: TScrollCode; var ScrollPos: Integer);
@@ -739,7 +747,6 @@ begin
   config.PerfSettings[PerfSettingsIndexComboBox.ItemIndex+1].Scaling := ScalingComboBox.ItemIndex;
 end;
 
-
 // fix some silliness in the way controls are resized(or rather, not resized)
 procedure TSetupForm.FormChangeBounds(Sender: TObject);
 var
@@ -763,6 +770,46 @@ begin
   begin
     BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off';
     LCDSmartieDisplayForm.backlit();
+  end;
+end;
+
+procedure TSetupForm.AddRSSButtonClick(Sender: TObject);
+var
+  i: integer;
+begin
+  if (length(RSSNameEdit.Text) > 0) and (length(RSSAddressTMemoEdit.Text) > 0) then
+  begin
+    for i := 0 to config.RSSList.Names.Count -1 do
+      if RSSNameEdit.Text = config.RSSList.Names[i] then
+      begin
+        showmessage('Choose a name that doesn''t already exist or use Update instead');
+        Exit;
+      end;
+
+    config.RSSList.Names.Add(RSSNameEdit.Text);
+    config.RSSList.Addresses.Add(RSSAddressTMemoEdit.Text);
+    InternetListBox.Items := config.RSSList.Names;
+
+  end;
+end;
+
+procedure TSetupForm.UpdateRSSButtonClick(Sender: TObject);
+begin
+  if (length(RSSNameEdit.Text) > 0) and (length(RSSAddressTMemoEdit.Text) > 0) and (InternetListBox.ItemIndex >= 0) then
+  begin
+    config.RSSList.Names[InternetListBox.ItemIndex] := RSSNameEdit.Text;
+    config.RSSList.Addresses[InternetListBox.ItemIndex] := RSSAddressTMemoEdit.Text;
+    InternetListBox.Items := config.RSSList.Names;
+  end;
+end;
+
+procedure TSetupForm.DeleteRSSButtonClick(Sender: TObject);
+begin
+  if (InternetListBox.ItemIndex >= 0) then
+  begin
+    config.RSSList.Names.Delete(InternetListBox.ItemIndex);
+    config.RSSList.Addresses.Delete(InternetListBox.ItemIndex);
+    InternetListBox.Items := config.RSSList.Names;
   end;
 end;
 
@@ -1196,6 +1243,9 @@ begin
     BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off'
   else
     BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'On';
+
+  // Load RSS list
+  InternetListBox.Items := config.RSSList.Names;
 
   VariableEdit.Text := NoVariable;
 end;
@@ -1974,14 +2024,14 @@ procedure TSetupForm.RssPageChange(Sender: TObject);
 var
   feeditem: string;
 begin
-  if RssTMemoEdit.Text <> '' then
+  if RSSAddressTMemoEdit.Text <> '' then
   begin
     case RssTypeComboBox.ItemIndex of
       0: feeditem := 't';
       1: feeditem := 'd';
       2: feeditem := 'b';
     end;
-    VariableEdit.Text := '$Rss(' + RssTMemoEdit.Text + ',' + feeditem + ',' +
+    VariableEdit.Text := '$Rss(' + RSSAddressTMemoEdit.Text + ',' + feeditem + ',' +
       IntToStr(RssItemNumSpinEdit.Value) + ',' + IntToStr(RssMaxFreqSpinedit.Value) + ')';
   end;
 end;
@@ -2248,45 +2298,17 @@ begin
     39: VariableEdit.Text := '$SysAppActive(LCDSmartie.exe)';
     else
       VariableEdit.Text := NoVariable;
-  end; // case
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
+  end;
 end;
 
 procedure TSetupForm.InternetListBoxClick(Sender: TObject);
 begin
-  case InternetListBox.ItemIndex of
-    0: VariableEdit.Text :=
-        '$Rss(https://news.bbc.co.uk/rss/newsonline_uk_edition/world/rss091.xml,b)';
-    1: VariableEdit.Text :=
-        '$Rss(https://news.bbc.co.uk/rss/newsonline_uk_edition/uk/rss091.xml,b)';
-    2: VariableEdit.Text := '$Rss(https://feeds.feedburner.com/tweakers/mixed,b)';
-    3: VariableEdit.Text := '$Rss(https://www.theregister.com/headlines.rss,b)';
-    4: VariableEdit.Text := '$Rss(http://rss.slashdot.org/Slashdot/slashdot,b)';
-    // only http
-    5: VariableEdit.Text := '$Rss(https://www.wired.com/feed/rss,b)';
-    6: VariableEdit.Text := '$Rss(https://sourceforge.net/p/lcdsmartie/news/feed,b,1)';
-    7: VariableEdit.Text := '$Rss(https://sourceforge.net/p/palmorb/news/feed,b,1)';
-    8: VariableEdit.Text :=
-        '$Rss(https://news.bbc.co.uk/rss/newsonline_world_edition/business/rss091.xml,b)';
-    9: VariableEdit.Text :=
-        '$Rss(https://www.washingtonpost.com/wp-srv/business/rssheadlines.xml,b)';
-    10: VariableEdit.Text := '$Rss(https://news.yahoo.com/rss/entertainment,b)';
-    11: VariableEdit.Text :=
-        '$Rss(https://www.nytimes.com/services/xml/rss/nyt/Health.xml,b)';
-    12: VariableEdit.Text :=
-        '$Rss(https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml,b)';
-    13: VariableEdit.Text := '$Rss(https://www.volkskrant.nl/economie/rss.xml,b)';
-    14: VariableEdit.Text :=
-        '$Rss(https://rs.vpro.nl/v3/api/feeds/3voor12/section/3voor12%20Landelijk,b)';
-    15: VariableEdit.Text := '$Rss(https://www.ad.nl/home/rss.xml,b)';
-    else
-      VariableEdit.Text := NoVariable;
-  end; // case
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
+  VariableEdit.Text := NoVariable;
+  if InternetListBox.ItemIndex >= 0 then
+  begin
+    RSSNameEdit.Text := config.RSSList.Names[InternetListBox.ItemIndex];
+    RSSAddressTMemoEdit.Text := config.RSSList.Addresses[InternetListBox.ItemIndex];
+  end;
 end;
 
 procedure TSetupForm.QStatLabelClick(Sender: TObject);
@@ -2957,32 +2979,14 @@ begin
   end;
 
   try
-    // a loop up to maxdemolines(say 200) calling infoFunc(loop) until it returns an empty string then break?
-    // each line can start with some text but only from $ to end of line will be parsed as a variable/function
-    // so you can have a list like
-    {
-    Func 1 ball
-    throw ball
-    up $(ball.dll, 1,1,1)
-    down $(ball.dll, 1,1,2)
-    catch ball
-    left hand $(ball.dll, 1,2,1)
-    right hand $(ball.dll, 1,2,2)
-    func 2 Boomerang
-    .....
-    }
-    // in pascal you could add strings to a tstringlist then dump each string
-    // pretty much the same with c# list<string>
-    // I suppose something similar could be done with arrays in c and c++
-
-      reply := LCDSmartieDisplayForm.Data.GetPluginDemos(PluginName);
-      if not (reply = '') then begin
-        PluginDemoListBox.Items.AddDelimitedText(reply,#10,true);
-        GotDemo := true;
-      end;
+    reply := LCDSmartieDisplayForm.Data.GetPluginDemos(PluginName);
+    if not (reply = '') then begin
+      PluginDemoListBox.Items.AddDelimitedText(reply,#10,true);
+      GotDemo := true;
+    end;
   except
-      on E: Exception do
-          showmessage('Plugin '+PluginName+ E.Message);
+    on E: Exception do
+      showmessage('Plugin '+PluginName+ E.Message);
   end;
 
   if (GotInfo = false) and (GotDemo = false) then

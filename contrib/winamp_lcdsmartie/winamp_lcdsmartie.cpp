@@ -54,8 +54,8 @@ winampVisModule mod1 =
 	25,     // delayMS
 	2,      // spectrumNch
 	0,      // waveformNch
-	{ 0, },	// spectrumData
-	{ 0, },	// waveformData
+	{ 0 },	// spectrumData
+	{ 0 },	// waveformData
 	config,
 	init,
 	renderLinearSA, 
@@ -74,8 +74,8 @@ winampVisModule mod2 =
 	25,     // delayMS
 	2,      // spectrumNch
 	0,      // waveformNch
-	{ 0, },	// spectrumData
-	{ 0, },	// waveformData
+	{ 0 },	// spectrumData
+	{ 0 },	// waveformData
 	config,
 	init,
 	renderTest, 
@@ -118,7 +118,7 @@ winampVisModule *getModule(int which)
 // that shares code for all your modules
 void config(struct winampVisModule *this_mod)
 {
-	MessageBox(this_mod->hwndParent,"LCD Smartie winamp plugin\n"
+	MessageBoxA(NULL, "LCD Smartie winamp plugin\n"
 									"No further configuration needed.",
 									"Configuration",MB_OK);
 }
