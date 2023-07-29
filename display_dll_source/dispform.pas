@@ -558,7 +558,7 @@ end;
 procedure TLCDDisplayForm.ClearDisplay;
 begin
   with BackgroundBitmap.Canvas do begin
-    CopyMode := cmMergeCopy;
+    CopyMode := cmSrcCopy;
     Pen.Color := BackgroundColor;
     Pen.Mode := pmCopy;
     Pen.Style := psSolid;

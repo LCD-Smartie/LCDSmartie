@@ -190,6 +190,7 @@ type
     iLastRandomTranCycle: Integer;
     ConfigFileName: String;
     RestartAsAdmin: boolean;
+    bSavedAlwaysOnTop: boolean;
     function DoGuess(line: Integer): Integer;
     procedure freeze();
     procedure DoGPO(const ftemp1, ftemp2: Integer);
@@ -1087,11 +1088,13 @@ begin
       SetOnscreenBacklight();
     end;
 
+    if (config.alwaysOnTop <> bSavedAlwaysOnTop) then
     if (config.alwaysOnTop) then
-      LCDSmartieDisplayForm.formStyle := fsSystemStayOnTop
+      SetWindowPos(handle, HWND_TOPMOST, 0,0,0,0, SWP_NOMOVE or SWP_NOSIZE)
     else
-      LCDSmartieDisplayForm.formStyle := fsNormal;
+      SetWindowPos(handle, HWND_NOTOPMOST, 0,0,0,0, SWP_NOMOVE or SWP_NOSIZE);
 
+    bSavedAlwaysOnTop := config.alwaysOnTop;
 
     if (config.width <> iSavedWidth) or (config.EmulateLCD <> bSavedEmulateLCD) then
     begin

@@ -821,6 +821,8 @@ begin
     initfile.WriteInteger('PerfSettings', 'Scaling'+Format('%.2u', [i], localeFormat), PerfSettings[i].Scaling);
   end;
 
+  initfile.EraseSection('RSS');
+
   for i := 0 to RSSList.Names.Count - 1  do
     initfile.WriteString('RSS', RSSList.Names[i], RSSList.Addresses[i]);
 

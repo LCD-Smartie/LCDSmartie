@@ -1560,7 +1560,7 @@ object SetupForm: TSetupForm
         )
       end
       object ActionAddButton: TButton
-        Left = 419
+        Left = 336
         Height = 25
         Hint = 'Insert a new action after the current selection'
         Top = 354
@@ -1573,7 +1573,7 @@ object SetupForm: TSetupForm
         TabOrder = 1
       end
       object ActionDeleteButton: TButton
-        Left = 499
+        Left = 496
         Height = 25
         Hint = 'Delete selected action'
         Top = 354
@@ -1618,6 +1618,16 @@ object SetupForm: TSetupForm
         PageSize = 0
         TabOrder = 4
         OnScroll = ActionsGridScrollBarScroll
+      end
+      object DuplicateActionButton: TButton
+        Left = 416
+        Height = 25
+        Top = 354
+        Width = 75
+        Anchors = [akRight, akBottom]
+        Caption = 'Duplicate'
+        OnClick = DuplicateActionButtonClick
+        TabOrder = 5
       end
     end
     object StartupTabSheet: TTabSheet
@@ -2659,7 +2669,7 @@ object SetupForm: TSetupForm
     Top = 3
     Width = 257
     TabStop = False
-    ActivePage = InternetTabSheet
+    ActivePage = PluginsTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 248
     Font.CharSet = ANSI_CHARSET
@@ -2670,7 +2680,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 2
+    TabIndex = 10
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -3636,22 +3646,22 @@ object SetupForm: TSetupForm
       object PluginListBox: TFileListBox
         Left = 0
         Height = 176
-        Top = 0
+        Top = 32
         Width = 201
         Anchors = [akTop, akLeft, akRight]
         Directory = '.'
         ExtendedSelect = False
-        ItemHeight = 13
+        ItemHeight = 0
         Mask = '*.dll'
         OnClick = PluginListBoxClick
+        OnDblClick = InsertButtonClick
         TabOrder = 0
       end
       object Btn_PluginRefresh: TButton
-        Left = 64
+        Left = 0
         Height = 25
-        Top = 362
+        Top = 0
         Width = 75
-        Anchors = [akLeft, akBottom]
         Caption = 'Refresh'
         OnClick = Btn_PluginRefreshClick
         TabOrder = 1
@@ -3660,7 +3670,7 @@ object SetupForm: TSetupForm
         Left = 0
         Height = 132
         Hint = 'Select from a list of plugin function demos'#13#10'Hold shift while clicking on a web address to go there'
-        Top = 184
+        Top = 216
         Width = 201
         Anchors = [akTop, akLeft, akRight, akBottom]
         ExtendedSelect = False
@@ -3676,7 +3686,7 @@ object SetupForm: TSetupForm
       object Label73: TLabel
         Left = 0
         Height = 13
-        Top = 324
+        Top = 356
         Width = 53
         Anchors = [akLeft, akBottom]
         Caption = 'Developer:'
@@ -3685,7 +3695,7 @@ object SetupForm: TSetupForm
       object PluginDeveloperLabel: TLabel
         Left = 80
         Height = 13
-        Top = 324
+        Top = 356
         Width = 130
         Anchors = [akLeft, akBottom]
         AutoSize = False
@@ -3695,7 +3705,7 @@ object SetupForm: TSetupForm
       object Label74: TLabel
         Left = 0
         Height = 13
-        Top = 340
+        Top = 372
         Width = 39
         Anchors = [akLeft, akBottom]
         Caption = 'Version:'
@@ -3704,7 +3714,7 @@ object SetupForm: TSetupForm
       object PluginVersionLabel: TLabel
         Left = 80
         Height = 13
-        Top = 340
+        Top = 372
         Width = 128
         Anchors = [akLeft, akBottom]
         AutoSize = False

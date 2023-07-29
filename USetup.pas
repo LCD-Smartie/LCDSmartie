@@ -66,6 +66,7 @@ type
     BacklightBitBtn: TBitBtn;
     BoincServerIndexComboBox: TComboBox;
     AddRSSButton: TButton;
+    DuplicateActionButton: TButton;
     UpdateRSSButton: TButton;
     DeleteRSSButton: TButton;
     CenterLine1CheckBox: TCheckBox;
@@ -422,6 +423,7 @@ type
     procedure BacklightBitBtnClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure DeleteRSSButtonClick(Sender: TObject);
+    procedure DuplicateActionButtonClick(Sender: TObject);
     procedure FormChangeBounds(Sender: TObject);
     procedure InfoTimerTimer(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
@@ -1262,8 +1264,8 @@ var
     'WinampNextTrack', 'WinampLastTrack',
     'WinampPlay', 'WinampStop', 'WinampPause',
     'WinampShuffle (toggle)', 'WinampVolumeDown',
-    'WinampVolumeUp', 'EnableScreen(1-20)',
-    'DisableScreen(1-20)', '$dll(name.dll,2,param1,param2)',
+    'WinampVolumeUp', 'EnableScreen(1-99)',
+    'DisableScreen(1-99)', '$dll(name.dll,2,param1,param2)',
     'GPO(1-8,0/1) (0=off 1=on)', 'GPOToggle(1-8)', 'SystemVolumeDown',
     'SystemVolumeMute', 'SystemVolumeUp',
     'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)');
@@ -2810,6 +2812,8 @@ begin
     DetectedOs := inttostr(oviVersionInfo.dwMajorVersion)
     +'.'+ inttostr(oviVersionInfo.dwMinorVersion)
     +'.'+ inttostr(oviVersionInfo.dwBuildNumber);
+
+  Caption := 'LCD Smartie ' + GetFmtFileVersion() + ' Setup';
 end;
 
 procedure TSetupForm.MainPageControlChange(Sender: TObject);
@@ -2835,6 +2839,21 @@ begin
   ActionsStringGrid.InsertColRow(false, Selection +1);
   ActionsStringGrid.Cells[0, Selection +1] := 'if';
   ActionsStringGrid.Cells[4, Selection +1] := 'then';
+  ActionsStringGridUpdateScrollBar;
+end;
+
+procedure TSetupForm.DuplicateActionButtonClick(Sender: TObject);
+var
+  Selection: integer;
+begin
+  Selection := ActionsStringGrid.Selection.Top;
+  ActionsStringGrid.InsertColRow(false, Selection +1);
+  ActionsStringGrid.Cells[0, Selection +1] := 'if';
+  ActionsStringGrid.Cells[1, Selection +1] := ActionsStringGrid.Cells[1, Selection];
+  ActionsStringGrid.Cells[2, Selection +1] := ActionsStringGrid.Cells[2, Selection];
+  ActionsStringGrid.Cells[3, Selection +1] := ActionsStringGrid.Cells[3, Selection];
+  ActionsStringGrid.Cells[4, Selection +1] := 'then';
+  ActionsStringGrid.Cells[5, Selection +1] := ActionsStringGrid.Cells[5, Selection];
   ActionsStringGridUpdateScrollBar;
 end;
 
@@ -2934,7 +2953,6 @@ var
   i, indexStart, indexEnd, p: integer;
   InfoList: TStringList;
 begin
-  VariableEdit.Text := NoVariable;
   GotInfo := false;
   GotDemo := false;
   PluginName := ExtractFileName(PluginListBox.FileName);
@@ -2942,6 +2960,8 @@ begin
   LCDSmartieDisplayForm.Data.FindPlugin(PluginName);
   PluginDeveloperLabel.Caption := 'N/A';
   PluginVersionLabel.Caption := 'N/A';
+
+  VariableEdit.Text := '$dll('+ExtractFileNameOnly(PluginName)+',1,,)';
 
   try
     reply := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName);
@@ -2971,8 +2991,6 @@ begin
       end;
       GotInfo := true;
     end;
-
-    //PluginVersionLabel.Caption := LCDSmartieDisplayForm.Data.GetPluginInfo(PluginName, pchar('version'));
   except
       on E: Exception do
           showmessage('Plugin '+PluginName+ E.Message);
@@ -3022,6 +3040,7 @@ begin
             PluginVersionLabel.Caption := reply;
           end;
         end;
+        GotInfo := true;
       end;
 
       indexStart := TextFileContent.IndexOf('[[DEMO]]', 0);
@@ -3032,6 +3051,7 @@ begin
         begin
           PluginDemoListBox.Items.Add(TextFileContent[i]);
         end;
+        GotDemo := true;
       end;
       TextFileContent.Free;
     end;

@@ -17,7 +17,7 @@ object LCDDisplayForm: TLCDDisplayForm
   OnShow = FormShow
   Position = poDefault
   ShowInTaskBar = stNever
-  LCLVersion = '2.2.6.0'
+  LCLVersion = '3.0.0.1'
   Scaled = False
   object PaintBox: TPaintBox
     AnchorSideRight.Side = asrBottom
