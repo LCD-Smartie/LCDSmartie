@@ -1,15 +1,15 @@
 object TeeConfig: TTeeConfig
   Left = 858
-  Height = 299
+  Height = 324
   Top = 204
-  Width = 416
+  Width = 417
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'TeeConfig'
-  ClientHeight = 299
-  ClientWidth = 416
+  ClientHeight = 324
+  ClientWidth = 417
   OnCreate = FormCreate
-  LCLVersion = '2.2.6.0'
+  LCLVersion = '3.0.0.1'
   object DisplayPluginComboBox: TComboBox
     Left = 96
     Height = 23
@@ -64,19 +64,19 @@ object TeeConfig: TTeeConfig
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Height = 105
+    Height = 129
     Top = 184
     Width = 400
     Caption = 'Notes'
-    ClientHeight = 85
+    ClientHeight = 109
     ClientWidth = 396
     TabOrder = 3
     object Label4: TLabel
       Left = 8
-      Height = 75
+      Height = 105
       Top = 0
-      Width = 384
-      Caption = 'Remove ''config'' from the driver parameters to stop this dialog appearing'#13#10#13#10'Limitations:'#13#10'All LCD functions are tied eg, backlight, brightness, contrast are all'#13#10' linked together'
+      Width = 387
+      Caption = 'Remove ''config'' from the driver parameters to stop this dialog appearing.'#13#10'''config'' must be removed before sleep and standby operations or it WILL'#13#10' prevent proper sleep and standby operation'#13#10#13#10'Limitations:'#13#10'All LCD functions are tied eg, backlight, brightness, contrast are all'#13#10' linked together.'
       ParentColor = False
     end
   end

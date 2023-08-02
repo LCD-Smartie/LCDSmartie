@@ -139,6 +139,7 @@
         <Filename Value="teeconfig.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TeeConfig"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="TeeConfig"/>
       </Unit>

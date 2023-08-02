@@ -42,7 +42,7 @@ type
     dlls: Array of TDll;
     uiTotalDlls: Cardinal;
     procedure LoadPlugin(PluginPath: string);
-    procedure ExecuteFunction(ID: integer; iFunc: integer; sParam1: string; sparam2: string);
+    function ExecuteFunction(ID: integer; iFunc: integer; sParam1: string; sparam2: string): string;
     procedure Timercheck(Sender: TObject);
   protected
     procedure DoRun; override;
@@ -109,7 +109,10 @@ begin
           end;
       1 : begin
             try
-                ExecuteFunction( LegacySharedMem^.LibraryID, LegacySharedMem^.LibraryFunc, LegacySharedMem^.LibraryParam1, LegacySharedMem^.LibraryParam2)
+              begin
+                LegacySharedMem^.LibraryResult := ExecuteFunction( LegacySharedMem^.LibraryID, LegacySharedMem^.LibraryFunc, LegacySharedMem^.LibraryParam1, LegacySharedMem^.LibraryParam2);
+                setevent(hLegacyRecvEvent);
+              end;
             except
               on E: Exception do
               begin
@@ -210,12 +213,11 @@ begin
   end;
 end;
 
-procedure LegacyPluginLoader.ExecuteFunction(ID: integer; iFunc: integer; sParam1: string; sparam2: string);
-var
-  s: string;
+function LegacyPluginLoader.ExecuteFunction(ID: integer; iFunc: integer; sParam1: string; sparam2: string): string;
 begin
+  result := '';
   if iFunc <= iMaxPluginFuncs then
-    LegacySharedMem^.LibraryResult := strpas(dlls[ID].functions[iFunc]( pchar(sParam1), pchar(sParam2)))
+    result := strpas(dlls[ID].functions[iFunc]( pchar(sParam1), pchar(sParam2)))
   else if iFunc = finiFuncId then
   begin
     if assigned(dlls[ID].finiFunc) then
@@ -231,30 +233,28 @@ begin
   begin
     if assigned(dlls[ID].infoFunc) then
       try
-        LegacySharedMem^.LibraryResult := strpas(dlls[ID].infoFunc)
+        Result := strpas(dlls[ID].infoFunc)
       except
       on E: Exception do
         raise Exception.Create('Plugin '+dlls[ID].sName+' had an exception during closedown: '
               + E.Message);
       end
     else
-      LegacySharedMem^.LibraryResult := '';
+      result := '';
   end
   else if iFunc = demoFuncId then
   begin
     if assigned(dlls[ID].demoFunc) then
       try
-        LegacySharedMem^.LibraryResult := strpas(dlls[ID].demoFunc);
+        Result := strpas(dlls[ID].demoFunc);
       except
         on E: Exception do
           raise Exception.Create('Plugin '+dlls[ID].sName+' had an exception during closedown: '
                 + E.Message);
       end
     else
-      LegacySharedMem^.LibraryResult := '';
+      Result := '';
   end;
-
-  setevent(hLegacyRecvEvent);
 end;
 
 procedure LegacyPluginLoader.Timercheck(Sender: TObject);

@@ -962,6 +962,7 @@ begin
     else
     begin
       result := strpas(@LegacySharedMem.LibraryResult[1]);
+      LegacySharedMem^.LibraryResult[1] := #0;
     end;
   end
   else

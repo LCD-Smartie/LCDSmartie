@@ -31,7 +31,7 @@ type
 
 type
   TClientDll = record
-    DriverName: string;
+    DriverPath: string;
     DriverParams: string;
     MyDLL: HMODULE;
     InitFunc : TInitFunc;
@@ -65,16 +65,18 @@ var
 function DISPLAYDLL_Init(SizeX,SizeY : byte; StartupParameters : pchar; OK : pboolean) : pchar; stdcall;
 var
   S : string;
-  Loop, i: integer;
+  Loop, i, j: integer;
   Settings : TIniFile;
+  path: string;
 begin
   OK^ := true;
   S := StartupParameters;
+
   try
     if ( pos('config', lowercase(S)) > 0) then
     begin
       TeeConfig := TTeeConfig.Create(nil);
-      TeeConfig.Showmodal;
+      TeeConfig.ShowModal;
     end;
 
     Settings := TIniFile.Create(IniFile);
@@ -82,7 +84,7 @@ begin
 
     for i := 1 to MaxDrivers do
     begin
-      TeeDrv.ClientDrivers[i].DriverName := Settings.ReadString('Driver'+inttostr(i), 'DllName', '');
+      TeeDrv.ClientDrivers[i].DriverPath := 'displays\' + Settings.ReadString('Driver'+inttostr(i), 'DllName', '');
       TeeDrv.ClientDrivers[i].DriverParams := Settings.ReadString('Driver'+inttostr(i), 'DllParameters', '');
     end;
 
@@ -91,7 +93,21 @@ begin
     // try to load drivers
     for i := 1 to MaxDrivers do
     begin
-      TeeDrv.ClientDrivers[i].MyDLL := LoadLibrary(pchar('displays\'+TeeDrv.ClientDrivers[i].DriverName));
+      for j := 1 to MaxDrivers do
+      begin
+        if (TeeDrv.ClientDrivers[i].DriverPath = TeeDrv.ClientDrivers[j].DriverPath) and (i <> j) then
+        begin
+          // OK, we've seen this driver before but we can only load one at a time
+          // create temp dir
+          CreateDir(GetTempDir+'displays');
+          // copy the driver to temp dir
+          CopyFile(pchar(TeeDrv.ClientDrivers[i].DriverPath), pchar(GetTempDir+TeeDrv.ClientDrivers[i].DriverPath+inttostr(i)), false);
+          // Change the path to point to the new dll
+          TeeDrv.ClientDrivers[i].DriverPath := GetTempDir+TeeDrv.ClientDrivers[i].DriverPath+inttostr(i);
+        end;
+      end;
+
+      TeeDrv.ClientDrivers[i].MyDLL := LoadLibrary(pchar(TeeDrv.ClientDrivers[i].DriverPath));
       if not (TeeDrv.ClientDrivers[i].MyDll = 0) then
       begin
         TeeDrv.ClientDrivers[i].InitFunc := GetProcAddress(TeeDrv.ClientDrivers[i].MyDLL,pchar('DISPLAYDLL_Init'));
@@ -110,7 +126,7 @@ begin
       end;
     end;
 
-     // run everyones initfunc
+    // run everyones initfunc
     for i := 1 to MaxDrivers do
     begin
       if assigned(TeeDrv.ClientDrivers[i].InitFunc) then
@@ -192,9 +208,9 @@ var
   S : string;
   i, j: integer;
 begin
-  S := Str;
   for i := 1 to MaxDrivers do
   begin
+    S := Str;
     if assigned(TeeDrv.ClientDrivers[i].CustomIndex) then
     begin
         for j:= 1 to Length(S) do
@@ -221,16 +237,14 @@ begin
   end;
 end;
 
-procedure DISPLAYDLL_CustomChar(Chr : byte; Data : TCustomArray); stdcall;
+procedure DISPLAYDLL_CustomChar(Char : byte; Data : TCustomArray); stdcall;
 var
   i: integer;
 begin
   for i := 1 to MaxDrivers do
   begin
     if assigned(TeeDrv.ClientDrivers[i].CustomCharProc) then
-    begin
-      TeeDrv.ClientDrivers[i].CustomCharProc(Chr,Data);
-    end;
+      TeeDrv.ClientDrivers[i].CustomCharProc(Char,Data);
   end;
 end;
 

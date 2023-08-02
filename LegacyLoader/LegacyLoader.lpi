@@ -121,6 +121,7 @@
       <Debugging>
         <DebugInfoType Value="dsDwarf2Set"/>
         <TrashVariables Value="True"/>
+        <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>
       <Options>
@@ -133,13 +134,10 @@
   <Debugging>
     <Exceptions>
       <Item>
-        <Name Value="EAbort"/>
+        <Name Value="EIdHTTPProtocolException"/>
       </Item>
       <Item>
-        <Name Value="ECodetoolError"/>
-      </Item>
-      <Item>
-        <Name Value="EFOpenError"/>
+        <Name Value="EConvertError"/>
       </Item>
     </Exceptions>
   </Debugging>

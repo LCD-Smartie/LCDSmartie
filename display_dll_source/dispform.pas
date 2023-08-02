@@ -558,7 +558,7 @@ end;
 procedure TLCDDisplayForm.ClearDisplay;
 begin
   with BackgroundBitmap.Canvas do begin
-    CopyMode := cmSrcCopy;
+    CopyMode := cmMergeCopy;
     Pen.Color := BackgroundColor;
     Pen.Mode := pmCopy;
     Pen.Style := psSolid;
@@ -575,10 +575,10 @@ begin
   Y := min(MaxHeight,Y);
   MyWidth := X;
   MyHeight := Y;
-  Height := (MyHeight*(CharHeight+1)*2) - captionheight - borderwidth;
-  Width := (MyWidth*(CharWidth+1)*2) - borderwidth - 1; // not sure where the extra dimensions come from
-  PaintBox.Height := Height + captionheight + borderwidth + borderwidth;
-  PaintBox.Width := Width + borderwidth + 3;
+  Height := (MyHeight*(CharHeight+1)*2) {- captionheight - borderwidth};
+  Width := (MyWidth*(CharWidth+1)*2) {- borderwidth} - 1; // not sure where the extra dimensions come from
+  PaintBox.Height := Height {+ captionheight + borderwidth + borderwidth};
+  PaintBox.Width := Width {+ borderwidth + 3};
 
   if assigned(BackgroundBitmap) then BackgroundBitmap.Free;
   BackgroundBitmap := TBitmap.Create;
@@ -621,6 +621,16 @@ var
   DestRect : TRect;
   SrcRect : TRect;
 begin
+  if (C > 128) then begin
+    case C of
+      176 : C := 0;
+      158 : C := 1;
+      131..136 : dec(C);
+      else C := C;
+    end;
+  end;
+  if (C < 32) then C := 128 + C;
+
   FrameBuffer[CurrentX+(CurrentY-1)*MyWidth] := C;
   CurChar := Font[C];
   with SrcRect do begin
@@ -678,21 +688,9 @@ end;
 
 procedure TLCDDisplayForm.CustomChar(Index : byte; Bytes : array of byte);
 var
-  X,Y,C : byte;
+  X,Y : byte;
 begin
-  case index of
-    1: C:=176;
-    2: C:=158;
-    3: C:=131;
-    4: C:=132;
-    5: C:=133;
-    6: C:=134;
-    7: C:=135;
-    8: C:=136;
-  end;
-
-  Index := min(8,max(1,Index));
-  with Font[C].Canvas do begin
+  with Font[127+Index].Canvas do begin
     for X := 0 to CharWidth-1 do begin
       for Y := 0 to CharHeight-1 do begin
         if ((Bytes[Y] and (1 shl X)) > 0) then

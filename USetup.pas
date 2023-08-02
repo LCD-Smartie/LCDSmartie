@@ -29,7 +29,7 @@ uses
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
   ExtDlgs, CheckLst, Menus, SpinEx, RTTICtrls, Process, FileUtil,
-  Windows, Types, UConfig, UEditLine, LazFileUtils;
+  Windows, Types, UConfig, UEditLine, LazFileUtils, Clipbrd;
 
 const
   NoVariable = 'Variable:';
@@ -66,7 +66,13 @@ type
     BacklightBitBtn: TBitBtn;
     BoincServerIndexComboBox: TComboBox;
     AddRSSButton: TButton;
+    ExportLinesButton: TButton;
+    ImportLinesButton: TButton;
     DuplicateActionButton: TButton;
+    HidePluginMenuItem: TMenuItem;
+    UnHidePluginMenuItem: TMenuItem;
+    ShowHiddenPluginsMenuItem: TMenuItem;
+    PluginsListBoxPopupMenu: TPopupMenu;
     UpdateRSSButton: TButton;
     DeleteRSSButton: TButton;
     CenterLine1CheckBox: TCheckBox;
@@ -421,6 +427,9 @@ type
     WinampTabSheet: TTabSheet;
     procedure AddRSSButtonClick(Sender: TObject);
     procedure BacklightBitBtnClick(Sender: TObject);
+    procedure HidePluginMenuItemClick(Sender: TObject);
+    procedure ImportLinesButtonClick(Sender: TObject);
+    procedure ExportLinesButtonClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure DeleteRSSButtonClick(Sender: TObject);
     procedure DuplicateActionButtonClick(Sender: TObject);
@@ -432,8 +441,12 @@ type
     procedure PluginDemoListBoxClick(Sender: TObject);
     procedure ListBoxKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure PluginListBoxMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ScrollBox1Resize(Sender: TObject);
+    procedure ShowHiddenPluginsMenuItemClick(Sender: TObject);
     procedure Splitter1ChangeBounds(Sender: TObject);
+    procedure UnHidePluginMenuItemClick(Sender: TObject);
     procedure UpdateRSSButtonClick(Sender: TObject);
     procedure VariableEditChange(Sender: TObject);
     procedure ActionsGridScrollBarScroll(Sender: TObject;
@@ -529,6 +542,8 @@ type
     procedure FormEditCancel(Sender: TObject);
     procedure FormEditMemoEnter(Sender: TObject);
     procedure FormEditMemoOnClick(Sender: TObject);
+    procedure PluginListBoxDrawItem(Control: TWinControl; Index: Integer;
+      Rect: TRect; State: TOwnerDrawState);
   private
     FormEditArray: Array [1..MaxLines] of TFormEdit;
     LineEditArray: Array[1..MaxLines] of TMemo;
@@ -543,6 +558,7 @@ type
     CurrentlyShownEmailAccount: integer;
     CurrentScreen: integer;
     DetectedOS: string;
+    ShowHiddenPlugins: boolean;
     procedure FocusToInputField;
     procedure SaveScreen(scr: integer);
     procedure LoadScreen(scr: integer);
@@ -574,7 +590,7 @@ uses
   strutils,
 {$ENDIF}
    UDataNetwork, UDataWinamp, UData,
-  UIconUtils, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry;
+  UIconUtils, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry, IniFiles;
 
 function PdhEnumObjectsA( szDataSource: PAnsiChar; szMachineName: PAnsiChar; mszObjectList: PPAnsiChar; pcchBufferSize: PDWORD; dwDetailLevel: DWORD; bRefresh: boolean ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectsA';
 function PdhEnumObjectItemsW( szDataSource: PAnsiString;
@@ -773,6 +789,52 @@ begin
     BacklightBitBtn.Caption := 'Backlight' + #13#10 + 'Off';
     LCDSmartieDisplayForm.backlit();
   end;
+end;
+
+procedure TSetupForm.ImportLinesButtonClick(Sender: TObject);
+var
+  Clipboard: TClipboard;
+  Lines: TStringlist;
+  str: string;
+  i, j: integer;
+begin
+  Clipboard := TClipboard.Create;
+  Lines := TStringlist.Create;
+  Lines.AddDelimitedtext(Clipboard.AsText, #10, true);
+  For i := 0 to lines.Count -1 do
+  begin
+    str := lines[i];
+    // Remove the CR (#13) char
+    delete(str, pos(#13, str),1);
+    for j := 1 to MaxLines do
+    begin
+      if (pos('Text0'+inttostr(j)+'="', str) > 0) then
+      begin
+        // is the line longer than Text0N=" and is the last char a "
+        if (length(str) > 8) and (copy(str, length(str), 1) = '"') then
+        begin
+          // looks good copy the text
+          LineEditArray[j].Text := copy(str, 9 , length(str) - 9);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TSetupForm.ExportLinesButtonClick(Sender: TObject);
+var
+  Clipboard: TClipboard;
+  Lines: TStringlist;
+  i: integer;
+begin
+  Clipboard := TClipboard.Create;
+  Lines := TStringlist.Create;
+
+  for i := 1 to MaxLines do
+    Lines.Add('Text0'+inttostr(i)+'="'+LineEditArray[i].Text+'"');
+
+  Clipboard.AsText := Lines.Text;
+  Clipboard.Free;
 end;
 
 procedure TSetupForm.AddRSSButtonClick(Sender: TObject);
@@ -2805,7 +2867,9 @@ begin
     fileExists(pathssl + 'ssleay32.dll') then EmailSSLEdit.Enabled := False;
 
   //point PluginListBox to the plugin dirs
-  PluginListBox.Directory := ExtractFilePath(ParamStr(0)) + 'plugins\';
+  Btn_PluginRefreshClick(nil);
+  ShowHiddenPlugins := false;
+
   DetectedOs := 'Unknown';
   oviVersionInfo.dwOSVersionInfoSize := SizeOf(oviVersionInfo);
   if windows.GetVersionEx(oviVersionInfo) then
@@ -2934,15 +2998,105 @@ end;
 /////////////////////////////////////////////////////////////////
 //////////////////// PLUGIN LIST BOX ////////////////////////////
 /////////////////////////////////////////////////////////////////
+// Deal with a right click in the list box
+procedure TSetupForm.PluginListBoxMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var item:integer;
+begin
+  item:=PluginListBox.ItemAtPos(Point(X,Y),true);
+  if item>-1 then PluginListBox.Selected[item]:=true;
+  PluginListBoxClick(nil);
+end;
+
+// hide an item
+procedure TSetupForm.HidePluginMenuItemClick(Sender: TObject);
+var
+  hiddenDllsIni: TIniFile;
+begin
+  hiddenDllsIni := TIniFile.Create('plugins\Hidden.ini');
+  hiddenDllsIni.WriteString('HiddenDlls', ExtractFileName(PluginListBox.FileName), 'Hide');
+  hiddenDllsIni.Free;
+  Btn_PluginRefreshClick(nil);
+end;
+
+// unhide an item
+procedure TSetupForm.UnHidePluginMenuItemClick(Sender: TObject);
+var
+  hiddenDllsIni: TIniFile;
+begin
+  hiddenDllsIni := TIniFile.Create('plugins\Hidden.ini');
+  hiddenDllsIni.DeleteKey('HiddenDlls', ExtractFileName(PluginListBox.FileName));
+  hiddenDllsIni.Free;
+  Btn_PluginRefreshClick(nil);
+end;
+
+// Show all hidden items
+procedure TSetupForm.ShowHiddenPluginsMenuItemClick(Sender: TObject);
+begin
+  if ShowHiddenPluginsMenuItem.Caption = 'Show Hidden Plugins' then
+  begin
+    ShowHiddenPlugins := true;
+    ShowHiddenPluginsMenuItem.Caption := 'Hide Hidden Plugins'
+  end
+  else
+  begin
+    ShowHiddenPlugins := false;
+    ShowHiddenPluginsMenuItem.Caption := 'Show Hidden Plugins'
+  end;
+  Btn_PluginRefreshClick(nil);
+end;
+
+procedure TSetupForm.PluginListBoxDrawItem(Control: TWinControl; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState);
+var
+  ListBox: TFileListBox;
+  Canvas: TCanvas;
+  hiddenDllsIni: TIniFile;
+  slhiddenDlls: TStringList;
+  j: integer;
+begin
+  ListBox := Control as TFileListBox;
+  Canvas := PluginListBox.Canvas;
+  Canvas.FillRect(Rect);
+  hiddenDllsIni := TIniFile.Create('plugins\Hidden.ini');
+  slhiddenDlls := TStringList.Create;
+  hiddenDllsIni.ReadSection('HiddenDlls', slhiddenDlls);
+  hiddenDllsIni.Free;
+  Canvas.Font.Color := clBlack;
+  for j := 0 to slhiddenDlls.Count -1 do
+    if ListBox.Items[Index] = slhiddenDlls[j] then
+    begin
+      Canvas.Font.Color := clGray;
+      Break;
+    end;
+
+  Canvas.TextOut(Rect.Left, Rect.Top, ListBox.Items[Index]);
+
+  if odFocused in State then
+    Canvas.DrawFocusRect(Rect);
+end;
+
 procedure TSetupForm.Btn_PluginRefreshClick(Sender: TObject);
 var
-  sCurrentDir: string;
+  hiddenDllsIni: TIniFile;
+  slhiddenDlls: TStringList;
+  i, j: integer;
 begin
-  // awkward shi as refresh doesnt just refresh the list
-  sCurrentDir := PluginListBox.Directory;
+  hiddenDllsIni := TIniFile.Create('plugins\Hidden.ini');
+  slhiddenDlls := TStringList.Create;
+  hiddenDllsIni.ReadSection('HiddenDlls', slhiddenDlls);
+  hiddenDllsIni.Free;
+
   PluginListBox.Directory := '.';
-  PluginListBox.Directory := sCurrentDir;
+  PluginListBox.Directory := ExtractFilePath(ParamStr(0)) + 'plugins\';
   PluginListBox.Refresh;
+
+  if  not ShowHiddenPlugins then
+  For i := PluginListBox.Count - 1 downto 0  do
+    for j := 0 to slhiddenDlls.Count -1 do
+      if PluginListBox.Items[i] = slhiddenDlls[j] then
+           PluginListBox.Items.Delete(i);
+
 end;
 
 procedure TSetupForm.PluginListBoxClick(Sender: TObject);

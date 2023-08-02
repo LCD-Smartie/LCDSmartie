@@ -273,13 +273,12 @@ begin
       LCDSmartieDisplayForm.ReInitLCD();
   end;
 
-    // time to go to sleep
-    if (wParam = PBT_APMSUSPEND) or
-       (wParam = PBT_APMSTANDBY) then
-    begin
-      LCDSmartieDisplayForm.FiniLCD(true);
-      LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
-    end;
+  // time to go to sleep
+  if (wParam = PBT_APMSUSPEND) or (wParam = PBT_APMSTANDBY) then
+  begin
+    LCDSmartieDisplayForm.FiniLCD(true);
+    LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
+  end;
 
   result:= CallWindowProc(LCDSmartieDisplayForm.PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
 end;
@@ -534,6 +533,11 @@ begin
       showmessage('Default configuration ('+ConfigFileName+') created')
   end;
 
+  if (config.alwaysOnTop) then
+    FormStyle := fsSystemStayOnTop
+  else
+    FormStyle := fsNormal;
+
   if (Config.MainFormCaption = '') then
     LCDSmartieDisplayForm.Caption := 'LCD Smartie ' + GetFmtFileVersion()
   else
@@ -563,6 +567,9 @@ begin
 
   InitLCD();
   ChangeScreen(1);
+
+  LCDSmartieDisplayForm.Top  := config.MainFormPosTop;
+  LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
 
   LCDSmartieDisplayForm.Visible:=true;
   if (config.bHideOnStartup) or not (ShowWindowFlag)  then
@@ -1088,14 +1095,6 @@ begin
       SetOnscreenBacklight();
     end;
 
-    if (config.alwaysOnTop <> bSavedAlwaysOnTop) then
-    if (config.alwaysOnTop) then
-      SetWindowPos(handle, HWND_TOPMOST, 0,0,0,0, SWP_NOMOVE or SWP_NOSIZE)
-    else
-      SetWindowPos(handle, HWND_NOTOPMOST, 0,0,0,0, SWP_NOMOVE or SWP_NOSIZE);
-
-    bSavedAlwaysOnTop := config.alwaysOnTop;
-
     if (config.width <> iSavedWidth) or (config.EmulateLCD <> bSavedEmulateLCD) then
     begin
       iSavedWidth := config.width;
@@ -1306,6 +1305,12 @@ begin
 
   setupform.Free;
   setupform := nil;
+
+  if (config.alwaysOnTop) then
+    FormStyle := fsSystemStayOnTop
+  else
+    FormStyle := fsNormal;
+
   UpdateTimersState(false);
     if (not config.screen[activeScreen].settings.bSticky) then
       LCDSmartieDisplayForm.NextScreenTimer.interval := config.screen[activeScreen].settings.showTime*1000;

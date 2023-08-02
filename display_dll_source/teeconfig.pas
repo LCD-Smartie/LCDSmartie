@@ -191,7 +191,5 @@ begin
   //DisplayPluginComboBoxChange(nil);
 end;
 
-
-
 end.
 
