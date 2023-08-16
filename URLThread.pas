@@ -117,11 +117,10 @@ begin
         httpCopy := @HTTP;
         fDataLock.Leave();
 
-        {
-        if (PostParameters.Count > 0) then
-        sl.Text := HTTP.Post(Url, Parameters)
+
+        if assigned(PostParameters) then
+        sl.Text := HTTP.Post(Url, PostParameters)
         else
-        }
         sl.Text := HTTP.Get(Url);
         // the get call can block for a long time so check if smartie is exiting
         if (Terminated) then raise EExiting.Create('');

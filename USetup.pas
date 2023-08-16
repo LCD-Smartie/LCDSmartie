@@ -56,57 +56,104 @@ type
     ActionsStringGrid: TStringGrid;
     ActionsTabSheet: TTabSheet;
     ActionsTimerSpinEdit: TSpinEdit;
+    AppendConfigNameCheckBox: TCheckBox;
     AutoStart: TRadioButton;
     AutoStartHide: TRadioButton;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
-    AppendConfigNameCheckBox: TCheckBox;
     BacklightBitBtn: TBitBtn;
     BoincServerIndexComboBox: TComboBox;
     AddRSSButton: TButton;
+    CustomTitleTIEdit1: TTIEdit;
+    DistributedNetBrowseButton: TSpeedButton;
+    DistributedNetLogfileEdit: TEdit;
+    GroupBox4: TGroupBox;
+    GroupBox5: TGroupBox;
+    IconSelectComboBox: TComboBox;
+    Label10: TLabel;
+    Label34: TLabel;
+    Label45: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    ExportMenuItem: TMenuItem;
+    ExportClipboard: TMenuItem;
+    ExportFile: TMenuItem;
+    ImportMenuItem: TMenuItem;
+    ImportClipboard: TMenuItem;
+    ImportFile: TMenuItem;
+    ActionsExportImportPoup: TPopupMenu;
+    SkinSelectComboBox: TComboBox;
+    GroupBox2: TGroupBox;
+    Label76: TLabel;
+    OpenPluginFolderButton: TButton;
+    CustomCharUseButton: TButton;
+    CustomCharCreateButton: TButton;
+    CustomCharInvertButton: TButton;
+    CustomCharClearButton: TButton;
+    CenterLine1CheckBox: TCheckBox;
+    CenterLine2CheckBox: TCheckBox;
+    CenterLine3CheckBox: TCheckBox;
+    CenterLine4CheckBox: TCheckBox;
+    CenterLine5CheckBox: TCheckBox;
+    CenterLine6CheckBox: TCheckBox;
+    CenterLine7CheckBox: TCheckBox;
+    CenterLine8CheckBox: TCheckBox;
+    ContinueLine1CheckBox: TCheckBox;
+    ContinueLine2CheckBox: TCheckBox;
+    ContinueLine3CheckBox: TCheckBox;
+    ContinueLine4CheckBox: TCheckBox;
+    ContinueLine5CheckBox: TCheckBox;
+    ContinueLine6CheckBox: TCheckBox;
+    ContinueLine7CheckBox: TCheckBox;
+    ContinueLine8CheckBox: TCheckBox;
+    DontScrollLine1CheckBox: TCheckBox;
+    DontScrollLine2CheckBox: TCheckBox;
+    DontScrollLine3CheckBox: TCheckBox;
+    DontScrollLine4CheckBox: TCheckBox;
+    DontScrollLine5CheckBox: TCheckBox;
+    DontScrollLine6CheckBox: TCheckBox;
+    DontScrollLine7CheckBox: TCheckBox;
+    DontScrollLine8CheckBox: TCheckBox;
     ExportLinesButton: TButton;
     ImportLinesButton: TButton;
     DuplicateActionButton: TButton;
     HidePluginMenuItem: TMenuItem;
+    Label20: TLabel;
+    Label21: TLabel;
+    Label75: TLabel;
+    Line1MemoEdit: TEdit;
+    Line2MemoEdit: TEdit;
+    Line3MemoEdit: TEdit;
+    Line4MemoEdit: TEdit;
+    Line5MemoEdit: TEdit;
+    Line6MemoEdit: TEdit;
+    Line7MemoEdit: TEdit;
+    Line8MemoEdit: TEdit;
+    ExportPopupMenu: TPopupMenu;
+    ImportPopupMenu: TPopupMenu;
+    ExportClipboardMenuItem: TMenuItem;
+    ExportFileMenuItem: TMenuItem;
+    ImportClipboardMenuItem: TMenuItem;
+    ImportFileMenuItem: TMenuItem;
+    ImportFileOpenDialog: TOpenDialog;
+    ExportFileSaveDialog: TSaveDialog;
+    CustomCharGridMirrorSpeedButton: TSpeedButton;
+    TrayIconPreview16: TImage;
+    TrayIconPreview32: TImage;
     UnHidePluginMenuItem: TMenuItem;
     ShowHiddenPluginsMenuItem: TMenuItem;
     PluginsListBoxPopupMenu: TPopupMenu;
     UpdateRSSButton: TButton;
     DeleteRSSButton: TButton;
-    CenterLine1CheckBox: TCheckBox;
-    CenterLine5CheckBox: TCheckBox;
-    CenterLine2CheckBox: TCheckBox;
-    CenterLine6CheckBox: TCheckBox;
-    CenterLine3CheckBox: TCheckBox;
-    CenterLine7CheckBox: TCheckBox;
-    CenterLine4CheckBox: TCheckBox;
-    CenterLine8CheckBox: TCheckBox;
-    ContinueLine1CheckBox: TCheckBox;
-    ContinueLine4CheckBox: TCheckBox;
-    ContinueLine2CheckBox: TCheckBox;
-    ContinueLine5CheckBox: TCheckBox;
-    ContinueLine3CheckBox: TCheckBox;
-    ContinueLine6CheckBox: TCheckBox;
-    ContinueLine7CheckBox: TCheckBox;
-    ContinueLine8CheckBox: TCheckBox;
     CopyToScreenSpinEdit: TSpinEdit;
     CustomCharsSizeEdit: TSpinEdit;
     CustomLinesSizeEdit: TSpinEdit;
-    DontScrollLine1CheckBox: TCheckBox;
-    DontScrollLine5CheckBox: TCheckBox;
-    DontScrollLine2CheckBox: TCheckBox;
-    DontScrollLine6CheckBox: TCheckBox;
-    DontScrollLine3CheckBox: TCheckBox;
-    DontScrollLine7CheckBox: TCheckBox;
-    DontScrollLine4CheckBox: TCheckBox;
-    DontScrollLine8CheckBox: TCheckBox;
     RSSNameEdit: TEdit;
     GroupBox11: TGroupBox;
     GroupBox12: TGroupBox;
     DontScrollGroupBox: TGroupBox;
-    CenterTextGroupBox: TGroupBox;
     ContinueNextLineGroupBox: TGroupBox;
     GroupBox9: TGroupBox;
     Label18: TLabel;
@@ -127,20 +174,12 @@ type
     PluginDeveloperLabel: TLabel;
     Line1EditButton: TSpeedButton;
     Line5EditButton: TSpeedButton;
-    Line1MemoEdit: TMemo;
-    Line5MemoEdit: TMemo;
     Line2EditButton: TSpeedButton;
     Line6EditButton: TSpeedButton;
-    Line2MemoEdit: TMemo;
-    Line6MemoEdit: TMemo;
     Line3EditButton: TSpeedButton;
     Line7EditButton: TSpeedButton;
-    Line3MemoEdit: TMemo;
-    Line7MemoEdit: TMemo;
     Line4EditButton: TSpeedButton;
     Line8EditButton: TSpeedButton;
-    Line4MemoEdit: TMemo;
-    Line8MemoEdit: TMemo;
     PluginDemoListBox: TListBox;
     MoveToScreenSpinEdit: TSpinEdit;
     ScreenEnabledCheckBox: TCheckBox;
@@ -163,6 +202,8 @@ type
     TimeToShowSpinEdit: TSpinEdit;
     TransitionStyleComboBox: TComboBox;
     TransitionTimeSpinEdit: TSpinEdit;
+    WebProxyPortEdit: TEdit;
+    WebProxyServerEdit: TEdit;
     WindowsVersionLabel: TLabel;
     pdhRefreshButton: TButton;
     Button2: TButton;
@@ -215,59 +256,16 @@ type
     BrightnessTrackBar: TTrackBar;
     Btn_PluginRefresh: TButton;
     ButtonsListBox: TListBox;
-    CCharCheckBox1: TCheckBox;
-    CCharCheckBox10: TCheckBox;
-    CCharCheckBox11: TCheckBox;
-    CCharCheckBox12: TCheckBox;
-    CCharCheckBox13: TCheckBox;
-    CCharCheckBox14: TCheckBox;
-    CCharCheckBox15: TCheckBox;
-    CCharCheckBox16: TCheckBox;
-    CCharCheckBox17: TCheckBox;
-    CCharCheckBox18: TCheckBox;
-    CCharCheckBox19: TCheckBox;
-    CCharCheckBox2: TCheckBox;
-    CCharCheckBox20: TCheckBox;
-    CCharCheckBox21: TCheckBox;
-    CCharCheckBox22: TCheckBox;
-    CCharCheckBox23: TCheckBox;
-    CCharCheckBox24: TCheckBox;
-    CCharCheckBox25: TCheckBox;
-    CCharCheckBox26: TCheckBox;
-    CCharCheckBox27: TCheckBox;
-    CCharCheckBox28: TCheckBox;
-    CCharCheckBox29: TCheckBox;
-    CCharCheckBox3: TCheckBox;
-    CCharCheckBox30: TCheckBox;
-    CCharCheckBox31: TCheckBox;
-    CCharCheckBox32: TCheckBox;
-    CCharCheckBox33: TCheckBox;
-    CCharCheckBox34: TCheckBox;
-    CCharCheckBox35: TCheckBox;
-    CCharCheckBox36: TCheckBox;
-    CCharCheckBox37: TCheckBox;
-    CCharCheckBox38: TCheckBox;
-    CCharCheckBox39: TCheckBox;
-    CCharCheckBox4: TCheckBox;
-    CCharCheckBox40: TCheckBox;
-    CCharCheckBox5: TCheckBox;
-    CCharCheckBox6: TCheckBox;
-    CCharCheckBox7: TCheckBox;
-    CCharCheckBox8: TCheckBox;
-    CCharCheckBox9: TCheckBox;
     CCharTabSheet: TTabSheet;
     ColorSchemeComboBox: TComboBox;
     ComPortsButton: TButton;
     ContrastTrackBar: TTrackBar;
     CopyToScreenButton: TButton;
     CreateCCharLocSpinEdit: TSpinEdit;
-    CreateCCharRadioButton: TRadioButton;
     DisplayGroup2: TGroupBox;
     DisplayPageControl: TPageControl;
     DisplayPluginList: TComboBox;
     DisplayPluginsLabel: TLabel;
-    DistributedNetBrowseButton: TSpeedButton;
-    DistributedNetLogfileEdit: TEdit;
     DLLCheckIntervalSpinEdit: TSpinEdit;
     MiConfigNameEdit: TEdit;
     EmailAccountComboBox: TComboBox;
@@ -300,7 +298,6 @@ type
     InternetListBox: TListBox;
     InternetTabSheet: TTabSheet;
     Label1: TLabel;
-    Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
@@ -310,8 +307,6 @@ type
     Label17: TLabel;
     Label19: TLabel;
     Label2: TLabel;
-    Label20: TLabel;
-    Label21: TLabel;
     Label22: TLabel;
     Label23: TLabel;
     Label24: TLabel;
@@ -325,7 +320,6 @@ type
     Label31: TLabel;
     Label32: TLabel;
     Label33: TLabel;
-    Label34: TLabel;
     Label35: TLabel;
     Label36: TLabel;
     Label37: TLabel;
@@ -333,7 +327,6 @@ type
     Label39: TLabel;
     Label40: TLabel;
     Label42: TLabel;
-    Label45: TLabel;
     Label48: TLabel;
     Label49: TLabel;
     Label50: TLabel;
@@ -343,9 +336,6 @@ type
     Label58: TLabel;
     Label59: TLabel;
     Label6: TLabel;
-    Label7: TLabel;
-    Label8: TLabel;
-    Label9: TLabel;
     LastKeyPressedEdit: TEdit;
     LCDFeaturesTabSheet: TTabSheet;
     LCDSizeComboBox: TComboBox;
@@ -389,8 +379,6 @@ type
     BOINCTabSheet: TTabSheet;
     BOINCEnableCheckBox: TCheckBox;
     ShutdownMessageGroup: TGroupBox;
-    SkinPath: TEdit;
-    SkinPathBrowseButton: TSpeedButton;
     RssMaxFreqSpinedit: TSpinEdit;
     RssItemNumSpinEdit: TSpinEdit;
     StartAsAdminCheckBox: TCheckBox;
@@ -405,21 +393,12 @@ type
     MiConfigsTabSheet: TTabSheet;
     MiRunningProcessesTabSheet: TTabSheet;
     MiStartupItemsTabSheet: TTabSheet;
-    CustomTitleTIEdit1: TTIEdit;
-    TrayIcon: TEdit;
-    TrayIconBrowseButton: TSpeedButton;
-    TrayIconPreview16: TImage;
-    TrayIconPreview32: TImage;
     UsageLabel: TLabel;
-    UseCCharLocSpinEdit: TSpinEdit;
-    UseCCharRadioButton2: TRadioButton;
     VariableEdit: TEdit;
     OpenDialog2: TOpenDialog;
     InsertButton: TButton;
     OpenDialog1: TOpenDialog;
     OpenIco: TOpenPictureDialog;
-    WebProxyPortEdit: TEdit;
-    WebProxyServerEdit: TEdit;
     WinampListBox: TListBox;
     WinampLocationBrowseButton: TSpeedButton;
     WinampLocationEdit: TEdit;
@@ -427,14 +406,30 @@ type
     WinampTabSheet: TTabSheet;
     procedure AddRSSButtonClick(Sender: TObject);
     procedure BacklightBitBtnClick(Sender: TObject);
-    procedure HidePluginMenuItemClick(Sender: TObject);
-    procedure ImportLinesButtonClick(Sender: TObject);
+    procedure CustomCharClearButtonClick(Sender: TObject);
+    procedure CustomCharCreateButtonClick(Sender: TObject);
+    procedure CustomCharGridMirrorSpeedButtonClick(Sender: TObject);
+    procedure CustomCharInvertButtonClick(Sender: TObject);
+    procedure CustomCharUseButtonClick(Sender: TObject);
+    procedure ExportClipboardClick(Sender: TObject);
+    procedure ExportFileClick(Sender: TObject);
+    procedure ExportFileMenuItemClick(Sender: TObject);
     procedure ExportLinesButtonClick(Sender: TObject);
+    procedure HidePluginMenuItemClick(Sender: TObject);
+    procedure IconSelectComboBoxChange(Sender: TObject);
+    procedure IconSelectComboBoxGetItems(Sender: TObject);
+    procedure ImportClipboardClick(Sender: TObject);
+    procedure ImportFileClick(Sender: TObject);
+    procedure ImportFileMenuItemClick(Sender: TObject);
+    procedure ImportLinesButtonClick(Sender: TObject);
+    procedure ImportLinesClipboardMenuItemClick(Sender: TObject);
+    procedure ExportLinesClipboardMenuitemClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure DeleteRSSButtonClick(Sender: TObject);
     procedure DuplicateActionButtonClick(Sender: TObject);
     procedure FormChangeBounds(Sender: TObject);
     procedure InfoTimerTimer(Sender: TObject);
+    procedure OpenPluginFolderButtonClick(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
     procedure PerfCountersListBoxClick(Sender: TObject);
     procedure PerfSettingsIndexComboBoxChange(Sender: TObject);
@@ -445,6 +440,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ScrollBox1Resize(Sender: TObject);
     procedure ShowHiddenPluginsMenuItemClick(Sender: TObject);
+    procedure SkinSelectComboBoxChange(Sender: TObject);
+    procedure SkinSelectComboBoxGetItems(Sender: TObject);
     procedure Splitter1ChangeBounds(Sender: TObject);
     procedure UnHidePluginMenuItemClick(Sender: TObject);
     procedure UpdateRSSButtonClick(Sender: TObject);
@@ -523,11 +520,8 @@ type
     procedure Btn_PluginRefreshClick(Sender: TObject);
     procedure PluginListBoxClick(Sender: TObject);
     procedure ShutdownEditEnter(Sender: TObject);
-    procedure TrayIconBrowseButtonClick(Sender: TObject);
     procedure DrawPreviewIcons(const sIconFileName: string);
-    procedure SkinPathBrowseButtonClick(Sender: TObject);
     procedure LineEditClick(Sender: TObject);
-    procedure OpeIcoFolderChange(Sender: TObject);
     procedure CCharEditGridChange(Sender: TObject);
     procedure NetworkStatsAdapterListButtonClick(Sender: TObject);
     procedure CopyToScreenButtonClick(Sender: TObject);
@@ -545,8 +539,10 @@ type
     procedure PluginListBoxDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
   private
+    CustomCharCheckBoxes: Array[0..40] of TCheckBox;
+    SavedCustomCharButtons: Array[0..32] of TSpeedButton;
     FormEditArray: Array [1..MaxLines] of TFormEdit;
-    LineEditArray: Array[1..MaxLines] of TMemo;
+    LineEditArray: Array[1..MaxLines] of TEdit;
     LineEditButtonArray: Array[1..MaxLines] of TSpeedButton;
     ContinueLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
     DontScrollLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
@@ -559,13 +555,15 @@ type
     CurrentScreen: integer;
     DetectedOS: string;
     ShowHiddenPlugins: boolean;
+    MirrorCustomArray: TCustomArray;
     procedure FocusToInputField;
     procedure SaveScreen(scr: integer);
     procedure LoadScreen(scr: integer);
     procedure LoadHint(DisplayDLLName: string);
     procedure LoadConfig(Sender: TObject);
     procedure LoadSettings(Sender: TObject);
-
+    procedure CustomCharToButtonGlyph(ButtonNum: integer; CustomArray: TCustomArray);
+    procedure SavedCustomCharButtonClick(Sender: TObject);
   end;
 
 procedure UpdateSetupForm(cKey: char);
@@ -791,7 +789,68 @@ begin
   end;
 end;
 
+
+////////////////////////////
+// Import/Export lines /////
+////////////////////////////
 procedure TSetupForm.ImportLinesButtonClick(Sender: TObject);
+begin
+  ImportPopupMenu.PopUp;
+end;
+
+procedure TSetupForm.ExportLinesButtonClick(Sender: TObject);
+begin
+  ExportPopupMenu.PopUp;
+end;
+
+procedure TSetupForm.ImportFileMenuItemClick(Sender: TObject);
+var
+  Lines: TStringlist;
+  str: string;
+  i, j: integer;
+begin
+
+  if ImportFileOpenDialog.Execute then
+  begin
+    Lines := TStringlist.Create;
+    Lines.LoadFromFile(ImportFileOpenDialog.FileName);
+    For i := 0 to lines.Count -1 do
+    begin
+      str := lines[i];
+      for j := 1 to MaxLines do
+      begin
+        if (pos('Text0'+inttostr(j)+'="', str) > 0) then
+        begin
+          // is the line longer than Text0N=" and is the last char "
+          if (length(str) > 8) and (copy(str, length(str), 1) = '"') then
+          begin
+            // looks good copy the text
+            LineEditArray[j].Text := copy(str, 9 , length(str) - 9);
+          end;
+        end;
+      end;
+    end;
+    Lines.Free;
+  end;
+end;
+
+procedure TSetupForm.ExportFileMenuItemClick(Sender: TObject);
+var
+  Lines: TStringlist;
+  i: integer;
+begin
+  ExportFileSaveDialog.FileName := ('screen'+inttostr(ScreenSpinEdit.Value)+'.txt');
+  if ExportFileSaveDialog.Execute then
+  begin
+    Lines := TStringlist.Create;
+    for i := 1 to MaxLines do
+      Lines.Add('Text0'+inttostr(i)+'="'+LineEditArray[i].Text+'"');
+
+    Lines.SaveToFile(ExportFileSaveDialog.Filename);
+  end;
+end;
+
+procedure TSetupForm.ImportLinesClipboardMenuItemClick(Sender: TObject);
 var
   Clipboard: TClipboard;
   Lines: TStringlist;
@@ -810,7 +869,7 @@ begin
     begin
       if (pos('Text0'+inttostr(j)+'="', str) > 0) then
       begin
-        // is the line longer than Text0N=" and is the last char a "
+        // is the line longer than Text0N=" and is the last char "
         if (length(str) > 8) and (copy(str, length(str), 1) = '"') then
         begin
           // looks good copy the text
@@ -819,9 +878,11 @@ begin
       end;
     end;
   end;
+  Lines.Free;
+  Clipboard.free;
 end;
 
-procedure TSetupForm.ExportLinesButtonClick(Sender: TObject);
+procedure TSetupForm.ExportLinesClipboardMenuitemClick(Sender: TObject);
 var
   Clipboard: TClipboard;
   Lines: TStringlist;
@@ -834,6 +895,7 @@ begin
     Lines.Add('Text0'+inttostr(i)+'="'+LineEditArray[i].Text+'"');
 
   Clipboard.AsText := Lines.Text;
+  Lines.Free;
   Clipboard.Free;
 end;
 
@@ -945,6 +1007,10 @@ begin
   WindowsVersionLabel.Caption := DetectedOS;
 end;
 
+procedure TSetupForm.OpenPluginFolderButtonClick(Sender: TObject);
+begin
+  ShellExecute(0, Nil, pchar('plugins'), Nil, Nil, SW_NORMAL);
+end;
 
 procedure TSetupForm.PerfSettingsIndexComboBoxChange(Sender: TObject);
 var
@@ -1183,9 +1249,9 @@ begin
   ProgramRefreshIntervalSpinEdit.Value := config.refreshRate;
   WinampLocationEdit.Text := config.winampLocation;
   ColorSchemeComboBox.ItemIndex := config.colorOption;
-  TrayIcon.Text := config.sTrayIcon;
-  SkinPath.Text := config.sSkinPath;
-  DrawPreviewIcons(TrayIcon.Text);
+  IconSelectComboBox.Text := config.sTrayIcon;
+  SkinSelectComboBox.Text := config.sSkinPath;
+  DrawPreviewIcons(IconSelectComboBox.Text);
 
   DistributedNetLogfileEdit.Text := config.distLog;
 
@@ -1317,7 +1383,7 @@ end;
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
   aCol, aRow: integer; var Editor: TWinControl);
 var
-  Items: array [0..32] of string = ('NextTheme', 'LastTheme',
+  Items: array [0..34] of string = ('NextTheme', 'LastTheme',
     'NextScreen', 'LastScreen', 'GotoTheme(2)',
     'GotoScreen(2)', 'FreezeScreen', 'UnfreezeScreen', 'ToggleFreeze',
     'Refresh all data', 'Backlight(0/1) (0=off 1=on)',
@@ -1330,7 +1396,7 @@ var
     'DisableScreen(1-99)', '$dll(name.dll,2,param1,param2)',
     'GPO(1-8,0/1) (0=off 1=on)', 'GPOToggle(1-8)', 'SystemVolumeDown',
     'SystemVolumeMute', 'SystemVolumeUp',
-    'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)');
+    'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)', 'HTTPReq(URL)', 'HTTPPost(URL,Key1=Data1,Key2=Data2,...)');
 begin
   if aCol = 2 then
   begin
@@ -1346,10 +1412,20 @@ end;
 
 procedure TSetupForm.ActionsStringGridMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  pnt: TPoint;
 begin
   ActionsStringGrid.MouseToCell(X, Y, SourceCol, SourceRow);
-  ActionsStringGrid.BeginDrag(False, 4);
+  ActionsStringGrid.Row := SourceRow;
+  if button = mbRight then
+  begin
+    if GetCursorPos(pnt) then
+    ActionsExportImportPoup.Popup(pnt.X, pnt.Y);
+  end
+  else
+    ActionsStringGrid.BeginDrag(False, 4);
 end;
+
 
 procedure TSetupForm.ActionsStringGridDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
@@ -1503,7 +1579,6 @@ begin
   if LineCount < 1 then LineCount := 1;
   DontScrollGroupBox.Height := 10 + (23 * LineCount);
   ContinueNextLineGroupBox.Height := DontScrollGroupBox.Height;
-  CenterTextGroupBox.Height := DontScrollGroupBox.Height;
 
   for loop :=1 to MaxLines do
   begin
@@ -2771,10 +2846,10 @@ begin
   LCDSmartieDisplayForm.Data.RefreshDataThreads;
   {$ENDIF}
   config.LastTabIndex := LeftPageControl.ActivePageIndex;
-  if config.sSkinPath <> SkinPath.Text then ReloadSkin := True;
-  if config.sTrayIcon <> TrayIcon.Text then ReloadSkin := True;
-  config.sSkinPath := SkinPath.Text;
-  config.sTrayIcon := TrayIcon.Text;
+  if config.sSkinPath <> SkinSelectComboBox.Text then ReloadSkin := True;
+  if config.sTrayIcon <> IconSelectComboBox.Text then ReloadSkin := True;
+  config.sSkinPath := SkinSelectComboBox.Text;
+  config.sTrayIcon := IconSelectComboBox.Text;
   {$IFNDEF STANDALONESETUP}
   if ReloadSkin then
   begin
@@ -2824,6 +2899,7 @@ procedure TSetupForm.FormCreate(Sender: TObject);
 var
   pathssl: string;
   oviVersionInfo: windows.TOSVERSIONINFO;
+  i, j, k: integer;
 begin
   {$IFDEF STANDALONESETUP}
   SetupForm.BorderStyle := bsSingle;
@@ -2878,6 +2954,47 @@ begin
     +'.'+ inttostr(oviVersionInfo.dwBuildNumber);
 
   Caption := 'LCD Smartie ' + GetFmtFileVersion() + ' Setup';
+
+  k := 0;
+  for i := 0 to 7 do
+  begin
+    for j := 0 to 4 do
+    begin
+      CustomCharCheckBoxes[k] := TCheckBox.create(nil);
+      CustomCharCheckBoxes[k].Parent := Panel2;
+      CustomCharCheckBoxes[k].Visible:=true;
+      CustomCharCheckBoxes[k].Top := 8 + (16 * i);
+      CustomCharCheckBoxes[k].Left := 16 + (16 * j);
+      CustomCharCheckBoxes[k].OnClick := CCharEditGridChange;
+      inc(k);
+    end;
+  end;
+
+  k := 0;
+  for i := 0 to 3 do
+  begin
+    for j := 0 to 7 do
+    begin
+      SavedCustomCharButtons[k] := TSpeedButton.create(nil);
+      SavedCustomCharButtons[k].Parent := CCharTabSheet;
+      SavedCustomCharButtons[k].Visible:=true;
+      SavedCustomCharButtons[k].Top := 168 + (24 * i);
+      SavedCustomCharButtons[k].Left := 8 + (24 * j);
+      SavedCustomCharButtons[k].ImageIndex:= 0;
+      SavedCustomCharButtons[k].GroupIndex:=1;
+      SavedCustomCharButtons[k].Hint := 'Each button is a save slot for easy access to your custom characters';
+      SavedCustomCharButtons[k].ShowHint := true;
+      // load customs
+      CustomCharToButtonGlyph(k, config.SavedCustomChars[k]);
+      SavedCustomCharButtons[k].OnClick := SavedCustomCharButtonClick;
+      inc(k);
+    end;
+  end;
+  SavedCustomCharButtons[0].Down := true;
+  SavedCustomCharButtonClick(SavedCustomCharButtons[0]);
+
+  SkinSelectComboBoxGetItems(nil);
+  IconSelectComboBoxGetItems(nil);
 end;
 
 procedure TSetupForm.MainPageControlChange(Sender: TObject);
@@ -3235,52 +3352,20 @@ begin
   end;
 end;
 
-
 /////////////////////////////////////////////////////////////////
 ////////////////////////// ICON PATH ////////////////////////////
 /////////////////////////////////////////////////////////////////
-procedure TSetupForm.TrayIconBrowseButtonClick(Sender: TObject);
-var
-  bEnd: bool;
-  s: string;
-begin
-  bEnd := False;
-  repeat
-    begin
-      OpenIco.InitialDir := ExtractFilePath(application.exename) + SkinPath.Text;
-      OpenIco.FileName := TrayIcon.Text;
-
-      if OpenIco.Execute() then
-      begin
-        s := ExtractFilePath(OpenIco.FileName);
-        if s = OpenIco.InitialDir then
-          bEnd := True
-        else
-          ShowMessage('Error' + sLineBreak +
-            'Tray Icon can be only in the current selected Skin path');
-      end
-      else
-        bEnd := True;
-    end
-  until bEnd;
-
-  TrayIcon.Text := extractfilename(OpenIco.FileName);
-  DrawPreviewIcons(TrayIcon.Text);
-end;
-
-procedure TSetupForm.OpeIcoFolderChange(Sender: TObject);
-begin
-  OpenIco.InitialDir := ExtractFilePath(application.exename) + SkinPath.Text;
-end;
-
-
 procedure TSetupForm.DrawPreviewIcons(const sIconFileName: string);
 var
   hIcon: tIcon;
   IconPathName: string;
 begin
   hIcon := TIcon.Create;
-  IconPathName := extractfilepath(application.exename) + SkinPath.Text + sIconFileName;
+  if sIconFileName = 'default for this skin' then
+    IconPathName := extractfilepath(application.exename) + LCDSmartieDisplayForm.sSkinDir + config.sSkinPath + '\smartie.ico'
+  else
+    IconPathName := extractfilepath(application.exename) + LCDSmartieDisplayForm.sSkinDir + sIconFileName;
+
   try
     GetIconFromFile(IconPathName, hIcon, SHIL_SMALL);
     TrayIconPreview16.Picture.Icon.Assign(hIcon);
@@ -3291,10 +3376,36 @@ begin
     on E: Exception do
     begin
       ShowMessage('Error' + sLineBreak + 'Unable to load Tray Icon from Skin path, ' +
-        SkinPath.Text + sIconFileName + ': ' + E.Message);
+        LCDSmartieDisplayForm.sSkinDir + sIconFileName + ': ' + E.Message);
     end;
   end;
   hIcon.Free;
+end;
+
+procedure TSetupForm.IconSelectComboBoxChange(Sender: TObject);
+begin
+  DrawPreviewIcons(IconSelectComboBox.Text);
+end;
+
+procedure TSetupForm.IconSelectComboBoxGetItems(Sender: TObject);
+ var
+   IconFiles: TStringList;
+   s: string;
+   i: integer;
+begin
+  IconFiles := TStringList.Create;
+  FindAllFiles(IconFiles, LCDSmartieDisplayForm.sSkinDir, '*.ico', true);
+  IconSelectComboBox.Items := IconFiles;
+
+  s := IconSelectComboBox.Text;
+  IconSelectComboBox.Clear;
+  IconSelectComboBox.Text := s;
+  for i := 0 to IconFiles.Count -1 do
+  begin
+    s := StringReplace(IconFiles[i], LCDSmartieDisplayForm.sSkinDir, '', [rfIgnoreCase]);
+    IconSelectComboBox.Items.Add(s);
+  end;
+  IconSelectComboBox.Items.Insert(0, 'default for this skin');
 end;
 
 function MyFileExists(const FileName: string): boolean;
@@ -3318,29 +3429,35 @@ end;
 /////////////////////////////////////////////////////////////////
 ////////////////////////// SKIN PATH ////////////////////////////
 /////////////////////////////////////////////////////////////////
-procedure TSetupForm.SkinPathBrowseButtonClick(Sender: TObject);
-var
-  b, f, s, x: string;
+procedure TSetupForm.SkinSelectComboBoxChange(Sender: TObject);
 begin
-  b := ExtractFilePath(application.exename);
-  f := '\images';
-  if SelectDirectory('Select a skin directory', b, f) then
+  config.sSkinPath := SkinSelectComboBox.Text;
+  LCDSmartieDisplayForm.LoadSkin();
+  LCDSmartieDisplayForm.LoadColors();
+end;
+
+procedure TSetupForm.SkinSelectComboBoxGetItems(Sender: TObject);
+var
+  ColorsFiles: TStringList;
+  s: string;
+  i: integer;
+begin
+  ColorsFiles := TStringList.Create;
+  FindAllFiles(ColorsFiles, LCDSmartieDisplayForm.sSkinDir, 'colors.cfg', true);
+  s := SkinSelectComboBox.Text;
+  SkinSelectComboBox.Clear;
+  SkinSelectComboBox.Text := s;
+  for i := 0 to ColorsFiles.Count -1 do
   begin
-    x := f + '\colors.cfg';
-    if MyFileExists(x) then
-    begin
-      s := ExtractRelativePath(b, f);
-      SkinPath.Text := s + '\';
-    end
-    else
-      ShowMessage('Selected directory does not contain a valid skin');
+    s := StringReplace(ColorsFiles[i], LCDSmartieDisplayForm.sSkinDir, '', [rfIgnoreCase]);
+    s := StringReplace(s, '\colors.cfg', '', [rfIgnoreCase]);
+    SkinSelectComboBox.Items.Add(s);
   end;
 end;
 
 /////////////////////////////////////////////////////////////////
 ////////////// LINE EDIT FORM BUTTONS ///////////////////////////
 /////////////////////////////////////////////////////////////////
-
 procedure TSetupForm.LineEditClick(Sender: TObject);
 var
   loop: integer;
@@ -3439,104 +3556,357 @@ end;
 /////////////////////////////////////////////////////////////////
 ////////////// CUSTOM CHAR EDIT TAB /////////////////////////////
 /////////////////////////////////////////////////////////////////
+procedure TSetupForm.CustomCharToButtonGlyph(ButtonNum: integer; CustomArray: TCustomArray);
+var
+  bitmap: TBitmap;
+  x, y: integer;
+begin
+  bitmap := TBitmap.Create;
+  bitmap.Width := 5;
+  bitmap.Height := 8;
+  with bitmap.Canvas do
+  for X := 0 to 5-1 do begin
+    for Y := 0 to 8-1 do begin
+      if ((CustomArray[Y] and (1 shl X)) > 0) then
+        Pixels[5-1-X,Y] := clBlack
+      else
+        Pixels[5-1-X,Y] := SavedCustomCharButtons[0].Color;
+    end;
+  end ;
+  SavedCustomCharButtons[ButtonNum].Glyph.Width := 10;
+  SavedCustomCharButtons[ButtonNum].Glyph.Height := 16;
+  SavedCustomCharButtons[ButtonNum].Glyph.Canvas.StretchDraw(Rect(0, 0, 10, 16), bitmap);
+  bitmap.free;
+end;
 
-function GetAllCheckboxes(_frm: TForm): TCheckBoxArray;
+procedure TSetupForm.CustomCharClearButtonClick(Sender: TObject);
 var
   i: integer;
-  cmp: TComponent;
 begin
-  SetLength(Result, _frm.ComponentCount);
-  i := 1;
-  repeat
-    cmp := _frm.FindComponent('CCharCheckBox' + IntToStr(i));
-    if cmp <> nil then
+  for i := 0 to 39 do
+      CustomCharCheckBoxes[i].Checked := False;
+end;
+
+procedure TSetupForm.CustomCharCreateButtonClick(Sender: TObject);
+var
+  loc, i: integer;
+begin
+  loc := CreateCCharLocSpinEdit.Value;
+  for i := 0 to 31 do
+  begin
+    if SavedCustomCharButtons[i].Down then
     begin
-      Result[i - 1] := cmp as TCheckBox;
-      Inc(i);
+      VariableEdit.Text := '$CustomChar(' + IntToStr(loc) +
+        ',' + IntToStr(config.SavedCustomChars[i][0]) +
+        ',' + IntToStr(config.SavedCustomChars[i][1]) +
+        ',' + IntToStr(config.SavedCustomChars[i][2]) +
+        ',' + IntToStr(config.SavedCustomChars[i][3]) +
+        ',' + IntToStr(config.SavedCustomChars[i][4]) +
+        ',' + IntToStr(config.SavedCustomChars[i][5]) +
+        ',' + IntToStr(config.SavedCustomChars[i][6]) +
+        ',' + IntToStr(config.SavedCustomChars[i][7]) + ')';
+      InsertButtonClick(nil);
+      break;
     end;
-  until cmp = nil;
-  SetLength(Result, i - 1);
+  end;
+end;
+
+procedure TSetupForm.CustomCharGridMirrorSpeedButtonClick(Sender: TObject);
+var
+  i, X, Y: integer;
+begin
+  // disable grid updates
+  for i := 0 to 39 do
+    CustomCharCheckBoxes[i].OnClick := nil;
+  i := 0;
+  for Y := 0 to 8-1 do begin
+    for X := 4 downto 0 do begin
+      if ((MirrorCustomArray[Y] and (1 shl X)) > 0) then
+        CustomCharCheckBoxes[i].Checked := true
+      else
+        CustomCharCheckBoxes[i].Checked := false;
+      inc(i);
+    end;
+  end;
+  // re-enable grid updates
+  for i := 0 to 39 do
+    CustomCharCheckBoxes[i].OnClick := CCharEditGridChange;
+  CCharEditGridChange(nil);
+end;
+
+
+procedure TSetupForm.CustomCharInvertButtonClick(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := 0 to 39 do
+      CustomCharCheckBoxes[i].Checked := not CustomCharCheckBoxes[i].Checked;
+end;
+
+procedure TSetupForm.CustomCharUseButtonClick(Sender: TObject);
+begin
+  VariableEdit.Text := '$Chr('+IntToStr(CreateCCharLocSpinEdit.Value -1)+')';
+  InsertButtonClick(nil);
+end;
+
+procedure TSetupForm.ExportClipboardClick(Sender: TObject);
+var
+  Clipboard: TClipboard;
+  ActionStrings: TStringList;
+begin
+  Clipboard := TClipboard.Create;
+  ActionStrings := TStringList.Create;
+  // add the Action01XXX just to give us something to validate when importing
+  ActionStrings.Add('Action01Variable=' + config.actionsArray[ActionsStringGrid.Row+1, 1]); // Variable
+  ActionStrings.Add('Action01Condition=' + config.actionsArray[ActionsStringGrid.Row+1, 2]); // Condition
+  ActionStrings.Add('Action01ConditionValue=' + config.actionsArray[ActionsStringGrid.Row+1, 3]); // ConditionValue
+  ActionStrings.Add('Action01Action=' + config.actionsArray[ActionsStringGrid.Row+1, 4]); // ActionStrings
+  Clipboard.AsText := ActionStrings.Text;
+  ActionStrings.Free;
+  Clipboard.Free;
+end;
+
+procedure TSetupForm.ExportFileClick(Sender: TObject);
+var
+  ActionStrings: TStringlist;
+begin
+  ExportFileSaveDialog.FileName := ('Action.txt');
+  if ExportFileSaveDialog.Execute then
+  begin
+    ActionStrings := TStringlist.Create;
+    ActionStrings.Add('Action01Variable=' + config.actionsArray[ActionsStringGrid.Row+1, 1]); // Variable
+    ActionStrings.Add('Action01Condition=' + config.actionsArray[ActionsStringGrid.Row+1, 2]); // Condition
+    ActionStrings.Add('Action01ConditionValue=' + config.actionsArray[ActionsStringGrid.Row+1, 3]); // ConditionValue
+    ActionStrings.Add('Action01Action=' + config.actionsArray[ActionsStringGrid.Row+1, 4]); // ActionStrings
+    ActionStrings.SaveToFile(ExportFileSaveDialog.Filename);
+  end;
+end;
+
+procedure TSetupForm.ImportClipboardClick(Sender: TObject);
+var
+  Clipboard: TClipboard;
+  ActionStrings: TStringList;
+  i, selection: integer;
+  ActOpr: string;
+begin
+  Clipboard := TClipboard.Create;
+  ActionStrings := TStringList.Create;
+  ActionStrings.AddText(Clipboard.AsText);
+
+  if (pos('Action', ActionStrings[0]) > 0) then
+  begin
+    i := pos('=', ActionStrings[0]);
+    if i > 0  then
+    begin
+      Selection := ActionsStringGrid.Selection.Top;
+      ActionsStringGrid.InsertColRow(false, Selection +1);
+      ActionsStringGrid.Cells[0, Selection +1] := 'if';
+      ActionsStringGrid.Cells[1, Selection +1] := copy(ActionStrings[0], i + 1, 255);
+      i := pos('=', ActionStrings[1]);
+      if i > 0 then
+      begin
+        case (StrToInt(copy(ActionStrings[1], i+1,1))) of
+            0: ActOpr := '>';
+            1: ActOpr := '<';
+            2: ActOpr := '=';
+            3: ActOpr := '<=';
+            4: ActOpr := '>=';
+          else
+            ActOpr := '<>';
+          end;
+          ActionsStringGrid.Cells[2, Selection +1] := ActOpr;
+        i := pos('=', ActionStrings[2]);
+        if i > 0 then
+        begin
+          ActionsStringGrid.Cells[3, Selection +1] := copy(ActionStrings[2], i + 1, 255);
+          ActionsStringGrid.Cells[4, Selection +1] := 'then';
+          i := pos('=', ActionStrings[3]);
+          if i > 0 then begin
+            ActionsStringGrid.Cells[5, Selection +1] := copy(ActionStrings[3], i + 1, 255);
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TSetupForm.ImportFileClick(Sender: TObject);
+var
+  ActionStrings: TStringlist;
+  i, Selection: integer;
+  ActOpr: string;
+begin
+  if ImportFileOpenDialog.Execute then
+  begin
+    ActionStrings := TStringList.Create;
+    ActionStrings.LoadFromFile(ImportFileOpenDialog.FileName);
+
+    if (pos('Action', ActionStrings[0]) > 0) then
+    begin
+      i := pos('=', ActionStrings[0]);
+      if i > 0  then
+      begin
+        Selection := ActionsStringGrid.Selection.Top;
+        ActionsStringGrid.InsertColRow(false, Selection +1);
+        ActionsStringGrid.Cells[0, Selection +1] := 'if';
+        ActionsStringGrid.Cells[1, Selection +1] := copy(ActionStrings[0], i + 1, 255);
+        i := pos('=', ActionStrings[1]);
+        if i > 0 then
+        begin
+          case (StrToInt(copy(ActionStrings[1], i+1,1))) of
+            0: ActOpr := '>';
+            1: ActOpr := '<';
+            2: ActOpr := '=';
+            3: ActOpr := '<=';
+            4: ActOpr := '>=';
+          else
+            ActOpr := '<>';
+          end;
+          ActionsStringGrid.Cells[2, Selection +1] := ActOpr;
+          i := pos('=', ActionStrings[2]);
+          if i > 0 then
+          begin
+            ActionsStringGrid.Cells[3, Selection +1] := copy(ActionStrings[2], i + 1, 255);
+            ActionsStringGrid.Cells[4, Selection +1] := 'then';
+            i := pos('=', ActionStrings[3]);
+            if i > 0 then begin
+              ActionsStringGrid.Cells[5, Selection +1] := copy(ActionStrings[3], i + 1, 255);
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+{
+procedure TSetupForm.DuplicateActionButtonClick(Sender: TObject);
+var
+  Selection: integer;
+begin
+  Selection := ActionsStringGrid.Selection.Top;
+  ActionsStringGrid.InsertColRow(false, Selection +1);
+  ActionsStringGrid.Cells[0, Selection +1] := 'if';
+  ActionsStringGrid.Cells[1, Selection +1] := ActionsStringGrid.Cells[1, Selection];
+  ActionsStringGrid.Cells[2, Selection +1] := ActionsStringGrid.Cells[2, Selection];
+  ActionsStringGrid.Cells[3, Selection +1] := ActionsStringGrid.Cells[3, Selection];
+  ActionsStringGrid.Cells[4, Selection +1] := 'then';
+  ActionsStringGrid.Cells[5, Selection +1] := ActionsStringGrid.Cells[5, Selection];
+  ActionsStringGridUpdateScrollBar;
+end;
+}
+procedure TSetupForm.SavedCustomCharButtonClick(Sender: TObject);
+var
+  i, j, x, y: integer;
+  button: TSpeedButton;
+  CustomArray: TCustomArray;
+begin
+  // disable grid updates
+  for i := 0 to 39 do
+    CustomCharCheckBoxes[i].OnClick := nil;
+
+  button := Sender as TSpeedButton;
+
+  for i := 0 to 31 do
+  begin
+    if button = SavedCustomCharButtons[i] then
+    begin
+      j := 0;
+      CustomArray := config.SavedCustomChars[i];
+      for Y := 0 to 8-1 do begin
+        for X := 4 downto 0 do begin
+          if ((CustomArray[Y] and (1 shl X)) > 0) then
+            CustomCharCheckBoxes[j].Checked := true
+          else
+            CustomCharCheckBoxes[j].Checked := false;
+          inc(j);
+        end;
+      end;
+      break;
+    end;
+  end;
+  // re-enable grid updates
+  for i := 0 to 39 do
+    CustomCharCheckBoxes[i].OnClick := CCharEditGridChange;
 end;
 
 procedure TSetupForm.CCharEditGridChange(Sender: TObject);
 type
   TLineArray = array [1..8] of integer;
 var
-  CheckBoxes: TCheckBoxArray;
-  i: integer;
+  i, j: integer;
   box: integer;
   CCharLine: TLineArray;
-const
-  CCharLocation: TLineArray = (176, 158, 131, 132, 133, 134, 135, 136);
+  bitmap: TBitmap;
+  x, y: integer;
 begin
-
   box := 0;
-  CheckBoxes := GetAllCheckboxes(SetupForm);
-
-  if CreateCCharRadioButton.Checked then
+  i := 1;
+  while box < 40 do
   begin
-    CreateCCharLocSpinEdit.Enabled := True;
-    UseCCharLocSpinEdit.Enabled := False;
-
-    for i := 0 to 39 do
+    CCharLine[i] := 0;
+    if CustomCharCheckBoxes[box].Checked then
     begin
-      CheckBoxes[i].Enabled := True;
+      CCharLine[i] := CCharLine[i] + 16;
     end;
-
-    i := 1;
-    while box < 40 do
+    Inc(box);
+    if CustomCharCheckBoxes[box].Checked then
     begin
-      CCharLine[i] := 0;
-      if CheckBoxes[box].Checked then
-      begin
-        CCharLine[i] := CCharLine[i] + 16;
-      end;
-      Inc(box);
-      if CheckBoxes[box].Checked then
-      begin
-        CCharLine[i] := CCharLine[i] + 8;
-      end;
-      Inc(box);
-      if CheckBoxes[box].Checked then
-      begin
-        CCharLine[i] := CCharLine[i] + 4;
-      end;
-      Inc(box);
-      if CheckBoxes[box].Checked then
-      begin
-        CCharLine[i] := CCharLine[i] + 2;
-      end;
-      Inc(box);
-      if CheckBoxes[box].Checked then
-      begin
-        CCharLine[i] := CCharLine[i] + 1;
-      end;
-      Inc(box);
-      Inc(i);
+      CCharLine[i] := CCharLine[i] + 8;
     end;
-
-    VariableEdit.Text := '$CustomChar(' + IntToStr(CreateCCharLocSpinEdit.Value) +
-      ',' + IntToStr(CCharLine[1]) + ',' + IntToStr(CCharLine[2]) + ',' + IntToStr(
-      CCharLine[3]) + ',' + IntToStr(CCharLine[4]) + ',' + IntToStr(CCharLine[5]) +
-      ',' + IntToStr(CCharLine[6]) + ',' + IntToStr(CCharLine[7]) + ',' + IntToStr(CCharLine[8]) + ')';
-  end
-  else
-  begin
-    CreateCCharLocSpinEdit.Enabled := False;
-    UseCCharLocSpinEdit.Enabled := True;
-
-    for i := 0 to 39 do
+    Inc(box);
+    if CustomCharCheckBoxes[box].Checked then
     begin
-      CheckBoxes[i].Enabled := False;
+      CCharLine[i] := CCharLine[i] + 4;
     end;
-    VariableEdit.Text := '$Chr(' + IntToStr(
-      CCharLocation[UseCCharLocSpinEdit.Value]) + ')';
+    Inc(box);
+    if CustomCharCheckBoxes[box].Checked then
+    begin
+      CCharLine[i] := CCharLine[i] + 2;
+    end;
+    Inc(box);
+    if CustomCharCheckBoxes[box].Checked then
+    begin
+      CCharLine[i] := CCharLine[i] + 1;
+    end;
+    Inc(box);
+    Inc(i);
   end;
-  checkboxes := nil;
+
+  // copy to the mirror
+  for i := 0 to 7 do
+    MirrorCustomArray[i] := CCharLine[i+1];
+  bitmap := TBitmap.Create;
+  bitmap.Width := 5;
+  bitmap.Height := 8;
+  with bitmap.Canvas do
+    for X := 0 to 5-1 do begin
+      for Y := 0 to 8-1 do begin
+        if ((CCharLine[Y+1] and (1 shl X)) > 0) then
+          Pixels[5-1-X,Y] := clBlack
+        else
+          Pixels[5-1-X,Y] := CustomCharGridMirrorSpeedButton.Color;
+      end;
+    end ;
+  CustomCharGridMirrorSpeedButton.Glyph.Width := 10;
+  CustomCharGridMirrorSpeedButton.Glyph.Height := 16;
+  CustomCharGridMirrorSpeedButton.Glyph.Canvas.StretchDraw(Rect(0, 0, 10, 16), bitmap);
+  bitmap.free;
+
+  // save to the char selected
+  for i := 0 to 31 do
+  begin
+    if SavedCustomCharButtons[i].Down then
+    begin
+      for j := 0 to 7 do
+      config.SavedCustomChars[i][j] := CCharLine[j+1];
+      CustomCharToButtonGlyph(i, config.SavedCustomChars[i]);
+      break;
+    end;
+  end;
 end;
 
 // some code taken from UDataNetwork.pas to list interface numbers
-// very handy as my machine has over 40 interfaces
+// very handy as my machine has over 60 interfaces
 procedure TSetupForm.NetworkStatsAdapterListButtonClick(Sender: TObject);
 var
   Size: ULONG;

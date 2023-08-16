@@ -17,6 +17,53 @@
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
       <Icon Value="0"/>
+      <Resources Count="45">
+        <Resource_0 FileName="images\default\bar_left.bmp" Type="BITMAP" ResourceName="BAR_LEFT"/>
+        <Resource_1 FileName="images\default\bar_middle.bmp" Type="BITMAP" ResourceName="BAR_MIDDLE"/>
+        <Resource_2 FileName="images\default\bar_right.bmp" Type="BITMAP" ResourceName="BAR_RIGHT"/>
+        <Resource_3 FileName="images\default\big_arrow_left_down.bmp" Type="BITMAP" ResourceName="BIG_ARROW_LEFT_DOWN"/>
+        <Resource_4 FileName="images\default\big_arrow_left_up.bmp" Type="BITMAP" ResourceName="BIG_ARROW_LEFT_UP"/>
+        <Resource_5 FileName="images\default\big_arrow_right_down.bmp" Type="BITMAP" ResourceName="BIG_ARROW_RIGHT_DOWN"/>
+        <Resource_6 FileName="images\default\big_arrow_right_up.bmp" Type="BITMAP" ResourceName="BIG_ARROW_RIGHT_UP"/>
+        <Resource_7 FileName="images\default\hide_down.bmp" Type="BITMAP" ResourceName="HIDE_DOWN"/>
+        <Resource_8 FileName="images\default\hide_up.bmp" Type="BITMAP" ResourceName="HIDE_UP"/>
+        <Resource_9 FileName="images\default\logo.bmp" Type="BITMAP" ResourceName="LOGO"/>
+        <Resource_10 FileName="images\default\setup_down.bmp" Type="BITMAP" ResourceName="SETUP_DOWN"/>
+        <Resource_11 FileName="images\default\setup_up.bmp" Type="BITMAP" ResourceName="SETUP_UP"/>
+        <Resource_12 FileName="images\default\small_arrow_left_down1.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN1"/>
+        <Resource_13 FileName="images\default\small_arrow_left_down2.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN2"/>
+        <Resource_14 FileName="images\default\small_arrow_left_down3.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN3"/>
+        <Resource_15 FileName="images\default\small_arrow_left_down4.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN4"/>
+        <Resource_16 FileName="images\default\small_arrow_left_down5.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN5"/>
+        <Resource_17 FileName="images\default\small_arrow_left_down6.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN6"/>
+        <Resource_18 FileName="images\default\small_arrow_left_down7.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN7"/>
+        <Resource_19 FileName="images\default\small_arrow_left_down8.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_DOWN8"/>
+        <Resource_20 FileName="images\default\small_arrow_left_up1.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP1"/>
+        <Resource_21 FileName="images\default\small_arrow_left_up2.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP2"/>
+        <Resource_22 FileName="images\default\small_arrow_left_up3.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP3"/>
+        <Resource_23 FileName="images\default\small_arrow_left_up4.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP4"/>
+        <Resource_24 FileName="images\default\small_arrow_left_up5.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP5"/>
+        <Resource_25 FileName="images\default\small_arrow_left_up6.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP6"/>
+        <Resource_26 FileName="images\default\small_arrow_left_up7.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP7"/>
+        <Resource_27 FileName="images\default\small_arrow_left_up8.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_LEFT_UP8"/>
+        <Resource_28 FileName="images\default\small_arrow_right_down1.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN1"/>
+        <Resource_29 FileName="images\default\small_arrow_right_down2.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN2"/>
+        <Resource_30 FileName="images\default\small_arrow_right_down3.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN3"/>
+        <Resource_31 FileName="images\default\small_arrow_right_down4.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN4"/>
+        <Resource_32 FileName="images\default\small_arrow_right_down5.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN5"/>
+        <Resource_33 FileName="images\default\small_arrow_right_down6.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN6"/>
+        <Resource_34 FileName="images\default\small_arrow_right_down7.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN7"/>
+        <Resource_35 FileName="images\default\small_arrow_right_down8.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_DOWN8"/>
+        <Resource_36 FileName="images\default\small_arrow_right_up1.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP1"/>
+        <Resource_37 FileName="images\default\small_arrow_right_up2.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP2"/>
+        <Resource_38 FileName="images\default\small_arrow_right_up3.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP3"/>
+        <Resource_39 FileName="images\default\small_arrow_right_up4.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP4"/>
+        <Resource_40 FileName="images\default\small_arrow_right_up5.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP5"/>
+        <Resource_41 FileName="images\default\small_arrow_right_up6.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP6"/>
+        <Resource_42 FileName="images\default\small_arrow_right_up7.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP7"/>
+        <Resource_43 FileName="images\default\small_arrow_right_up8.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP8"/>
+        <Resource_44 FileName="images\default\smartie.ico" Type="ICON" ResourceName="SMARTIE"/>
+      </Resources>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
@@ -24,8 +71,9 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="4"/>
-      <BuildNr Value="33"/>
+      <BuildNr Value="40"/>
       <CharSet Value="04B0"/>
+      <StringTable CompanyName="LCD Smartie Team" FileDescription="LCD Smartie Main Program" InternalName="LCDSmartie.exe"/>
     </VersionInfo>
     <BuildModes Count="3">
       <Item1 Name="32 bit Debug" Default="True"/>
@@ -372,7 +420,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="6">
+    <Exceptions Count="10">
       <Item1>
         <Name Value="EIdHTTPProtocolException"/>
       </Item1>
@@ -381,16 +429,35 @@
       </Item2>
       <Item3>
         <Name Value="EIdConnClosedGracefully"/>
+        <Enabled Value="False"/>
       </Item3>
       <Item4>
         <Name Value="Exception"/>
+        <Enabled Value="False"/>
       </Item4>
       <Item5>
         <Name Value="EConvertError"/>
+        <Enabled Value="False"/>
       </Item5>
       <Item6>
         <Name Value="EListError"/>
+        <Enabled Value="False"/>
       </Item6>
+      <Item7>
+        <Name Value="ERangeError"/>
+        <Enabled Value="False"/>
+      </Item7>
+      <Item8>
+        <Name Value="RunError(201)"/>
+        <Enabled Value="False"/>
+      </Item8>
+      <Item9>
+        <Name Value="EFOpenError"/>
+        <Enabled Value="False"/>
+      </Item9>
+      <Item10>
+        <Name Value="EIdCouldNotBindSocket"/>
+      </Item10>
     </Exceptions>
   </Debugging>
 </CONFIG>

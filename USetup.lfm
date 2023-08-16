@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 444
+  Left = 329
   Height = 465
-  Top = 286
+  Top = 209
   Width = 855
   Anchors = []
   Caption = 'LCD Smartie 5.x Setup'
@@ -36,7 +36,7 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 590
     TabStop = False
-    ActivePage = ScreensTabSheet
+    ActivePage = MultiInstanceTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 589
     Font.CharSet = ANSI_CHARSET
@@ -44,7 +44,7 @@ object SetupForm: TSetupForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 0
+    TabIndex = 5
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -145,570 +145,103 @@ object SetupForm: TSetupForm
           ParentBackground = False
           TabOrder = 3
           OnResize = ScrollBox1Resize
-          object Line1MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 77
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              '       ()_()  Smartie  5.4  ()_()      '
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 0
-            WantReturns = False
-            WordWrap = False
-          end
-          object Line2MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 100
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              '       (o o)                (o o)      '
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 1
-            WantReturns = False
-            WordWrap = False
-          end
-          object Line3MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 123
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              ' .-ooO--`o''--Ooo-.    .-ooO--`o''--Ooo-.'
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 2
-            WantReturns = False
-            WordWrap = False
-          end
-          object Line4MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 146
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Constraints.MinHeight = 23
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              ' |  LCD Smartie  |    |      5.5      |'
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 3
-            WantReturns = False
-            WordWrap = False
-          end
-          object Line5MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 169
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              '       ()_()  Smartie  5.4  ()_()      '
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 7
-            WantReturns = False
-            WordWrap = False
-          end
-          object Line6MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 192
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              '       (o o)                (o o)      '
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 8
-            WantReturns = False
-            WordWrap = False
-          end
-          object Line7MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 215
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              ' .-ooO--`o''--Ooo-.    .-ooO--`o''--Ooo-.'
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 9
-            WantReturns = False
-            WordWrap = False
-          end
-          object Line8MemoEdit: TMemo
-            Left = 8
-            Height = 23
-            Top = 238
-            Width = 366
-            Anchors = [akTop, akLeft, akRight]
-            Constraints.MinHeight = 23
-            Font.CharSet = 4
-            Font.Height = 18
-            Font.Name = 'Modern'
-            Font.Pitch = fpFixed
-            Lines.Strings = (
-              ' |  LCD Smartie  |    |      5.5      |'
-            )
-            OnEnter = LineEditEnter
-            ParentFont = False
-            TabOrder = 10
-            WantReturns = False
-            WordWrap = False
-          end
           object DontScrollGroupBox: TGroupBox
             AnchorSideLeft.Side = asrBottom
             AnchorSideRight.Side = asrCenter
-            Left = 400
-            Height = 192
+            Left = 446
+            Height = 213
             Top = 69
-            Width = 48
+            Width = 2
             Anchors = [akTop, akRight]
-            ClientHeight = 174
-            ClientWidth = 44
             ParentBackground = False
-            TabOrder = 4
-            object DontScrollLine1CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = -6
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 0
-            end
-            object DontScrollLine2CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = 17
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 1
-            end
-            object DontScrollLine3CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = 40
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 2
-            end
-            object DontScrollLine4CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = 63
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 3
-            end
-            object DontScrollLine5CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = 86
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 7
-            end
-            object DontScrollLine6CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = 109
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 6
-            end
-            object DontScrollLine7CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = 132
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 5
-            end
-            object DontScrollLine8CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Don''t scroll this line.'
-              Top = 155
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 4
-            end
+            TabOrder = 0
           end
           object ContinueNextLineGroupBox: TGroupBox
             AnchorSideRight.Side = asrCenter
-            Left = 448
-            Height = 192
+            Left = 494
+            Height = 213
             Top = 69
-            Width = 48
+            Width = 2
             Anchors = [akTop, akRight]
-            ClientHeight = 174
-            ClientWidth = 44
             ParentBackground = False
-            TabOrder = 5
-            object ContinueLine1CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
-              Top = -6
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 2
-            end
-            object ContinueLine2CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
-              Top = 17
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 1
-            end
-            object ContinueLine3CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
-              Top = 40
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 0
-            end
-            object ContinueLine4CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
-              Top = 63
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 3
-            end
-            object ContinueLine5CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
-              Top = 86
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 4
-            end
-            object ContinueLine6CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
-              Top = 109
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 5
-            end
-            object ContinueLine7CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
-              Top = 132
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 6
-            end
-            object ContinueLine8CheckBox: TCheckBox
-              Left = 14
-              Height = 17
-              Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
-              Top = 155
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              OnClick = ContinueLineCheckBoxClick
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 7
-              Visible = False
-            end
-          end
-          object CenterTextGroupBox: TGroupBox
-            AnchorSideRight.Side = asrCenter
-            Left = 496
-            Height = 192
-            Top = 69
-            Width = 48
-            Anchors = [akTop, akRight]
-            ClientHeight = 174
-            ClientWidth = 44
-            ParentBackground = False
-            TabOrder = 6
-            object CenterLine1CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = -6
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 0
-            end
-            object CenterLine2CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = 17
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 1
-            end
-            object CenterLine3CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = 40
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 2
-            end
-            object CenterLine4CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = 63
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 3
-            end
-            object CenterLine5CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = 86
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 4
-            end
-            object CenterLine6CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = 109
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 5
-            end
-            object CenterLine7CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = 132
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 6
-            end
-            object CenterLine8CheckBox: TCheckBox
-              Left = 12
-              Height = 17
-              Hint = 'Center the text in this line (if it''s shorter than a full line).'
-              Top = 155
-              Width = 21
-              Anchors = [akTop]
-              Caption = ' '
-              ParentShowHint = False
-              ShowHint = True
-              TabOrder = 7
-            end
+            TabOrder = 1
           end
           object Line1EditButton: TSpeedButton
             AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
-            Top = 77
+            Height = 26
+            Top = 74
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
           end
           object Line2EditButton: TSpeedButton
-            AnchorSideLeft.Control = Line2MemoEdit
+            AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
+            Height = 26
             Top = 100
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
           end
           object Line3EditButton: TSpeedButton
-            AnchorSideLeft.Control = Line3MemoEdit
+            AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
-            Top = 123
+            Height = 26
+            Top = 126
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
           end
           object Line4EditButton: TSpeedButton
-            AnchorSideLeft.Control = Line4MemoEdit
+            AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
-            Top = 146
+            Height = 26
+            Top = 152
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
           end
           object Line5EditButton: TSpeedButton
-            AnchorSideLeft.Control = Line5MemoEdit
+            AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
-            Top = 169
+            Height = 26
+            Top = 178
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
           end
           object Line6EditButton: TSpeedButton
-            AnchorSideLeft.Control = Line6MemoEdit
+            AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
-            Top = 192
+            Height = 26
+            Top = 204
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
           end
           object Line7EditButton: TSpeedButton
-            AnchorSideLeft.Control = Line7MemoEdit
+            AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
-            Top = 215
+            Height = 26
+            Top = 230
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
           end
           object Line8EditButton: TSpeedButton
-            AnchorSideLeft.Control = Line8MemoEdit
+            AnchorSideLeft.Control = Line1MemoEdit
             AnchorSideLeft.Side = asrBottom
             Left = 374
-            Height = 23
-            Top = 238
+            Height = 26
+            Top = 256
             Width = 23
             Caption = '. . .'
             OnClick = LineEditClick
@@ -739,7 +272,7 @@ object SetupForm: TSetupForm
             MinValue = 1
             OnChange = ScreenSpinEditChange
             ParentFont = False
-            TabOrder = 11
+            TabOrder = 2
             Value = 1
           end
           object Label18: TLabel
@@ -767,7 +300,7 @@ object SetupForm: TSetupForm
             MaxValue = 10
             MinValue = 1
             ParentFont = False
-            TabOrder = 12
+            TabOrder = 3
             Value = 1
           end
           object Label60: TLabel
@@ -804,7 +337,7 @@ object SetupForm: TSetupForm
             )
             ParentFont = False
             Style = csDropDownList
-            TabOrder = 13
+            TabOrder = 4
           end
           object Label5: TLabel
             Left = 16
@@ -835,7 +368,7 @@ object SetupForm: TSetupForm
             ParentFont = False
             ParentShowHint = False
             ShowHint = True
-            TabOrder = 14
+            TabOrder = 5
             Value = 3
           end
           object Label43: TLabel
@@ -865,7 +398,7 @@ object SetupForm: TSetupForm
             ParentFont = False
             ParentShowHint = False
             ShowHint = True
-            TabOrder = 15
+            TabOrder = 6
           end
           object StickyCheckbox: TCheckBox
             Left = 133
@@ -883,7 +416,7 @@ object SetupForm: TSetupForm
             ParentShowHint = False
             ParentBidiMode = False
             ShowHint = True
-            TabOrder = 16
+            TabOrder = 7
           end
           object Label61: TLabel
             Left = 210
@@ -910,7 +443,7 @@ object SetupForm: TSetupForm
             MaxValue = 99
             MinValue = 1
             ParentFont = False
-            TabOrder = 17
+            TabOrder = 8
             Value = 1
           end
           object Label62: TLabel
@@ -937,7 +470,7 @@ object SetupForm: TSetupForm
             ClientHeight = 62
             ClientWidth = 44
             ParentBackground = False
-            TabOrder = 18
+            TabOrder = 9
             object Label44: TLabel
               Left = 8
               Height = 52
@@ -964,7 +497,7 @@ object SetupForm: TSetupForm
             ClientHeight = 62
             ClientWidth = 44
             ParentBackground = False
-            TabOrder = 19
+            TabOrder = 10
             object Label51: TLabel
               Left = 8
               Height = 52
@@ -991,7 +524,7 @@ object SetupForm: TSetupForm
             ClientHeight = 62
             ClientWidth = 44
             ParentBackground = False
-            TabOrder = 20
+            TabOrder = 11
             object Label4: TLabel
               Left = 3
               Height = 26
@@ -1008,6 +541,471 @@ object SetupForm: TSetupForm
               ParentFont = False
               WordWrap = True
             end
+          end
+          object Line1MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 74
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 12
+            Text = '       ()_()  Smartie  5.4  ()_()      '
+          end
+          object Line2MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 100
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Constraints.MinHeight = 23
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 13
+          end
+          object Line3MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 126
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Constraints.MinHeight = 23
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 14
+          end
+          object Line4MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 152
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Constraints.MinHeight = 23
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 15
+          end
+          object Line5MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 178
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Constraints.MinHeight = 23
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 16
+          end
+          object Line6MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 204
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Constraints.MinHeight = 23
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 17
+          end
+          object Line7MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 230
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Constraints.MinHeight = 23
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 18
+          end
+          object Line8MemoEdit: TEdit
+            Left = 8
+            Height = 26
+            Top = 256
+            Width = 366
+            Anchors = [akTop, akLeft, akRight]
+            Constraints.MinHeight = 23
+            Font.CharSet = 4
+            Font.Height = 18
+            Font.Name = 'Modern'
+            Font.Pitch = fpFixed
+            OnEnter = LineEditEnter
+            ParentFont = False
+            TabOrder = 19
+          end
+          object DontScrollLine1CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 74
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 20
+          end
+          object DontScrollLine2CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 100
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 21
+          end
+          object DontScrollLine3CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 126
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 22
+          end
+          object DontScrollLine4CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 152
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 23
+          end
+          object DontScrollLine5CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 178
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 24
+          end
+          object DontScrollLine6CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 204
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 25
+          end
+          object DontScrollLine7CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 230
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 26
+          end
+          object DontScrollLine8CheckBox: TCheckBox
+            AnchorSideLeft.Control = Line1EditButton
+            AnchorSideLeft.Side = asrBottom
+            Left = 415
+            Height = 17
+            Hint = 'Don''t scroll this line.'
+            Top = 256
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 27
+          end
+          object ContinueLine1CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
+            Top = 74
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 28
+          end
+          object ContinueLine2CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
+            Top = 100
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 29
+          end
+          object ContinueLine3CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
+            Top = 126
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 30
+          end
+          object ContinueLine4CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
+            Top = 152
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 31
+          end
+          object ContinueLine5CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
+            Top = 178
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 32
+          end
+          object ContinueLine6CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
+            Top = 204
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 33
+          end
+          object ContinueLine7CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
+            Top = 230
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 34
+          end
+          object ContinueLine8CheckBox: TCheckBox
+            AnchorSideLeft.Control = DontScrollGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 464
+            Height = 17
+            Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
+            Top = 256
+            Width = 21
+            BorderSpacing.Left = 16
+            Caption = ' '
+            OnClick = ContinueLineCheckBoxClick
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 35
+            Visible = False
+          end
+          object CenterLine1CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 74
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 36
+          end
+          object CenterLine2CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 100
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 37
+          end
+          object CenterLine3CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 126
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 38
+          end
+          object CenterLine4CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 152
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 39
+          end
+          object CenterLine5CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 178
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 40
+          end
+          object CenterLine6CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 204
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 41
+          end
+          object CenterLine7CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 230
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 42
+          end
+          object CenterLine8CheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueNextLineGroupBox
+            AnchorSideLeft.Side = asrBottom
+            Left = 514
+            Height = 17
+            Hint = 'Center the text in this line (if it''s shorter than a full line).'
+            Top = 256
+            Width = 21
+            BorderSpacing.Left = 18
+            Caption = ' '
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 43
           end
         end
         object CopyToScreenSpinEdit: TSpinEdit
@@ -1543,7 +1541,7 @@ object SetupForm: TSetupForm
       ClientWidth = 582
       ImageIndex = 1
       object ActionsStringGrid: TStringGrid
-        Left = 0
+        Left = 1
         Height = 352
         Hint = 'These actions are run on a timer'
         Top = 0
@@ -1944,81 +1942,184 @@ object SetupForm: TSetupForm
       ClientHeight = 408
       ClientWidth = 582
       ImageIndex = 3
-      object Label9: TLabel
-        Left = 5
+      object GroupBox2: TGroupBox
+        Left = 8
+        Height = 104
+        Top = 8
+        Width = 376
+        Caption = 'Skin'
+        ClientHeight = 86
+        ClientWidth = 372
+        ParentBackground = False
+        TabOrder = 0
+        object SkinSelectComboBox: TComboBox
+          Left = 39
+          Height = 21
+          Top = 4
+          Width = 113
+          ItemHeight = 13
+          OnChange = SkinSelectComboBoxChange
+          OnGetItems = SkinSelectComboBoxGetItems
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object Label76: TLabel
+          Left = 8
+          Height = 13
+          Top = 6
+          Width = 23
+          Caption = 'Skin:'
+        end
+        object IconSelectComboBox: TComboBox
+          Left = 39
+          Height = 21
+          Top = 40
+          Width = 169
+          ItemHeight = 13
+          OnChange = IconSelectComboBoxChange
+          OnGetItems = IconSelectComboBoxGetItems
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object Label10: TLabel
+          Left = 6
+          Height = 13
+          Top = 44
+          Width = 25
+          Caption = 'Icon:'
+        end
+        object TrayIconPreview32: TImage
+          Left = 256
+          Height = 32
+          Top = 32
+          Width = 32
+          AutoSize = True
+        end
+        object TrayIconPreview16: TImage
+          Left = 296
+          Height = 16
+          Top = 48
+          Width = 16
+          AutoSize = True
+        end
+      end
+      object GroupBox4: TGroupBox
+        Left = 8
+        Height = 104
+        Top = 112
+        Width = 377
+        Caption = 'Proxy Server'
+        ClientHeight = 86
+        ClientWidth = 373
+        ParentBackground = False
+        TabOrder = 1
+        object Label7: TLabel
+          Left = 8
+          Height = 13
+          Top = 8
+          Width = 91
+          Caption = 'Web proxy server:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentColor = False
+          ParentFont = False
+        end
+        object WebProxyServerEdit: TEdit
+          Left = 105
+          Height = 21
+          Hint = 'Web proxy for web access (such as for Rss feeds).'
+          Top = 6
+          Width = 148
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+        end
+        object Label8: TLabel
+          Left = 19
+          Height = 13
+          Top = 40
+          Width = 80
+          Caption = 'Web proxy port:'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentColor = False
+          ParentFont = False
+        end
+        object WebProxyPortEdit: TEdit
+          Left = 105
+          Height = 21
+          Hint = 'Web proxy port for web access (such as for Rss feeds).'
+          Top = 38
+          Width = 81
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          MaxLength = 5
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+        end
+      end
+      object GroupBox5: TGroupBox
+        Left = 8
+        Height = 80
+        Top = 216
+        Width = 376
+        Caption = 'Title'
+        ClientHeight = 62
+        ClientWidth = 372
+        ParentBackground = False
+        TabOrder = 2
+        object CustomTitleTIEdit1: TTIEdit
+          Left = 80
+          Height = 21
+          Hint = 'Customize the text shown in the main screen title bar. Leave blank to restore the default version text'
+          Top = 8
+          Width = 217
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+        end
+        object Label45: TLabel
+          Left = 8
+          Height = 13
+          Top = 8
+          Width = 63
+          Caption = 'Custom Title:'
+          ParentColor = False
+        end
+        object AppendConfigNameCheckBox: TCheckBox
+          Left = 8
+          Height = 17
+          Top = 40
+          Width = 224
+          Caption = 'Append configuration file name to title text'
+          TabOrder = 1
+        end
+      end
+      object Label34: TLabel
+        Left = 8
         Height = 13
-        Top = 61
-        Width = 50
-        Caption = 'Tray Icon:'
+        Top = 304
+        Width = 107
+        Caption = 'Distributed.net logfile:'
         ParentColor = False
-      end
-      object TrayIconPreview32: TImage
-        Left = 261
-        Height = 32
-        Top = 74
-        Width = 32
-        AutoSize = True
-      end
-      object TrayIconBrowseButton: TSpeedButton
-        Left = 221
-        Height = 22
-        Hint = 'Click to choose the tray icon for this program instance.'
-        Top = 80
-        Width = 23
-        Glyph.Data = {
-          F6000000424DF600000000000000760000002800000010000000100000000100
-          0400000000008000000000000000000000001000000000000000000000000000
-          8000008000000080800080000000800080008080000080808000C0C0C0000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
-          88888888888888888888000000000008888800333333333088880B0333333333
-          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
-          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
-          8008888888880888080888888888800088888888888888888888
-        }
-        OnClick = TrayIconBrowseButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object TrayIconPreview16: TImage
-        Left = 312
-        Height = 16
-        Top = 108
-        Width = 16
-        Anchors = [akLeft, akBottom]
-        AutoSize = True
-      end
-      object Label10: TLabel
-        Left = 5
-        Height = 13
-        Top = 5
-        Width = 48
-        Caption = 'Skin Path:'
-        ParentColor = False
-      end
-      object SkinPathBrowseButton: TSpeedButton
-        Left = 221
-        Height = 22
-        Hint = 'Click to choose skin path for this program instance.'
-        Top = 25
-        Width = 23
-        Glyph.Data = {
-          F6000000424DF600000000000000760000002800000010000000100000000100
-          0400000000008000000000000000000000001000000000000000000000000000
-          8000008000000080800080000000800080008080000080808000C0C0C0000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
-          88888888888888888888000000000008888800333333333088880B0333333333
-          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
-          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
-          8008888888880888080888888888800088888888888888888888
-        }
-        OnClick = SkinPathBrowseButtonClick
-        ShowHint = True
-        ParentShowHint = False
       end
       object DistributedNetBrowseButton: TSpeedButton
-        Left = 221
+        Left = 336
         Height = 22
-        Top = 137
+        Top = 301
         Width = 23
         Glyph.Data = {
           F6000000424DF600000000000000760000002800000010000000100000000100
@@ -2032,133 +2133,12 @@ object SetupForm: TSetupForm
         }
         OnClick = DistributedNetBrowseButtonClick
       end
-      object Label34: TLabel
-        Left = 5
-        Height = 13
-        Top = 119
-        Width = 107
-        Caption = 'Distributed.net logfile:'
-        ParentColor = False
-      end
-      object TrayIcon: TEdit
-        Left = 5
-        Height = 21
-        Top = 80
-        Width = 217
-        Color = clWhite
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-        ParentShowHint = False
-        TabOrder = 1
-      end
-      object SkinPath: TEdit
-        Left = 5
-        Height = 21
-        Top = 24
-        Width = 217
-        Color = clWhite
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-        ParentShowHint = False
-        TabOrder = 0
-      end
       object DistributedNetLogfileEdit: TEdit
-        Left = 5
+        Left = 120
         Height = 21
-        Top = 137
+        Top = 301
         Width = 217
-        TabOrder = 2
-      end
-      object WebProxyPortEdit: TEdit
-        Left = 35
-        Height = 21
-        Hint = 'Web proxy port for web access (such as for Rss feeds).'
-        Top = 248
-        Width = 81
-        Anchors = [akTop, akRight]
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        MaxLength = 5
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
         TabOrder = 3
-      end
-      object WebProxyServerEdit: TEdit
-        Left = 5
-        Height = 21
-        Hint = 'Web proxy for web access (such as for Rss feeds).'
-        Top = 193
-        Width = 148
-        Anchors = [akTop, akLeft, akRight]
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 4
-      end
-      object Label7: TLabel
-        Left = 5
-        Height = 13
-        Top = 175
-        Width = 91
-        Caption = 'Web proxy server:'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentColor = False
-        ParentFont = False
-      end
-      object Label8: TLabel
-        Left = 5
-        Height = 13
-        Top = 226
-        Width = 80
-        Caption = 'Web proxy port:'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        ParentColor = False
-        ParentFont = False
-      end
-      object Label45: TLabel
-        Left = 5
-        Height = 13
-        Top = 287
-        Width = 59
-        Caption = 'Custom Title'
-        ParentColor = False
-      end
-      object CustomTitleTIEdit1: TTIEdit
-        Left = 5
-        Height = 21
-        Hint = 'Customize the text shown in the main screen title bar. Leave blank to restore the default version text'
-        Top = 304
-        Width = 217
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 5
-      end
-      object AppendConfigNameCheckBox: TCheckBox
-        Left = 232
-        Height = 17
-        Top = 306
-        Width = 224
-        Caption = 'Append configuration file name to title text'
-        TabOrder = 6
       end
     end
     object TabSheet1: TTabSheet
@@ -3744,6 +3724,16 @@ object SetupForm: TSetupForm
         Caption = 'N/A'
         ParentColor = False
       end
+      object OpenPluginFolderButton: TButton
+        Left = 126
+        Height = 30
+        Top = 0
+        Width = 75
+        Anchors = [akTop, akRight]
+        Caption = 'Open Folder'
+        OnClick = OpenPluginFolderButtonClick
+        TabOrder = 3
+      end
     end
     object CCharTabSheet: TTabSheet
       Caption = 'Char editor'
@@ -3755,356 +3745,23 @@ object SetupForm: TSetupForm
       Font.Name = 'Tahoma'
       ImageIndex = 12
       ParentFont = False
-      object Label20: TLabel
-        Left = 32
-        Height = 13
-        Top = 8
-        Width = 119
-        Caption = 'Create Character in slot:'
-        ParentColor = False
-      end
-      object Label21: TLabel
-        Left = 32
-        Height = 13
-        Top = 201
-        Width = 102
-        Caption = 'Use character in slot:'
-        ParentColor = False
-      end
+      ParentShowHint = False
       object Panel2: TPanel
-        Left = 56
+        Left = 8
         Height = 145
-        Top = 40
+        Hint = 'Select Which pixels are on or off'
+        Top = 0
         Width = 105
-        ClientHeight = 145
-        ClientWidth = 105
         ParentBackground = False
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
-        object CCharCheckBox1: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 8
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 0
-        end
-        object CCharCheckBox2: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 8
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 1
-        end
-        object CCharCheckBox3: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 8
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 2
-        end
-        object CCharCheckBox4: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 8
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 3
-        end
-        object CCharCheckBox5: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 8
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 4
-        end
-        object CCharCheckBox6: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 24
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 5
-        end
-        object CCharCheckBox7: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 24
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 6
-        end
-        object CCharCheckBox8: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 24
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 7
-        end
-        object CCharCheckBox9: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 24
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 8
-        end
-        object CCharCheckBox10: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 24
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 9
-        end
-        object CCharCheckBox11: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 40
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 10
-        end
-        object CCharCheckBox12: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 40
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 11
-        end
-        object CCharCheckBox13: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 40
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 12
-        end
-        object CCharCheckBox14: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 40
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 13
-        end
-        object CCharCheckBox15: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 40
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 14
-        end
-        object CCharCheckBox16: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 56
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 15
-        end
-        object CCharCheckBox17: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 56
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 16
-        end
-        object CCharCheckBox18: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 56
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 17
-        end
-        object CCharCheckBox19: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 56
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 18
-        end
-        object CCharCheckBox20: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 56
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 19
-        end
-        object CCharCheckBox21: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 72
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 20
-        end
-        object CCharCheckBox22: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 72
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 21
-        end
-        object CCharCheckBox23: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 72
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 22
-        end
-        object CCharCheckBox24: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 72
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 23
-        end
-        object CCharCheckBox25: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 72
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 24
-        end
-        object CCharCheckBox26: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 88
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 25
-        end
-        object CCharCheckBox27: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 88
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 26
-        end
-        object CCharCheckBox28: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 88
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 27
-        end
-        object CCharCheckBox29: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 88
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 28
-        end
-        object CCharCheckBox30: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 88
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 29
-        end
-        object CCharCheckBox31: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 104
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 30
-        end
-        object CCharCheckBox32: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 104
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 31
-        end
-        object CCharCheckBox33: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 104
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 32
-        end
-        object CCharCheckBox34: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 104
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 33
-        end
-        object CCharCheckBox35: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 104
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 34
-        end
-        object CCharCheckBox36: TCheckBox
-          Left = 16
-          Height = 17
-          Top = 120
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 35
-        end
-        object CCharCheckBox37: TCheckBox
-          Left = 32
-          Height = 17
-          Top = 120
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 36
-        end
-        object CCharCheckBox38: TCheckBox
-          Left = 48
-          Height = 17
-          Top = 120
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 37
-        end
-        object CCharCheckBox39: TCheckBox
-          Left = 64
-          Height = 17
-          Top = 120
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 38
-        end
-        object CCharCheckBox40: TCheckBox
-          Left = 80
-          Height = 17
-          Top = 120
-          Width = 18
-          OnClick = CCharEditGridChange
-          TabOrder = 39
-        end
       end
       object CreateCCharLocSpinEdit: TSpinEdit
-        Left = 160
+        Left = 13
         Height = 21
-        Top = 6
+        Hint = 'Custom character slot'
+        Top = 322
         Width = 31
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWindowText
@@ -4114,43 +3771,89 @@ object SetupForm: TSetupForm
         MinValue = 1
         OnChange = CCharEditGridChange
         ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 1
         Value = 1
       end
-      object CreateCCharRadioButton: TRadioButton
-        Left = 8
-        Height = 17
-        Top = 8
-        Width = 18
-        Checked = True
-        OnClick = CCharEditGridChange
+      object CustomCharClearButton: TButton
+        Left = 120
+        Height = 25
+        Hint = 'Clear all pixels in the grid'
+        Top = 0
+        Width = 75
+        Caption = 'Clear'
+        OnClick = CustomCharClearButtonClick
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 2
-        TabStop = True
       end
-      object UseCCharRadioButton2: TRadioButton
-        Left = 8
-        Height = 17
-        Top = 200
-        Width = 18
-        OnClick = CCharEditGridChange
+      object CustomCharInvertButton: TButton
+        Left = 120
+        Height = 25
+        Hint = 'Invert all the pixels in the grid'
+        Top = 28
+        Width = 75
+        Caption = 'Invert'
+        OnClick = CustomCharInvertButtonClick
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 3
       end
-      object UseCCharLocSpinEdit: TSpinEdit
-        Left = 152
-        Height = 21
-        Top = 199
-        Width = 31
-        Enabled = False
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        MaxValue = 8
-        MinValue = 1
-        OnChange = CCharEditGridChange
-        ParentFont = False
+      object CustomCharUseButton: TButton
+        Left = 128
+        Height = 25
+        Hint = 'Show the created character on the screen'
+        Top = 320
+        Width = 75
+        Caption = 'Use'
+        OnClick = CustomCharUseButtonClick
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 4
-        Value = 1
+      end
+      object CustomCharCreateButton: TButton
+        Left = 48
+        Height = 25
+        Hint = 'Add the created character to the screen'
+        Top = 320
+        Width = 75
+        Caption = 'Create'
+        OnClick = CustomCharCreateButtonClick
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+      end
+      object Label20: TLabel
+        Left = 8
+        Height = 13
+        Top = 152
+        Width = 55
+        Caption = 'Store slots:'
+      end
+      object Label21: TLabel
+        Left = 13
+        Height = 26
+        Top = 280
+        Width = 162
+        Caption = 'Up to 8 characters per screen are'#13#10'supported by LCDs'
+      end
+      object Label75: TLabel
+        Left = 13
+        Height = 26
+        Top = 352
+        Width = 186
+        Caption = 'You can create a character once and'#13#10'use it multiple times in the same screen'
+      end
+      object CustomCharGridMirrorSpeedButton: TSpeedButton
+        Left = 144
+        Height = 22
+        Hint = 'Grid mirror: you can use this as a temporary slot. It only changes when a box is clicked in the grid or, if clear or invert is pressed'#13#10'Handy for copying and moving save slots'
+        Top = 72
+        Width = 23
+        OnClick = CustomCharGridMirrorSpeedButtonClick
+        ShowHint = True
+        ParentShowHint = False
       end
     end
     object PerfTabSheet: TTabSheet
@@ -4512,7 +4215,6 @@ object SetupForm: TSetupForm
     DefaultExt = '.ico'
     Filter = 'Icons (*.ico)|*.ico'
     Options = [ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofNoNetworkButton, ofEnableSizing]
-    OnFolderChange = OpeIcoFolderChange
     Left = 760
   end
   object OpenDialog3: TOpenDialog
@@ -4525,8 +4227,8 @@ object SetupForm: TSetupForm
     Left = 888
   end
   object PluginsListBoxPopupMenu: TPopupMenu
-    Left = 168
-    Top = 48
+    Left = 360
+    Top = 432
     object HidePluginMenuItem: TMenuItem
       Caption = 'Hide'
       OnClick = HidePluginMenuItemClick
@@ -4538,6 +4240,66 @@ object SetupForm: TSetupForm
     object ShowHiddenPluginsMenuItem: TMenuItem
       Caption = 'Show Hidden Plugins'
       OnClick = ShowHiddenPluginsMenuItemClick
+    end
+  end
+  object ExportPopupMenu: TPopupMenu
+    TrackButton = tbLeftButton
+    Left = 392
+    Top = 432
+    object ExportClipboardMenuItem: TMenuItem
+      Caption = 'Clipboard'
+      OnClick = ExportLinesClipboardMenuitemClick
+    end
+    object ExportFileMenuItem: TMenuItem
+      Caption = 'File'
+      OnClick = ExportFileMenuItemClick
+    end
+  end
+  object ImportPopupMenu: TPopupMenu
+    Left = 456
+    Top = 432
+    object ImportClipboardMenuItem: TMenuItem
+      Caption = 'Clipboard'
+      OnClick = ImportLinesClipboardMenuItemClick
+    end
+    object ImportFileMenuItem: TMenuItem
+      Caption = 'File'
+      OnClick = ImportFileMenuItemClick
+    end
+  end
+  object ImportFileOpenDialog: TOpenDialog
+    Left = 488
+    Top = 432
+  end
+  object ExportFileSaveDialog: TSaveDialog
+    Left = 424
+    Top = 432
+  end
+  object ActionsExportImportPoup: TPopupMenu
+    TrackButton = tbLeftButton
+    Left = 459
+    Top = 115
+    object ExportMenuItem: TMenuItem
+      Caption = 'Export'
+      object ExportClipboard: TMenuItem
+        Caption = 'Clipboard'
+        OnClick = ExportClipboardClick
+      end
+      object ExportFile: TMenuItem
+        Caption = 'File'
+        OnClick = ExportFileClick
+      end
+    end
+    object ImportMenuItem: TMenuItem
+      Caption = 'Import'
+      object ImportClipboard: TMenuItem
+        Caption = 'Clipboard'
+        OnClick = ImportClipboardClick
+      end
+      object ImportFile: TMenuItem
+        Caption = 'File'
+        OnClick = ImportFileClick
+      end
     end
   end
 end

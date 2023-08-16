@@ -3,14 +3,15 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Release x64"/>
+    <ManyBuildModesSelection Value="&quot;Release x32&quot;,&quot;Release x64&quot;"/>
+    <BuildModes Active="Release x32"/>
     <Units Count="1">
       <Unit0>
         <Filename Value="wanip.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="13"/>
-        <CursorPos X="33" Y="68"/>
+        <TopLine Value="16"/>
+        <CursorPos X="5" Y="68"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>

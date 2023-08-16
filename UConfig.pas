@@ -42,6 +42,7 @@ const
   MaxEmailAccounts = 99;
   MaxBoincAccounts = 20;
   MaxPerfCounters = 50;
+  MaxSavedCustoms = 32;
 
 type
   TScreenSize = record
@@ -76,6 +77,8 @@ type
   TTransitionStyle = (tsNone,tsLeftRight,tsRightLeft,tsTopBottom,tsBottomTop,tsRandomChars,tsFade);
 
   TScreenType = (xxNone,xxHD,xxMO,xxCF,xxHD2,xxTestDriver,xxIR,xxDLL);
+
+  TCustomArray = array[0..7] of byte;
 
   TScreenSettings = Record
     enabled: Boolean;
@@ -230,6 +233,7 @@ type
     ActionsTimer: integer;
     PerfSettings: Array[1..MaxPerfCounters] of TPerfSettings;
     RSSList: TRSSList;
+    SavedCustomChars: Array[0..MaxSavedCustoms -1] of TCustomArray;
     function load: Boolean;
     procedure save;
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
@@ -244,7 +248,7 @@ var
 
 implementation
 
-uses Forms, INIFiles;
+uses Forms, INIFiles, StrUtils;
 
 constructor TConfig.Create(filename: String);
 begin
@@ -293,10 +297,11 @@ end;
 function TConfig.loadINI: Boolean;
 var
   initfile: TINIFile;
-  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount, i: Integer;
+  ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount, i, j: Integer;
 //  sConfigFileFormatVersion, sScreenTextSyntaxVersion: String;    // dont know why we read these as they're never used
-  sScreen, sLine, sPOPAccount, sGameLine, sRSS: String;
+  sScreen, sLine, sPOPAccount, sGameLine, s: String;
   iTemp: Integer;
+  CCharSplit: Array of String;
 begin
 
   try
@@ -331,8 +336,8 @@ begin
   EditFormPosHeight := initfile.ReadInteger('General Settings', 'EditFormPosHeight', 177);
   EditFormPosWidth := initfile.ReadInteger('General Settings', 'EditFormPosWidth', 366);
 
-  sSkinPath := initfile.ReadString('General Settings', 'SkinPath', 'images\default\');
-  sSkinPath := IncludeTrailingPathDelimiter(sSkinPath);
+  sSkinPath := initfile.ReadString('General Settings', 'SkinPath', 'default');
+  //sSkinPath := IncludeTrailingPathDelimiter(sSkinPath);
 
   sTrayIcon := initfile.ReadString('General Settings', 'TrayIcon', 'smartie.ico');
 
@@ -589,6 +594,16 @@ begin
   for i := 0 to RSSList.Names.Count - 1 do
     RSSList.Addresses.Add(initfile.ReadString('RSS', RSSList.Names[i], ''));
 
+  for i := 0 to MaxSavedCustoms -1 do
+  begin
+    s := initfile.ReadString('Saved Custom Characters', inttostr(i), '0 0 0 0 0 0 0 0');
+    CCharSplit  := SplitString(s, ' ');
+    for j := 0 to 7 do
+      try
+        SavedCustomChars[i][j] := strtoint(CCharSplit[j]);
+      except
+      end;
+  end;
   result := true;
 
   initfile.Free;
@@ -825,6 +840,16 @@ begin
 
   for i := 0 to RSSList.Names.Count - 1  do
     initfile.WriteString('RSS', RSSList.Names[i], RSSList.Addresses[i]);
+
+  for i := 0 to MaxSavedCustoms -1 do
+    initfile.WriteString('Saved Custom Characters', inttostr(i), inttostr(SavedCustomChars[i][0])+' '+
+                                                                 inttostr(SavedCustomChars[i][1])+' '+
+                                                                 inttostr(SavedCustomChars[i][2])+' '+
+                                                                 inttostr(SavedCustomChars[i][3])+' '+
+                                                                 inttostr(SavedCustomChars[i][4])+' '+
+                                                                 inttostr(SavedCustomChars[i][5])+' '+
+                                                                 inttostr(SavedCustomChars[i][6])+' '+
+                                                                 inttostr(SavedCustomChars[i][7]));
 
   initfile.UpdateFile;
   initfile.Free;

@@ -1,4 +1,4 @@
-library RemoteServer;
+library AndroidServer;
 
 {$MODE Delphi}
 
@@ -17,14 +17,14 @@ uses
 *)
 
 const
-  DLLProjectName = 'Remote Display DLL';
+  DLLProjectName = 'Android Display DLL';
   Version = 'v1.0';
   MaxConnections = 10;
   MaxWidth = 100;
   MaxHeight = 8;
 
 type
-   TRemoteServer = class(Tobject)
+   TAndroidServer = class(Tobject)
   Public
     procedure InitDisplay(SizeX: byte; SizeY: byte);
     procedure IdTCPServer1Connect(AContext: TIdContext);
@@ -37,10 +37,16 @@ type
   TCustomArray = array[0..7] of byte;
   TCustomChars = array[1..8] of TCustomArray;
 
+type
+  TConnectionContext = record
+   Context: TIdContext;
+  end;
+
+
 var
-  RemoteServer : TRemoteServer;
+  AndroidServer : TAndroidServer;
   IdTCPServer1: TIdTCPServer;
-  contexts: Array[1..MaxConnections] of TIdContext;
+  ConnectionContexts: Array[1..MaxConnections] of TConnectionContext;
   CustomChars: TCustomChars;
   SzX,SzY: byte;
   //CurrentX: byte;
@@ -49,7 +55,7 @@ var
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-procedure TRemoteServer.IdTCPServer1Connect(AContext: TIdContext);
+procedure TAndroidServer.IdTCPServer1Connect(AContext: TIdContext);
 var
   loop, i, j: integer;
 begin
@@ -58,34 +64,34 @@ begin
     AContext.Connection.IOHandler.DefAnsiEncoding := IndyTextEncoding_ASCII;
     for loop := 1 to MaxConnections do
     begin
-      if not assigned(contexts[loop]) then
+      if not assigned(ConnectionContexts[loop].Context) then
       begin
-        contexts[loop] := AContext;
-        // send the size
-        contexts[loop].Connection.IOHandler.Write(Chr($FE)+'A'+Chr(szY)+Chr(SzX));
+        ConnectionContexts[loop].Context := AContext;
 
+        // send the size
+        ConnectionContexts[loop].Context.Connection.IOHandler.Write(Chr($FE)+'A'+Chr(szY)+Chr(SzX));
 
         // send the custom char list
-        for i :=1 to 8 do
+        for i := 1 to 8 do
         begin
-          contexts[loop].Connection.IOHandler.Write(Chr($FE)+'N'+Chr(i));
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,0]);
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,1]);
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,2]);
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,3]);
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,4]);
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,5]);
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,6]);
-          contexts[loop].Connection.IOHandler.Write(CustomChars[i,7]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(Chr($FE)+'N'+Chr(i));
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,0]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,1]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,2]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,3]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,4]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,5]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,6]);
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(CustomChars[i,7]);
         end;
 
         // send the current frame buffer
         j := 1;
         for i := 1 to szY do
         begin
-          contexts[loop].Connection.IOHandler.Write(Chr($FE)+'G'+Chr(1)+Chr(i));
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(Chr($FE)+'G'+Chr(1)+Chr(i));
           for j := j to j + SzX do
-            contexts[loop].Connection.IOHandler.Write(FrameBuffer[j]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(FrameBuffer[j]);
         end;
         Break;
       end;
@@ -94,30 +100,30 @@ begin
   end;
 end;
 
-procedure TRemoteServer.IdTCPServer1Execute(AContext: TIdContext);
+procedure TAndroidServer.IdTCPServer1Execute(AContext: TIdContext);
 begin
   sleep(1); // we need this procedure for indy sockets to work even though it does nothing
 end;
 
-procedure TRemoteServer.IdTCPServer1Disconnect(AContext: TIdContext);
+procedure TAndroidServer.IdTCPServer1Disconnect(AContext: TIdContext);
 var
   loop: integer;
 begin
   try
     for loop := 1 to MaxConnections do
-      if assigned(contexts[loop]) then
-        if contexts[loop].Equals(AContext) then
-          contexts[loop] := nil;
+      if assigned(ConnectionContexts[loop].Context) then
+        if ConnectionContexts[loop].Context.Equals(AContext) then
+          ConnectionContexts[loop].Context := nil;
   except
   end;
 end;
 
-procedure TRemoteServer.IdTCPServer1Exception(AContext: TIdContext; Ex: Exception);
+procedure TAndroidServer.IdTCPServer1Exception(AContext: TIdContext; Ex: Exception);
 begin
 
 end;
 
-procedure TRemoteServer.InitDisplay(SizeX: byte; SizeY: byte);
+procedure TAndroidServer.InitDisplay(SizeX: byte; SizeY: byte);
 begin
   // save the size for display re-inits
   SzX := SizeX;
@@ -143,12 +149,14 @@ var
   S: string;
 begin
   S := Str;
+  if Str = '' then
+    Exit;
   Move(S[1], FrameBuffer[1+(CurrentY-1)*szX], szX);
   try
     for loop := 1 to MaxConnections do
-      if assigned(contexts[loop]) then
-        if contexts[loop].Connection.Connected then
-          contexts[loop].Connection.IOHandler.Write(Str);
+      if assigned(ConnectionContexts[loop].Context) then
+        if ConnectionContexts[loop].Context.Connection.Connected then
+          ConnectionContexts[loop].Context.Connection.IOHandler.Write(Str);
   except
   end;
 end;
@@ -161,10 +169,10 @@ begin
   CurrentY := Y;
   try
     for loop := 1 to MaxConnections do
-      if assigned(contexts[loop]) then
-        if contexts[loop].Connection.Connected then
+      if assigned(ConnectionContexts[loop].Context) then
+        if ConnectionContexts[loop].Context.Connection.Connected then
           begin
-           contexts[loop].Connection.IOHandler.Write(Chr($FE)+'G'+Chr(x)+Chr(y));
+           ConnectionContexts[loop].Context.Connection.IOHandler.Write(Chr($FE)+'G'+Chr(x)+Chr(y));
           end;
   except
   end;
@@ -179,18 +187,18 @@ begin
   CustomChars[index] := Data;
   try
     for loop := 1 to MaxConnections do
-      if assigned(contexts[loop]) then
-        if contexts[loop].Connection.Connected then
+      if assigned(ConnectionContexts[loop].Context) then
+        if ConnectionContexts[loop].Context.Connection.Connected then
           begin
-            contexts[loop].Connection.IOHandler.Write(Chr($FE)+'N'+Chr(index));
-            contexts[loop].Connection.IOHandler.Write(Data[0]);
-            contexts[loop].Connection.IOHandler.Write(Data[1]);
-            contexts[loop].Connection.IOHandler.Write(Data[2]);
-            contexts[loop].Connection.IOHandler.Write(Data[3]);
-            contexts[loop].Connection.IOHandler.Write(Data[4]);
-            contexts[loop].Connection.IOHandler.Write(Data[5]);
-            contexts[loop].Connection.IOHandler.Write(Data[6]);
-            contexts[loop].Connection.IOHandler.Write(Data[7]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Chr($FE)+'N'+Chr(index));
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[0]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[1]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[2]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[3]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[4]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[5]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[6]);
+            ConnectionContexts[loop].Context.Connection.IOHandler.Write(Data[7]);
         end;
   except
   end;
@@ -204,11 +212,11 @@ begin
   Result := $FF00;
   try
     for loop := 1 to MaxConnections do
-    if assigned(contexts[loop]) then
+    if assigned(ConnectionContexts[loop].Context) then
     begin
-      if contexts[loop].Connection.IOHandler.InputBuffer.Size > 0 then
+      if ConnectionContexts[loop].Context.Connection.IOHandler.InputBuffer.Size > 0 then
       begin
-       Result := contexts[loop].Connection.IOHandler.ReadByte;
+       Result := ConnectionContexts[loop].Context.Connection.IOHandler.ReadByte;
 
       end;
     end;
@@ -221,7 +229,7 @@ begin
   OK^ := true;
   Result := PChar(DLLProjectName + ' ' + Version + #0);
   try
-    RemoteServer.InitDisplay(SizeX, SizeY);
+    AndroidServer.InitDisplay(SizeX, SizeY);
   except
   end;
 end;
@@ -232,9 +240,9 @@ var
 begin
   try
     for loop := 1 to MaxConnections do
-    if assigned(contexts[loop]) then
-      if contexts[loop].Connection.Connected then
-        contexts[loop].Connection.Disconnect();
+    if assigned(ConnectionContexts[loop].Context) then
+      if ConnectionContexts[loop].Context.Connection.Connected then
+        ConnectionContexts[loop].Context.Connection.Disconnect();
 
     IdTCPServer1.Active:=false; // or we get exception
   except

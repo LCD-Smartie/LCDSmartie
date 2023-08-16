@@ -10,7 +10,7 @@
         <MainUnitHasScaledStatement Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="RemoteServer"/>
+      <Title Value="androidserver"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -21,7 +21,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="RemoteServer"/>
+            <Filename Value="androidserver"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -50,7 +50,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="..\x64\release-dir\displays\RemoteServer.dll"/>
+            <Filename Value="..\x64\release-dir\displays\androidserver.dll"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -89,7 +89,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="RemoteServer"/>
+            <Filename Value="androidserver"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -128,8 +128,9 @@
     </RequiredPackages>
     <Units>
       <Unit>
-        <Filename Value="RemoteServer.lpr"/>
+        <Filename Value="androidserver.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="AndroidServer"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -137,7 +138,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="RemoteServer"/>
+      <Filename Value="androidserver"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -173,22 +174,8 @@
   <Debugging>
     <Exceptions>
       <Item>
-        <Name Value="EAbort"/>
-      </Item>
-      <Item>
-        <Name Value="ECodetoolError"/>
-      </Item>
-      <Item>
-        <Name Value="EFOpenError"/>
-      </Item>
-      <Item>
-        <Name Value="EIdHTTPProtocolException"/>
-      </Item>
-      <Item>
-        <Name Value="EIdUnknownProtocol"/>
-      </Item>
-      <Item>
-        <Name Value="EIdSocketError"/>
+        <Name Value="EIdConnClosedGracefully"/>
+        <Enabled Value="False"/>
       </Item>
     </Exceptions>
   </Debugging>

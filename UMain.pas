@@ -31,7 +31,7 @@ uses
   Menus, Graphics, WinampCtrl, ExtCtrls, Controls, Buttons, Classes, Forms,
   USetup, UConfig, ULCD, UData, lcdline, UExceptionLogger, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
-  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math;
+  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math, URLThread;
 
   { TLCDSmartieDisplayForm }
 type
@@ -60,6 +60,7 @@ type
 
   TLCDSmartieDisplayForm = class(TForm)
     ExceptionLogger1: TExceptionLogger;
+    ReloadSkinMenuItem: TMenuItem;
     SavePosition: TMenuItem;
     N1: TMenuItem;
     NextScreenTimer: TTimer;
@@ -96,6 +97,7 @@ type
     IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure ReloadSkinMenuItemClick(Sender: TObject);
     procedure SavePositionClick(Sender: TObject);
     procedure ShowWindow1Click(Sender: TObject);
     procedure Close1Click(Sender: TObject);
@@ -190,7 +192,6 @@ type
     iLastRandomTranCycle: Integer;
     ConfigFileName: String;
     RestartAsAdmin: boolean;
-    bSavedAlwaysOnTop: boolean;
     function DoGuess(line: Integer): Integer;
     procedure freeze();
     procedure DoGPO(const ftemp1, ftemp2: Integer);
@@ -223,6 +224,7 @@ type
     ShowWindowFlag: Boolean;
     DisplayError: boolean;
     StartTime: TDATETIME;
+    sSkinDir: string;
     procedure SetOnscreenBacklight();
     procedure backlit(iOn: Integer = -1);
     procedure DoFullDisplayDraw;
@@ -440,6 +442,7 @@ begin
       LineRightScrollImages[loop].ParentShowHint := False;
       LineRightScrollImages[loop].ShowHint := True;
       LineRightScrollImages[loop].Name := 'ScrollR' + inttostr(loop); // this is parsed by LineScrollImageMouseDown
+      LineRightScrollImages[loop].Visible := false;
 
       LineLCDPanels[loop] := TLCDLineFrame.Create(nil);
       LineLCDPanels[loop].Parent := LCDSmartieDisplayForm;
@@ -449,6 +452,7 @@ begin
       LineLCDPanels[loop].Hint := 'Virtual display.';
       LineLCDPanels[loop].DoubleBuffered := True;
       LineLCDPanels[loop].ShowHint := True;
+      LineLCDPanels[loop].Visible := false;
 
       xLinePanels[loop] := TPanel.Create(nil);
       xLinePanels[loop].Parent := LCDSmartieDisplayForm;
@@ -472,6 +476,7 @@ begin
       xLinePanels[loop].ParentFont := False;
       xLinePanels[loop].ParentShowHint := False;
       xLinePanels[loop].ShowHint := True;
+      xLinePanels[loop].Visible := false;
 
       LineLeftScrollImages[loop] := TImage.Create(nil);
       LineLeftScrollImages[loop].Parent := LCDSmartieDisplayForm;
@@ -485,6 +490,7 @@ begin
       LineLeftScrollImages[loop].ParentShowHint := False;
       LineLeftScrollImages[loop].ShowHint := True;
       LineLeftScrollImages[loop].Name := 'ScrollL' + inttostr(loop); // this is parsed by LineScrollImageMouseDown
+      LineLeftScrollImages[loop].Visible := false;;
     end;
 
   fillchar(ScreenLCD,sizeof(ScreenLCD),$00);
@@ -494,6 +500,11 @@ begin
   CreateDirectory('cache', nil);
   CreateDirectory('plugins', nil);
   CreateDirectory('displays', nil);
+
+  if DirectoryExists('skins') then
+    sSkinDir := 'skins\'
+  else
+    sSkinDir := 'images\';
 
   //AddPluginsToPath();  // I don't think we need to do this for this program
 
@@ -532,6 +543,9 @@ begin
       config.save(); // save default values
       showmessage('Default configuration ('+ConfigFileName+') created')
   end;
+
+  while (pos('\', config.sSkinPath) > 0) do
+    config.sSkinPath := copy(config.sSkinPath, pos('\', config.sSkinPath) + 1 , 255);
 
   if (config.alwaysOnTop) then
     FormStyle := fsSystemStayOnTop
@@ -602,7 +616,7 @@ begin
       IdTCPServer1.Active := True;
     except
       on E : Exception do
-        ShowMessage(E.Message);
+        ShowMessage('Remote Display:'+#13#10+E.Message);
     end;
   end;
 
@@ -611,12 +625,12 @@ end;
 procedure TLCDSmartieDisplayForm.LoadSkin;
 var
   sSkinPath: String;
+  IconPath: string;
   hIcon: TIcon;
   loop: byte;
 begin
   try
-    sSkinPath := extractfilepath(application.exename) + config.sSkinPath;
-
+    sSkinPath := extractfilepath(application.exename) + sSkinDir + config.sSkinPath + '\';
     LogoImage.picture.LoadFromFile(sSkinPath + 'logo.bmp');
 
     for loop := 1 to MaxLines do
@@ -633,20 +647,47 @@ begin
     SetupImage.picture.LoadFromFile(sSkinPath + 'setup_up.bmp');
     HideImage.picture.LoadFromFile(sSkinPath + 'hide_up.bmp');
 
-    TrayIcon1.Icon.LoadFromFile(sSkinPath + config.sTrayIcon);
-    application.Icon.LoadFromFile(sSkinPath + 'smartie.ico');
+    if config.sTrayIcon = 'default for this skin' then
+      IconPath := sSkinpath + '\smartie.ico'
+    else
+      IconPath := extractfilepath(application.exename) + sSkinDir + config.sTrayIcon;
 
-    hIcon := TIcon.Create;
+    TrayIcon1.Icon.LoadFromFile(IconPath);
+    application.Icon.LoadFromFile(IconPath);
+
+    {hIcon := TIcon.Create;
     GetIconFromFile(sSkinPath + config.sTrayIcon, hIcon, SHIL_SMALL);
     TrayIcon1.icon.Assign(hIcon);
-    hIcon.Destroy;
-
+    hIcon.Destroy;}
   except
     on E: Exception do
     begin
-      showmessage('Error: unable to load skin from sSkinPath, ' +
-        sSkinPath + ': ' + E.Message);
-      application.terminate;
+      showmessage('Error: unable to load skin from, ' +#13#10+
+        sSkinPath + #13#10 + E.Message);
+      showmessage('Loading Default skin');
+      LogoImage.picture.LoadFromResourceName(HInstance, 'logo');
+      for loop := 1 to MaxLines do
+      begin
+        LineRightScrollImages[loop].picture.LoadFromResourceName(HInstance, 'small_arrow_left_up'+inttostr(loop));
+        LineLeftScrollImages[loop].picture.LoadFromResourceName(HInstance, 'small_arrow_right_up'+inttostr(loop));
+      end;
+
+      NextScreenImage.picture.LoadFromResourceName(HInstance, 'big_arrow_right_up');
+      PreviousImage.picture.LoadFromResourceName(HInstance, 'big_arrow_left_up');
+      BarLeftImage.picture.LoadFromResourceName(HInstance, 'bar_left');
+      BarRightImage.picture.LoadFromResourceName(HInstance, 'bar_right');
+      BarMiddleImage.picture.LoadFromResourceName(HInstance, 'bar_middle');
+      SetupImage.picture.LoadFromResourceName(HInstance, 'setup_up');
+      HideImage.picture.LoadFromResourceName(HInstance, 'hide_up');
+
+      TrayIcon1.Icon.LoadFromResourceName(HInstance, 'smartie');
+      application.Icon.LoadFromResourceName(HInstance, 'smartie');
+
+      //hIcon := TIcon.Create;
+      //hIcon.LoadFromResourceName(HInstance, 'smartie');
+      //GetIconFromFile(sSkinPath + config.sTrayIcon, hIcon, SHIL_SMALL);
+      //TrayIcon1.icon.Assign(hIcon);
+      //hIcon.Destroy;
     end;
   end;
 end;
@@ -658,7 +699,7 @@ var
 begin
 //register
   try
-    assignfile(initfile, extractfilepath(application.exename) +config.sSkinPath + 'colors.cfg');
+    assignfile(initfile, extractfilepath(application.exename) + sSkinDir + config.sSkinPath + '\colors.cfg');
     reset(initfile);
     readln(initfile, line);
     ScreenNumberPanel.Color := StrToInt('$00' + copy(line, 1, 6));
@@ -673,11 +714,25 @@ begin
     readln(initfile, line);
     backgroundcoloroff := StrToInt('$00' + copy(line, 1, 6));
     closefile(initfile);
+    // toggle backlight to force color reload
+    SetOnscreenBacklight;
+    SetOnscreenBacklight;
   except
     on E: Exception do
     begin
-      showmessage('Fatal Error:  Can`t find images\colors.cfg: ' + E.Message);
-      application.Terminate;
+      showmessage('Error: Can''t load ' + extractfilepath(application.exename) +
+        config.sSkinPath + 'colors.cfg'+ #13#10+ E.Message);
+      showmessage('Loading Default Colors');
+      //application.Terminate;
+
+      ScreenNumberPanel.Color := $7F0000;
+      ScreenNumberPanel.font.Color := $FFFFFF;
+      forgroundcoloron := $000000;
+      backgroundcoloron := $FFFFFF;
+      forgroundcoloroff := $000000;
+      backgroundcoloroff := $CECECE;
+      SetOnscreenBacklight;
+      SetOnscreenBacklight;
     end;
   end;
 end;
@@ -751,10 +806,14 @@ begin
     // restore window position from config
     LCDSmartieDisplayForm.Top  := config.MainFormPosTop;
     LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
-
     timerRefresh.Interval := 1; // make it short in case minimized has been selected.
-    TrayIcon1.ShowIcon:=true;
+    //TrayIcon1.ShowIcon:=true;
   end;
+end;
+
+procedure TLCDSmartieDisplayForm.ReloadSkinMenuItemClick(Sender: TObject);
+begin
+  LoadSkin;
 end;
 
 procedure TLCDSmartieDisplayForm.SavePositionClick(Sender: TObject);
@@ -812,7 +871,7 @@ var
   iDelta: Integer;
   loop: byte;
 begin
-  for loop := 2 to MaxLines do
+  for loop := 1 to MaxLines do
   begin
     ScreenLCD[loop].visible := config.height > loop - 1;
     LineRightScrollImages[loop].visible := config.height > loop - 1;
@@ -1273,14 +1332,17 @@ begin
     config.MainFormPosTop := LCDSmartieDisplayForm.Top;
     config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
     config.save;
-    SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and not WS_EX_APPWINDOW);
+    //SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and not WS_EX_APPWINDOW);
     LCDSmartieDisplayForm.Visible:=false;
+     // the window gets messed up when restored after being hidden while minimized
+     // I assume that when the window is unhidden the user wants to see it anyway
+    WindowState := wsNormal;
   end
   else
   begin // show
     LCDSmartieDisplayForm.Top := config.MainFormPosTop;
     LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
-    SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and WS_EX_APPWINDOW);
+    //SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and WS_EX_APPWINDOW);
     LCDSmartieDisplayForm.Visible:=true;
     ResizeHeight;
   end;
@@ -1398,10 +1460,12 @@ var
 begin
   Image := Sender As TImage;
   thisLine := strtoInt(copy(Image.Name, 8));
-
-  LineRightScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_down' + inttostr(thisLine) + '.bmp');
-
+  try
+    LineRightScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\small_arrow_left_down' + inttostr(thisLine) + '.bmp');
+  except
+    LineRightScrollImages[thisLine].picture.LoadFromResourceName(HInstance, 'small_arrow_left_down' + inttostr(thisLine));
+  end;
   line2scroll := thisLine;
   RightManualScrollTimer.enabled := true;
   timerRefresh.enabled := false;
@@ -1415,10 +1479,12 @@ var
 begin
   Image := Sender As TImage;
   thisLine := strtoInt(copy(Image.Name, 8));
-
-  LineRightScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_left_up' + inttostr(thisLine) + '.bmp');
-
+  try
+    LineRightScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\small_arrow_left_up' + inttostr(thisLine) + '.bmp');
+  except
+    LineRightScrollImages[thisLine].picture.LoadFromResourceName(HInstance, 'small_arrow_left_up' + inttostr(thisLine));
+  end;
   RightManualScrollTimer.enabled := false;
   timerRefresh.enabled := true;
 end;
@@ -1431,10 +1497,12 @@ var
 begin
   Image := Sender As TImage;
   thisLine := strtoInt(copy(Image.Name, 8));
-
-  LineLeftScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_down' + inttostr(thisLine) + '.bmp');
-
+  try
+    LineLeftScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\small_arrow_right_down' + inttostr(thisLine) + '.bmp');
+  except
+    LineLeftScrollImages[thisLine].picture.LoadFromResourceName(HInstance, 'small_arrow_right_down' + inttostr(thisLine));
+  end;
   line2scroll := thisLine;
   LeftManualScrollTimer.enabled := true;
   timerRefresh.enabled := false;
@@ -1448,10 +1516,12 @@ var
 begin
   Image := Sender As TImage;
   thisLine := strtoInt(copy(Image.Name, 8));
-
-  LineLeftScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'small_arrow_right_up' + inttostr(thisLine) + '.bmp');
-
+  try
+    LineLeftScrollImages[thisLine].picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\small_arrow_right_up' + inttostr(thisLine) + '.bmp');
+  except
+    LineLeftScrollImages[thisLine].picture.LoadFromResourceName(Hinstance, 'small_arrow_right_up' + inttostr(thisLine));
+  end;
   LeftManualScrollTimer.enabled := false;
   timerRefresh.enabled := true;
 end;
@@ -1459,57 +1529,95 @@ end;
 procedure TLCDSmartieDisplayForm.PreviousImageMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  PreviousImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'big_arrow_left_down.bmp');
+  try
+    PreviousImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\big_arrow_left_down.bmp');
+  except
+    PreviousImage.picture.LoadFromResourceName(Hinstance, 'big_arrow_left_down');
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.PreviousImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
 begin
-  PreviousImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'big_arrow_left_up.bmp');
+  try
+    PreviousImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\big_arrow_left_up.bmp');
+  except
+    PreviousImage.picture.LoadFromResourceName(HInstance, 'big_arrow_left_up');
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.SetupImageMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  SetupImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'setup_down.bmp');
+  // this is slightly different as an exception here prevents us
+  // getting into settings to fix a skin issue
+  try
+    if fileexists(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\setup_down.bmp') then
+    SetupImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\setup_down.bmp')
+      else
+        SetupImage.picture.LoadFromResourceName(HInstance, 'setup_down');
+  except
+    SetupImage.picture.LoadFromResourceName(HInstance, 'setup_down');
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.SetupImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
 begin
-  SetupImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'setup_up.bmp');
+  try
+    SetupImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\setup_up.bmp');
+  except
+    SetupImage.picture.LoadFromResourceName(HInstance, 'setup_up');
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.HideImageMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  HideImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'hide_down.bmp');
+  try
+    HideImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\hide_down.bmp');
+  except
+    HideImage.picture.LoadFromResourceName(HInstance, 'hide_down');
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.HideImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
 begin
-  HideImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'hide_up.bmp');
+  try
+    HideImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\hide_up.bmp');
+  except
+    HideImage.picture.LoadFromResourceName(HInstance, 'hide_up');
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.NextScreenImageMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  NextScreenImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'big_arrow_right_down.bmp');
+  try
+    NextScreenImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\big_arrow_right_down.bmp');
+  except
+    NextScreenImage.picture.LoadFromResourceName(HInstance, 'big_arrow_right_down');
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.NextScreenImageMouseUp(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
 begin
-  NextScreenImage.picture.LoadFromFile(extractfilepath(application.exename) +
-    config.sSkinPath + 'big_arrow_right_up.bmp');
+  try
+    NextScreenImage.picture.LoadFromFile(extractfilepath(application.exename) + sSkinDir +
+      config.sSkinPath + '\big_arrow_right_up.bmp');
+  except
+    NextScreenImage.picture.LoadFromResourceName(HInstance, 'big_arrow_right_up');
+  end;
 end;
 
 
@@ -1694,12 +1802,14 @@ const
   APPCOMMAND_VOLUME_MUTE = $80000;
 var
   temp1, temp2: String;
+  postStrings: TStringList;
   iTemp: Integer;
   args: Array [0..maxArgs-1] of String;
   prefix, postfix: String;
   numArgs: Cardinal;
   sSecondAction: String;
   uiPlugin: Cardinal;
+  URLThread: TURLThread;
 begin
   // Handle actions have do something when they are activated and de-activated.
   if (pos('Backlight(', sAction) <> 0) then
@@ -1901,6 +2011,28 @@ begin
       temp1 := copy(sAction, pos('Execute[', sAction) + 5, pos(']', sAction)
          - pos('Exec[', sAction)-5);
       shellexecute(0, 'open', PChar(temp1), '', '', SW_SHOW);
+    end;
+
+    temp1 := sAction;
+    while decodeArgs(temp1, 'HTTPReq', 1, args, prefix, postfix, numargs) do
+    begin
+      URLThread := TURLThread.Create(1);
+      URLThread.getUrl(args[0], 0);
+      temp1 := '';
+      URLThread.Free;
+    end;
+
+    temp1 := sAction;
+    while decodeArgs(temp1, 'HTTPPost', 99, args, prefix, postfix, numargs) do
+    begin
+      URLThread := TURLThread.Create(1);
+      temp1 := '';
+      postStrings := TStringList.Create;
+      for iTemp := 1 to numargs do
+        postStrings.Add(args[iTemp]);
+
+      URLThread.getUrl(args[0], 0, postStrings);
+      URLThread.Free;
     end;
 
     if (pos('Winamp', sAction) <> 0) then

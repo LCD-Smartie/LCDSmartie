@@ -25,7 +25,6 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
   ParentBiDiMode = False
   ParentDoubleBuffered = False
   Position = poDefault
-  ShowInTaskBar = stNever
   LCLVersion = '3.0.0.1'
   Scaled = False
   object BarLeftImage: TImage
@@ -179,6 +178,10 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     object SavePosition: TMenuItem
       Caption = 'S&ave Position'
       OnClick = SavePositionClick
+    end
+    object ReloadSkinMenuItem: TMenuItem
+      Caption = '&Reload Skin'
+      OnClick = ReloadSkinMenuItemClick
     end
     object Close1: TMenuItem
       Caption = '&Close'
