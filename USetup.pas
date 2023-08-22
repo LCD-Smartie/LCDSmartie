@@ -66,6 +66,7 @@ type
     BacklightBitBtn: TBitBtn;
     BoincServerIndexComboBox: TComboBox;
     AddRSSButton: TButton;
+    ActionLogButton: TButton;
     CustomTitleTIEdit1: TTIEdit;
     DistributedNetBrowseButton: TSpeedButton;
     DistributedNetLogfileEdit: TEdit;
@@ -374,7 +375,6 @@ type
     ScreenSettingsGroupBox: TGroupBox;
     ScreensTabSheet: TTabSheet;
     ScreenTabsheet: TTabSheet;
-    ActionsGridScrollBar: TScrollBar;
     BOINCListBox: TListBox;
     BOINCTabSheet: TTabSheet;
     BOINCEnableCheckBox: TCheckBox;
@@ -404,6 +404,7 @@ type
     WinampLocationEdit: TEdit;
     WinampLocationLabel: TLabel;
     WinampTabSheet: TTabSheet;
+    procedure ActionLogButtonClick(Sender: TObject);
     procedure AddRSSButtonClick(Sender: TObject);
     procedure BacklightBitBtnClick(Sender: TObject);
     procedure CustomCharClearButtonClick(Sender: TObject);
@@ -446,8 +447,6 @@ type
     procedure UnHidePluginMenuItemClick(Sender: TObject);
     procedure UpdateRSSButtonClick(Sender: TObject);
     procedure VariableEditChange(Sender: TObject);
-    procedure ActionsGridScrollBarScroll(Sender: TObject;
-      ScrollCode: TScrollCode; var ScrollPos: Integer);
     procedure ActionsStringGridDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure ActionsStringGridDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -456,7 +455,6 @@ type
     procedure ActionsStringGridSelectEditor(Sender: TObject;
       aCol, aRow: integer; var Editor: TWinControl);
     procedure ActionsStringGridSelection(Sender: TObject; aCol, aRow: integer);
-    procedure ActionsStringGridUpdateScrollBar;
     procedure BitBtn4Click(Sender: TObject);
     procedure BoincPasswordEditChange(Sender: TObject);
     procedure BoincServerEditChange(Sender: TObject);
@@ -919,6 +917,14 @@ begin
   end;
 end;
 
+procedure TSetupForm.ActionLogButtonClick(Sender: TObject);
+begin
+  if LCDSmartieDisplayForm.ActionLogForm.Visible then
+    LCDSmartieDisplayForm.ActionLogForm.Hide
+  else
+    LCDSmartieDisplayForm.ActionLogForm.Show;
+end;
+
 procedure TSetupForm.UpdateRSSButtonClick(Sender: TObject);
 begin
   if (length(RSSNameEdit.Text) > 0) and (length(RSSAddressTMemoEdit.Text) > 0) and (InternetListBox.ItemIndex >= 0) then
@@ -1201,22 +1207,24 @@ begin
   GameServerEdit.Text := config.gameServer[1, 1];
 
   ActionsStringGrid.DragMode := dmManual;
-  ActionsStringGrid.colcount := 6;
-  ActionsStringGrid.rowcount := 1; // lazarus grids dont work with 0 rows
+  ActionsStringGrid.colcount := 8;
+  ActionsStringGrid.rowcount := 1; // leave one for the header row
 
   // setup grid column widths
-  ActionsStringGrid.ColWidths[0] := 40;
-  ActionsStringGrid.ColWidths[1] := 205;
-  ActionsStringGrid.ColWidths[2] := 40;
-  ActionsStringGrid.ColWidths[3] := 46;
-  ActionsStringGrid.ColWidths[4] := 36;
-  ActionsStringGrid.ColWidths[5] := 165;
+  ActionsStringGrid.ColWidths[0] := config.ActionIndexCol;
+  ActionsStringGrid.ColWidths[1] := config.ActionIfCol;
+  ActionsStringGrid.ColWidths[2] := config.ActionVariableCol;
+  ActionsStringGrid.ColWidths[3] := config.ActionIsCol;
+  ActionsStringGrid.ColWidths[4] := config.ActionValueCol;
+  ActionsStringGrid.ColWidths[5] := config.ActionThenCol;
+  ActionsStringGrid.ColWidths[6] := config.ActionActionCol;
+  ActionsStringGrid.ColWidths[7] := config.ActionEnabledCol;
   // Populate the grid
   for i := 1 to config.totalactions do
   begin
-    ActionsStringGrid.Cells[0, ActionsStringGrid.RowCount - 1] := 'if';
-    ActionsStringGrid.Cells[1, ActionsStringGrid.RowCount - 1] :=
-      config.actionsArray[i, 1];
+    ActionsStringGrid.RowCount := ActionsStringGrid.RowCount + 1;
+    ActionsStringGrid.Cells[1, ActionsStringGrid.RowCount - 1] := 'if';
+    ActionsStringGrid.Cells[2, ActionsStringGrid.RowCount - 1] := config.actionsArray[i, 1];
     case (StrToInt(config.actionsArray[i, 2])) of
       0: ActOpr := '>';
       1: ActOpr := '<';
@@ -1226,16 +1234,13 @@ begin
       else
         ActOpr := '<>';
     end;
-    ActionsStringGrid.Cells[2, ActionsStringGrid.RowCount - 1] := ActOpr;
-    ActionsStringGrid.Cells[3, ActionsStringGrid.RowCount - 1] :=
-      config.actionsArray[i, 3];
-    ActionsStringGrid.Cells[4, ActionsStringGrid.RowCount - 1] := 'then';
-    ActionsStringGrid.Cells[5, ActionsStringGrid.RowCount - 1] :=
-      config.actionsArray[i, 4];
-    ActionsStringGrid.RowCount := ActionsStringGrid.RowCount + 1;
+    ActionsStringGrid.Cells[3, ActionsStringGrid.RowCount - 1] := ActOpr;
+    ActionsStringGrid.Cells[4, ActionsStringGrid.RowCount - 1] := config.actionsArray[i, 3];
+    ActionsStringGrid.Cells[5, ActionsStringGrid.RowCount - 1] := 'then';
+    ActionsStringGrid.Cells[6, ActionsStringGrid.RowCount - 1] := config.actionsArray[i, 4];
+    ActionsStringGrid.Cells[7, ActionsStringGrid.RowCount - 1] := config.actionsArray[i, 5];
   end;
-  ActionsStringGrid.DeleteRow(config.totalactions);
-  ActionsStringGridUpdateScrollBar;
+  //ActionsStringGrid.DeleteRow(config.totalactions);
 
   ScreenSpinEdit.MaxValue := MaxScreens;
 
@@ -1383,7 +1388,7 @@ end;
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
   aCol, aRow: integer; var Editor: TWinControl);
 var
-  Items: array [0..34] of string = ('NextTheme', 'LastTheme',
+  Items: array [0..37] of string = ('NextTheme', 'LastTheme',
     'NextScreen', 'LastScreen', 'GotoTheme(2)',
     'GotoScreen(2)', 'FreezeScreen', 'UnfreezeScreen', 'ToggleFreeze',
     'Refresh all data', 'Backlight(0/1) (0=off 1=on)',
@@ -1396,17 +1401,23 @@ var
     'DisableScreen(1-99)', '$dll(name.dll,2,param1,param2)',
     'GPO(1-8,0/1) (0=off 1=on)', 'GPOToggle(1-8)', 'SystemVolumeDown',
     'SystemVolumeMute', 'SystemVolumeUp',
-    'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)', 'HTTPReq(URL)', 'HTTPPost(URL,Key1=Data1,Key2=Data2,...)');
+    'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)', 'HTTPReq(URL)',
+    'HTTPPost(URL,Key1=Data1,Key2=Data2,...)', 'ActionAfterSecs(Action, seconds)', 'ActionAndDisable(Action)', 'EnableAction(ActionIndex, enabled 1/0)');
 begin
-  if aCol = 2 then
+  if aCol = 3 then
   begin
     Editor := ActionsStringGrid.EditorByStyle(cbsPickList);
     TPickListCellEditor(Editor).Items.CommaText := '=,<,>,<=,>=,<>';
   end;
-  if aCol = 5 then
+  if aCol = 6 then
   begin
     Editor := ActionsStringGrid.EditorByStyle(cbsPickList);
     TPickListCellEditor(Editor).Items.SetStrings(items);
+  end;
+  if aCol = 7 then
+  begin
+    Editor := ActionsStringGrid.EditorByStyle(cbsPickList);
+    TPickListCellEditor(Editor).Items.CommaText := 'True, False';
   end;
 end;
 
@@ -1422,7 +1433,7 @@ begin
     if GetCursorPos(pnt) then
     ActionsExportImportPoup.Popup(pnt.X, pnt.Y);
   end
-  else
+  else if SourceRow > 0 then
     ActionsStringGrid.BeginDrag(False, 4);
 end;
 
@@ -1442,27 +1453,17 @@ var
   DestCol, DestRow: Integer;
 begin
   ActionsStringGrid.MouseToCell(X, Y, DestCol, DestRow);
-  ActionsStringGrid.MoveColRow(false, SourceRow, DestRow);
-end;
-
-procedure TSetupForm.ActionsGridScrollBarScroll(Sender: TObject;
-  ScrollCode: TScrollCode; var ScrollPos: Integer);
-begin
-  ActionsStringGrid.TopRow:=ScrollPos;
+  if DestRow > 0 then
+    ActionsStringGrid.MoveColRow(false, SourceRow, DestRow);
 end;
 
 procedure TSetupForm.ActionsStringGridSelection(Sender: TObject; aCol, aRow: integer);
 begin
-  if (aCol = 0) or (aCol = 4) then
+  if (aCol = 0) or (aCol = 1) or (aCol = 5) then
     ActionsStringGrid.Options := ActionsStringGrid.Options - [goEditing];
 
-  if (aCol = 1) or (aCol = 2) or (aCol = 3) or (aCol = 5) then
+  if (aCol = 2) or (aCol = 3) or (aCol = 4) or (aCol = 6) or (aCol = 7)then
     ActionsStringGrid.Options := ActionsStringGrid.Options + [goEditing];
-end;
-
-procedure TSetupForm.ActionsStringGridUpdateScrollBar;
-begin
-  ActionsGridScrollBar.Max := ActionsStringGrid.RowCount;
 end;
 
 procedure TSetupForm.BitBtn4Click(Sender: TObject);
@@ -2371,7 +2372,7 @@ begin
       begin
         if pos('$MObutton', VariableEdit.Text) <> 0 then
           VariableEdit.Text := '$MObutton(' + LastKeyPressedEdit.Text + ')';
-        ActionsStringGrid.Cells[1, ActionsStringGrid.row] := VariableEdit.Text;
+        ActionsStringGrid.Cells[2, ActionsStringGrid.row] := VariableEdit.Text;
       end;
     end
     else if (StartupTabSheet.Visible) then // in startup/shutdown tab
@@ -2757,33 +2758,44 @@ begin
   config.Custom_width := CustomCharsSizeEdit.Value;
   ReloadSkin := False;
 
+  config.ActionIndexCol :=  ActionsStringGrid.ColWidths[0];
+  config.ActionIfCol := ActionsStringGrid.ColWidths[1];
+  config.ActionVariableCol := ActionsStringGrid.ColWidths[2];
+  config.ActionIsCol := ActionsStringGrid.ColWidths[3];
+  config.ActionValueCol := ActionsStringGrid.ColWidths[4];
+  config.ActionThenCol := ActionsStringGrid.ColWidths[5];
+  config.ActionActionCol := ActionsStringGrid.ColWidths[6];
+  config.ActionEnabledCol := ActionsStringGrid.ColWidths[7];
+
   iMaxUsedRow := -1;
   y := 0;
-  for x := 0 to ActionsStringGrid.RowCount - 1 do
+  for x := 1 to ActionsStringGrid.RowCount - 1 do
   begin
-    if (ActionsStringGrid.cells[1, x] <> '') and
-       (ActionsStringGrid.cells[2, x] <> '') and
+    if (ActionsStringGrid.cells[2, x] <> '') and
        (ActionsStringGrid.cells[3, x] <> '') and
-       (ActionsStringGrid.cells[5, x] <> '') then
+       (ActionsStringGrid.cells[4, x] <> '') and
+       (ActionsStringGrid.cells[6, x] <> '') and
+       (ActionsStringGrid.cells[7, x] <> '') then
     begin
       iMaxUsedRow := y;
-      config.actionsArray[y + 1, 1] := ActionsStringGrid.Cells[1, x];
+      config.actionsArray[y + 1, 1] := ActionsStringGrid.Cells[2, x];
 
-      if ActionsStringGrid.Cells[2, x] = '>' then
+      if ActionsStringGrid.Cells[3, x] = '>' then
         config.actionsArray[y + 1, 2] := '0';
-      if ActionsStringGrid.Cells[2, x] = '<' then
+      if ActionsStringGrid.Cells[3, x] = '<' then
         config.actionsArray[y + 1, 2] := '1';
-      if ActionsStringGrid.Cells[2, x] = '=' then
+      if ActionsStringGrid.Cells[3, x] = '=' then
         config.actionsArray[y + 1, 2] := '2';
-      if ActionsStringGrid.Cells[2, x] = '<=' then
+      if ActionsStringGrid.Cells[3, x] = '<=' then
         config.actionsArray[y + 1, 2] := '3';
-      if ActionsStringGrid.Cells[2, x] = '>=' then
+      if ActionsStringGrid.Cells[3, x] = '>=' then
         config.actionsArray[y + 1, 2] := '4';
-      if ActionsStringGrid.Cells[2, x] = '<>' then
+      if ActionsStringGrid.Cells[3, x] = '<>' then
         config.actionsArray[y + 1, 2] := '5';
 
-      config.actionsArray[y + 1, 3] := ActionsStringGrid.Cells[3, x];
-      config.actionsArray[y + 1, 4] := ActionsStringGrid.Cells[5, x];
+      config.actionsArray[y + 1, 3] := ActionsStringGrid.Cells[4, x];
+      config.actionsArray[y + 1, 4] := ActionsStringGrid.Cells[6, x];
+      config.actionsArray[y + 1, 5] := ActionsStringGrid.Cells[7, x];
       inc(y);
     end;
   end;
@@ -2904,9 +2916,8 @@ begin
   {$IFDEF STANDALONESETUP}
   SetupForm.BorderStyle := bsSingle;
   {$ENDIF}
-
   // putting all these into an array makes things easier
-  // it'd be nicer to generate these programatically though
+  // it'd be nicer to generate them programatically though
   LineEditArray[1] := Line1MemoEdit; LineEditArray[2] := Line2MemoEdit;
   LineEditArray[3] := Line3MemoEdit; LineEditArray[4] := Line4MemoEdit;
   LineEditArray[5] := Line5MemoEdit; LineEditArray[6] := Line6MemoEdit;
@@ -3018,9 +3029,9 @@ var
 begin
   Selection := ActionsStringGrid.Selection.Top;
   ActionsStringGrid.InsertColRow(false, Selection +1);
-  ActionsStringGrid.Cells[0, Selection +1] := 'if';
-  ActionsStringGrid.Cells[4, Selection +1] := 'then';
-  ActionsStringGridUpdateScrollBar;
+  ActionsStringGrid.Cells[1, Selection +1] := 'if';
+  ActionsStringGrid.Cells[5, Selection +1] := 'then';
+  ActionsStringGrid.Cells[7, Selection +1] := 'True';
 end;
 
 procedure TSetupForm.DuplicateActionButtonClick(Sender: TObject);
@@ -3029,19 +3040,18 @@ var
 begin
   Selection := ActionsStringGrid.Selection.Top;
   ActionsStringGrid.InsertColRow(false, Selection +1);
-  ActionsStringGrid.Cells[0, Selection +1] := 'if';
-  ActionsStringGrid.Cells[1, Selection +1] := ActionsStringGrid.Cells[1, Selection];
+  ActionsStringGrid.Cells[1, Selection +1] := 'if';
   ActionsStringGrid.Cells[2, Selection +1] := ActionsStringGrid.Cells[2, Selection];
   ActionsStringGrid.Cells[3, Selection +1] := ActionsStringGrid.Cells[3, Selection];
-  ActionsStringGrid.Cells[4, Selection +1] := 'then';
-  ActionsStringGrid.Cells[5, Selection +1] := ActionsStringGrid.Cells[5, Selection];
-  ActionsStringGridUpdateScrollBar;
+  ActionsStringGrid.Cells[4, Selection +1] := ActionsStringGrid.Cells[4, Selection];
+  ActionsStringGrid.Cells[5, Selection +1] := 'then';
+  ActionsStringGrid.Cells[6, Selection +1] := ActionsStringGrid.Cells[6, Selection];
+  ActionsStringGrid.Cells[7, Selection +1] := ActionsStringGrid.Cells[7, Selection];
 end;
 
 procedure TSetupForm.ActionDeleteButtonClick(Sender: TObject);
 begin
   ActionsStringGrid.DeleteRow(ActionsStringGrid.Selection.Top);
-  ActionsStringGridUpdateScrollBar;
 end;
 
 procedure TSetupForm.ButtonsListBoxClick(Sender: TObject);
@@ -3657,10 +3667,11 @@ begin
   Clipboard := TClipboard.Create;
   ActionStrings := TStringList.Create;
   // add the Action01XXX just to give us something to validate when importing
-  ActionStrings.Add('Action01Variable=' + config.actionsArray[ActionsStringGrid.Row+1, 1]); // Variable
-  ActionStrings.Add('Action01Condition=' + config.actionsArray[ActionsStringGrid.Row+1, 2]); // Condition
-  ActionStrings.Add('Action01ConditionValue=' + config.actionsArray[ActionsStringGrid.Row+1, 3]); // ConditionValue
-  ActionStrings.Add('Action01Action=' + config.actionsArray[ActionsStringGrid.Row+1, 4]); // ActionStrings
+  ActionStrings.Add('Action01Variable=' + config.actionsArray[ActionsStringGrid.Row, 1]); // Variable
+  ActionStrings.Add('Action01Condition=' + config.actionsArray[ActionsStringGrid.Row, 2]); // Condition
+  ActionStrings.Add('Action01ConditionValue=' + config.actionsArray[ActionsStringGrid.Row, 3]); // ConditionValue
+  ActionStrings.Add('Action01Action=' + config.actionsArray[ActionsStringGrid.Row, 4]); // ActionStrings
+  ActionStrings.Add('Action01Enabled=' + config.actionsArray[ActionsStringGrid.Row, 5]); // Enabled
   Clipboard.AsText := ActionStrings.Text;
   ActionStrings.Free;
   Clipboard.Free;
@@ -3674,10 +3685,11 @@ begin
   if ExportFileSaveDialog.Execute then
   begin
     ActionStrings := TStringlist.Create;
-    ActionStrings.Add('Action01Variable=' + config.actionsArray[ActionsStringGrid.Row+1, 1]); // Variable
-    ActionStrings.Add('Action01Condition=' + config.actionsArray[ActionsStringGrid.Row+1, 2]); // Condition
-    ActionStrings.Add('Action01ConditionValue=' + config.actionsArray[ActionsStringGrid.Row+1, 3]); // ConditionValue
-    ActionStrings.Add('Action01Action=' + config.actionsArray[ActionsStringGrid.Row+1, 4]); // ActionStrings
+    ActionStrings.Add('Action01Variable=' + config.actionsArray[ActionsStringGrid.Row, 1]); // Variable
+    ActionStrings.Add('Action01Condition=' + config.actionsArray[ActionsStringGrid.Row, 2]); // Condition
+    ActionStrings.Add('Action01ConditionValue=' + config.actionsArray[ActionsStringGrid.Row, 3]); // ConditionValue
+    ActionStrings.Add('Action01Action=' + config.actionsArray[ActionsStringGrid.Row, 4]); // ActionStrings
+    ActionStrings.Add('Action01Enabled=' + config.actionsArray[ActionsStringGrid.Row, 5]); // Enabled
     ActionStrings.SaveToFile(ExportFileSaveDialog.Filename);
   end;
 end;
@@ -3700,8 +3712,8 @@ begin
     begin
       Selection := ActionsStringGrid.Selection.Top;
       ActionsStringGrid.InsertColRow(false, Selection +1);
-      ActionsStringGrid.Cells[0, Selection +1] := 'if';
-      ActionsStringGrid.Cells[1, Selection +1] := copy(ActionStrings[0], i + 1, 255);
+      ActionsStringGrid.Cells[1, Selection +1] := 'if';
+      ActionsStringGrid.Cells[2, Selection +1] := copy(ActionStrings[0], i + 1, 255);
       i := pos('=', ActionStrings[1]);
       if i > 0 then
       begin
@@ -3714,15 +3726,19 @@ begin
           else
             ActOpr := '<>';
           end;
-          ActionsStringGrid.Cells[2, Selection +1] := ActOpr;
+          ActionsStringGrid.Cells[3, Selection +1] := ActOpr;
         i := pos('=', ActionStrings[2]);
         if i > 0 then
         begin
-          ActionsStringGrid.Cells[3, Selection +1] := copy(ActionStrings[2], i + 1, 255);
-          ActionsStringGrid.Cells[4, Selection +1] := 'then';
+          ActionsStringGrid.Cells[4, Selection +1] := copy(ActionStrings[2], i + 1, 255);
+          ActionsStringGrid.Cells[5, Selection +1] := 'then';
           i := pos('=', ActionStrings[3]);
           if i > 0 then begin
-            ActionsStringGrid.Cells[5, Selection +1] := copy(ActionStrings[3], i + 1, 255);
+            ActionsStringGrid.Cells[6, Selection +1] := copy(ActionStrings[3], i + 1, 255);
+            i := pos('=', ActionStrings[4]);
+            if i > 0 then begin
+              ActionsStringGrid.Cells[7, Selection +1] := copy(ActionStrings[4], i + 1, 255);
+            end;
           end;
         end;
       end;
@@ -3748,8 +3764,8 @@ begin
       begin
         Selection := ActionsStringGrid.Selection.Top;
         ActionsStringGrid.InsertColRow(false, Selection +1);
-        ActionsStringGrid.Cells[0, Selection +1] := 'if';
-        ActionsStringGrid.Cells[1, Selection +1] := copy(ActionStrings[0], i + 1, 255);
+        ActionsStringGrid.Cells[1, Selection +1] := 'if';
+        ActionsStringGrid.Cells[2, Selection +1] := copy(ActionStrings[0], i + 1, 255);
         i := pos('=', ActionStrings[1]);
         if i > 0 then
         begin
@@ -3762,15 +3778,19 @@ begin
           else
             ActOpr := '<>';
           end;
-          ActionsStringGrid.Cells[2, Selection +1] := ActOpr;
+          ActionsStringGrid.Cells[3, Selection +1] := ActOpr;
           i := pos('=', ActionStrings[2]);
           if i > 0 then
           begin
-            ActionsStringGrid.Cells[3, Selection +1] := copy(ActionStrings[2], i + 1, 255);
-            ActionsStringGrid.Cells[4, Selection +1] := 'then';
+            ActionsStringGrid.Cells[4, Selection +1] := copy(ActionStrings[2], i + 1, 255);
+            ActionsStringGrid.Cells[5, Selection +1] := 'then';
             i := pos('=', ActionStrings[3]);
             if i > 0 then begin
-              ActionsStringGrid.Cells[5, Selection +1] := copy(ActionStrings[3], i + 1, 255);
+              ActionsStringGrid.Cells[6, Selection +1] := copy(ActionStrings[3], i + 1, 255);
+              i := pos('=', ActionStrings[4]);
+              if i > 0 then begin
+                ActionsStringGrid.Cells[7, Selection +1] := copy(ActionStrings[4], i + 1, 255);
+              end;
             end;
           end;
         end;
@@ -3778,22 +3798,7 @@ begin
     end;
   end;
 end;
-{
-procedure TSetupForm.DuplicateActionButtonClick(Sender: TObject);
-var
-  Selection: integer;
-begin
-  Selection := ActionsStringGrid.Selection.Top;
-  ActionsStringGrid.InsertColRow(false, Selection +1);
-  ActionsStringGrid.Cells[0, Selection +1] := 'if';
-  ActionsStringGrid.Cells[1, Selection +1] := ActionsStringGrid.Cells[1, Selection];
-  ActionsStringGrid.Cells[2, Selection +1] := ActionsStringGrid.Cells[2, Selection];
-  ActionsStringGrid.Cells[3, Selection +1] := ActionsStringGrid.Cells[3, Selection];
-  ActionsStringGrid.Cells[4, Selection +1] := 'then';
-  ActionsStringGrid.Cells[5, Selection +1] := ActionsStringGrid.Cells[5, Selection];
-  ActionsStringGridUpdateScrollBar;
-end;
-}
+
 procedure TSetupForm.SavedCustomCharButtonClick(Sender: TObject);
 var
   i, j, x, y: integer;

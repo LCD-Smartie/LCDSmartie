@@ -31,7 +31,7 @@ uses
   Menus, Graphics, WinampCtrl, ExtCtrls, Controls, Buttons, Classes, Forms,
   USetup, UConfig, ULCD, UData, lcdline, UExceptionLogger, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
-  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math, URLThread;
+  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math, URLThread, stdctrls;
 
   { TLCDSmartieDisplayForm }
 type
@@ -60,6 +60,7 @@ type
 
   TLCDSmartieDisplayForm = class(TForm)
     ExceptionLogger1: TExceptionLogger;
+    ShowActionLogMenuItem: TMenuItem;
     ReloadSkinMenuItem: TMenuItem;
     SavePosition: TMenuItem;
     N1: TMenuItem;
@@ -99,6 +100,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure ReloadSkinMenuItemClick(Sender: TObject);
     procedure SavePositionClick(Sender: TObject);
+    procedure ShowActionLogMenuItemClick(Sender: TObject);
     procedure ShowWindow1Click(Sender: TObject);
     procedure Close1Click(Sender: TObject);
     procedure LogoImageClick(Sender: TObject);
@@ -201,7 +203,7 @@ type
     function EscapeAmp(const sStr: string):String;
     function UnescapeAmp(const sStr: string): String;
     procedure SendCustomChars;
-    procedure ProcessAction(bDoAction: Boolean; sAction: String);
+    procedure ProcessAction(bDoAction: Boolean; sAction: String; ActionIndex: integer);
     procedure InitLCD();
     procedure FiniLCD(WriteShutdownMessage : boolean);
     procedure ResizeHeight;
@@ -225,6 +227,10 @@ type
     DisplayError: boolean;
     StartTime: TDATETIME;
     sSkinDir: string;
+
+    ActionLogForm: TForm;
+    ActionLogMemo: TMemo;
+    procedure hidelog(Sender: TObject; var CanClose: Boolean);
     procedure SetOnscreenBacklight();
     procedure backlit(iOn: Integer = -1);
     procedure DoFullDisplayDraw;
@@ -234,6 +240,7 @@ type
     procedure SetupAutoStart;
     procedure ReInitLCD();
     procedure customchar(fline: String);
+    //function ProcessTimer(AWnd: HWND; AMsg: UINT; AIDEvent: UINT_PTR; ATicks: DWORD): uint;
     property ShowTrueLCD : boolean write AssignOnscreenDisplay;
   end;
 
@@ -408,6 +415,12 @@ end;
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+procedure TLCDSmartieDisplayForm.hidelog(Sender: TObject; var CanClose: Boolean);
+begin
+  ActionLogForm.Hide;
+  CanClose := False;
+end;
+
 procedure TLCDSmartieDisplayForm.FormCreate(Sender: TObject);
 var
   hConfig: longint;
@@ -416,11 +429,22 @@ var
   loop: byte;
 begin
   StartTime := now;
+
+  ActionLogForm := TForm.Create(nil);
+  ActionLogForm.Name := 'ActionsLog';
+  ActionLogForm.Caption := 'Actions Log';
+  ActionLogForm.SetBounds(0, 0, 460, 400);
+  ActionLogMemo := TMemo.create(nil);
+  ActionLogMemo.Align := alClient;
+  ActionLogMemo.Parent := ActionLogForm;
+  ActionLogMemo.ReadOnly := true;
+  ActionLogForm.OnCloseQuery := hidelog;
+
   // this to fix/work around a problem with lazarus and exceptions not being dealt with properly in DLLs
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
 
   DisplayError := false;
-  application.OnEndSession:=OnEndSession; // lazarus has support for this message
+  application.OnEndSession := OnEndSession; // lazarus has support for this message
   PrevWndProc:= Windows.WNDPROC(SetWindowLongPtr(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback))); // message handler
 
   // keep all ssl related stuff in a sub dir
@@ -503,8 +527,10 @@ begin
 
   if DirectoryExists('skins') then
     sSkinDir := 'skins\'
+  else if DirectoryExists('images') then
+    sSkinDir := 'images\'
   else
-    sSkinDir := 'images\';
+    sSkinDir := 'skins\';
 
   //AddPluginsToPath();  // I don't think we need to do this for this program
 
@@ -654,17 +680,17 @@ begin
 
     TrayIcon1.Icon.LoadFromFile(IconPath);
     application.Icon.LoadFromFile(IconPath);
-
-    {hIcon := TIcon.Create;
-    GetIconFromFile(sSkinPath + config.sTrayIcon, hIcon, SHIL_SMALL);
-    TrayIcon1.icon.Assign(hIcon);
-    hIcon.Destroy;}
+    config.SkinError := false;
   except
     on E: Exception do
     begin
-      showmessage('Error: unable to load skin from, ' +#13#10+
-        sSkinPath + #13#10 + E.Message);
-      showmessage('Loading Default skin');
+      if not config.SkinError then
+      showmessage('Unable to load skin from ' + sSkinPath +
+      #13#10 + 'Error was: ' +E.Message +
+      #13#10 + 'Will use embedded skin instead');
+
+      config.SkinError := true;
+
       LogoImage.picture.LoadFromResourceName(HInstance, 'logo');
       for loop := 1 to MaxLines do
       begin
@@ -682,12 +708,6 @@ begin
 
       TrayIcon1.Icon.LoadFromResourceName(HInstance, 'smartie');
       application.Icon.LoadFromResourceName(HInstance, 'smartie');
-
-      //hIcon := TIcon.Create;
-      //hIcon.LoadFromResourceName(HInstance, 'smartie');
-      //GetIconFromFile(sSkinPath + config.sTrayIcon, hIcon, SHIL_SMALL);
-      //TrayIcon1.icon.Assign(hIcon);
-      //hIcon.Destroy;
     end;
   end;
 end;
@@ -720,10 +740,11 @@ begin
   except
     on E: Exception do
     begin
-      showmessage('Error: Can''t load ' + extractfilepath(application.exename) +
-        config.sSkinPath + 'colors.cfg'+ #13#10+ E.Message);
-      showmessage('Loading Default Colors');
-      //application.Terminate;
+      if not config.SkinError then
+      showmessage('Unable to load skin colors from ' + extractfilepath(application.exename) +
+        config.sSkinPath + '\colors.cfg' +
+        #13#10 + 'Error was: ' + E.Message +
+        #13#10 + 'Will use embedded skin colors instead');
 
       ScreenNumberPanel.Color := $7F0000;
       ScreenNumberPanel.font.Color := $FFFFFF;
@@ -821,6 +842,14 @@ begin
   config.MainFormPosTop := LCDSmartieDisplayForm.Top;
   config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
   config.save;
+end;
+
+procedure TLCDSmartieDisplayForm.ShowActionLogMenuItemClick(Sender: TObject);
+begin
+  if ActionLogForm.Visible then
+    ActionLogForm.Hide
+  else
+    ActionLogForm.Show;
 end;
 
 
@@ -993,10 +1022,14 @@ begin
   //
   for counter := 1 to config.totalactions do
   begin
+    doAction[counter] := false;
+
+    if lowercase(config.actionsArray[counter, 5]) = 'false' then
+      continue; // skip as this action is disabled
+
     sLeftValue := Data.change(config.actionsArray[counter, 1]);
     sRightValue := config.actionsArray[counter, 3];
 
-    doAction[counter] := false;
 
     if Trystrtoint(sLeftValue,iLeftValue) and Trystrtoint(sRightValue,iRightValue) then begin
       bNum := true;
@@ -1039,7 +1072,7 @@ begin
     if (doAction[counter] <> didAction[counter]) then
     begin
       sAction :=  config.actionsArray[counter, 4];
-      ProcessAction(doAction[counter], sAction);
+      ProcessAction(doAction[counter], sAction, counter);
       didAction[counter] := doAction[counter];
     end;
 
@@ -1794,8 +1827,19 @@ begin
   end;
 end;
 
+procedure ProcessTimer(AWnd: HWND; AMsg: UINT; AIDEvent: UINT_PTR; ATicks: DWORD); stdcall;
+var
+  st: string;
+  p: pointer;
+begin
+  KillTimer(AWnd, AIDEvent);
+  p := pointer(AIDEvent);
+  st := string(p^);
+  LCDSmartieDisplayForm.ProcessAction(true, st, 0);
+  freemem(p);
+end;
 
-procedure TLCDSmartieDisplayForm.ProcessAction(bDoAction: Boolean; sAction: String);
+procedure TLCDSmartieDisplayForm.ProcessAction(bDoAction: Boolean; sAction: String; ActionIndex: integer);
 const
   APPCOMMAND_VOLUME_UP = $A0000;
   APPCOMMAND_VOLUME_DOWN = $90000;
@@ -1810,7 +1854,48 @@ var
   sSecondAction: String;
   uiPlugin: Cardinal;
   URLThread: TURLThread;
+  p: pointer;
+  u: uint_ptr;
 begin
+  while ActionLogMemo.Lines.Count > 500 do
+    ActionLogMemo.Lines.Delete(0);
+
+  if bDoAction then
+    temp1 := 'True'
+  else
+    temp1 := 'False';
+
+  ActionLogMemo.Lines.Add(DateTimeToStr(Now) + ' ' + 'Action: ' + sAction + ' DoAction: ' + temp1);
+
+  // do these first and clear the string to prevent the embedded action from being run now
+  if (bDoAction) then
+  begin
+    while decodeArgs(sAction, 'ActionAfterSecs', 2, args, prefix, postfix, numargs) do
+    begin
+      sAction := '';
+      p := getmem(length(args[0]) + 1);
+      u := qword(p);
+      string(p^) := args[0];
+      SetTimer(self.Handle, u, strtoint(args[1]) * 1000, @ProcessTimer);
+    end;
+
+    while decodeArgs(sAction, 'ActionAndDisable', 2, args, prefix, postfix, numargs) do
+    begin
+      sAction := '';
+      ProcessAction(true, args[0], 0);
+      config.actionsArray[ActionIndex, 5] := 'False';
+    end;
+
+    while decodeArgs(sAction, 'EnableAction', 2, args, prefix, postfix, numargs) do
+    begin
+      sAction := '';
+      if strtoint(args[1]) = 0 then
+        config.actionsArray[strtoint(args[0]), 5] := 'False'
+      else
+        config.actionsArray[strtoint(args[0]), 5] := 'True'
+    end;
+  end;
+
   // Handle actions have do something when they are activated and de-activated.
   if (pos('Backlight(', sAction) <> 0) then
   begin
@@ -1889,7 +1974,6 @@ begin
   // Handle actions that only do something when activated.
   if (bDoAction) then
   begin
-
     while decodeArgs(sAction, '$dll', maxArgs, args, prefix, postfix, numargs) do
     begin
       if (numargs = 4) then
@@ -1897,7 +1981,7 @@ begin
         try
           uiPlugin := data.FindPlugin(args[0]);
           sSecondAction := data.CallPlugin(uiPlugin, StrToInt(args[1]), args[2], args[3]);
-          ProcessAction(True, sSecondAction);
+          ProcessAction(True, sSecondAction, 0);
         except
           on EConvertError do begin {ignore} end;
           else raise;

@@ -404,6 +404,14 @@ begin
   fmt := DefaultFormatSettings;
   fmt.DecimalSeparator := '.';
 
+  while decodeArgs(line, '$ActionEnabled', maxArgs, args, prefix, postfix, numargs) do begin
+    if lowercase(config.actionsArray[strtoint(args[1]), 5]) = 'true' then
+      tempst := '1'
+    else
+      tempst := '0';
+    line := prefix + tempst + postfix;
+  end;
+
   while decodeArgs(line, '$ScreenReso', maxArgs, args, prefix, postfix, numargs) do begin
     screenResolution := IntToStr(Screen.Monitors[strtoint(args[1])].Width) + 'x' +
       IntToStr(Screen.Monitors[strtoint(args[1])].Height);

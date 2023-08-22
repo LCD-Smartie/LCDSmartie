@@ -1,5 +1,5 @@
 object SetupForm: TSetupForm
-  Left = 329
+  Left = 538
   Height = 465
   Top = 209
   Width = 855
@@ -36,7 +36,7 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 590
     TabStop = False
-    ActivePage = MultiInstanceTabSheet
+    ActivePage = MyTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 589
     Font.CharSet = ANSI_CHARSET
@@ -44,7 +44,7 @@ object SetupForm: TSetupForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 5
+    TabIndex = 3
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -1547,21 +1547,20 @@ object SetupForm: TSetupForm
         Top = 0
         Width = 574
         Anchors = [akTop, akLeft, akRight, akBottom]
+        ColCount = 8
         DefaultColWidth = 77
         DefaultRowHeight = 16
         DoubleBuffered = True
-        FixedCols = 0
-        FixedRows = 0
         HeaderHotZones = []
         HeaderPushZones = []
-        Options = [goVertLine, goHorzLine, goColSizing, goRowMoving, goEditing, goRowSelect, goSmoothScroll, goRowHighlight]
+        MouseWheelOption = mwGrid
+        Options = [goVertLine, goHorzLine, goColSizing, goRowMoving, goEditing, goRowSelect, goThumbTracking, goDblClickAutoSize, goSmoothScroll, goFixedRowNumbering, goRowHighlight]
         ParentDoubleBuffered = False
         ParentShowHint = False
-        RowCount = 0
-        ScrollBars = ssNone
+        RowCount = 1
         ShowHint = True
         TabOrder = 2
-        TitleStyle = tsStandard
+        TitleStyle = tsNative
         UseXORFeatures = True
         OnDragDrop = ActionsStringGridDragDrop
         OnDragOver = ActionsStringGridDragOver
@@ -1570,10 +1569,40 @@ object SetupForm: TSetupForm
         OnSelection = ActionsStringGridSelection
         ColWidths = (
           114
-          114
-          114
-          114
-          114
+          66
+          65
+          65
+          65
+          65
+          65
+          65
+        )
+        Cells = (
+          8
+          0
+          0
+          '#'
+          1
+          0
+          'If'
+          2
+          0
+          'Variable'
+          3
+          0
+          'Is'
+          4
+          0
+          'Value'
+          5
+          0
+          'Then'
+          6
+          0
+          'Action'
+          7
+          0
+          'Enabled'
         )
       end
       object ActionAddButton: TButton
@@ -1625,17 +1654,6 @@ object SetupForm: TSetupForm
         TabOrder = 3
         Value = 150
       end
-      object ActionsGridScrollBar: TScrollBar
-        Left = 557
-        Height = 349
-        Top = 0
-        Width = 17
-        Anchors = [akTop, akRight, akBottom]
-        Kind = sbVertical
-        PageSize = 0
-        TabOrder = 4
-        OnScroll = ActionsGridScrollBarScroll
-      end
       object DuplicateActionButton: TButton
         Left = 416
         Height = 30
@@ -1644,6 +1662,16 @@ object SetupForm: TSetupForm
         Anchors = [akRight, akBottom]
         Caption = 'Duplicate'
         OnClick = DuplicateActionButtonClick
+        TabOrder = 4
+      end
+      object ActionLogButton: TButton
+        Left = 256
+        Height = 30
+        Top = 363
+        Width = 75
+        Anchors = [akRight, akBottom]
+        Caption = 'Toggle Log'
+        OnClick = ActionLogButtonClick
         TabOrder = 5
       end
     end
@@ -2668,7 +2696,7 @@ object SetupForm: TSetupForm
     Top = 3
     Width = 257
     TabStop = False
-    ActivePage = PluginsTabSheet
+    ActivePage = MiscTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 248
     Font.CharSet = ANSI_CHARSET
@@ -2679,7 +2707,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 10
+    TabIndex = 8
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -3547,6 +3575,7 @@ object SetupForm: TSetupForm
           '$Sub(num,num)'
           '$Mul(num,num)'
           '$Div(num,num)'
+          '$ActionEnabled(Action Index)'
         )
         ItemHeight = 13
         OnClick = MiscListBoxClick
@@ -4227,7 +4256,7 @@ object SetupForm: TSetupForm
     Left = 888
   end
   object PluginsListBoxPopupMenu: TPopupMenu
-    Left = 360
+    Left = 376
     Top = 432
     object HidePluginMenuItem: TMenuItem
       Caption = 'Hide'
@@ -4244,7 +4273,7 @@ object SetupForm: TSetupForm
   end
   object ExportPopupMenu: TPopupMenu
     TrackButton = tbLeftButton
-    Left = 392
+    Left = 408
     Top = 432
     object ExportClipboardMenuItem: TMenuItem
       Caption = 'Clipboard'
@@ -4256,7 +4285,7 @@ object SetupForm: TSetupForm
     end
   end
   object ImportPopupMenu: TPopupMenu
-    Left = 456
+    Left = 472
     Top = 432
     object ImportClipboardMenuItem: TMenuItem
       Caption = 'Clipboard'
@@ -4268,17 +4297,17 @@ object SetupForm: TSetupForm
     end
   end
   object ImportFileOpenDialog: TOpenDialog
-    Left = 488
+    Left = 504
     Top = 432
   end
   object ExportFileSaveDialog: TSaveDialog
-    Left = 424
+    Left = 440
     Top = 432
   end
   object ActionsExportImportPoup: TPopupMenu
     TrackButton = tbLeftButton
-    Left = 459
-    Top = 115
+    Left = 344
+    Top = 432
     object ExportMenuItem: TMenuItem
       Caption = 'Export'
       object ExportClipboard: TMenuItem

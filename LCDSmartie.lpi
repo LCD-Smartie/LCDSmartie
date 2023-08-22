@@ -71,7 +71,7 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="4"/>
-      <BuildNr Value="40"/>
+      <BuildNr Value="44"/>
       <CharSet Value="04B0"/>
       <StringTable CompanyName="LCD Smartie Team" FileDescription="LCD Smartie Main Program" InternalName="LCDSmartie.exe"/>
     </VersionInfo>

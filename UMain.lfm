@@ -183,6 +183,10 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
       Caption = '&Reload Skin'
       OnClick = ReloadSkinMenuItemClick
     end
+    object ShowActionLogMenuItem: TMenuItem
+      Caption = 'Toggle Action Log'
+      OnClick = ShowActionLogMenuItemClick
+    end
     object Close1: TMenuItem
       Caption = '&Close'
       OnClick = Close1Click

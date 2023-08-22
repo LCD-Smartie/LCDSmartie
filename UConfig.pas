@@ -197,7 +197,7 @@ type
     ShutdownMessage: Array[1..MaxLines] of string;
     winampLocation: String;
     boincEnabled: Boolean;
-    actionsArray: Array[1..MaxActions, 1..4] of String;
+    actionsArray: Array[1..MaxActions, 1..5] of String;
     totalactions: Integer;
     // screen settings
     xScreenType : TScreenType;
@@ -224,6 +224,7 @@ type
     DLL_Contrast: integer;
     DLL_Brightness: integer;
 
+    SkinError: boolean;
     EmulateLCD : boolean;
     EnableRemoteSend: boolean;
     RemoteSendBindIP: string;
@@ -234,6 +235,14 @@ type
     PerfSettings: Array[1..MaxPerfCounters] of TPerfSettings;
     RSSList: TRSSList;
     SavedCustomChars: Array[0..MaxSavedCustoms -1] of TCustomArray;
+    ActionIndexCol: integer;
+    ActionIfCol: integer;
+    ActionVariableCol: integer;
+    ActionIsCol: integer;
+    ActionValueCol: integer;
+    ActionThenCol: integer;
+    ActionActionCol: integer;
+    ActionEnabledCol: integer;
     function load: Boolean;
     procedure save;
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
@@ -339,7 +348,7 @@ begin
   sSkinPath := initfile.ReadString('General Settings', 'SkinPath', 'default');
   //sSkinPath := IncludeTrailingPathDelimiter(sSkinPath);
 
-  sTrayIcon := initfile.ReadString('General Settings', 'TrayIcon', 'smartie.ico');
+  sTrayIcon := initfile.ReadString('General Settings', 'TrayIcon', 'default for this skin');
 
   LastTabIndex := initfile.ReadInteger('General Settings', 'LastTab',0);
 
@@ -519,8 +528,16 @@ begin
     boincAccount[boincAccountsCount].password := initfile.ReadString('Boinc Servers', 'Password'+Format('%.2u', [boincAccountsCount], localeFormat), '');
   end;
 
-
   // Load Actions
+  ActionIndexCol := initFile.ReadInteger('Actions', 'ActionIndexCol', 20);
+  ActionIfCol := initFile.ReadInteger('Actions', 'ActionIfCol', 20);
+  ActionVariableCol := initFile.ReadInteger('Actions', 'ActionVariableCol', 205);
+  ActionIsCol := initFile.ReadInteger('Actions', 'ActionIsCol', 40);
+  ActionValueCol := initFile.ReadInteger('Actions', 'ActionValueCol', 46);
+  ActionThenCol := initFile.ReadInteger('Actions', 'ActionThenCol', 36);
+  ActionActionCol := initFile.ReadInteger('Actions', 'ActionActionCol', 165);
+  ActionEnabledCol := initFile.ReadInteger('Actions', 'ActionEnabledCol', 60);
+
   ActionsCount := 0;
   repeat
     ActionsCount := ActionsCount + 1;
@@ -531,11 +548,14 @@ begin
     actionsArray[ActionsCount, 3] := initfile.ReadString('Actions', 'Action' +
       Format('%.2u', [ActionsCount], localeFormat) + 'ConditionValue', '');
     actionsArray[ActionsCount, 4] := initfile.ReadString('Actions', 'Action' +
-      Format('%.2u', [ActionsCount], localeFormat) + 'Action', '')
+      Format('%.2u', [ActionsCount], localeFormat) + 'Action', '');
+    actionsArray[ActionsCount, 5] := initfile.ReadString('Actions', 'Action' +
+      Format('%.2u', [ActionsCount], localeFormat) + 'Enabled', 'True');
   until (actionsArray[ActionsCount, 1] = '') or (ActionsCount = MaxActions);
   totalactions := ActionsCount - 1;
   uiActionsLoaded := totalactions;
 
+  // remote screen
   EnableRemoteSend := initFile.ReadBool('General Settings', 'EnableRemoteSend', false);
   RemoteSendBindIP := initFile.ReadString('General Settings', 'RemoteSendBindIP', '0.0.0.0');
   RemoteSendPort := initFile.ReadString('General Settings', 'RemoteSendPort', '6088');
@@ -604,6 +624,9 @@ begin
       except
       end;
   end;
+
+  SkinError := initFile.ReadBool('General Settings', 'SkinError', false);
+
   result := true;
 
   initfile.Free;
@@ -800,6 +823,15 @@ begin
   // and delete those we loaded but aren't now used.
   // [ and delete two further sets of keys - to clean up from older builds which
   // stored unused actions ]
+  initFile.WriteInteger('Actions', 'ActionIndexCol', ActionIndexCol);
+  initFile.WriteInteger('Actions', 'ActionIfCol', ActionIfCol);
+  initFile.WriteInteger('Actions', 'ActionVariableCol', ActionVariableCol);
+  initFile.WriteInteger('Actions', 'ActionIsCol', ActionIsCol);
+  initFile.WriteInteger('Actions', 'ActionValueCol', ActionValueCol);
+  initFile.WriteInteger('Actions', 'ActionThenCol', ActionThenCol);
+  initFile.WriteInteger('Actions', 'ActionActionCol', ActionActionCol);
+  initFile.WriteInteger('Actions', 'ActionEnabledCol', ActionEnabledCol);
+
   for ActionsCount := 1 to uiActionsLoaded + 2 do
   begin
     sPrefix := 'Action' + Format('%.2u', [ActionsCount], localeFormat);
@@ -810,6 +842,7 @@ begin
       initfile.WriteString('Actions', sPrefix + 'ConditionValue',
         actionsArray[ActionsCount, 3]);
       initfile.WriteString('Actions', sPrefix + 'Action', actionsArray[ActionsCount, 4]);
+      initfile.WriteString('Actions', sPrefix + 'Enabled', actionsArray[ActionsCount, 5]);
     end
     else
     begin
@@ -850,6 +883,8 @@ begin
                                                                  inttostr(SavedCustomChars[i][5])+' '+
                                                                  inttostr(SavedCustomChars[i][6])+' '+
                                                                  inttostr(SavedCustomChars[i][7]));
+
+  initFile.WriteBool('General Settings', 'SkinError', SkinError);
 
   initfile.UpdateFile;
   initfile.Free;
