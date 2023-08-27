@@ -1391,17 +1391,17 @@ var
   Items: array [0..37] of string = ('NextTheme', 'LastTheme',
     'NextScreen', 'LastScreen', 'GotoTheme(2)',
     'GotoScreen(2)', 'FreezeScreen', 'UnfreezeScreen', 'ToggleFreeze',
-    'Refresh all data', 'Backlight(0/1) (0=off 1=on)',
-    'BacklightToggle', 'BacklightFlash(5) (nr. of times)',
-    'PlayWave[c:\wave.wav]', 'Execute[c:\autoexec.bat]',
+    'RefreshAll', 'Backlight(0/1)',
+    'BacklightToggle', 'BacklightFlash(5)',
+    'PlayWave[c:\wave.wav]', 'Exec[c:\autoexec.bat]',
     'WinampNextTrack', 'WinampLastTrack',
     'WinampPlay', 'WinampStop', 'WinampPause',
     'WinampShuffle (toggle)', 'WinampVolumeDown',
     'WinampVolumeUp', 'EnableScreen(1-99)',
     'DisableScreen(1-99)', '$dll(name.dll,2,param1,param2)',
-    'GPO(1-8,0/1) (0=off 1=on)', 'GPOToggle(1-8)', 'SystemVolumeDown',
+    'GPO(1-8,0/1)', 'GPOToggle(1-8)', 'SystemVolumeDown',
     'SystemVolumeMute', 'SystemVolumeUp',
-    'GPOFlash(1-8,2) (nr. of times)', 'Fan(1-3,0-255) (0-255=speed)', 'HTTPReq(URL)',
+    'GPOFlash(1-8,2)', 'Fan(1-3,0-255)', 'HTTPReq(URL)',
     'HTTPPost(URL,Key1=Data1,Key2=Data2,...)', 'ActionAfterSecs(Action, seconds)', 'ActionAndDisable(Action)', 'EnableAction(ActionIndex, enabled 1/0)');
 begin
   if aCol = 3 then

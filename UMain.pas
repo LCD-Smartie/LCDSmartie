@@ -1882,7 +1882,7 @@ begin
     while decodeArgs(sAction, 'ActionAndDisable', 2, args, prefix, postfix, numargs) do
     begin
       sAction := '';
-      ProcessAction(true, args[0], 0);
+      ProcessAction(bDoAction, args[0], 0);
       config.actionsArray[ActionIndex, 5] := 'False';
     end;
 
@@ -1897,6 +1897,7 @@ begin
   end;
 
   // Handle actions have do something when they are activated and de-activated.
+
   if (pos('Backlight(', sAction) <> 0) then
   begin
     temp1 := copy(sAction, pos('(', sAction) + 1, 1);
@@ -2090,9 +2091,9 @@ begin
       playsound(Pchar(temp1), 0, SND_FILENAME);
     end;
 
-    if pos('Execute[', sAction) <> 0 then
+    if pos('Exec[', sAction) <> 0 then
     begin
-      temp1 := copy(sAction, pos('Execute[', sAction) + 5, pos(']', sAction)
+      temp1 := copy(sAction, pos('Exec[', sAction) + 5, pos(']', sAction)
          - pos('Exec[', sAction)-5);
       shellexecute(0, 'open', PChar(temp1), '', '', SW_SHOW);
     end;

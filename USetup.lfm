@@ -36,7 +36,7 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 590
     TabStop = False
-    ActivePage = MyTabSheet
+    ActivePage = ScreensTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 589
     Font.CharSet = ANSI_CHARSET
@@ -44,7 +44,7 @@ object SetupForm: TSetupForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 7
     OnChange = MainPageControlChange
     object ScreensTabSheet: TTabSheet
@@ -2696,7 +2696,7 @@ object SetupForm: TSetupForm
     Top = 3
     Width = 257
     TabStop = False
-    ActivePage = MiscTabSheet
+    ActivePage = CCharTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 248
     Font.CharSet = ANSI_CHARSET
@@ -2707,7 +2707,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 8
+    TabIndex = 11
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
