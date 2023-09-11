@@ -109,7 +109,7 @@ begin
           HTTP.ProxyParams.ProxyServer := config.httpProxy;
           HTTP.ProxyParams.ProxyPort := config.httpProxyPort;
         end;
-        HTTP.ReadTimeout := 30000;  // 30 seconds
+        HTTP.ReadTimeout := 5000;  // 5 seconds
 
         if (Terminated) then raise EExiting.Create('');
 
@@ -138,14 +138,16 @@ begin
   except
     on E: EIdHTTPProtocolException do
     begin
-      if (Terminated) then raise EExiting.Create('');
+      if (Terminated) then
+        raise EExiting.Create('');
       if (E.ErrorCode <> 304) then   // 304=Not Modified.
         raise;
     end;
 
     else
     begin
-      if (Terminated) then raise EExiting.Create('');
+      if (Terminated) then
+        raise EExiting.Create('');
       raise;
     end;
   end;

@@ -112,14 +112,7 @@ extern "C"
 			}
 		}
 
-		static char buffer[1024];
-		buffer[0] = 0;
-		if (result != "")
-		{
-			std::string value = msclr::interop::marshal_as<std::string>(result);
-			strcpy_s(buffer, value.c_str());
-		}
-		return buffer;
+		return (char*)(void*)Marshal::StringToHGlobalAnsi(result);		
 	}
 
 	__declspec(dllexport) char* __stdcall BridgeFunc(int iBridgeId, int iFunc, const char* param1, const char* param2)
@@ -159,6 +152,7 @@ extern "C"
 				result = String::Concat(result, ": ", e->InnerException->Message);
 			result = String::Concat(result, "]");
 		}
+
 		static char buffer[1024];
 		buffer[0] = 0;
 		if (result != "")
@@ -182,21 +176,8 @@ extern "C"
 			return "";
 
 		array <Object^>^ noargs = gcnew array<Object^>(0);
-		String^ result = gcnew String("");
 
-		result = reinterpret_cast<String^>(current->InfoFunc->Invoke(current->myObject, noargs));
-
-		if (result->Length >= 1024 * 8)
-			result = "DNBridge buffer too small for data";
-
-		static char buffer[1024*8];
-		buffer[0] = 0;
-		if (result != "")
-		{
-			std::string value = msclr::interop::marshal_as<std::string>(result);
-			strcpy_s(buffer, value.c_str());
-		}
-		return buffer;
+		return (char*)(void*)Marshal::StringToHGlobalAnsi(reinterpret_cast<String^>(current->InfoFunc->Invoke(current->myObject, noargs)));
 	}
 
 	__declspec(dllexport) char* __stdcall BridgeDemoFunc(int iBridgeId)
@@ -206,20 +187,7 @@ extern "C"
 			return "";
 
 		array <Object^>^ noargs = gcnew array<Object^>(0);
-		String^ result = gcnew String("");
 
-		result = reinterpret_cast<String^>(current->DemoFunc->Invoke(current->myObject, noargs));
-
-		if (result->Length >= 1024 * 8)
-			result = "DNBridge buffer too small for data";
-
-		static char buffer[1024*8];
-		buffer[0] = 0;
-		if (result != "")
-		{
-			std::string value = msclr::interop::marshal_as<std::string>(result);
-			strcpy_s(buffer, value.c_str());
-		}
-		return buffer;
+		return (char*)(void*)Marshal::StringToHGlobalAnsi(reinterpret_cast<String^>(current->DemoFunc->Invoke(current->myObject, noargs)));
 	}
 }

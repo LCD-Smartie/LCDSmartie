@@ -125,21 +125,25 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <CompileAsManaged>true</CompileAsManaged>
+      <RemoveUnreferencedCodeData>false</RemoveUnreferencedCodeData>
     </ClCompile>
     <Link>
       <AdditionalOptions>/NOENTRY %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msvcrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)DNBridge.dll</OutputFile>
       <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <NoEntryPoint>true</NoEntryPoint>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateMapFile>true</GenerateMapFile>
       <MapExports>true</MapExports>
       <AssemblyDebug>true</AssemblyDebug>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>MSVCRT;ucrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -155,9 +159,10 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
       <IntelJCCErratum>false</IntelJCCErratum>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -168,9 +173,8 @@
       <NoEntryPoint>true</NoEntryPoint>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
-      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)..\release-dir\$(ProjectName).dll"</Command>
@@ -188,8 +192,9 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <IntelJCCErratum>false</IntelJCCErratum>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Async</ExceptionHandling>
       <FloatingPointExceptions>false</FloatingPointExceptions>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -221,7 +226,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DNBridge.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DNBridge.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

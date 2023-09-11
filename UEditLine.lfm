@@ -1,7 +1,7 @@
 object FormEdit: TFormEdit
-  Left = 1202
+  Left = 1200
   Height = 177
-  Top = 207
+  Top = 118
   Width = 366
   BorderIcons = []
   BorderStyle = bsSizeToolWin
@@ -59,7 +59,7 @@ object FormEdit: TFormEdit
     Top = 144
     Width = 75
     Anchors = [akRight, akBottom]
-    Caption = '&Apply'
+    Caption = '&Update'
     Default = True
     Kind = bkYes
     ModalResult = 6

@@ -27,7 +27,7 @@ unit UConfig;
 
 interface
 
-Uses  Windows, SysUtils, Classes;
+Uses  Windows, SysUtils, Classes, comctrls;
 
 const
   sMyConfigFileFormatVersion = '1.0';
@@ -100,6 +100,7 @@ type
   TScreen = Record
     line: array [1..MaxLines] of TScreenLine;
     settings: TScreenSettings;
+    CustomCharacters: Array[1..8] of string;
   end;
 
   TPopAccount = Record
@@ -163,11 +164,13 @@ type
     EditFormPosLeft: integer;
     EditFormPosHeight: integer;
     EditFormPosWidth: integer;
+    CCharFormTop: integer;
+    CCharFormLeft: integer;
 
     sSkinPath: String;
     sTrayIcon: String;
     LastTabIndex: Integer; // last config tab index
-
+    LastMainTabIndex: Integer;
     localeFormat: TFormatSettings;
     bHideOnStartup: Boolean;
     bAutoStart, bAutoStartHide, bStartAsAdmin, bUseTaskScheduler: Boolean;
@@ -243,6 +246,29 @@ type
     ActionThenCol: integer;
     ActionActionCol: integer;
     ActionEnabledCol: integer;
+    ActionLogTop: integer;
+    ActionLogLeft: integer;
+    ActionLogHeight: integer;
+    ActionLogWidth: integer;
+
+    // Show tabs
+    ShowNetStats: Boolean;
+    ShowMisc: Boolean;
+    ShowLCDFeatures: Boolean;
+    ShowPlugins: Boolean;
+    ShowCharEditor: Boolean;
+    ShowPerf: Boolean;
+    ShowSysinfo: Boolean;
+    ShowWinamp: Boolean;
+    ShowRSS: Boolean;
+    ShowGameStats: Boolean;
+    ShowBOINC: Boolean;
+    ShowFoldingAtHome: Boolean;
+    ShowEmail: Boolean;
+    // tabs position
+    TabsPosition: TTabPosition;
+
+    OneBySixteenFixup: Boolean;
     function load: Boolean;
     procedure save;
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
@@ -326,7 +352,6 @@ begin
     result := false;
     Exit;
   end;
-
    //initfile.Encoding.Free;
 //  sConfigFileFormatVersion := initfile.ReadString('Versions',
 //    'ConfigFileFormat', '1.0');
@@ -350,8 +375,9 @@ begin
 
   sTrayIcon := initfile.ReadString('General Settings', 'TrayIcon', 'default for this skin');
 
-  LastTabIndex := initfile.ReadInteger('General Settings', 'LastTab',0);
 
+  LastTabIndex := initfile.ReadInteger('General Settings', 'LastTab', 0);
+  LastMainTabIndex := initfile.ReadInteger('General Settings', 'LastMainTab', 0);
 
   baudrate := initfile.ReadInteger('Communication Settings', 'Baudrate', 8);
   comPort := initfile.ReadInteger('Communication Settings', 'COMPort', 1);
@@ -413,6 +439,8 @@ begin
       screen[ScreenCount].line[LineCount].center := initFile.ReadBool(sScreen, 'Center' + sLine,
         false);
     end;
+    for i := 1 to 8 do
+      screen[ScreenCount].CustomCharacters[i] := initFile.ReadString(sScreen, 'CustomCharacters' + inttostr(i), '');
   end;
 
   distLog := initfile.ReadString('General Settings', 'DistLog', 'C:\repllog.txt');
@@ -627,6 +655,32 @@ begin
 
   SkinError := initFile.ReadBool('General Settings', 'SkinError', false);
 
+  ShowNetStats := initfile.ReadBool('General Settings', 'ShowNetStats', True);
+  ShowMisc := initfile.ReadBool('General Settings', 'ShowMisc', True);
+  ShowLCDFeatures := initfile.ReadBool('General Settings', 'ShowLCDFeatures', True);
+  ShowPlugins := initfile.ReadBool('General Settings', 'ShowPlugins', True);
+  ShowCharEditor := initfile.ReadBool('General Settings', 'ShowCharEditor', True);
+  ShowPerf := initfile.ReadBool('General Settings', 'ShowPerf', True);
+  ShowSysinfo := initfile.ReadBool('General Settings', 'ShowSysinfo', True);
+  ShowWinamp := initfile.ReadBool('General Settings', 'ShowWinamp', True);
+  ShowRSS := initfile.ReadBool('General Settings', 'ShowRSS', True);
+  ShowGameStats := initfile.ReadBool('General Settings', 'ShowGameStats', True);
+  ShowBOINC := initfile.ReadBool('General Settings', 'ShowBOINC', True);
+  ShowFoldingAtHome := initfile.ReadBool('General Settings', 'ShowFoldingAtHome', True);
+  ShowEmail := initfile.ReadBool('General Settings', 'ShowEmail', True);
+
+  TabsPosition := TTabPosition(initfile.ReadInteger('General Settings', 'TabsPosition', 3));
+
+  ActionLogTop := initfile.ReadInteger('General Settings', 'ActionLogTop', 0);
+  ActionLogLeft := initfile.ReadInteger('General Settings', 'ActionLogLeft', 0);
+  ActionLogHeight := initfile.ReadInteger('General Settings', 'ActionLogHeight', 400);
+  ActionLogWidth := initfile.ReadInteger('General Settings', 'ActionLogWidth', 460);
+
+  CCharFormTop := initfile.ReadInteger('General Settings', 'CCharFormTop', 0);
+  CCharFormLeft := initfile.ReadInteger('General Settings', 'CCharFormLeft', 0);
+
+  OneBySixteenFixup := initfile.ReadBool('General Settings', 'OneBySixteenFixup', False);
+
   result := true;
 
   initfile.Free;
@@ -666,7 +720,8 @@ begin
   initfile.WriteInteger('General Settings', 'EditFormPosWidth', EditFormPosWidth);
 
   initfile.WriteString('General Settings', 'SkinPath', sSkinPath);
-  initfile.WriteInteger('General Settings', 'LastTab',LastTabIndex);
+  initfile.WriteInteger('General Settings', 'LastTab', LastTabIndex);
+  initfile.WriteInteger('General Settings', 'LastMainTab', LastMainTabIndex);
   initfile.WriteString('General Settings', 'TrayIcon', sTrayIcon);
 
   initfile.WriteInteger('Communication Settings', 'Baudrate', baudrate);
@@ -732,6 +787,8 @@ begin
       initFile.WriteBool(sScreen, 'Center' + sLine, screen[ScreenCount].line[LineCount].center);
     end;
 
+    for i := 1 to 8 do
+      initFile.WriteString(sScreen, 'CustomCharacters' + inttostr(i), screen[ScreenCount].CustomCharacters[i]);
   end;
 
   initfile.WriteString('General Settings', 'DistLog', distLog);
@@ -885,6 +942,32 @@ begin
                                                                  inttostr(SavedCustomChars[i][7]));
 
   initFile.WriteBool('General Settings', 'SkinError', SkinError);
+
+  initfile.WriteBool('General Settings', 'ShowNetStats', ShowNetStats);
+  initfile.WriteBool('General Settings', 'ShowMisc', ShowMisc);
+  initfile.WriteBool('General Settings', 'ShowLCDFeatures', ShowLCDFeatures);
+  initfile.WriteBool('General Settings', 'ShowPlugins', ShowPlugins);
+  initfile.WriteBool('General Settings', 'ShowCharEditor', ShowCharEditor);
+  initfile.WriteBool('General Settings', 'ShowPerf', ShowPerf);
+  initfile.WriteBool('General Settings', 'ShowSysinfo', ShowSysinfo);
+  initfile.WriteBool('General Settings', 'ShowWinamp', ShowWinamp);
+  initfile.WriteBool('General Settings', 'ShowRSS', ShowRSS);
+  initfile.WriteBool('General Settings', 'ShowGameStats', ShowGameStats);
+  initfile.WriteBool('General Settings', 'ShowBOINC', ShowBOINC);
+  initfile.WriteBool('General Settings', 'ShowFoldingAtHome', ShowFoldingAtHome);
+  initfile.WriteBool('General Settings', 'ShowEmail', ShowEmail);
+
+  initfile.WriteInteger('General Settings', 'TabsPosition', Ord(TabsPosition));
+
+  initfile.WriteInteger('General Settings', 'ActionLogTop', ActionLogTop);
+  initfile.WriteInteger('General Settings', 'ActionLogLeft', ActionLogLeft);
+  initfile.WriteInteger('General Settings', 'ActionLogHeight', ActionLogHeight);
+  initfile.WriteInteger('General Settings', 'ActionLogWidth', ActionLogWidth);
+
+  initfile.WriteInteger('General Settings', 'CCharFormTop', CCharFormTop);
+  initfile.WriteInteger('General Settings', 'CCharFormLeft', CCharFormLeft);
+
+  initfile.WriteBool('General Settings', 'OneBySixteenFixup', OneBySixteenFixup);
 
   initfile.UpdateFile;
   initfile.Free;

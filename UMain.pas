@@ -35,6 +35,17 @@ uses
 
   { TLCDSmartieDisplayForm }
 type
+  TActionURLThread = class(TThread)
+  protected
+    URLThread: TURLThread;
+    procedure Execute; override;
+  public
+    Url: String;
+    MaxFreq: Cardinal;
+    PostParms: TStringList;
+  end;
+
+type
   PObject = ^TObject;
 
   TOnScreenLineWrapper = class
@@ -60,9 +71,11 @@ type
 
   TLCDSmartieDisplayForm = class(TForm)
     ExceptionLogger1: TExceptionLogger;
-    ShowActionLogMenuItem: TMenuItem;
-    ReloadSkinMenuItem: TMenuItem;
-    SavePosition: TMenuItem;
+    ControlMenuItem: TMenuItem;
+    CreditsMenuItem: TMenuItem;
+    Label1: TLabel;
+    ToggleActionLogMenuItem: TMenuItem;
+    SavePositionMenuItem: TMenuItem;
     N1: TMenuItem;
     NextScreenTimer: TTimer;
     ScrollFlashTimer: TTimer;
@@ -80,7 +93,6 @@ type
     NextTheme1: TMenuItem;
     LastTheme1: TMenuItem;
     N2: TMenuItem;
-    Credits1: TMenuItem;
     NextScreenImage: TImage;
     PreviousImage: TImage;
     BarLeftImage: TImage;
@@ -94,7 +106,6 @@ type
     LeftManualScrollTimer: TTimer;
     RightManualScrollTimer: TTimer;
     TimerRefresh: TTimer;
-    IdTCPServer1: TIdTCPServer;
     IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -152,6 +163,7 @@ type
     procedure LoadColors;
     procedure ServerConnect(AContext: TIdContext);
     procedure ServerExecute(AContext: TIdContext);
+    procedure ServerDisconnect(AContext: TIdContext);
 
   private
     LineRightScrollImages: Array[1..MaxLines] of TImage;
@@ -194,6 +206,7 @@ type
     iLastRandomTranCycle: Integer;
     ConfigFileName: String;
     RestartAsAdmin: boolean;
+    IdTCPServer1: TIdTCPServer;
     function DoGuess(line: Integer): Integer;
     procedure freeze();
     procedure DoGPO(const ftemp1, ftemp2: Integer);
@@ -230,6 +243,8 @@ type
 
     ActionLogForm: TForm;
     ActionLogMemo: TMemo;
+
+    CContext: TIdContext;
     procedure hidelog(Sender: TObject; var CanClose: Boolean);
     procedure SetOnscreenBacklight();
     procedure backlit(iOn: Integer = -1);
@@ -256,7 +271,7 @@ implementation
 uses
   Dialogs, ShellAPI, mmsystem, StrUtils,
   UCredits, ULCD_DLL, UUtils, lazutf8,
-  FONTMGR, UIconUtils, InterfaceBase, Win32Int, Registry, ComObj;
+  FONTMGR, InterfaceBase, Win32Int, ComObj;
 
 // message handler
 // lazarus only supports passing certain messages so we have to implement our own handler
@@ -429,17 +444,6 @@ var
   loop: byte;
 begin
   StartTime := now;
-
-  ActionLogForm := TForm.Create(nil);
-  ActionLogForm.Name := 'ActionsLog';
-  ActionLogForm.Caption := 'Actions Log';
-  ActionLogForm.SetBounds(0, 0, 460, 400);
-  ActionLogMemo := TMemo.create(nil);
-  ActionLogMemo.Align := alClient;
-  ActionLogMemo.Parent := ActionLogForm;
-  ActionLogMemo.ReadOnly := true;
-  ActionLogForm.OnCloseQuery := hidelog;
-
   // this to fix/work around a problem with lazarus and exceptions not being dealt with properly in DLLs
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
 
@@ -570,6 +574,16 @@ begin
       showmessage('Default configuration ('+ConfigFileName+') created')
   end;
 
+  ActionLogForm := TForm.Create(nil);
+  ActionLogForm.Name := 'ActionsLog';
+  ActionLogForm.Caption := 'Actions Log';
+  ActionLogForm.SetBounds(config.ActionLogLeft, config.ActionLogTop, config.ActionLogWidth, config.ActionLogHeight);
+  ActionLogMemo := TMemo.create(nil);
+  ActionLogMemo.Align := alClient;
+  ActionLogMemo.Parent := ActionLogForm;
+  ActionLogMemo.ReadOnly := true;
+  ActionLogForm.OnCloseQuery := hidelog;
+
   while (pos('\', config.sSkinPath) > 0) do
     config.sSkinPath := copy(config.sSkinPath, pos('\', config.sSkinPath) + 1 , 255);
 
@@ -619,6 +633,7 @@ begin
   if config.EnableRemoteSend then
   begin
     try
+      IdTCPServer1 := TIdTCPServer.Create;
       if fileExists(ExtractFilePath(ParamStr(0))+'openssl\cert.pem') and
         fileExists(ExtractFilePath(ParamStr(0))+'openssl\key.pem')  and
         config.RemoteSendUseSSL then
@@ -639,6 +654,7 @@ begin
       IdTCPServer1.Bindings.Add.Port := strtoint(config.RemoteSendPort);
       IdTCPServer1.OnConnect := ServerConnect;
       IdTCPServer1.OnExecute := ServerExecute;
+      IdTCPServer1.OnDisconnect := ServerDisconnect;
       IdTCPServer1.Active := True;
     except
       on E : Exception do
@@ -791,6 +807,22 @@ end;
 
 procedure TLCDSmartieDisplayForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+
+  if assigned(IdTCPServer1) then
+  begin
+    if assigned(CContext) then
+    begin
+      CContext.Connection.Disconnect(true);
+    end;
+    IdTCPServer1.Active := False;
+    IdTCPServer1.Free;
+  end;
+
+  config.ActionLogLeft := ActionLogForm.Left;
+  config.ActionLogTop := ActionLogForm.Top;
+  config.ActionLogWidth := ActionLogForm.Width;
+  config.ActionLogHeight := ActionLogForm.Height;
+
   config.MainFormPosTop := LCDSmartieDisplayForm.Top;
   config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
   config.save;
@@ -839,6 +871,11 @@ end;
 
 procedure TLCDSmartieDisplayForm.SavePositionClick(Sender: TObject);
 begin
+  config.ActionLogLeft := ActionLogForm.Left;
+  config.ActionLogTop := ActionLogForm.Top;
+  config.ActionLogWidth := ActionLogForm.Width;
+  config.ActionLogHeight := ActionLogForm.Height;
+
   config.MainFormPosTop := LCDSmartieDisplayForm.Top;
   config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
   config.save;
@@ -1162,10 +1199,9 @@ end;
 
 procedure TLCDSmartieDisplayForm.TimerRefreshTimer(Sender: TObject);
 var
-  counter, h: Integer;
-  line: String;
+  counter, h, loop: Integer;
+  line, CCharLine: String;
   scrollcount: Integer;
-
 begin
   //timerRefresh.Interval := 0;
   timerRefresh.Interval := config.refreshRate;
@@ -1180,6 +1216,16 @@ begin
        customchar('3, 16, 16, 16, 16, 16, 16, 31, 16');
        customchar('4, 28, 28, 28, 28, 28, 28, 31, 28');
     end;
+
+    for loop := 1 to 8 do
+      if pos('$CustomChar', config.screen[activeScreen].CustomCharacters[loop]) > 0 then
+      begin
+        CCharLine := copy(config.screen[activeScreen].CustomCharacters[loop],
+        13,
+        length(config.screen[activeScreen].CustomCharacters[loop]) - 13);
+        Delete(CCharLine, -1,1);
+        customchar(CCharLine);
+      end;
 
     if iSavedColorMode <> config.colorOption then
     begin
@@ -1216,6 +1262,7 @@ begin
     begin
       //Application.ProcessMessages;
       line := config.screen[activeScreen].line[counter].text;
+
       line := Data.change(line, counter, true);
 
       // Center the line if requested.
@@ -1302,7 +1349,23 @@ begin
     begin
       LastLineLCD[h] := tmpline[h];
       Lcd.setPosition(1, h);
-      Lcd.write(tmpline[h]);
+
+      if config.OneBySixteenFixup then
+      begin
+        Lcd.write(copy(tmpline[h], 0, trunc(config.width / 2)));
+        Lcd.setPosition(1, h+1);
+        Lcd.write(copy(tmpline[h], trunc(config.width / 2)+1, trunc(config.width / 2)));
+      end
+      else
+        Lcd.write(tmpline[h]);
+
+      if assigned(CContext) then
+      begin
+        try
+          CContext.Connection.IOHandler.write(chr(h)+chr(length(tmpline[h]))+tmpline[h]);
+        except
+        end;
+      end;
     end;
   end;
   // this loop instead of the one above writes a complete screen update
@@ -1665,6 +1728,7 @@ end;
 procedure TLCDSmartieDisplayForm.InitLCD();
 var
   i: Integer;
+  w, h: integer;
 begin
   // Sync the display to our current view of the custom chars.
   for i:= 1 to 8 do
@@ -1673,7 +1737,13 @@ begin
   // start connectivity
   try
     if not (config.DisplayDLLName = '') then
-      Lcd := TLCD_DLL.CreateDLL(config.width,config.height,config.DisplayDLLName,config.DisplayDLLParameters)
+    begin
+      if config.OneBySixteenFixup then
+        Lcd := TLCD_DLL.CreateDLL(trunc(config.width / 2), config.height * 2,config.DisplayDLLName,config.DisplayDLLParameters)
+      else
+        Lcd := TLCD_DLL.CreateDLL(config.width,config.height,config.DisplayDLLName,config.DisplayDLLParameters);
+
+    end
     else
       Lcd := TLCD.Create();
     DisplayError := false;
@@ -1720,8 +1790,14 @@ begin
             for x := length(row)+1 to config.Width do
               row := row + ' ';
 
-            Lcd.setPosition(1, h);
-            Lcd.write(row);
+            if config.OneBySixteenFixup then
+            begin
+              Lcd.write(copy(row, 0, trunc(config.width / 2)));
+              Lcd.setPosition(1, h+1);
+              Lcd.write(copy(row, trunc(config.width / 2)+1, trunc(config.width / 2)));
+            end
+            else
+              Lcd.write(row);
             Sleep(20);
           end;
           Lcd.setbacklight(false);
@@ -1761,12 +1837,21 @@ var
 
 begin
   iPosEnd := pos(',', fline);
-  character := StrToIntN(fline, 1, iPosEnd-1);
+  try
+    character := StrToIntN(fline, 1, iPosEnd-1);
+
+  except
+    Exit;
+  end;
   for i := 0 to 6 do
   begin
     iPosStart := iPosEnd + 1;
     iPosEnd := PosEx(',', fline, iPosStart);
-    waarde[i] := StrToIntN(fline, iPosStart, iPosEnd-iPosStart);
+    try
+      waarde[i] := StrToIntN(fline, iPosStart, iPosEnd-iPosStart);
+    except
+      exit;
+    end;
   end;
   waarde[7] := StrToIntN(fline, iPosEnd+1, length(fline)-iPosEnd);
 
@@ -1839,6 +1924,19 @@ begin
   freemem(p);
 end;
 
+procedure TActionURLThread.Execute;
+begin
+  try
+    URLThread := TURLThread.Create(1);
+    try
+      URLThread.getUrl(Url, MaxFreq, PostParms);
+    except
+    end;
+  finally
+    URLThread.Free;
+  end;
+end;
+
 procedure TLCDSmartieDisplayForm.ProcessAction(bDoAction: Boolean; sAction: String; ActionIndex: integer);
 const
   APPCOMMAND_VOLUME_UP = $A0000;
@@ -1856,6 +1954,7 @@ var
   URLThread: TURLThread;
   p: pointer;
   u: uint_ptr;
+  ActionURLThread: TActionURLThread;
 begin
   while ActionLogMemo.Lines.Count > 500 do
     ActionLogMemo.Lines.Delete(0);
@@ -2101,23 +2200,29 @@ begin
     temp1 := sAction;
     while decodeArgs(temp1, 'HTTPReq', 1, args, prefix, postfix, numargs) do
     begin
-      URLThread := TURLThread.Create(1);
-      URLThread.getUrl(args[0], 0);
       temp1 := '';
-      URLThread.Free;
+      ActionURLThread := TActionURLThread.Create(true);
+      ActionURLThread.FreeOnTerminate := True;
+      ActionURLThread.Url := args[0];
+      ActionURLThread.MaxFreq := 0;
+      ActionURLThread.Start;
     end;
 
     temp1 := sAction;
     while decodeArgs(temp1, 'HTTPPost', 99, args, prefix, postfix, numargs) do
     begin
-      URLThread := TURLThread.Create(1);
       temp1 := '';
       postStrings := TStringList.Create;
+
       for iTemp := 1 to numargs do
         postStrings.Add(args[iTemp]);
 
-      URLThread.getUrl(args[0], 0, postStrings);
-      URLThread.Free;
+      ActionURLThread := TActionURLThread.Create(true);
+      ActionURLThread.FreeOnTerminate := True;
+      ActionURLThread.Url := args[0];
+      ActionURLThread.MaxFreq := 0;
+      ActionURLThread.PostParms := postStrings;
+      ActionURLThread.Start;
     end;
 
     if (pos('Winamp', sAction) <> 0) then
@@ -2324,6 +2429,14 @@ begin
   ScreenLCD[line].caption := EscapeAmp(tmpline[line]);
   Lcd.setPosition(1, line);
   Lcd.write(tmpline[line]);
+
+  if assigned(CContext) then
+  begin
+    try
+      CContext.Connection.IOHandler.write(chr(line)+chr(length(tmpline[line]))+tmpline[line]);
+    except
+    end;
+  end;
 end;
 
 procedure TLCDSmartieDisplayForm.SetOnscreenBacklight;
@@ -2798,35 +2911,25 @@ end;
 
 procedure TLCDSmartieDisplayForm.ServerConnect(AContext: TIdContext);
 begin
- if (AContext.Connection.IOHandler is TIdSSLIOHandlerSocketBase) then
+  if (AContext.Connection.IOHandler is TIdSSLIOHandlerSocketBase) then
       TIdSSLIOHandlerSocketBase(AContext.Connection.IOHandler).PassThrough := false;
-end;
-
-procedure TLCDSmartieDisplayForm.ServerExecute(AContext: TIdContext);
-var
-  Loop: integer;
-  password: string;
-  strm: TIdMemoryBufferStream;
-begin
-  password := config.RemoteSendPassword;
-  while true do
+  if ( AContext.Connection.IOHandler.ReadLn = config.RemoteSendPassword) then
   begin
-    if ( AContext.Connection.IOHandler.ReadLn = password) then
-    begin
-      for Loop := 1 to MaxLines do begin
-         strm := TIdMemoryBufferStream.Create(PAnsiChar(inttostr(loop)+screenLCD[Loop].caption), Length(inttostr(loop)+screenLCD[Loop].caption));
-         AContext.Connection.IOHandler.LargeStream := False;
-         AContext.Connection.IOHandler.write(strm, 0, True);
-      end;
-      sleep(250); // slow down execution
-    end;
+    CContext := AContext;
+    CContext.Connection.IOHandler.DefStringEncoding := IndyTextEncoding_ASCII;
+    CContext.Connection.IOHandler.DefAnsiEncoding := IndyTextEncoding_ASCII;
   end;
 end;
 
+procedure TLCDSmartieDisplayForm.ServerExecute(AContext: TIdContext);
+begin
+  sleep(1); // slow down execution
+end;
+
+procedure TLCDSmartieDisplayForm.ServerDisconnect(AContext: TIdContext);
+begin
+  CContext := nil;
+end;
+
 end.
-
-
-
-
-
 

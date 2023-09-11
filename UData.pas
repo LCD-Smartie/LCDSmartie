@@ -937,8 +937,10 @@ begin
         LoadPlugin(sLoadDllName);
       except
         on E: Exception do
-          //showmessage('Load of plugin failed: ' + e.Message) // bloody annoying popup
+        begin
+          //showmessage('Load of plugin failed: ' + e.Message); // bloody annoying popup
           dllmessage := e.Message; // save it here instead so we can print it out later
+        end;
       end;
     end;
 
@@ -1093,7 +1095,10 @@ begin
 
       // we can make use of the .net iBridgeId here
       dlls[uiDll].iBridgeId := LegacySharedMem.LibraryID;
-      dlls[uiDll].uiMinRefreshInterval := strtoint(PChar(@LegacySharedMem.LibraryResult[1]));
+      try
+        dlls[uiDll].uiMinRefreshInterval := strtoint(PChar(@LegacySharedMem.LibraryResult[1]));
+      except
+      end;
       Exit; // don't process any further. For speed plus its not neccessary
     end;
   {$IFEND}
@@ -1146,10 +1151,11 @@ begin
           raise Exception.Create('Bridge Init for '+dlls[uiDll].sName+' had an exception: '
             + E.Message);
       end;
+      dlls[uiDll].iBridgeId := id;
       if (id = -1) or (sResult <> '') then
          raise Exception.Create('Bridge Init for '+dlls[uiDll].sName+' failed with: '
             + sResult);
-      dlls[uiDll].iBridgeId := id;
+
       if (minRefresh > 0) then
         dlls[uiDll].uiMinRefreshInterval := minRefresh;
 

@@ -85,7 +85,7 @@ begin
         sleep(10);
         if Terminated or fRefresh then break;
       end;
-      if not Terminated then sleep(200);  // minimum sleep interval upon external refresh call
+      if not Terminated then sleep(10);  // minimum sleep interval upon external refresh call
     end;
   except
     // trap EExiting exception when terminating thread

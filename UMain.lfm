@@ -1,7 +1,7 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 501
+  Left = 718
   Height = 91
-  Top = 153
+  Top = 338
   Width = 240
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
@@ -126,6 +126,14 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ShowHint = True
     TabOrder = 0
   end
+  object Label1: TLabel
+    Left = 64
+    Height = 39
+    Top = 8
+    Width = 108
+    Caption = 'Expand this window to'#13#10'see additional controls'#13#10'(timers, context, etc)'
+    Visible = False
+  end
   object TimerRefresh: TTimer
     Enabled = False
     Interval = 200
@@ -150,7 +158,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
       Caption = '-'
     end
     object Commands1: TMenuItem
-      Caption = 'C&ommands'
+      Caption = 'Display'
       object BacklightOn1: TMenuItem
         Caption = '&Backlight Off'
         OnClick = BacklightOn1Click
@@ -164,28 +172,27 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
         OnClick = NextTheme1Click
       end
       object LastTheme1: TMenuItem
-        Caption = '&Last Theme'
+        Caption = '&Previous Theme'
         OnClick = LastTheme1Click
       end
-      object Credits1: TMenuItem
-        Caption = 'C&redits'
-        OnClick = Credits1Click
+    end
+    object ControlMenuItem: TMenuItem
+      Caption = 'Control'
+      object SavePositionMenuItem: TMenuItem
+        Caption = 'Save Position'
+        OnClick = SavePositionClick
+      end
+      object ToggleActionLogMenuItem: TMenuItem
+        Caption = 'Toggle Action Log'
+        OnClick = ShowActionLogMenuItemClick
       end
     end
     object N1: TMenuItem
       Caption = '-'
     end
-    object SavePosition: TMenuItem
-      Caption = 'S&ave Position'
-      OnClick = SavePositionClick
-    end
-    object ReloadSkinMenuItem: TMenuItem
-      Caption = '&Reload Skin'
-      OnClick = ReloadSkinMenuItemClick
-    end
-    object ShowActionLogMenuItem: TMenuItem
-      Caption = 'Toggle Action Log'
-      OnClick = ShowActionLogMenuItemClick
+    object CreditsMenuItem: TMenuItem
+      Caption = 'Credits'
+      OnClick = Credits1Click
     end
     object Close1: TMenuItem
       Caption = '&Close'
@@ -230,12 +237,6 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     OnTimer = ScrollFlashTimerTimer
     Left = 28
     Top = 96
-  end
-  object IdTCPServer1: TIdTCPServer
-    Bindings = <>
-    DefaultPort = 8080
-    Left = 84
-    Top = 144
   end
   object IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL
     SSLOptions.Mode = sslmUnassigned
@@ -330,7 +331,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Top = 144
   end
   object ExceptionLogger1: TExceptionLogger
-    MaxCallStackDepth = 60
+    MaxCallStackDepth = 100
     Left = 140
     Top = 144
   end

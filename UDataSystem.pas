@@ -143,7 +143,7 @@ type
     STPageFree, STPageTotal: Int64;
     STMemFree, STMemTotal: Int64;
     iUptime: Int64;
-    iLastUptime: Cardinal;
+    iLastUptime: QWORD;
     uptimereg, uptimeregs: String;
     FullScreenGameActive: string;
     FullScreenAppActive: string;
@@ -261,7 +261,7 @@ begin
     else
     begin // < win10 Needs testing
       PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\Processor Information(*)\% Processor Time'), nil, @pdhCPUUsageCounterHandle);
-      PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\Processor Performance(*)\frequency'), nil, @pdhCPUPerformanceCounterHandle);
+      PdhAddEnglishCounterW(pdhQueryHandle, pWidechar('\ProcessorPerformance(*)\frequency'), nil, @pdhCPUPerformanceCounterHandle);
     end;
   end;
   inherited Create(500);
@@ -515,7 +515,7 @@ end;
 
 procedure TSystemDataThread.DoUpdate;
 var
-  t: longword;
+  t: QWORD;
   y, mo, d, h, m, s : Cardinal;
   uiRemaining: Cardinal;
   sTempUptime: String;
@@ -699,6 +699,7 @@ begin
     end;
     CPUUse := CPUUsageArray[pdhItemCount - 1].Value;
   end;
+  if pdhItemCount > 0 then
   freemem(pdhBuffer);
 
   // CPU Clock
@@ -746,6 +747,7 @@ begin
       CPUSpeed := CPUPerformanceArray[pdhItemCount - 1].value;
     end;
   end;
+  if pdhItemCount > 0 then
   freemem(pdhBuffer);
   fDataLock.Leave;
 end;
@@ -809,15 +811,21 @@ begin
       try
         RequiredParameters(numargs, 1, 2);
         if numargs = 2 then
-          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]))+','+stripspaces(LCDSmartieDisplayForm.Data.change(args[2]))
+        begin
+          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]))+','+stripspaces(LCDSmartieDisplayForm.Data.change(args[2]));
+          for i := 0 to length(CPUPerformanceArray) - 1  do
+          if CPUPerformanceArray[i].name = cpuname then
+            cpuval := Format('%.0f', [CPUPerformanceArray[i].value]);
+        end
         else if numargs = 1 then
-          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]))
+        begin
+          cpuname := stripspaces(LCDSmartieDisplayForm.Data.change(args[1]));
+          cpuval := Format('%.0f', [CPUPerformanceArray[strtoint(cpuname)].value]);
+        end
         else
           raise Exception.Create('Bad parameters');
 
-        for i := 0 to length(CPUPerformanceArray) - 1  do
-          if CPUPerformanceArray[i].name = cpuname then
-            cpuval := Format('%.0f', [CPUPerformanceArray[i].value]);
+
 
         Line := prefix + cpuval + postfix
       except

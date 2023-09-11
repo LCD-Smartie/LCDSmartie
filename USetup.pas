@@ -29,7 +29,7 @@ uses
   Dialogs, Grids, StdCtrls, Controls, Spin, Buttons, ComCtrls, Classes,
   Forms, ExtCtrls, FileCtrl,
   ExtDlgs, CheckLst, Menus, SpinEx, RTTICtrls, Process, FileUtil,
-  Windows, Types, UConfig, UEditLine, LazFileUtils, Clipbrd;
+  Windows, Types, UConfig, UEditLine, LazFileUtils, Clipbrd, UxTheme;
 
 const
   NoVariable = 'Variable:';
@@ -67,32 +67,12 @@ type
     BoincServerIndexComboBox: TComboBox;
     AddRSSButton: TButton;
     ActionLogButton: TButton;
-    CustomTitleTIEdit1: TTIEdit;
-    DistributedNetBrowseButton: TSpeedButton;
-    DistributedNetLogfileEdit: TEdit;
-    GroupBox4: TGroupBox;
-    GroupBox5: TGroupBox;
-    IconSelectComboBox: TComboBox;
-    Label10: TLabel;
-    Label34: TLabel;
-    Label45: TLabel;
-    Label7: TLabel;
-    Label8: TLabel;
-    ExportMenuItem: TMenuItem;
-    ExportClipboard: TMenuItem;
-    ExportFile: TMenuItem;
-    ImportMenuItem: TMenuItem;
-    ImportClipboard: TMenuItem;
-    ImportFile: TMenuItem;
-    ActionsExportImportPoup: TPopupMenu;
-    SkinSelectComboBox: TComboBox;
-    GroupBox2: TGroupBox;
-    Label76: TLabel;
-    OpenPluginFolderButton: TButton;
-    CustomCharUseButton: TButton;
-    CustomCharCreateButton: TButton;
-    CustomCharInvertButton: TButton;
-    CustomCharClearButton: TButton;
+    BrightnessTrackBar: TTrackBar;
+    Button1: TButton;
+    Label80: TLabel;
+    OneBySixteenLCDFixupCheckBox: TCheckBox;
+    GroupBox1: TGroupBox;
+    Line1ClearButton: TButton;
     CenterLine1CheckBox: TCheckBox;
     CenterLine2CheckBox: TCheckBox;
     CenterLine3CheckBox: TCheckBox;
@@ -101,6 +81,32 @@ type
     CenterLine6CheckBox: TCheckBox;
     CenterLine7CheckBox: TCheckBox;
     CenterLine8CheckBox: TCheckBox;
+    ComPortsButton: TButton;
+    ContrastTrackBar: TTrackBar;
+    Label78: TLabel;
+    Label79: TLabel;
+    Line2ClearButton: TButton;
+    Line3ClearButton: TButton;
+    Line4ClearButton: TButton;
+    Line5ClearButton: TButton;
+    Line6ClearButton: TButton;
+    Line7ClearButton: TButton;
+    Line8ClearButton: TButton;
+    ShowNetStatsCheckBox: TCheckBox;
+    ShowGameStatsCheckBox: TCheckBox;
+    ShowBOINCCheckBox: TCheckBox;
+    ShowFoldingAtHomeCheckBox: TCheckBox;
+    ShowEmailCheckBox: TCheckBox;
+    ShowMiscCheckBox: TCheckBox;
+    ShowLCDFeaturesCheckBox: TCheckBox;
+    ShowPluginsCheckBox: TCheckBox;
+    ShowCharEditorCheckBox: TCheckBox;
+    ShowPerfCheckBox: TCheckBox;
+    ShowSysinfoCheckBox: TCheckBox;
+    ShowWinampCheckBox: TCheckBox;
+    ShowRssCheckBox: TCheckBox;
+    ColorSchemeComboBox: TComboBox;
+    LeftTabsPositionComboBox: TComboBox;
     ContinueLine1CheckBox: TCheckBox;
     ContinueLine2CheckBox: TCheckBox;
     ContinueLine3CheckBox: TCheckBox;
@@ -109,6 +115,18 @@ type
     ContinueLine6CheckBox: TCheckBox;
     ContinueLine7CheckBox: TCheckBox;
     ContinueLine8CheckBox: TCheckBox;
+    ContinueNextLineGroupBox: TGroupBox;
+    CopyToScreenButton: TButton;
+    CopyToScreenSpinEdit: TSpinEdit;
+    CustomCharsSizeEdit: TSpinEdit;
+    CustomLinesSizeEdit: TSpinEdit;
+    CustomTitleTIEdit1: TTIEdit;
+    DisplayPluginList: TComboBox;
+    DisplayPluginsLabel: TLabel;
+    DistributedNetBrowseButton: TSpeedButton;
+    DistributedNetLogfileEdit: TEdit;
+    DLLCheckIntervalSpinEdit: TSpinEdit;
+    DontScrollGroupBox: TGroupBox;
     DontScrollLine1CheckBox: TCheckBox;
     DontScrollLine2CheckBox: TCheckBox;
     DontScrollLine3CheckBox: TCheckBox;
@@ -117,21 +135,88 @@ type
     DontScrollLine6CheckBox: TCheckBox;
     DontScrollLine7CheckBox: TCheckBox;
     DontScrollLine8CheckBox: TCheckBox;
+    EmulateLCDCheckbox: TCheckBox;
     ExportLinesButton: TButton;
+    GroupBox11: TGroupBox;
+    GroupBox12: TGroupBox;
+    GroupBox13: TGroupBox;
+    GroupBox14: TGroupBox;
+    GroupBox4: TGroupBox;
+    GroupBox5: TGroupBox;
+    GroupBox9: TGroupBox;
+    IconSelectComboBox: TComboBox;
+    IDLabel: TLabel;
     ImportLinesButton: TButton;
+    Label1: TLabel;
+    Label10: TLabel;
+    Label14: TLabel;
+    Label18: TLabel;
+    Label3: TLabel;
+    Label34: TLabel;
+    Label4: TLabel;
+    Label43: TLabel;
+    Label44: TLabel;
+    Label45: TLabel;
+    Label5: TLabel;
+    Label51: TLabel;
+    Label58: TLabel;
+    Label59: TLabel;
+    Label6: TLabel;
+    Label60: TLabel;
+    Label61: TLabel;
+    Label62: TLabel;
+    Label7: TLabel;
+    Label71: TLabel;
+    Label77: TLabel;
+    Label8: TLabel;
+    ExportMenuItem: TMenuItem;
+    ExportClipboard: TMenuItem;
+    ExportFile: TMenuItem;
+    ImportMenuItem: TMenuItem;
+    ImportClipboard: TMenuItem;
+    ImportFile: TMenuItem;
+    ActionsExportImportPoup: TPopupMenu;
+    Label9: TLabel;
+    LCDSizeComboBox: TComboBox;
+    Line1EditButton: TSpeedButton;
+    Line1MemoEdit: TEdit;
+    Line2EditButton: TSpeedButton;
+    Line2MemoEdit: TEdit;
+    Line3EditButton: TSpeedButton;
+    Line3MemoEdit: TEdit;
+    Line4EditButton: TSpeedButton;
+    Line4MemoEdit: TEdit;
+    Line5EditButton: TSpeedButton;
+    Line5MemoEdit: TEdit;
+    Line6EditButton: TSpeedButton;
+    Line6MemoEdit: TEdit;
+    Line7EditButton: TSpeedButton;
+    Line7MemoEdit: TEdit;
+    Line8EditButton: TSpeedButton;
+    Line8MemoEdit: TEdit;
+    MoveToScreenButton: TButton;
+    MoveToScreenSpinEdit: TSpinEdit;
+    ParametersEdit: TEdit;
+    ProgramRefreshIntervalSpinEdit: TSpinEdit;
+    ProgramScrollIntervalSpinEdit: TSpinEdit;
+    ProgramSettingsGroupBox: TGroupBox;
+    RandomizeScreensCheckBox: TCheckBox;
+    ScreenEnabledCheckBox: TCheckBox;
+    ScreenLabel: TLabel;
+    ScreenSpinEdit: TSpinEdit;
+    SkinSelectComboBox: TComboBox;
+    GroupBox2: TGroupBox;
+    Label76: TLabel;
+    OpenPluginFolderButton: TButton;
+    CustomCharUseButton: TButton;
+    CustomCharCreateButton: TButton;
+    CustomCharInvertButton: TButton;
+    CustomCharClearButton: TButton;
     DuplicateActionButton: TButton;
     HidePluginMenuItem: TMenuItem;
     Label20: TLabel;
     Label21: TLabel;
     Label75: TLabel;
-    Line1MemoEdit: TEdit;
-    Line2MemoEdit: TEdit;
-    Line3MemoEdit: TEdit;
-    Line4MemoEdit: TEdit;
-    Line5MemoEdit: TEdit;
-    Line6MemoEdit: TEdit;
-    Line7MemoEdit: TEdit;
-    Line8MemoEdit: TEdit;
     ExportPopupMenu: TPopupMenu;
     ImportPopupMenu: TPopupMenu;
     ExportClipboardMenuItem: TMenuItem;
@@ -141,6 +226,23 @@ type
     ImportFileOpenDialog: TOpenDialog;
     ExportFileSaveDialog: TSaveDialog;
     CustomCharGridMirrorSpeedButton: TSpeedButton;
+    CChar1SpeedButton: TSpeedButton;
+    CChar2SpeedButton: TSpeedButton;
+    CChar3SpeedButton: TSpeedButton;
+    CChar4SpeedButton: TSpeedButton;
+    CChar5SpeedButton: TSpeedButton;
+    CChar6SpeedButton: TSpeedButton;
+    CChar7SpeedButton: TSpeedButton;
+    CChar8SpeedButton: TSpeedButton;
+    StayOnTopCheckBox: TCheckBox;
+    StickyCheckbox: TCheckBox;
+    SwapWithScreenButton: TButton;
+    SwapWithScreenSpinEdit: TSpinEdit;
+    TabSheet2: TTabSheet;
+    ThemeNumberSpinEdit: TSpinEdit;
+    TimeToShowSpinEdit: TSpinEdit;
+    TransitionStyleComboBox: TComboBox;
+    TransitionTimeSpinEdit: TSpinEdit;
     TrayIconPreview16: TImage;
     TrayIconPreview32: TImage;
     UnHidePluginMenuItem: TMenuItem;
@@ -148,45 +250,14 @@ type
     PluginsListBoxPopupMenu: TPopupMenu;
     UpdateRSSButton: TButton;
     DeleteRSSButton: TButton;
-    CopyToScreenSpinEdit: TSpinEdit;
-    CustomCharsSizeEdit: TSpinEdit;
-    CustomLinesSizeEdit: TSpinEdit;
     RSSNameEdit: TEdit;
-    GroupBox11: TGroupBox;
-    GroupBox12: TGroupBox;
-    DontScrollGroupBox: TGroupBox;
-    ContinueNextLineGroupBox: TGroupBox;
-    GroupBox9: TGroupBox;
-    Label18: TLabel;
-    Label4: TLabel;
     Label41: TLabel;
-    Label43: TLabel;
-    Label44: TLabel;
-    Label5: TLabel;
-    Label51: TLabel;
-    Label60: TLabel;
-    Label61: TLabel;
-    Label62: TLabel;
-    Label71: TLabel;
     Label72: TLabel;
     Label74: TLabel;
     PluginVersionLabel: TLabel;
     Label73: TLabel;
     PluginDeveloperLabel: TLabel;
-    Line1EditButton: TSpeedButton;
-    Line5EditButton: TSpeedButton;
-    Line2EditButton: TSpeedButton;
-    Line6EditButton: TSpeedButton;
-    Line3EditButton: TSpeedButton;
-    Line7EditButton: TSpeedButton;
-    Line4EditButton: TSpeedButton;
-    Line8EditButton: TSpeedButton;
     PluginDemoListBox: TListBox;
-    MoveToScreenSpinEdit: TSpinEdit;
-    ScreenEnabledCheckBox: TCheckBox;
-    ScreenLabel: TLabel;
-    ScreenSpinEdit: TSpinEdit;
-    ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
     ShutdownEdit1: TMemo;
     ShutdownEdit2: TMemo;
@@ -197,12 +268,7 @@ type
     ShutdownEdit7: TMemo;
     ShutdownEdit8: TMemo;
     Splitter1: TSplitter;
-    StickyCheckbox: TCheckBox;
-    SwapWithScreenSpinEdit: TSpinEdit;
-    ThemeNumberSpinEdit: TSpinEdit;
-    TimeToShowSpinEdit: TSpinEdit;
-    TransitionStyleComboBox: TComboBox;
-    TransitionTimeSpinEdit: TSpinEdit;
+    UsageLabel: TLabel;
     WebProxyPortEdit: TEdit;
     WebProxyServerEdit: TEdit;
     WindowsVersionLabel: TLabel;
@@ -254,20 +320,10 @@ type
     MiRiStopInstanceBitBtn: TBitBtn;
     MiDeleteBitBtn: TBitBtn;
     MiNewConfigBitBtn: TBitBtn;
-    BrightnessTrackBar: TTrackBar;
     Btn_PluginRefresh: TButton;
     ButtonsListBox: TListBox;
     CCharTabSheet: TTabSheet;
-    ColorSchemeComboBox: TComboBox;
-    ComPortsButton: TButton;
-    ContrastTrackBar: TTrackBar;
-    CopyToScreenButton: TButton;
     CreateCCharLocSpinEdit: TSpinEdit;
-    DisplayGroup2: TGroupBox;
-    DisplayPageControl: TPageControl;
-    DisplayPluginList: TComboBox;
-    DisplayPluginsLabel: TLabel;
-    DLLCheckIntervalSpinEdit: TSpinEdit;
     MiConfigNameEdit: TEdit;
     EmailAccountComboBox: TComboBox;
     EmailCheckTimeSpinEdit: TSpinEdit;
@@ -279,7 +335,6 @@ type
     EmailServerEdit: TEdit;
     EmailSSLEdit: TEdit;
     EmailTabSheet: TTabSheet;
-    EmulateLCDCheckbox: TCheckBox;
     EnableRemoteSendCheckBox: TCheckBox;
     FoldEnableCheckBox: TCheckBox;
     FoldingAtHomeEmailEdit: TEdit;
@@ -290,19 +345,14 @@ type
     GamestatsRefreshTimeSpinEdit: TSpinEdit;
     GameStatsTabSheet: TTabSheet;
     GameTypeComboBox: TComboBox;
-    GroupBox1: TGroupBox;
-    GroupBox3: TGroupBox;
     GroupBox7: TGroupBox;
     GroupBox8: TGroupBox;
     HideOnStartup: TCheckBox;
-    IDLabel: TLabel;
     InternetListBox: TListBox;
     InternetTabSheet: TTabSheet;
-    Label1: TLabel;
     Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
-    Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
     Label17: TLabel;
@@ -316,7 +366,6 @@ type
     Label27: TLabel;
     Label28: TLabel;
     Label29: TLabel;
-    Label3: TLabel;
     Label30: TLabel;
     Label31: TLabel;
     Label32: TLabel;
@@ -334,12 +383,8 @@ type
     Label55: TLabel;
     Label56: TLabel;
     Label57: TLabel;
-    Label58: TLabel;
-    Label59: TLabel;
-    Label6: TLabel;
     LastKeyPressedEdit: TEdit;
     LCDFeaturesTabSheet: TTabSheet;
-    LCDSizeComboBox: TComboBox;
     LeftPageControl: TPageControl;
     MainPageControl: TPageControl;
     MultiInstancePageControl: TPageControl;
@@ -348,33 +393,23 @@ type
     RSSAddressTMemoEdit: TMemo;
     MiscListBox: TListBox;
     MiscTabSheet: TTabSheet;
-    MoveToScreenButton: TButton;
     MyTabSheet: TTabSheet;
     NetworkStatsAdapterListButton: TButton;
     NetworkStatsListBox: TListBox;
     NetworkStatsTabSheet: TTabSheet;
     NoAutoStart: TRadioButton;
     OpenDialog3: TOpenDialog;
-    Panel1: TPanel;
     Panel2: TPanel;
-    ParametersEdit: TEdit;
     PluginListBox: TFileListBox;
     PluginsTabSheet: TTabSheet;
-    PluginTabsheet: TTabSheet;
-    ProgramRefreshIntervalSpinEdit: TSpinEdit;
-    ProgramScrollIntervalSpinEdit: TSpinEdit;
-    ProgramSettingsGroupBox: TGroupBox;
     QStatLabel: TLabel;
-    RandomizeScreensCheckBox: TCheckBox;
     RemoteSendBindIPEdit: TEdit;
     RemoteSendGenerateCertKeyButton: TButton;
     RemoteSendPasswordEdit: TEdit;
     RemoteSendPortEdit: TEdit;
     RemoteSendUseSSLCheckBox: TCheckBox;
     RssTypeComboBox: TComboBox;
-    ScreenSettingsGroupBox: TGroupBox;
     ScreensTabSheet: TTabSheet;
-    ScreenTabsheet: TTabSheet;
     BOINCListBox: TListBox;
     BOINCTabSheet: TTabSheet;
     BOINCEnableCheckBox: TCheckBox;
@@ -383,9 +418,7 @@ type
     RssItemNumSpinEdit: TSpinEdit;
     StartAsAdminCheckBox: TCheckBox;
     StartupTabSheet: TTabSheet;
-    StayOnTopCheckBox: TCheckBox;
     MiRunningInstancesListGrid: TStringGrid;
-    SwapWithScreenButton: TButton;
     SysInfoListBox: TListBox;
     SysInfoTabSheet: TTabSheet;
     TabSheet1: TTabSheet;
@@ -393,7 +426,6 @@ type
     MiConfigsTabSheet: TTabSheet;
     MiRunningProcessesTabSheet: TTabSheet;
     MiStartupItemsTabSheet: TTabSheet;
-    UsageLabel: TLabel;
     VariableEdit: TEdit;
     OpenDialog2: TOpenDialog;
     InsertButton: TButton;
@@ -407,6 +439,7 @@ type
     procedure ActionLogButtonClick(Sender: TObject);
     procedure AddRSSButtonClick(Sender: TObject);
     procedure BacklightBitBtnClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
     procedure CustomCharClearButtonClick(Sender: TObject);
     procedure CustomCharCreateButtonClick(Sender: TObject);
     procedure CustomCharGridMirrorSpeedButtonClick(Sender: TObject);
@@ -430,6 +463,9 @@ type
     procedure DuplicateActionButtonClick(Sender: TObject);
     procedure FormChangeBounds(Sender: TObject);
     procedure InfoTimerTimer(Sender: TObject);
+    procedure LeftTabsPositionComboBoxChange(Sender: TObject);
+    procedure LineClearButtonClick(Sender: TObject);
+    procedure MainPageControlResize(Sender: TObject);
     procedure OpenPluginFolderButtonClick(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
     procedure PerfCountersListBoxClick(Sender: TObject);
@@ -439,10 +475,11 @@ type
       Shift: TShiftState);
     procedure PluginListBoxMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure ScrollBox1Resize(Sender: TObject);
     procedure ShowHiddenPluginsMenuItemClick(Sender: TObject);
+    procedure ShowTabsCheckBoxClick(Sender: TObject);
     procedure SkinSelectComboBoxChange(Sender: TObject);
     procedure SkinSelectComboBoxGetItems(Sender: TObject);
+    procedure CCharSpeedButtonClick(Sender: TObject);
     procedure Splitter1ChangeBounds(Sender: TObject);
     procedure UnHidePluginMenuItemClick(Sender: TObject);
     procedure UpdateRSSButtonClick(Sender: TObject);
@@ -542,10 +579,12 @@ type
     FormEditArray: Array [1..MaxLines] of TFormEdit;
     LineEditArray: Array[1..MaxLines] of TEdit;
     LineEditButtonArray: Array[1..MaxLines] of TSpeedButton;
+    LineClearButtonArray: Array[1..MaxLines] of TButton;
     ContinueLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
     DontScrollLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
     CenterLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
     ShutdownEditArray: Array[1..MaxLines] of TMemo;
+    CCharSpeedButtonArray: Array[1..8] of TSpeedButton;
     DLLPath: string;
     setupbutton: integer;
     shdownmessagebutton: integer;
@@ -554,14 +593,19 @@ type
     DetectedOS: string;
     ShowHiddenPlugins: boolean;
     MirrorCustomArray: TCustomArray;
+    procedure LoadCCharSpeedButtonGlyphs;
     procedure FocusToInputField;
     procedure SaveScreen(scr: integer);
     procedure LoadScreen(scr: integer);
     procedure LoadHint(DisplayDLLName: string);
     procedure LoadConfig(Sender: TObject);
     procedure LoadSettings(Sender: TObject);
-    procedure CustomCharToButtonGlyph(ButtonNum: integer; CustomArray: TCustomArray);
+    procedure CustomCharToButtonGlyph(Button: TSpeedButton; CustomArray: TCustomArray);
     procedure SavedCustomCharButtonClick(Sender: TObject);
+    procedure CCharDefFormApply(Sender: TObject);
+    procedure CCharDefFormOK(Sender: TObject);
+    procedure CCharDefFormCancel(Sender: TObject);
+    procedure CCharDefFormEditEnter(Sender: TObject);
   end;
 
 procedure UpdateSetupForm(cKey: char);
@@ -578,7 +622,7 @@ var
 implementation
 
 uses
-  ShellApi, Graphics, SysUtils, dateutils,
+  ShellApi, Graphics, SysUtils, dateutils, UCCharDef,
 {$IFNDEF STANDALONESETUP}
   UMain,
 {$ELSE}
@@ -586,7 +630,7 @@ uses
   strutils,
 {$ENDIF}
    UDataNetwork, UDataWinamp, UData,
-  UIconUtils, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry, IniFiles;
+  UIconUtils, UUtils, IpRtrMib, IpHlpApi, lazutf8, registry, IniFiles, StrUtils;
 
 function PdhEnumObjectsA( szDataSource: PAnsiChar; szMachineName: PAnsiChar; mszObjectList: PPAnsiChar; pcchBufferSize: PDWORD; dwDetailLevel: DWORD; bRefresh: boolean ) : HRESULT; stdcall; external 'pdh' name 'PdhEnumObjectsA';
 function PdhEnumObjectItemsW( szDataSource: PAnsiString;
@@ -787,6 +831,29 @@ begin
   end;
 end;
 
+procedure TSetupForm.Button1Click(Sender: TObject);
+var
+  loop: integer;
+begin
+  if CCharDefForm = nil then
+  begin
+    CCharDefForm := TCCharDefForm.Create(Self);
+    CCharDefForm.CCharDefFormApplyButton.OnClick := CCharDefFormApply;
+    CCharDefForm.CCharDefFormOKButton.OnClick := CCharDefFormOK;
+    CCharDefForm.CCharDefFormCancelButton.OnClick := CCharDefFormCancel;
+    CCharDefForm.Top := config.CCharFormTop;
+    CCharDefForm.Left := config.CCharFormLeft;
+    for  loop := 1 to 8 do
+    begin
+      CCharDefForm.EditArray[loop].OnEnter := CCharDefFormEditEnter;
+      CCharDefForm.EditArray[loop].Text := config.screen[ScreenSpinEdit.Value].CustomCharacters[loop];
+    end;
+
+    CCharDefForm.Show;
+    CCharDefForm.EditArray[1].SetFocus;
+  end;
+
+end;
 
 ////////////////////////////
 // Import/Export lines /////
@@ -828,6 +895,16 @@ begin
         end;
       end;
     end;
+
+    for i := 1 to 8 do
+    for j := 0 to lines.Count -1 do
+      if pos('CustomCharacters'+inttostr(i)+'=', lines[j]) > 0 then
+      begin
+        str := copy(lines[j], 19);
+        delete(str, pos(#$0D, str),1); // remove this or something will get mad
+        config.screen[ScreenSpinEdit.Value].CustomCharacters[i] := str;
+      end;
+    LoadCCharSpeedButtonGlyphs;
     Lines.Free;
   end;
 end;
@@ -843,9 +920,12 @@ begin
     Lines := TStringlist.Create;
     for i := 1 to MaxLines do
       Lines.Add('Text0'+inttostr(i)+'="'+LineEditArray[i].Text+'"');
+    for i := 1 to 8 do
+      Lines.Add('CustomCharacters'+inttostr(i)+'='+config.screen[ScreenSpinEdit.Value].CustomCharacters[i]);
 
     Lines.SaveToFile(ExportFileSaveDialog.Filename);
   end;
+  Lines.Free;
 end;
 
 procedure TSetupForm.ImportLinesClipboardMenuItemClick(Sender: TObject);
@@ -876,6 +956,16 @@ begin
       end;
     end;
   end;
+  for i := 1 to 8 do
+    for j := 0 to lines.Count -1 do
+      if pos('CustomCharacters'+inttostr(i)+'=', lines[j]) > 0 then
+      begin
+        str := copy(lines[j], 19);
+        delete(str, pos(#$0D, str),1); // remove this or something will get mad
+        config.screen[ScreenSpinEdit.Value].CustomCharacters[i] := str;
+      end;
+
+  LoadCCharSpeedButtonGlyphs;
   Lines.Free;
   Clipboard.free;
 end;
@@ -891,6 +981,9 @@ begin
 
   for i := 1 to MaxLines do
     Lines.Add('Text0'+inttostr(i)+'="'+LineEditArray[i].Text+'"');
+
+  for i := 1 to 8 do
+      Lines.Add('CustomCharacters'+inttostr(i)+'='+config.screen[ScreenSpinEdit.Value].CustomCharacters[i]);
 
   Clipboard.AsText := Lines.Text;
   Lines.Free;
@@ -1011,6 +1104,31 @@ begin
 
   RunTimeLabel.Caption :=  HumanReadableTime(secondsbetween(Now, LCDSmartieDisplayForm.StartTime));
   WindowsVersionLabel.Caption := DetectedOS;
+end;
+
+procedure TSetupForm.LeftTabsPositionComboBoxChange(Sender: TObject);
+begin
+  config.TabsPosition := TTabPosition(LeftTabsPositionComboBox.ItemIndex);
+  LeftPageControl.TabPosition := config.TabsPosition;
+end;
+
+procedure TSetupForm.LineClearButtonClick(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to MaxLines do
+  if Sender = LineClearButtonArray[loop] then
+    begin
+      LineEditArray[loop].Clear;
+      // dont know if we want to do this yet
+      //if assigned(FormEditArray[Loop]) then
+      //  FormEditArray[Loop].Memo1.Clear;
+    end;
+end;
+
+procedure TSetupForm.MainPageControlResize(Sender: TObject);
+begin
+  MainPageControl.Invalidate;
 end;
 
 procedure TSetupForm.OpenPluginFolderButtonClick(Sender: TObject);
@@ -1201,7 +1319,6 @@ begin
   SetupForm.Width := config.SettingsFormPosWidth;
 
   MainPageControl.ActivePage := ScreensTabSheet;
-  LeftPageControl.ActivePageIndex := config.LastTabIndex;
   {$ENDIF}
 
   GameServerEdit.Text := config.gameServer[1, 1];
@@ -1382,6 +1499,28 @@ begin
   // Load RSS list
   InternetListBox.Items := config.RSSList.Names;
 
+  ShowNetStatsCheckBox.Checked := config.ShowNetStats;
+  ShowMiscCheckBox.Checked := config.ShowMisc;
+  ShowLCDFeaturesCheckBox.Checked := config.ShowLCDFeatures;
+  ShowPluginsCheckBox.Checked := config.ShowPlugins;
+  ShowCharEditorCheckBox.Checked := config.ShowCharEditor;
+  ShowPerfCheckBox.Checked := config.ShowPerf;
+  ShowSysinfoCheckBox.Checked := config.ShowSysinfo;
+  ShowWinampCheckBox.Checked := config.ShowWinamp;
+  ShowRssCheckBox.Checked := config.ShowRSS;
+  ShowGameStatsCheckBox.Checked := config.ShowGameStats;
+  ShowBOINCCheckBox.Checked := config.ShowBOINC;
+  ShowFoldingAtHomeCheckBox.Checked := config.ShowFoldingAtHome;
+  ShowEmailCheckBox.Checked := config.ShowEmail;
+  ShowTabsCheckBoxClick(nil);
+
+  LeftTabsPositionComboBox.ItemIndex := Ord(config.TabsPosition);
+  LeftPageControl.TabPosition := config.TabsPosition;
+  LeftPageControl.ActivePageIndex := config.LastTabIndex;
+  MainPageControl.ActivePageIndex := config.LastMainTabIndex;
+
+  OneBySixteenLCDFixupCheckBox.Checked := config.OneBySixteenFixup;
+
   VariableEdit.Text := NoVariable;
 end;
 
@@ -1540,6 +1679,12 @@ end;
 
 procedure TSetupForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  if CCharDefForm <> nil then
+  begin
+    CCharDefForm.Close;
+    CCharDefForm.Free;
+    CCharDefForm := nil;
+  end;
   {$IFDEF STANDALONESETUP}
   config.Free;
   config := nil;
@@ -1586,6 +1731,7 @@ begin
     LineEditArray[loop].Visible := False;
     LineEditArray[loop].Enabled := True;
     LineEditButtonArray[loop].Visible := False;
+    LineClearButtonArray[loop].Visible := False;
     ContinueLineCheckBoxArray[loop].Visible := False;
     DontScrollLineCheckBoxArray[loop].Visible := False;
     CenterLineCheckBoxArray[loop].Visible := False;
@@ -1596,8 +1742,13 @@ begin
   begin
     LineEditArray[loop].Visible := True;
     LineEditButtonArray[loop].Visible := True;
+    LineClearButtonArray[loop].Visible := True;
     if (ContinueLineCheckBoxArray[loop].Checked = true) and (loop < LineCount) then LineEditArray[loop+1].Enabled := False;
-    if LineEditArray[loop].Visible = True then LineEditButtonArray[loop].Visible := True;
+    if LineEditArray[loop].Visible = True then
+    begin
+      LineEditButtonArray[loop].Visible := True;
+      LineClearButtonArray[loop].Visible := True;
+    end;
     ContinueLineCheckBoxArray[loop].Visible := True;
     DontScrollLineCheckBoxArray[loop].Visible := True;
     CenterLineCheckBoxArray[loop].Visible := True;
@@ -2212,6 +2363,34 @@ begin
   config.screen[scr].settings.TransitionTime := TransitionTimeSpinEdit.Value;
 end;
 
+function CustomStringToCustomArray(CString: String): TCustomArray;
+var
+  CustomArray: TCustomArray;
+  i: Integer;
+  iPosStart, iPosEnd: Integer;
+begin
+  CustomArray := default(TCustomArray);
+  if pos('$CustomChar(', CString) > 0 then
+  begin
+  iPosEnd := pos(',', CString);
+  iPosEnd := pos(',', CString, iPosEnd);
+  for i := 0 to 6 do
+  begin
+    iPosStart := iPosEnd + 1;
+    iPosEnd := PosEx(',', CString, iPosStart);
+    try
+      CustomArray[i] := StrToIntN(CString, iPosStart, iPosEnd-iPosStart);
+    except
+      exit;
+    end;
+  end;
+  iPosStart := iPosEnd + 1;
+  iPosEnd := pos(')', CString, iPosStart);
+  CustomArray[7] := StrToIntN(CString, iPosStart, iPosEnd-iPosStart);
+  end;
+  result := CustomArray;
+end;
+
 procedure TSetupForm.LoadScreen(scr: integer);
 var
   ascreen: TScreen;
@@ -2239,8 +2418,25 @@ begin
 
   ascreen := config.screen[scr];
 
+  if assigned(CCharDefForm) then
+  begin
+    for loop := 1 to 8 do
+      CCharDefForm.EditArray[loop].Text := ascreen.CustomCharacters[loop];
+  end;
+
   for loop := 1 to MaxLines do
   begin
+    if assigned(FormEditArray[Loop]) then
+    begin
+      FormEditArray[Loop].Memo1.Clear;
+      FormEditArray[Loop].Memo1.Lines.Add(ascreen.line[loop].Text);
+    end;
+
+    if assigned(CCharDefForm) then
+    begin
+      CCharDefForm.EditArray[Loop].Text:=ascreen.CustomCharacters[loop];
+    end;
+
     LineEditArray[loop].Text := ascreen.line[loop].Text;
     CenterLineCheckBoxArray[loop].Checked := ascreen.line[loop].center;
     DontScrollLineCheckBoxArray[loop].Checked := ascreen.line[loop].noscroll;
@@ -2253,7 +2449,7 @@ begin
       LineEditArray[loop+1].color := $00BBBBFF;
     end;
   end;
-
+  LoadCCharSpeedButtonGlyphs;
   TransitionStyleComboBox.ItemIndex := Ord(ascreen.settings.TransitionStyle);
   TransitionTimeSpinEdit.Value := ascreen.settings.TransitionTime;
 end;
@@ -2324,12 +2520,20 @@ end;
 
 procedure TSetupForm.InsertButtonClick(Sender: TObject);
 var
-  tempint: integer;
-  loop: integer;
+  tempint, loop, sp, ep: integer;
 begin
   if VariableEdit.Text <> NoVariable then
   begin
-    if setupbutton > MaxLines then  // in a line edit form
+    if setupbutton > (MaxLines * 2) then // in custom char define form
+    begin
+      if pos('$CustomChar', VariableEdit.Text) > 0 then
+      begin
+        ep := pos(',', VariableEdit.Text);
+        loop := StrToIntN(VariableEdit.Text, 13, ep - 13);
+        CCharDefForm.EditArray[loop].Text := VariableEdit.Text;
+      end;
+    end
+    else if setupbutton > MaxLines then  // in a line edit form
     begin
     for loop := 1 to MaxLines do
     begin
@@ -2485,6 +2689,7 @@ begin
     23: VariableEdit.Text := '$Sub(5,3)';
     24: VariableEdit.Text := '$Mul(2,5)';
     25: VariableEdit.Text := '$Div(10,2)';
+    26: VariableEdit.Text := '$ActionEnabled(1)';
     else
       VariableEdit.Text := NoVariable;
   end; // case
@@ -2730,11 +2935,6 @@ begin
     InsertButtonClick(nil);
 end;
 
-procedure TSetupForm.ScrollBox1Resize(Sender: TObject);
-begin
-  ScrollBox1.Invalidate;
-end;
-
 procedure TSetupForm.Splitter1ChangeBounds(Sender: TObject);
 begin
   if Splitter1.Left < LeftPageControl.Constraints.MinWidth then
@@ -2858,6 +3058,7 @@ begin
   LCDSmartieDisplayForm.Data.RefreshDataThreads;
   {$ENDIF}
   config.LastTabIndex := LeftPageControl.ActivePageIndex;
+  config.LastMainTabIndex := MainPageControl.ActivePageIndex;
   if config.sSkinPath <> SkinSelectComboBox.Text then ReloadSkin := True;
   if config.sTrayIcon <> IconSelectComboBox.Text then ReloadSkin := True;
   config.sSkinPath := SkinSelectComboBox.Text;
@@ -2882,6 +3083,21 @@ begin
   config.SettingsFormPosHeight := SetupForm.Height;
   config.SettingsFormPosWidth := SetupForm.Width;
   config.ActionsTimer := ActionsTimerSpinEdit.Value;
+
+  config.ShowNetStats := ShowNetStatsCheckBox.Checked;
+  config.ShowMisc := ShowMiscCheckBox.Checked;
+  config.ShowLCDFeatures := ShowLCDFeaturesCheckBox.Checked;
+  config.ShowPlugins := ShowPluginsCheckBox.Checked;
+  config.ShowCharEditor := ShowCharEditorCheckBox.Checked;
+  config.ShowPerf := ShowPerfCheckBox.Checked;
+  config.ShowSysinfo := ShowSysinfoCheckBox.Checked;
+  config.ShowWinamp := ShowWinampCheckBox.Checked;
+  config.ShowRSS := ShowRssCheckBox.Checked;
+  config.ShowGameStats := ShowGameStatsCheckBox.Checked;
+  config.ShowBOINC := ShowBOINCCheckBox.Checked;
+  config.ShowFoldingAtHome := ShowFoldingAtHomeCheckBox.Checked;
+  config.ShowEmail := ShowEmailCheckBox.Checked;
+  config.OneBySixteenFixup := OneBySixteenLCDFixupCheckBox.Checked;
   config.save();
   {$IFNDEF STANDALONESETUP}
   if ReinitLcd then
@@ -2928,6 +3144,11 @@ begin
   LineEditButtonArray[5] := Line5EditButton; LineEditButtonArray[6] := Line6EditButton;
   LineEditButtonArray[7] := Line7EditButton; LineEditButtonArray[8] := Line8EditButton;
 
+  LineClearButtonArray[1] := Line1ClearButton; LineClearButtonArray[2] := Line2ClearButton;
+  LineClearButtonArray[3] := Line3ClearButton; LineClearButtonArray[4] := Line4ClearButton;
+  LineClearButtonArray[5] := Line5ClearButton; LineClearButtonArray[6] := Line6ClearButton;
+  LineClearButtonArray[7] := Line7ClearButton; LineClearButtonArray[8] := Line8ClearButton;
+
   ContinueLineCheckBoxArray[1] := ContinueLine1CheckBox; ContinueLineCheckBoxArray[2] := ContinueLine2CheckBox;
   ContinueLineCheckBoxArray[3] := ContinueLine3CheckBox; ContinueLineCheckBoxArray[4] := ContinueLine4CheckBox;
   ContinueLineCheckBoxArray[5] := ContinueLine5CheckBox; ContinueLineCheckBoxArray[6] := ContinueLine6CheckBox;
@@ -2947,6 +3168,11 @@ begin
   ShutdownEditArray[3] := ShutdownEdit3; ShutdownEditArray[4] := ShutdownEdit4;
   ShutdownEditArray[5] := ShutdownEdit5; ShutdownEditArray[6] := ShutdownEdit6;
   ShutdownEditArray[7] := ShutdownEdit7; ShutdownEditArray[8] := ShutdownEdit8;
+
+  CCharSpeedButtonArray[1] := CChar1SpeedButton; CCharSpeedButtonArray[2] := CChar2SpeedButton;
+  CCharSpeedButtonArray[3] := CChar3SpeedButton; CCharSpeedButtonArray[4] := CChar4SpeedButton;
+  CCharSpeedButtonArray[5] := CChar5SpeedButton; CCharSpeedButtonArray[6] := CChar6SpeedButton;
+  CCharSpeedButtonArray[7] := CChar7SpeedButton; CCharSpeedButtonArray[8] := CChar8SpeedButton;
 
   pathssl := ExtractFilePath(ParamStr(0)) + 'openssl\';
   // check if ssl dll exists , if not block the ssl edit !!!
@@ -2996,7 +3222,7 @@ begin
       SavedCustomCharButtons[k].Hint := 'Each button is a save slot for easy access to your custom characters';
       SavedCustomCharButtons[k].ShowHint := true;
       // load customs
-      CustomCharToButtonGlyph(k, config.SavedCustomChars[k]);
+      CustomCharToButtonGlyph(SavedCustomCharButtons[k], config.SavedCustomChars[k]);
       SavedCustomCharButtons[k].OnClick := SavedCustomCharButtonClick;
       inc(k);
     end;
@@ -3006,6 +3232,23 @@ begin
 
   SkinSelectComboBoxGetItems(nil);
   IconSelectComboBoxGetItems(nil);
+end;
+
+procedure TSetupForm.ShowTabsCheckBoxClick(Sender: TObject);
+begin
+  NetworkStatsTabSheet.TabVisible := ShowNetStatsCheckBox.Checked;
+  MiscTabSheet.TabVisible := ShowMiscCheckBox.Checked;
+  LCDFeaturesTabSheet.TabVisible := ShowLCDFeaturesCheckBox.Checked;
+  PluginsTabSheet.TabVisible := ShowPluginsCheckBox.Checked;
+  CCharTabSheet.TabVisible := ShowCharEditorCheckBox.Checked;
+  PerfTabSheet.TabVisible := ShowPerfCheckBox.Checked;
+  SysInfoTabSheet.TabVisible := ShowSysinfoCheckBox.Checked;
+  WinampTabSheet.TabVisible := ShowWinampCheckBox.Checked;
+  InternetTabSheet.TabVisible := ShowRssCheckBox.Checked;
+  GameStatsTabSheet.TabVisible := ShowGameStatsCheckBox.Checked;
+  BOINCTabSheet.TabVisible := ShowBOINCCheckBox.Checked;
+  FoldingAtHomeTabSheet.TabVisible := ShowFoldingAtHomeCheckBox.Checked;
+  EmailTabSheet.TabVisible := ShowEmailCheckBox.Checked;
 end;
 
 procedure TSetupForm.MainPageControlChange(Sender: TObject);
@@ -3238,7 +3481,12 @@ begin
   GotDemo := false;
   PluginName := ExtractFileName(PluginListBox.FileName);
   PluginDemoListBox.Clear;
-  LCDSmartieDisplayForm.Data.FindPlugin(PluginName);
+
+  try
+    LCDSmartieDisplayForm.Data.FindPlugin(PluginName);
+  except
+  end;
+
   PluginDeveloperLabel.Caption := 'N/A';
   PluginVersionLabel.Caption := 'N/A';
 
@@ -3377,11 +3625,19 @@ begin
     IconPathName := extractfilepath(application.exename) + LCDSmartieDisplayForm.sSkinDir + sIconFileName;
 
   try
-    GetIconFromFile(IconPathName, hIcon, SHIL_SMALL);
-    TrayIconPreview16.Picture.Icon.Assign(hIcon);
+    if FileExists(IconPathName) then
+    begin
+      GetIconFromFile(IconPathName, hIcon, SHIL_SMALL);
 
-    GetIconFromFile(IconPathName, hIcon, SHIL_LARGE);
-    TrayIconPreview32.Picture.Icon.Assign(hIcon);
+      TrayIconPreview16.Picture.Icon.Assign(hIcon);
+
+      GetIconFromFile(IconPathName, hIcon, SHIL_LARGE);
+
+      TrayIconPreview32.Picture.Icon.Assign(hIcon);
+    end
+    else
+      TrayIconPreview32.Picture.Icon.Assign(Application.Icon);
+
   except
     on E: Exception do
     begin
@@ -3564,9 +3820,78 @@ begin
 end;
 
 /////////////////////////////////////////////////////////////////
+////////////// CUSTOM CHAR SPEED BUTTONS ////////////////////////
+/////////////////////////////////////////////////////////////////
+procedure TSetupForm.CCharSpeedButtonClick(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 0 to 7 do
+  begin
+    if Sender = CCharSpeedButtonArray[loop+1] then
+    begin
+      VariableEdit.Text := '$Chr('+inttostr(loop)+')';
+      InsertButtonClick(nil);
+    end;
+  end;
+end;
+
+procedure TSetupForm.LoadCCharSpeedButtonGlyphs;
+var
+  loop: integer;
+  CustomArray: TCustomArray;
+begin
+  for loop := 1 to 8 do
+  begin
+    CustomArray := CustomStringToCustomArray(config.screen[ScreenSpinEdit.Value].CustomCharacters[loop]);
+    CustomCharToButtonGlyph(CCharSpeedButtonArray[loop], CustomArray);
+  end;
+end;
+
+/////////////////////////////////////////////////////////////////
+////////////// CUSTOM CHAR DEFINE FORM //////////////////////////
+/////////////////////////////////////////////////////////////////
+procedure TSetupForm.CCharDefFormApply(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to 8 do
+  begin
+    config.screen[ScreenSpinEdit.Value].CustomCharacters[loop] := CCharDefForm.EditArray[loop].Text;
+    CustomCharToButtonGlyph(CCharSpeedButtonArray[loop],
+    CustomStringToCustomArray(config.screen[ScreenSpinEdit.Value].CustomCharacters[loop]));
+  end;
+  config.CCharFormTop := CCharDefForm.Top;
+  config.CCharFormLeft := CCharDefForm.Left;
+  config.save;
+end;
+
+procedure TSetupForm.CCharDefFormOK(Sender: TObject);
+begin
+  CCharDefFormApply(Self);
+  CCharDefForm.Close;
+  freeandnil(CCharDefForm);
+end;
+
+procedure TSetupForm.CCharDefFormCancel(Sender: TObject);
+begin
+  CCharDefForm.Close;
+  freeandnil(CCharDefForm);
+end;
+
+procedure TSetupForm.CCharDefFormEditEnter(Sender: TObject);
+var
+  loop: integer;
+begin
+  for loop := 1 to 8 do
+    if Sender = CCharDefForm.EditArray[loop] then
+      setupbutton := loop + MaxLines + 8;
+end;
+
+/////////////////////////////////////////////////////////////////
 ////////////// CUSTOM CHAR EDIT TAB /////////////////////////////
 /////////////////////////////////////////////////////////////////
-procedure TSetupForm.CustomCharToButtonGlyph(ButtonNum: integer; CustomArray: TCustomArray);
+procedure TSetupForm.CustomCharToButtonGlyph(Button: TSpeedButton; CustomArray: TCustomArray);
 var
   bitmap: TBitmap;
   x, y: integer;
@@ -3580,12 +3905,12 @@ begin
       if ((CustomArray[Y] and (1 shl X)) > 0) then
         Pixels[5-1-X,Y] := clBlack
       else
-        Pixels[5-1-X,Y] := SavedCustomCharButtons[0].Color;
+        Pixels[5-1-X,Y] := Button.Color;
     end;
   end ;
-  SavedCustomCharButtons[ButtonNum].Glyph.Width := 10;
-  SavedCustomCharButtons[ButtonNum].Glyph.Height := 16;
-  SavedCustomCharButtons[ButtonNum].Glyph.Canvas.StretchDraw(Rect(0, 0, 10, 16), bitmap);
+  Button.Glyph.Width := 10;
+  Button.Glyph.Height := 16;
+  Button.Glyph.Canvas.StretchDraw(Rect(0, 0, 10, 16), bitmap);
   bitmap.free;
 end;
 
@@ -3643,7 +3968,6 @@ begin
     CustomCharCheckBoxes[i].OnClick := CCharEditGridChange;
   CCharEditGridChange(nil);
 end;
-
 
 procedure TSetupForm.CustomCharInvertButtonClick(Sender: TObject);
 var
@@ -3904,7 +4228,7 @@ begin
     begin
       for j := 0 to 7 do
       config.SavedCustomChars[i][j] := CCharLine[j+1];
-      CustomCharToButtonGlyph(i, config.SavedCustomChars[i]);
+      CustomCharToButtonGlyph(SavedCustomCharButtons[i], config.SavedCustomChars[i]);
       break;
     end;
   end;

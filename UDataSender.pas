@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, DataThread, IdGlobal, classes,
-  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, UMain;
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, UMain, IdExceptionCore;
 
 const
   SenderKeyPrefix = '$Sender';
@@ -47,11 +47,17 @@ uses
 constructor TSenderDataThread.Create;
 begin
     SenderInfo.ClientIP := '0';
-  inherited Create(250);
+  inherited Create(10);
 end;
 
 destructor TSenderDataThread.Destroy;
 begin
+  if SenderInfo.ClientActive then
+  begin
+    SenderInfo.ClientActive := false;
+    IdTCPClient1.Disconnect(true);
+    IdTCPClient1.Destroy;
+  end;
   inherited;
 end;
 
@@ -63,8 +69,12 @@ end;
 procedure TSenderDataThread.DoUpdate;
 var
   Loop: integer;
-  recv: string;
-  rstr: tstringstream;
+  s: string;
+   // technically we dont support lines greater than 100 but
+   // I should make this fit MaxLineLen if there is one
+  BufferArray :TIdBytes;
+  linelen, linenum: integer;
+  t: string;
 begin
   // make a delay that depends on the refresh interval rather than sleeping in the update thread
   if (SkipRefresh > 0) then
@@ -74,95 +84,85 @@ begin
   end;
   if not (SenderInfo.ClientIP = '0') then
   begin
-  if not SenderInfo.ClientActive then
-  begin
-    IdTCPClient1 := TIdTCPClient.Create(nil);
-    if SenderInfo.ClientSSL then
+    if not SenderInfo.ClientActive then
     begin
-      cSSL := TIdSSLIOHandlerSocketOpenSSL.Create( IdTCPClient1 );
-      cSSL.SSLOptions.SSLVersions := [sslvTLSv1_2];
-      cSSL.PassThrough := false;
-      IdTCPClient1.IOHandler := cSSL;
-    end;
-    if not (SenderInfo.ClientIP = '') and
-      not (SenderInfo.ClientPort = '') then
-    begin
-      IdTCPClient1.Host := SenderInfo.ClientIP;
-      IdTCPClient1.Port := strtoint(SenderInfo.ClientPort);
-      SenderInfo.ClientActive := true;
-      try
-        IdTCPClient1.Connect;
-      except
-        on E : Exception do
-        begin
-          RLine[1] := E.Message;
-          RLine[2] := E.Message;
-          RLine[3] := E.Message;
-          RLine[4] := E.Message;
-          IdTCPClient1.Destroy;
-          SenderInfo.ClientActive := false;
-          SkipRefresh := 16;  // don't hammer the server. SkipRefresh x refresh interval
-          exit;
-        end;
+      IdTCPClient1 := TIdTCPClient.Create(nil);
+      if SenderInfo.ClientSSL then
+      begin
+        cSSL := TIdSSLIOHandlerSocketOpenSSL.Create( IdTCPClient1 );
+        cSSL.SSLOptions.SSLVersions := [sslvTLSv1_2];
+        cSSL.PassThrough := false;
+        IdTCPClient1.IOHandler := cSSL;
       end;
-    end;
-    SenderInfo.LastClientIP := SenderInfo.ClientIP;
-    SenderInfo.LastClientPort := SenderInfo.ClientPort;
-  end;
+      if not (SenderInfo.ClientIP = '') and
+        not (SenderInfo.ClientPort = '') then
+      begin
+        IdTCPClient1.Host := SenderInfo.ClientIP;
+        IdTCPClient1.Port := strtoint(SenderInfo.ClientPort);
 
-
-
-  if not (SenderInfo.LastClientIP = SenderInfo.ClientIP) or
-   not (SenderInfo.LastClientPort = SenderInfo.ClientPort) then
-  begin
-    IdTCPClient1.Disconnect;
-    IdTCPClient1.Destroy;
-    SenderInfo.ClientActive := false; // address change force re-connect
-  end;
-
-  if SenderInfo.ClientActive then
-   begin
-     try
-       IdTCPClient1.IOHandler.WriteLn(SenderInfo.Password+#13#10);
-     except
-       on E : Exception do
-       begin
-          RLine[1] := E.Message;
-          RLine[2] := E.Message;
-          RLine[3] := E.Message;
-          RLine[4] := E.Message;
-          IdTCPClient1.Destroy;
-         SenderInfo.ClientActive := false;
-       end;
-     end;
-
-    if SenderInfo.ClientActive then
-    begin
-     rstr := TStringstream.Create;
-      for Loop := 1 to 4 do begin
-
+        SenderInfo.ClientActive := true;
         try
-         rstr.Clear;
-         IdTCPClient1.IOHandler.ReadStream(rstr, -1, false);
+          IdTCPClient1.Connect;
+          IdTCPClient1.ReadTimeout := 1000;
+          IdTCPClient1.IOHandler.DefStringEncoding := IndyTextEncoding_ASCII;
+          IdTCPClient1.IOHandler.DefAnsiEncoding := IndyTextEncoding_ASCII;
+          IdTCPClient1.IOHandler.WriteLn(SenderInfo.Password+#13#10);
         except
           on E : Exception do
           begin
-             RLine[1] := E.Message;
-             RLine[2] := E.Message;
-             RLine[3] := E.Message;
-             RLine[4] := E.Message;
+            RLine[1] := E.Message;
+            RLine[2] := E.Message;
+            RLine[3] := E.Message;
+            RLine[4] := E.Message;
+            IdTCPClient1.Destroy;
             SenderInfo.ClientActive := false;
+            SkipRefresh := 100;  // don't hammer the server. SkipRefresh x refresh interval
             exit;
           end;
-         end;
-      recv := rstr.DataString;
-      if not (strtoint(rstr.DataString[1]) = Loop) then
-        Continue;
-      Delete(recv,1,1);
-      RLine[Loop] := recv;
-         end;
+        end;
       end;
+      SenderInfo.LastClientIP := SenderInfo.ClientIP;
+      SenderInfo.LastClientPort := SenderInfo.ClientPort;
     end;
+
+    if not (SenderInfo.LastClientIP = SenderInfo.ClientIP) or
+      not (SenderInfo.LastClientPort = SenderInfo.ClientPort) then
+    begin
+      IdTCPClient1.Disconnect(true);
+      IdTCPClient1.Destroy;
+      SenderInfo.ClientActive := false; // address change force re-connect
+    end;
+
+    if SenderInfo.ClientActive then
+     begin
+      if SenderInfo.ClientActive then
+      begin
+        for Loop := 1 to 4 do begin
+          try
+            s := '';
+            BufferArray := TIdBytes.Create;
+            // We have to read byte at at time because readln re-encodes characters
+            linenum := IdTCPClient1.IOHandler.ReadByte;
+            linelen := IdTCPClient1.IOHandler.ReadByte;
+            IdTCPClient1.IOHandler.ReadBytes(BufferArray, linelen, False);
+            s := PAnsiChar(@BufferArray[0]);
+            setlength(s, linelen);
+            RLine[linenum] := s;
+          except
+            on E: EIdReadTimeOut do Exit;
+            on E : Exception do
+            begin
+              RLine[1] := E.Message;
+              RLine[2] := E.Message;
+              RLine[3] := E.Message;
+              RLine[4] := E.Message;
+              SenderInfo.ClientActive := false;
+              exit;
+            end;
+          end;
+        end;
+      end;
+   end;
 
   end;
 end;
