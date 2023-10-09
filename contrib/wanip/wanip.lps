@@ -10,11 +10,10 @@
         <Filename Value="wanip.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="16"/>
-        <CursorPos X="5" Y="68"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="44"/>
+        <CursorPos X="16" Y="54"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
     </Units>
     <OtherDefines Count="5">
@@ -24,7 +23,16 @@
       <Define3 Value="Compiler6_Up"/>
       <Define4 Value="PUREPASCAL"/>
     </OtherDefines>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="wanip.lpr"/>
+        <Caret Line="57" Column="44" TopLine="41"/>
+      </Position1>
+      <Position2>
+        <Filename Value="wanip.lpr"/>
+        <Caret Line="66" Column="68" TopLine="39"/>
+      </Position2>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes ActiveMode=""/>

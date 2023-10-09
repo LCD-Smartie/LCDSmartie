@@ -14,6 +14,13 @@
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <MinorVersionNr Value="1"/>
+      <BuildNr Value="8"/>
+      <StringTable CompanyName="LCD Smartie team" FileDescription="Loads 32 bit plugin dll&apos;s for 64 bit LCD Smartie"/>
+    </VersionInfo>
     <BuildModes>
       <Item Name="Debug" Default="True"/>
       <Item Name="Release">
@@ -35,8 +42,6 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <RelocatableUnit Value="True"/>
-            <TargetProcessor Value="pentium4"/>
             <TargetCPU Value="i386"/>
             <TargetOS Value="win32"/>
             <Optimizations>
@@ -46,7 +51,9 @@
           <Linking>
             <Debugging>
               <GenerateDebugInfo Value="False"/>
+              <DebugInfoType Value="dsDwarf3"/>
               <StripSymbols Value="True"/>
+              <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -105,7 +112,6 @@
     </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
-      <RelocatableUnit Value="True"/>
       <Checks>
         <IOChecks Value="True"/>
         <RangeChecks Value="True"/>
@@ -135,9 +141,14 @@
     <Exceptions>
       <Item>
         <Name Value="EIdHTTPProtocolException"/>
+        <Enabled Value="False"/>
       </Item>
       <Item>
         <Name Value="EConvertError"/>
+        <Enabled Value="False"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
       </Item>
     </Exceptions>
   </Debugging>

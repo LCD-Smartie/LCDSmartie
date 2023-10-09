@@ -9,7 +9,7 @@ uses
 
 const
   DLLProjectName = 'Tee Driver DLL';
-  Version = 'v0.1';
+  Version = 'v0.2';
   IniFile = 'Tee.ini';
   MaxDrivers = 10;
 
@@ -363,6 +363,8 @@ DISPLAYDLL_Usage,
 DISPLAYDLL_DriverName,
 DISPLAYDLL_Done,
 DISPLAYDLL_Init;
+
+{$R *.res}
 
 begin
   Application.Initialize;

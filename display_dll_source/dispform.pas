@@ -621,18 +621,9 @@ var
   DestRect : TRect;
   SrcRect : TRect;
 begin
-  if (C > 128) then begin
-    case C of
-      176 : C := 0;
-      158 : C := 1;
-      131..136 : dec(C);
-      else C := C;
-    end;
-  end;
-  if (C < 32) then C := 128 + C;
-
-  FrameBuffer[CurrentX+(CurrentY-1)*MyWidth] := C;
   CurChar := Font[C];
+  FrameBuffer[CurrentX+(CurrentY-1)*MyWidth] := C;
+
   with SrcRect do begin
     Left := 0;
     Right := CharWidth;
@@ -661,7 +652,7 @@ var
   Loop : integer;
 begin
   for Loop := 1 to length(S) do begin
-    C := ord(S[Loop]);
+    C := byte(S[Loop]);
     SendChar(C);
   end;
   PaintBoxPaint(nil);

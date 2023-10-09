@@ -3,14 +3,16 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Release x64"/>
+    <ManyBuildModesSelection Value="&quot;Release x32&quot;,&quot;Release x64&quot;"/>
+    <BuildModes Active="Debug x64"/>
     <Units Count="7">
       <Unit0>
         <Filename Value="desktop.lpr"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="120"/>
-        <CursorPos X="31" Y="160"/>
-        <UsageCount Value="42"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="29"/>
+        <CursorPos X="9" Y="67"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -20,11 +22,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DISPFORM"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="549"/>
-        <CursorPos X="26" Y="561"/>
-        <UsageCount Value="42"/>
+        <CursorPos X="3" Y="624"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -57,22 +57,24 @@
       </Unit4>
       <Unit5>
         <Filename Value="..\UData.pas"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="326"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="325"/>
         <CursorPos Y="322"/>
         <UsageCount Value="21"/>
-        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit5>
       <Unit6>
         <Filename Value="E:\Programs\lazarus64\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="412"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="607"/>
         <CursorPos X="12" Y="446"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit6>
     </Units>
+    <Debugger>
+      <Backend Value="{8184A9F4-BA80-40C4-AA5E-37E0EE8877F2}"/>
+    </Debugger>
     <OtherDefines Count="5">
       <Define0 Value="Borland"/>
       <Define1 Value="Ver150"/>
@@ -80,127 +82,123 @@
       <Define3 Value="Compiler6_Up"/>
       <Define4 Value="PUREPASCAL"/>
     </OtherDefines>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="dispform.pas"/>
-        <Caret Line="606" Column="3" TopLine="568"/>
+        <Caret Line="665" Column="13" TopLine="641"/>
       </Position1>
       <Position2>
         <Filename Value="dispform.pas"/>
-        <Caret Line="598" Column="30" TopLine="576"/>
+        <Caret Line="663" TopLine="644"/>
       </Position2>
       <Position3>
         <Filename Value="dispform.pas"/>
-        <Caret Line="594" Column="30" TopLine="579"/>
+        <Caret Line="664" TopLine="644"/>
       </Position3>
       <Position4>
         <Filename Value="dispform.pas"/>
-        <Caret Line="496" Column="62" TopLine="470"/>
+        <Caret Line="632" TopLine="605"/>
       </Position4>
       <Position5>
         <Filename Value="dispform.pas"/>
-        <Caret Line="586" Column="28" TopLine="563"/>
+        <Caret Line="624" TopLine="605"/>
       </Position5>
       <Position6>
         <Filename Value="dispform.pas"/>
-        <Caret Line="589" Column="28" TopLine="560"/>
+        <Caret Line="632" TopLine="605"/>
       </Position6>
       <Position7>
         <Filename Value="dispform.pas"/>
-        <Caret Line="587" Column="4" TopLine="550"/>
+        <Caret Line="663" TopLine="644"/>
       </Position7>
       <Position8>
         <Filename Value="dispform.pas"/>
-        <Caret Line="587" Column="3" TopLine="562"/>
+        <Caret Line="632" TopLine="613"/>
       </Position8>
       <Position9>
         <Filename Value="dispform.pas"/>
-        <Caret Line="586" Column="56" TopLine="562"/>
+        <Caret Line="624" TopLine="613"/>
       </Position9>
       <Position10>
         <Filename Value="dispform.pas"/>
-        <Caret Line="589" Column="27" TopLine="562"/>
+        <Caret Line="632" TopLine="613"/>
       </Position10>
       <Position11>
         <Filename Value="dispform.pas"/>
-        <Caret Line="595" Column="32" TopLine="562"/>
+        <Caret Line="624" TopLine="613"/>
       </Position11>
       <Position12>
         <Filename Value="dispform.pas"/>
-        <Caret Line="588" Column="44" TopLine="562"/>
+        <Caret Line="624" TopLine="617"/>
       </Position12>
       <Position13>
         <Filename Value="dispform.pas"/>
-        <Caret Line="494" Column="42" TopLine="471"/>
+        <Caret Line="634" TopLine="617"/>
       </Position13>
       <Position14>
         <Filename Value="dispform.pas"/>
-        <Caret Line="497" Column="56" TopLine="472"/>
+        <Caret Line="628" Column="10" TopLine="607"/>
       </Position14>
       <Position15>
         <Filename Value="dispform.pas"/>
-        <Caret Line="589" Column="48" TopLine="562"/>
+        <Caret Line="667" TopLine="646"/>
       </Position15>
       <Position16>
         <Filename Value="dispform.pas"/>
-        <Caret Line="494" Column="52" TopLine="476"/>
+        <Caret Line="665" TopLine="646"/>
       </Position16>
       <Position17>
         <Filename Value="dispform.pas"/>
-        <Caret Line="498" Column="5" TopLine="485"/>
+        <Caret Line="634" TopLine="613"/>
       </Position17>
       <Position18>
         <Filename Value="dispform.pas"/>
-        <Caret Line="651" Column="41" TopLine="627"/>
+        <Caret Line="667" TopLine="648"/>
       </Position18>
       <Position19>
         <Filename Value="dispform.pas"/>
-        <Caret Line="588" Column="70" TopLine="569"/>
+        <Caret Line="634" TopLine="609"/>
       </Position19>
       <Position20>
         <Filename Value="dispform.pas"/>
-        <Caret Line="591" Column="40" TopLine="569"/>
+        <Caret Line="693" Column="30" TopLine="668"/>
       </Position20>
       <Position21>
-        <Filename Value="..\UData.pas"/>
-        <Caret Line="322" TopLine="296"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="628" TopLine="609"/>
       </Position21>
       <Position22>
         <Filename Value="dispform.pas"/>
-        <Caret Line="589" Column="37" TopLine="560"/>
+        <Caret Line="634" TopLine="609"/>
       </Position22>
       <Position23>
-        <Filename Value="..\UData.pas"/>
-        <Caret Line="322" TopLine="296"/>
+        <Filename Value="dispform.pas"/>
+        <Caret Line="667" TopLine="648"/>
       </Position23>
       <Position24>
         <Filename Value="dispform.pas"/>
-        <Caret Line="591" Column="54" TopLine="560"/>
+        <Caret Line="632" Column="40" TopLine="611"/>
       </Position24>
       <Position25>
         <Filename Value="dispform.pas"/>
-        <Caret Line="588" Column="70" TopLine="560"/>
+        <Caret Line="634" TopLine="614"/>
       </Position25>
       <Position26>
         <Filename Value="dispform.pas"/>
-        <Caret Line="603" Column="15" TopLine="559"/>
+        <Caret Line="635" TopLine="611"/>
       </Position26>
       <Position27>
         <Filename Value="dispform.pas"/>
-        <Caret Line="591" Column="44" TopLine="565"/>
+        <Caret Line="665" Column="17" TopLine="641"/>
       </Position27>
       <Position28>
         <Filename Value="dispform.pas"/>
-        <Caret Line="533" Column="5" TopLine="527"/>
+        <Caret Line="635" Column="22" TopLine="623"/>
       </Position28>
       <Position29>
         <Filename Value="dispform.pas"/>
-        <Caret Line="380" Column="31" TopLine="366"/>
+        <Caret Line="628" Column="22" TopLine="609"/>
       </Position29>
-      <Position30>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="561" Column="28" TopLine="549"/>
-      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -212,7 +210,7 @@
         </Mode0>
       </Modes>
     </RunParams>
-    <HistoryLists Count="1">
+    <HistoryLists Count="3">
       <List0 Name="LaunchingApplication" Type="File" Count="1">
         <Item1 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List0>

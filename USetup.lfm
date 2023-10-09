@@ -36,7 +36,7 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 590
     TabStop = False
-    ActivePage = ScreensTabSheet
+    ActivePage = StartupTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 589
     Font.CharSet = ANSI_CHARSET
@@ -44,7 +44,7 @@ object SetupForm: TSetupForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 0
+    TabIndex = 4
     TabOrder = 7
     OnChange = MainPageControlChange
     OnResize = MainPageControlResize
@@ -201,10 +201,10 @@ object SetupForm: TSetupForm
         Value = 1
       end
       object RandomizeScreensCheckBox: TCheckBox
-        Left = 217
+        Left = 436
         Height = 17
         Hint = 'Rather than automatically selecting in sequence, chose them randomly.'
-        Top = 350
+        Top = 352
         Width = 110
         Anchors = [akLeft, akBottom]
         Caption = '&Randomize screens'
@@ -1163,114 +1163,109 @@ object SetupForm: TSetupForm
         ShowHint = True
         TabOrder = 60
       end
-      object Button1: TButton
-        Left = 65
-        Height = 30
-        Hint = 'Provides a way to define custom characters without cluttering the above configuration lines'#13#10'Each screen can define up to 8 custom characters'
-        Top = 343
-        Width = 75
-        Anchors = [akLeft, akBottom]
-        Caption = 'Define'
-        OnClick = Button1Click
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 61
-      end
-      object Label80: TLabel
-        Left = 3
-        Height = 26
-        Top = 347
-        Width = 57
-        Anchors = [akLeft, akBottom]
-        Caption = 'Custom'#13#10'Characters:'
-      end
-      object CChar1SpeedButton: TSpeedButton
+      object GroupBox3: TGroupBox
         Left = 2
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
+        Height = 56
+        Top = 316
+        Width = 278
         Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object CChar2SpeedButton: TSpeedButton
-        Left = 24
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
-        Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object CChar3SpeedButton: TSpeedButton
-        Left = 46
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
-        Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object CChar4SpeedButton: TSpeedButton
-        Left = 68
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
-        Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object CChar5SpeedButton: TSpeedButton
-        Left = 90
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
-        Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object CChar6SpeedButton: TSpeedButton
-        Left = 112
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
-        Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object CChar7SpeedButton: TSpeedButton
-        Left = 134
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
-        Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
-      end
-      object CChar8SpeedButton: TSpeedButton
-        Left = 156
-        Height = 22
-        Hint = 'Click to add this custom character to you screen'
-        Top = 320
-        Width = 23
-        Anchors = [akLeft, akBottom]
-        OnClick = CCharSpeedButtonClick
-        ShowHint = True
-        ParentShowHint = False
+        Caption = 'Custom Characters'
+        ClientHeight = 38
+        ClientWidth = 274
+        ParentBackground = False
+        TabOrder = 61
+        object Button1: TButton
+          Left = 8
+          Height = 30
+          Hint = 'Provides a way to define custom characters without cluttering the above configuration lines'#13#10'Each screen can define up to 8 custom characters'
+          Top = 0
+          Width = 75
+          Caption = 'Define'
+          OnClick = Button1Click
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+        end
+        object CChar1SpeedButton: TSpeedButton
+          Left = 87
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object CChar2SpeedButton: TSpeedButton
+          Left = 109
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object CChar3SpeedButton: TSpeedButton
+          Left = 131
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object CChar4SpeedButton: TSpeedButton
+          Left = 153
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object CChar5SpeedButton: TSpeedButton
+          Left = 175
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object CChar6SpeedButton: TSpeedButton
+          Left = 197
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object CChar7SpeedButton: TSpeedButton
+          Left = 219
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
+        object CChar8SpeedButton: TSpeedButton
+          Left = 241
+          Height = 22
+          Hint = 'Click to add this custom character to you screen'
+          Top = 8
+          Width = 23
+          OnClick = CCharSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
       end
     end
     object ActionsTabSheet: TTabSheet
@@ -1916,38 +1911,6 @@ object SetupForm: TSetupForm
           TabOrder = 1
         end
       end
-      object Label34: TLabel
-        Left = 8
-        Height = 13
-        Top = 376
-        Width = 107
-        Caption = 'Distributed.net logfile:'
-        ParentColor = False
-      end
-      object DistributedNetBrowseButton: TSpeedButton
-        Left = 336
-        Height = 22
-        Top = 373
-        Width = 23
-        Glyph.Data = {
-          F6000000424DF600000000000000760000002800000010000000100000000100
-          0400000000008000000000000000000000001000000000000000000000000000
-          8000008000000080800080000000800080008080000080808000C0C0C0000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
-          88888888888888888888000000000008888800333333333088880B0333333333
-          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
-          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
-          8008888888880888080888888888800088888888888888888888
-        }
-        OnClick = DistributedNetBrowseButtonClick
-      end
-      object DistributedNetLogfileEdit: TEdit
-        Left = 120
-        Height = 21
-        Top = 373
-        Width = 217
-        TabOrder = 2
-      end
       object ProgramSettingsGroupBox: TGroupBox
         Left = 8
         Height = 142
@@ -1963,7 +1926,7 @@ object SetupForm: TSetupForm
         Font.Style = [fsBold]
         ParentBackground = False
         ParentFont = False
-        TabOrder = 3
+        TabOrder = 2
         object Label1: TLabel
           Left = 8
           Height = 13
@@ -2134,7 +2097,7 @@ object SetupForm: TSetupForm
         Font.Style = [fsBold]
         ParentBackground = False
         ParentFont = False
-        TabOrder = 4
+        TabOrder = 3
         object ShowNetStatsCheckBox: TCheckBox
           Left = 8
           Height = 17
@@ -2365,6 +2328,18 @@ object SetupForm: TSetupForm
           Text = 'LeftTabsPositionComboBox'
         end
       end
+      object ShowLegacyLoaderCheckbox: TCheckBox
+        Left = 392
+        Height = 17
+        Hint = 'Causes LegacyLoader to show its window.'#13#10'Helpful If you have a misbehaving 32bit plugin.'#13#10'Restart is necessary  to enable/disable.'
+        Top = 373
+        Width = 119
+        Caption = 'Debug LegacyLoader'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+        Visible = False
+      end
     end
     object StartupTabSheet: TTabSheet
       Caption = 'Startup/Shutdown'
@@ -2373,12 +2348,12 @@ object SetupForm: TSetupForm
       ImageIndex = 2
       object GroupBox7: TGroupBox
         Left = 8
-        Height = 112
+        Height = 96
         Hint = 'These settings are for when starting with windows.'
         Top = 16
         Width = 201
         Caption = 'Autostart'
-        ClientHeight = 94
+        ClientHeight = 78
         ClientWidth = 197
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
@@ -2429,25 +2404,11 @@ object SetupForm: TSetupForm
           ParentFont = False
           TabOrder = 2
         end
-        object StartAsAdminCheckBox: TCheckBox
-          Left = 8
-          Height = 17
-          Hint = 'Causes LCDSmartie to relaunch itself with elevated privileges.'#13#10'Windows 10 doesn''t allow starting of startup items with run as administrator set.'#13#10'Use this if you have plugins, etc. that need administrator privileges. This has the side effect of '#13#10'causing a UAC notification if UAC is enabled'
-          Top = 56
-          Width = 144
-          Caption = 'Autostart as administrator'
-          Font.CharSet = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          ParentFont = False
-          TabOrder = 3
-        end
         object UseTaskSchedulerCheckBox: TCheckBox
           Left = 8
           Height = 17
-          Hint = 'Uses windows task scheduler instead of startup folder to launch LCD Smartie.'#13#10'It can be used to launch as Administrator without the UAC nag'
-          Top = 72
+          Hint = 'Uses windows task scheduler instead of startup folder to launch LCD Smartie.'#13#10'It can be used to launch as Administrator without the UAC nag'#13#10'LCD Smartie needs to be running as an administrator to access the task scheduler (see "Relaunch as administrator" below)'
+          Top = 53
           Width = 111
           Caption = 'Use Task Scheduler'
           Font.CharSet = ANSI_CHARSET
@@ -2456,17 +2417,17 @@ object SetupForm: TSetupForm
           Font.Name = 'Tahoma'
           OnChange = UseTaskSchedulerCheckBoxChange
           ParentFont = False
-          TabOrder = 4
+          TabOrder = 3
         end
       end
       object GroupBox8: TGroupBox
         Left = 8
-        Height = 56
+        Height = 72
         Hint = 'These settings are for when starting apply to all start methods (by hand or autostart).'
-        Top = 136
+        Top = 112
         Width = 201
         Caption = 'Start options'
-        ClientHeight = 38
+        ClientHeight = 54
         ClientWidth = 197
         Font.CharSet = ANSI_CHARSET
         Font.Color = clBlack
@@ -2481,7 +2442,7 @@ object SetupForm: TSetupForm
         object HideOnStartup: TCheckBox
           Left = 8
           Height = 17
-          Top = 8
+          Top = 0
           Width = 113
           Caption = 'Always start hidden'
           Font.CharSet = ANSI_CHARSET
@@ -2491,12 +2452,26 @@ object SetupForm: TSetupForm
           ParentFont = False
           TabOrder = 0
         end
+        object StartAsAdminCheckBox: TCheckBox
+          Left = 8
+          Height = 17
+          Hint = 'Causes LCDSmartie to relaunch itself with elevated privileges.'#13#10'Windows 10 doesn''t allow starting of startup items with run as administrator set.'#13#10'Use this if you have plugins, etc. that need administrator privileges. This has the side effect of '#13#10'causing a UAC notification if UAC is enabled'
+          Top = 21
+          Width = 142
+          Caption = 'Relaunch as administrator'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          TabOrder = 1
+        end
       end
       object ShutdownMessageGroup: TGroupBox
         Left = 8
         Height = 119
         Hint = 'Custom message to be displayed when LCD Smartie is shut down.'
-        Top = 200
+        Top = 192
         Width = 571
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = 'Shut down message'
@@ -3183,7 +3158,7 @@ object SetupForm: TSetupForm
     Top = 3
     Width = 257
     TabStop = False
-    ActivePage = PerfTabSheet
+    ActivePage = MiscTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 248
     Font.CharSet = ANSI_CHARSET
@@ -3194,7 +3169,7 @@ object SetupForm: TSetupForm
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    TabIndex = 12
+    TabIndex = 8
     TabOrder = 6
     TabPosition = tpRight
     OnChange = LeftPageControlChange
@@ -4027,7 +4002,7 @@ object SetupForm: TSetupForm
       ImageIndex = 6
       object MiscListBox: TListBox
         Left = 0
-        Height = 392
+        Height = 360
         Top = 0
         Width = 201
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -4070,6 +4045,41 @@ object SetupForm: TSetupForm
         OnKeyUp = ListBoxKeyUp
         ParentFont = False
         TabOrder = 0
+      end
+      object Label34: TLabel
+        Left = 0
+        Height = 13
+        Top = 360
+        Width = 107
+        Anchors = [akLeft, akBottom]
+        Caption = 'Distributed.net logfile:'
+        ParentColor = False
+      end
+      object DistributedNetLogfileEdit: TEdit
+        Left = 0
+        Height = 21
+        Top = 373
+        Width = 184
+        Anchors = [akLeft, akRight, akBottom]
+        TabOrder = 1
+      end
+      object DistributedNetBrowseButton: TSpeedButton
+        Left = 186
+        Height = 22
+        Top = 373
+        Width = 23
+        Anchors = [akRight, akBottom]
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000000000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
+          88888888888888888888000000000008888800333333333088880B0333333333
+          08880FB03333333330880BFB0333333333080FBFB000000000000BFBFBFBFB08
+          88880FBFBFBFBF0888880BFB0000000888888000888888880008888888888888
+          8008888888880888080888888888800088888888888888888888
+        }
+        OnClick = DistributedNetBrowseButtonClick
       end
     end
     object LCDFeaturesTabSheet: TTabSheet
@@ -4160,7 +4170,7 @@ object SetupForm: TSetupForm
       ImageIndex = 11
       object PluginListBox: TFileListBox
         Left = 0
-        Height = 176
+        Height = 160
         Top = 32
         Width = 201
         Anchors = [akTop, akLeft, akRight]
@@ -4189,7 +4199,7 @@ object SetupForm: TSetupForm
         Left = 0
         Height = 136
         Hint = 'Select from a list of plugin function demos'#13#10'Hold shift while clicking on a web address to go there'
-        Top = 216
+        Top = 200
         Width = 201
         Anchors = [akTop, akLeft, akRight, akBottom]
         ExtendedSelect = False
@@ -4205,7 +4215,7 @@ object SetupForm: TSetupForm
       object Label73: TLabel
         Left = 0
         Height = 13
-        Top = 360
+        Top = 344
         Width = 53
         Anchors = [akLeft, akBottom]
         Caption = 'Developer:'
@@ -4214,7 +4224,7 @@ object SetupForm: TSetupForm
       object PluginDeveloperLabel: TLabel
         Left = 80
         Height = 13
-        Top = 360
+        Top = 344
         Width = 130
         Anchors = [akLeft, akBottom]
         AutoSize = False
@@ -4224,7 +4234,7 @@ object SetupForm: TSetupForm
       object Label74: TLabel
         Left = 0
         Height = 13
-        Top = 376
+        Top = 360
         Width = 39
         Anchors = [akLeft, akBottom]
         Caption = 'Version:'
@@ -4233,7 +4243,7 @@ object SetupForm: TSetupForm
       object PluginVersionLabel: TLabel
         Left = 80
         Height = 13
-        Top = 376
+        Top = 360
         Width = 128
         Anchors = [akLeft, akBottom]
         AutoSize = False
@@ -4249,6 +4259,25 @@ object SetupForm: TSetupForm
         Caption = 'Open Folder'
         OnClick = OpenPluginFolderButtonClick
         TabOrder = 3
+      end
+      object Label80: TLabel
+        Left = 0
+        Height = 13
+        Top = 376
+        Width = 28
+        Anchors = [akLeft, akBottom]
+        Caption = 'Type:'
+        Visible = False
+      end
+      object PluginTypeLabel: TLabel
+        Left = 80
+        Height = 13
+        Top = 376
+        Width = 121
+        Anchors = [akLeft, akBottom]
+        AutoSize = False
+        Caption = 'N/A'
+        Visible = False
       end
     end
     object CCharTabSheet: TTabSheet

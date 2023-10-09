@@ -16,6 +16,14 @@
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <MajorVersionNr Value="3"/>
+      <MinorVersionNr Value="1"/>
+      <BuildNr Value="4"/>
+      <StringTable CompanyName="LCD Smartie Team" FileDescription="LCD Smartie desktop display driver"/>
+    </VersionInfo>
     <BuildModes Count="4">
       <Item1 Name="Debug x32" Default="True"/>
       <Item2 Name="Release x32">
@@ -102,15 +110,19 @@
           <Parsing>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
+              <IncludeAssertionCode Value="True"/>
               <UseAnsiStrings Value="False"/>
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <RelocatableUnit Value="True"/>
             <Checks>
+              <IOChecks Value="True"/>
               <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
             </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
             <Optimizations>
@@ -140,6 +152,13 @@
 -dDelphi7
 -dCompiler6_Up
 -dPUREPASCAL"/>
+            <OtherDefines Count="5">
+              <Define0 Value="Borland"/>
+              <Define1 Value="Ver150"/>
+              <Define2 Value="Delphi7"/>
+              <Define3 Value="Compiler6_Up"/>
+              <Define4 Value="PUREPASCAL"/>
+            </OtherDefines>
           </Other>
         </CompilerOptions>
       </Item3>
@@ -160,10 +179,6 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <RelocatableUnit Value="True"/>
-            <Checks>
-              <RangeChecks Value="True"/>
-            </Checks>
             <TargetCPU Value="x86_64"/>
             <TargetOS Value="win64"/>
             <Optimizations>

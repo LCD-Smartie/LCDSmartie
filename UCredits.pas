@@ -105,6 +105,12 @@ end;
 
 procedure TCreditsForm.FormCreate(Sender: TObject);
 begin
+  {$ifopt D+}
+    Image1.Picture.LoadFromResourceName(HInstance, 'ABOUT LOGO BLUE');
+  {$else}
+    Image1.Picture.LoadFromResourceName(HInstance, 'ABOUT LOGO RED');
+  {$endif}
+
   CreditList := TStringList.Create;
   with CreditList do begin    // add core developers here in alpha order
     Add('Core Development:');

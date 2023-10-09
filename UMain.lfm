@@ -1,7 +1,7 @@
 object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
-  Left = 718
+  Left = 629
   Height = 91
-  Top = 338
+  Top = 198
   Width = 240
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
@@ -126,25 +126,16 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     ShowHint = True
     TabOrder = 0
   end
-  object Label1: TLabel
-    Left = 64
-    Height = 39
-    Top = 8
-    Width = 108
-    Caption = 'Expand this window to'#13#10'see additional controls'#13#10'(timers, context, etc)'
-    Visible = False
-  end
   object TimerRefresh: TTimer
     Enabled = False
     Interval = 200
     OnTimer = TimerRefreshTimer
-    Left = 168
-    Top = 96
+    Left = 192
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
-    Left = 28
-    Top = 144
+    Left = 60
+    Top = 32
     object ShowWindow1: TMenuItem
       Caption = '&Show'
       Default = True
@@ -203,47 +194,42 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     Enabled = False
     Interval = 50
     OnTimer = LeftManualScrollTimerTimer
-    Left = 56
-    Top = 96
+    Left = 80
   end
   object RightManualScrollTimer: TTimer
     Enabled = False
     Interval = 50
     OnTimer = RightManualScrollTimerTimer
-    Left = 112
-    Top = 96
+    Left = 136
   end
   object NextScreenTimer: TTimer
     Enabled = False
     OnTimer = NextScreenTimerTimer
-    Left = 140
-    Top = 96
+    Left = 164
   end
   object ActionsTimer: TTimer
     Enabled = False
     Interval = 250
     OnTimer = ActionsTimerTimer
-    Top = 96
+    Left = 24
   end
   object TransitionTimer: TTimer
     Enabled = False
     Interval = 10
     OnTimer = TransitionTimerTimer
-    Left = 84
-    Top = 96
+    Left = 108
   end
   object ScrollFlashTimer: TTimer
     Enabled = False
     OnTimer = ScrollFlashTimerTimer
-    Left = 28
-    Top = 96
+    Left = 52
   end
   object IdServerIOHandlerSSLOpenSSL1: TIdServerIOHandlerSSLOpenSSL
     SSLOptions.Mode = sslmUnassigned
     SSLOptions.VerifyMode = []
     SSLOptions.VerifyDepth = 0
-    Left = 112
-    Top = 144
+    Left = 144
+    Top = 32
   end
   object TrayIcon1: TTrayIcon
     PopUpMenu = PopupMenu1
@@ -322,17 +308,18 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
     }
     Visible = True
     OnDblClick = ShowWindow1Click
-    Left = 56
-    Top = 144
+    Left = 88
+    Top = 32
   end
   object WinampCtrl1: TWinampCtrl
     FreeLists = True
     WinampLocation = 'C:\Program Files\Winamp\winamp.exe'
-    Top = 144
+    Left = 32
+    Top = 32
   end
   object ExceptionLogger1: TExceptionLogger
     MaxCallStackDepth = 100
-    Left = 140
-    Top = 144
+    Left = 172
+    Top = 32
   end
 end

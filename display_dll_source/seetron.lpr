@@ -271,6 +271,9 @@ exports
   DISPLAYDLL_DriverName,
   DISPLAYDLL_Done,
   DISPLAYDLL_Init;
+
+{$R *.res}
+
 begin
 end.
 

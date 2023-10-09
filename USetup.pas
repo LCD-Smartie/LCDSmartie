@@ -69,7 +69,21 @@ type
     ActionLogButton: TButton;
     BrightnessTrackBar: TTrackBar;
     Button1: TButton;
+    CChar1SpeedButton: TSpeedButton;
+    CChar2SpeedButton: TSpeedButton;
+    CChar3SpeedButton: TSpeedButton;
+    CChar4SpeedButton: TSpeedButton;
+    CChar5SpeedButton: TSpeedButton;
+    CChar6SpeedButton: TSpeedButton;
+    CChar7SpeedButton: TSpeedButton;
+    CChar8SpeedButton: TSpeedButton;
+    DistributedNetBrowseButton: TSpeedButton;
+    DistributedNetLogfileEdit: TEdit;
+    Label34: TLabel;
+    ShowLegacyLoaderCheckbox: TCheckBox;
+    GroupBox3: TGroupBox;
     Label80: TLabel;
+    PluginTypeLabel: TLabel;
     OneBySixteenLCDFixupCheckBox: TCheckBox;
     GroupBox1: TGroupBox;
     Line1ClearButton: TButton;
@@ -123,8 +137,6 @@ type
     CustomTitleTIEdit1: TTIEdit;
     DisplayPluginList: TComboBox;
     DisplayPluginsLabel: TLabel;
-    DistributedNetBrowseButton: TSpeedButton;
-    DistributedNetLogfileEdit: TEdit;
     DLLCheckIntervalSpinEdit: TSpinEdit;
     DontScrollGroupBox: TGroupBox;
     DontScrollLine1CheckBox: TCheckBox;
@@ -152,7 +164,6 @@ type
     Label14: TLabel;
     Label18: TLabel;
     Label3: TLabel;
-    Label34: TLabel;
     Label4: TLabel;
     Label43: TLabel;
     Label44: TLabel;
@@ -226,14 +237,7 @@ type
     ImportFileOpenDialog: TOpenDialog;
     ExportFileSaveDialog: TSaveDialog;
     CustomCharGridMirrorSpeedButton: TSpeedButton;
-    CChar1SpeedButton: TSpeedButton;
-    CChar2SpeedButton: TSpeedButton;
-    CChar3SpeedButton: TSpeedButton;
-    CChar4SpeedButton: TSpeedButton;
-    CChar5SpeedButton: TSpeedButton;
-    CChar6SpeedButton: TSpeedButton;
-    CChar7SpeedButton: TSpeedButton;
-    CChar8SpeedButton: TSpeedButton;
+    StartAsAdminCheckBox: TCheckBox;
     StayOnTopCheckBox: TCheckBox;
     StickyCheckbox: TCheckBox;
     SwapWithScreenButton: TButton;
@@ -416,7 +420,6 @@ type
     ShutdownMessageGroup: TGroupBox;
     RssMaxFreqSpinedit: TSpinEdit;
     RssItemNumSpinEdit: TSpinEdit;
-    StartAsAdminCheckBox: TCheckBox;
     StartupTabSheet: TTabSheet;
     MiRunningInstancesListGrid: TStringGrid;
     SysInfoListBox: TListBox;
@@ -3098,6 +3101,7 @@ begin
   config.ShowFoldingAtHome := ShowFoldingAtHomeCheckBox.Checked;
   config.ShowEmail := ShowEmailCheckBox.Checked;
   config.OneBySixteenFixup := OneBySixteenLCDFixupCheckBox.Checked;
+  config.ShowLegacyLoader := ShowLegacyLoaderCheckbox.Checked;
   config.save();
   {$IFNDEF STANDALONESETUP}
   if ReinitLcd then
@@ -3232,6 +3236,13 @@ begin
 
   SkinSelectComboBoxGetItems(nil);
   IconSelectComboBoxGetItems(nil);
+  {$IF Defined(CPUX64)}
+  ShowLegacyLoaderCheckbox.Visible := true;
+  ShowLegacyLoaderCheckbox.Checked := config.ShowLegacyLoader;
+
+  Label80.Visible := true;
+  PluginTypeLabel.Visible := true;
+  {$IFEND}
 end;
 
 procedure TSetupForm.ShowTabsCheckBoxClick(Sender: TObject);
@@ -3585,6 +3596,15 @@ begin
       TextFileContent.Free;
     end;
   end;
+
+  // type label
+  case LCDSmartieDisplayForm.Data.GetPluginArch(PluginName) of
+    0: PluginTypeLabel.Caption := 'N/A';
+    1: PluginTypeLabel.Caption := '64 bit';
+    2: PluginTypeLabel.Caption := '32 bit';
+    3: PluginTypeLabel.Caption := 'DotNet';
+  end;
+
 end;
 
 procedure TSetupForm.PluginDemoListBoxClick(Sender: TObject);
@@ -3643,6 +3663,7 @@ begin
     begin
       ShowMessage('Error' + sLineBreak + 'Unable to load Tray Icon from Skin path, ' +
         LCDSmartieDisplayForm.sSkinDir + sIconFileName + ': ' + E.Message);
+      TrayIconPreview32.Picture.Icon.Assign(Application.Icon)
     end;
   end;
   hIcon.Free;

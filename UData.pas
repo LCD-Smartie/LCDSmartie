@@ -72,6 +72,7 @@ type
     demoFunc:  TdemoProc;
     uiLastRefreshed: Cardinal;  // time when Dll results were refreshed.
     uiMinRefreshInterval: Cardinal; // min Refresh interval between refreshes.
+    bArch32: boolean;
   end;
 
   TData = Class(TObject)
@@ -120,6 +121,7 @@ type
     function FindPlugin(const sDllName: String): Cardinal;
     function GetPluginInfo(dllName: string) : String;
     function GetPluginDemos(dllName: string) : String;
+    function GetPluginArch(dllName: string) : integer;
     constructor Create;
     destructor Destroy; override;
     function CanExit: Boolean;
@@ -959,12 +961,13 @@ var
 {$IFEND}
 begin
   {$IF Defined(CPUX64)}
-  if dlls[uiDll].legacyDll then
+  if dlls[uiDll].legacyDll{ and (dlls[uiDll].iBridgeId > -0)} then
   begin
     LegacySharedMem^.LibraryID := dlls[uiDll].iBridgeId;
     LegacySharedMem^.LibraryFunc := iFunc;
     LegacySharedMem^.LibraryParam1 := sParam1;
     LegacySharedMem^.LibraryParam2 := sParam2;
+    LegacySharedMem^.LibraryResult[1] := #0; //clear this
     setevent(hLegacyCallFunctionEvent);
     waitresult := WaitForSingleObject(hLegacyRecvEvent,5000);
     if (waitresult = WAIT_TIMEOUT) then
@@ -972,7 +975,6 @@ begin
     else
     begin
       result := strpas(@LegacySharedMem.LibraryResult[1]);
-      LegacySharedMem^.LibraryResult[1] := #0;
     end;
   end
   else
@@ -1026,8 +1028,9 @@ var
   waitresult:dword;
   GUID: TGUID;
   ShMemID: string;
+  LegacyLoaderShowMode: integer;
   {$IFEND}
-   le: integer;
+  le: integer;
 begin
   bFound := false;
 
@@ -1051,7 +1054,8 @@ begin
   {$IF Defined(CPUX64)}
   if GetLastError = 193 then
   begin
-    // this means were trying to load a 32bit dll in a 64bit program
+    // Error 193 means invalid image format, in this case it likely
+    // means were trying to load a 32bit dll in a 64bit program
     dlls[uiDll].legacyDll := true;
 
     if not LegacyLoaderStarted then
@@ -1077,30 +1081,47 @@ begin
         hLegacyRecvEvent := CreateEvent(nil, FALSE, FALSE, Pchar('Local\LCDSmartieLegacyRecvEvent' + ShMemID));
 
       // launch wrapper
-      ShellExecute(0,nil, PChar('LegacyLoader.exe'),PChar(ShMemID),nil,0);
+      if config.ShowLegacyLoader then
+        LegacyLoaderShowMode := SW_SHOWNORMAL
+      else
+        LegacyLoaderShowMode := 0;
+
+      ShellExecute(0, nil, PChar('LegacyLoader.exe'), PChar(ShMemID+' '+inttostr(LegacyLoaderShowMode)), nil, LegacyLoaderShowMode);
       LegacyLoaderStarted := true;
-      end;
-
-      // tell it to load this dll
-      LegacySharedMem^.LibraryPath := copy(extractfilepath(application.exename) + sLibraryPath,0,255);
-
-      // trigger load of the library. The loader will run SmartieInit and GetMinRefreshInterval functions if they exist
-      setevent(hLegacyLoadLibraryEvent);
-
-      waitresult := WaitForSingleObject(hLegacyRecvEvent,10000); // I would think and hope 10 secs is long enough to wait
-      if (waitresult = WAIT_TIMEOUT) then begin
-        Dec(uiTotalDlls);
-        raise Exception.Create('Legacy Plugin Load library time out' );
-      end;
-
-      // we can make use of the .net iBridgeId here
-      dlls[uiDll].iBridgeId := LegacySharedMem.LibraryID;
-      try
-        dlls[uiDll].uiMinRefreshInterval := strtoint(PChar(@LegacySharedMem.LibraryResult[1]));
-      except
-      end;
-      Exit; // don't process any further. For speed plus its not neccessary
     end;
+
+    LegacySharedMem.LibraryID := -1;
+
+    // tell it to load this dll
+    LegacySharedMem^.LibraryPath := copy(extractfilepath(application.exename) + sLibraryPath,0,255);
+
+    // trigger load of the library. The loader will run SmartieInit and GetMinRefreshInterval functions if they exist
+    setevent(hLegacyLoadLibraryEvent);
+
+    waitresult := WaitForSingleObject(hLegacyRecvEvent,10000); // I would think and hope 10 secs is long enough to wait
+    if (waitresult = WAIT_TIMEOUT) then begin
+      Dec(uiTotalDlls);
+      {dlls[uiDll].iBridgeId := -1;}
+      raise Exception.Create('Legacy Plugin Load library time out' );
+    end;
+
+    if LegacySharedMem.LibraryID < 0 then
+    begin
+      {dlls[uiDll].iBridgeId := -1;}
+      raise Exception.Create(strpas(@LegacySharedMem.LibraryResult));
+      Exit;
+    end;
+
+    // we can make use of the .net iBridgeId here
+    dlls[uiDll].iBridgeId := LegacySharedMem.LibraryID;
+
+    try
+      dlls[uiDll].uiMinRefreshInterval := strtoint(strpas(@LegacySharedMem.LibraryResult));
+    except
+      {dlls[uiDll].iBridgeId := -1;}
+    end;
+    Exit; // don't process any further. For speed plus its not neccessary
+  end;
   {$IFEND}
 
   if (dlls[uiDll].hDll <> 0) then
@@ -1235,11 +1256,11 @@ begin
   result := '';
   uiPlugin := FindPlugin(dllName);
   {$IF Defined(CPUX64)}
-  if dlls[uiPlugin].legacyDll then
+  if dlls[uiPlugin].legacyDll and (dlls[uiPlugin].iBridgeId > -1) then
   begin
+    LegacySharedMem.LibraryResult[1] := #0;
     LegacySharedMem^.LibraryID := dlls[uiPlugin].iBridgeId;
     LegacySharedMem^.LibraryFunc := infoFuncId;
-    //LegacySharedMem^.LibraryParam1 := InfoType;
     setevent(hLegacyCallFunctionEvent);
     waitresult := WaitForSingleObject(hLegacyRecvEvent,4000);
     if (waitresult = WAIT_TIMEOUT) then
@@ -1295,11 +1316,11 @@ begin
   result := '';
   uiPlugin := FindPlugin(dllName);
   {$IF Defined(CPUX64)}
-  if dlls[uiPlugin].legacyDll then
+  if dlls[uiPlugin].legacyDll  and (dlls[uiPlugin].iBridgeId > -1) then
   begin
+    LegacySharedMem.LibraryResult[1] := #0;
     LegacySharedMem^.LibraryID := dlls[uiPlugin].iBridgeId;
     LegacySharedMem^.LibraryFunc := demoFuncId;
-    //LegacySharedMem^.LibraryParam1 := inttostr(DemoNum);
     setevent(hLegacyCallFunctionEvent);
     waitresult := WaitForSingleObject(hLegacyRecvEvent,4000);
     if (waitresult = WAIT_TIMEOUT) then
@@ -1307,7 +1328,7 @@ begin
     else
     begin
       try
-      result := strpas(@LegacySharedMem.LibraryResult[1]);
+        result := strpas(@LegacySharedMem.LibraryResult[1]);
       except
         on E: Exception do
           raise Exception.Create('Plugin '+dllName+' Legacy Loader had an exception fetching demos: '
@@ -1331,8 +1352,6 @@ begin
           raise Exception.Create('Plugin '+dllName+' DNBridge had an exception fetching demos: '
             + E.Message);
     end;
-
-
   end
   else
   if (Assigned(dlls[uiPlugin].demoFunc)) then
@@ -1345,6 +1364,23 @@ begin
             + E.Message);
     end;
   end;
+end;
+
+function TData.GetPluginArch(dllName: string) : integer;
+var
+  uiPlugin: integer;
+begin
+  uiPlugin := FindPlugin(dllName);
+  if dlls[uiPlugin].legacyDll and (dlls[uiPlugin].iBridgeId > -1) then
+    result := 2
+  else
+  if dlls[uiPlugin].bBridge and (dlls[uiPlugin].iBridgeId > -1) then
+    result := 3
+  else
+  if (dlls[uiPlugin].hDll > 0) and not dlls[uiPlugin].bBridge then
+    result := 1
+  else
+    result := 0;
 end;
 
 end.

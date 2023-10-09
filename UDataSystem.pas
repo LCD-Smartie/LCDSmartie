@@ -84,7 +84,7 @@ type
     //  1: ( longValue: Int32; );
     //  2: ( doubleValue: double; );
     //  3: ( largeValue: Int64; );
-    //   4: ( AnsiStringValue: PAnsiChar; );
+    //  4: ( AnsiStringValue: PAnsiChar; );
     //  5: ( WideStringValue: PWideChar; );
   end;
 
@@ -471,7 +471,6 @@ begin
     result := 0;
   Reg.Free;
 end;
-
 
 function TSystemDataThread.isfullscreengameactive: integer;
 var

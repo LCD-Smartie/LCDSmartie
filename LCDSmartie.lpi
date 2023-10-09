@@ -17,8 +17,11 @@
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
       <Icon Value="0"/>
-      <Resources Count="45">
+      <Resources Count="47">
         <Resource_0 FileName="images\default\bar_left.bmp" Type="BITMAP" ResourceName="BAR_LEFT"/>
         <Resource_1 FileName="images\default\bar_middle.bmp" Type="BITMAP" ResourceName="BAR_MIDDLE"/>
         <Resource_2 FileName="images\default\bar_right.bmp" Type="BITMAP" ResourceName="BAR_RIGHT"/>
@@ -63,7 +66,9 @@
         <Resource_41 FileName="images\default\small_arrow_right_up6.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP6"/>
         <Resource_42 FileName="images\default\small_arrow_right_up7.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP7"/>
         <Resource_43 FileName="images\default\small_arrow_right_up8.bmp" Type="BITMAP" ResourceName="SMALL_ARROW_RIGHT_UP8"/>
-        <Resource_44 FileName="images\default\smartie.ico" Type="ICON" ResourceName="SMARTIE"/>
+        <Resource_44 FileName="images\About Logo Blue.png" Type="RCDATA" ResourceName="ABOUT LOGO BLUE"/>
+        <Resource_45 FileName="images\About Logo Purple.png" Type="RCDATA" ResourceName="ABOUT LOGO PURPLE"/>
+        <Resource_46 FileName="images\About Logo Red.png" Type="RCDATA" ResourceName="ABOUT LOGO RED"/>
       </Resources>
     </General>
     <VersionInfo>
@@ -72,7 +77,7 @@
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="5"/>
       <RevisionNr Value="4"/>
-      <BuildNr Value="54"/>
+      <BuildNr Value="62"/>
       <CharSet Value="04B0"/>
       <StringTable CompanyName="LCD Smartie Team" FileDescription="LCD Smartie Main Program" InternalName="LCDSmartie.exe"/>
     </VersionInfo>
@@ -87,7 +92,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <UnitOutputDirectory Value="fuo"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
             <ObjectPath Value="components\CoolTrayIcon"/>
           </SearchPaths>
           <Parsing>
@@ -189,7 +194,6 @@
           <Linking>
             <Debugging>
               <DebugInfoType Value="dsDwarf3"/>
-              <TrashVariables Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -258,7 +262,7 @@
         <PackageName Value="LCL"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="22">
+    <Units Count="25">
       <Unit0>
         <Filename Value="LCDSmartie.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -370,6 +374,18 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UCCharDef"/>
       </Unit21>
+      <Unit22>
+        <Filename Value="UUtils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="ULCD_DLL.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="ULCD.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit24>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -380,7 +396,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <UnitOutputDirectory Value="fuo"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       <ObjectPath Value="components\CoolTrayIcon"/>
     </SearchPaths>
     <Parsing>
@@ -431,51 +447,10 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="11">
+    <Exceptions Count="1">
       <Item1>
-        <Name Value="EIdSocketError"/>
-        <Enabled Value="False"/>
+        <Name Value="EIdHTTPProtocolException"/>
       </Item1>
-      <Item2>
-        <Name Value="EIdConnClosedGracefully"/>
-        <Enabled Value="False"/>
-      </Item2>
-      <Item3>
-        <Name Value="Exception"/>
-        <Enabled Value="False"/>
-      </Item3>
-      <Item4>
-        <Name Value="EConvertError"/>
-        <Enabled Value="False"/>
-      </Item4>
-      <Item5>
-        <Name Value="EListError"/>
-        <Enabled Value="False"/>
-      </Item5>
-      <Item6>
-        <Name Value="ERangeError"/>
-        <Enabled Value="False"/>
-      </Item6>
-      <Item7>
-        <Name Value="RunError(201)"/>
-        <Enabled Value="False"/>
-      </Item7>
-      <Item8>
-        <Name Value="EFOpenError"/>
-        <Enabled Value="False"/>
-      </Item8>
-      <Item9>
-        <Name Value="EExiting"/>
-        <Enabled Value="False"/>
-      </Item9>
-      <Item10>
-        <Name Value="EIdReadTimeout"/>
-        <Enabled Value="False"/>
-      </Item10>
-      <Item11>
-        <Name Value="EIdNotASocket"/>
-        <Enabled Value="False"/>
-      </Item11>
     </Exceptions>
   </Debugging>
 </CONFIG>

@@ -48,20 +48,25 @@ begin
   Result := '';
   if (Pos('http://', LowerCase(url)) = 0) then
     URL := 'http://' + URL;
-  hSession := InternetOpen('My_App;)', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   try
+    hSession := InternetOpen('My_App;)', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+
+    if hSession = nil then
+      Exit;
+
     hURL := InternetOpenURL(hSession, PChar(URL), nil, 0, INTERNET_FLAG_RELOAD, 0);
-    try
-      repeat
-        InternetReadFile(hURL, @Buffer, 1024, BufferLength);
-        Stream.WriteBuffer(Buffer, BufferLength);
-        // Application.Processmessages;
-      until (BufferLength = 0);
-        Result := Stream.DataString;
-    finally
-      InternetCloseHandle(hURL)
-    end;
+
+    if hURL = nil then
+      Exit;
+
+    repeat
+      InternetReadFile(hURL, @Buffer, 1024, BufferLength);
+      Stream.WriteBuffer(Buffer, BufferLength);
+    until (BufferLength = 0);
+      Result := Stream.DataString;
+
   finally
+    InternetCloseHandle(hURL);
     InternetCloseHandle(hSession);
     Stream.free;
   end;
@@ -91,8 +96,6 @@ begin
     end;
     IPADDR := rimpiazza;
   except
-    on E: Exception do
-      IPADDR := 'plugin had exception: ' + E.Message;
   end;
   ThreadRunning := false;
 end;

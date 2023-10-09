@@ -246,12 +246,6 @@ begin
         posComma2 := posComma;
       until (poscomma >= posArgsEnd) or (numArgs >= maxArgs);
     end;
-//    for i := 0 to numargs - 1 do
-//      if (Pos('$', args[i]) > 0) then
-//      begin
-//        Result := false;
-//        exit;
-//      end;
   end
   else Result := false;
 

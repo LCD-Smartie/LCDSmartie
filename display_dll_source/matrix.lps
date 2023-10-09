@@ -3,13 +3,13 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
+    <ManyBuildModesSelection Value="&quot;Release x32&quot;,&quot;Release x64&quot;"/>
     <BuildModes Active="Release x64"/>
     <Units Count="4">
       <Unit0>
         <Filename Value="matrix.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="521"/>
         <CursorPos X="6" Y="533"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
@@ -27,7 +27,7 @@
         <Filename Value="UMyThread.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="3"/>
-        <CursorPos X="21" Y="3"/>
+        <CursorPos X="20" Y="3"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>

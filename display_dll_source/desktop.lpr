@@ -58,9 +58,12 @@ end;
 
 procedure DISPLAYDLL_Write(Str : pchar); stdcall;
 // write string
+var
+  S: String;
 begin
   try
-    LCDDisplayForm.ScreenWrite(Str);
+    S := Str;
+    LCDDisplayForm.ScreenWrite(S);
   except
   end;
 end;
@@ -76,11 +79,7 @@ end;
 
 function DISPLAYDLL_CustomCharIndex(Index : byte) : byte; stdcall;
 begin
-  case Index of
-    176 : Index := 0;
-    158 : Index := 1;
-  end;
-  DISPLAYDLL_CustomCharIndex := Index;
+  DISPLAYDLL_CustomCharIndex := 127+Index;
 end;
 
 procedure DISPLAYDLL_SetBacklight(LightOn : boolean); stdcall;
@@ -157,7 +156,7 @@ exports
   DISPLAYDLL_SetBacklight,
   DISPLAYDLL_ReadKey,
   DISPLAYDLL_CustomChar,
-//  DISPLAYDLL_CustomCharIndex,
+  DISPLAYDLL_CustomCharIndex,
   DISPLAYDLL_Write,
   DISPLAYDLL_SetPosition,
   DISPLAYDLL_DefaultParameters,
@@ -165,6 +164,9 @@ exports
   DISPLAYDLL_DriverName,
   DISPLAYDLL_Done,
   DISPLAYDLL_Init;
+
+{$R *.res}
+
 begin
   Application.Initialize;
   Application.CreateForm(TLCDDisplayForm, LCDDisplayForm);

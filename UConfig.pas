@@ -166,6 +166,7 @@ type
     EditFormPosWidth: integer;
     CCharFormTop: integer;
     CCharFormLeft: integer;
+    ShowLegacyLoader: boolean;
 
     sSkinPath: String;
     sTrayIcon: String;
@@ -267,7 +268,6 @@ type
     ShowEmail: Boolean;
     // tabs position
     TabsPosition: TTabPosition;
-
     OneBySixteenFixup: Boolean;
     function load: Boolean;
     procedure save;
@@ -314,12 +314,7 @@ var
   bResult1: Boolean;
 begin
   bResult1 := false;
-  {$IFNDEF STANDALONESETUP}
-  if (FileExists(ExtractFilePath(Application.EXEName) + sFileName)) then
-  {$ELSE}
-  if (FileExists(sFileName)) then
-  {$ENDIF}
-
+  if FileExists(sFileName) then
     bResult1 := loadINI;
   result := bResult1;
 end;
@@ -341,13 +336,7 @@ begin
 
   try
     // We can't use the faster TMemINIFile - because it leaves quoted strings
-    // with their quotes...
-    {$IFNDEF STANDALONESETUP}
-    initfile := TINIFile.Create(ExtractFilePath(Application.EXEName) +
-      sFileName);
-    {$ELSE}
     initfile := TINIFile.Create(sFileName);
-    {$ENDIF}
   except
     result := false;
     Exit;
@@ -680,7 +669,7 @@ begin
   CCharFormLeft := initfile.ReadInteger('General Settings', 'CCharFormLeft', 0);
 
   OneBySixteenFixup := initfile.ReadBool('General Settings', 'OneBySixteenFixup', False);
-
+  ShowLegacyLoader := initfile.ReadBool('General Settings', 'ShowLegacyLoader', False);
   result := true;
 
   initfile.Free;
@@ -695,12 +684,7 @@ var
   ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount, i: Integer;
   sPrefix: String;
 begin
-  {$IFNDEF STANDALONESETUP}
-  initfile := TMemINIFile.Create(ExtractFilePath(Application.EXEName) +
-    sFileName);
-  {$ELSE}
   initfile := TMemINIFile.Create(sFileName);
-  {$ENDIF}
 
   initfile.WriteString('Versions', 'ConfigFileFormat',
     sMyConfigFileFormatVersion);
@@ -766,7 +750,7 @@ begin
     for LineCount := 1 to MaxLines do
     begin
       sLine := Format('%.2u', [LineCount], localeFormat);
-      initFile.WriteString(sScreen, 'Text' + sLine, '"' + screen[ScreenCount].line[LineCount].text + '"');
+      initFile.WriteString(sScreen, 'Text' + sLine, '"'+screen[ScreenCount].line[LineCount].text+'"');
     end;
 
     for LineCount := 1 to MaxLines do
@@ -842,7 +826,7 @@ begin
 
   for LineCount := 1 to MaxLines do
   begin
-    initFile.WriteString('General Settings', 'ShutdownLine' + IntToStr(LineCount), '"' + ShutdownMessage[LineCount]+ '"');
+    initFile.WriteString('General Settings', 'ShutdownLine' + IntToStr(LineCount), '"' + ShutdownMessage[LineCount] + '"');
   end;
 
   // Pop accounts + ssl
@@ -851,12 +835,9 @@ begin
     sPOPAccount := Format('%.2u', [MailCount], localeFormat);
     initFile.WriteString('POP Accounts', 'Server' + sPOPAccount,
       pop[MailCount].server);
-    initFile.WriteString('POP Accounts', 'User' + sPOPAccount, '"' +
-      pop[MailCount].user + '"');
-    initFile.WriteString('POP Accounts', 'Password' + sPOPAccount, '"' +
-      pop[MailCount].pword + '"');
-    initFile.WriteString('POP Accounts', 'Port_ssl' + sPOPAccount,
-      pop[MailCount].port_ssl);
+    initFile.WriteString('POP Accounts', 'User' + sPOPAccount, pop[MailCount].user);
+    initFile.WriteString('POP Accounts', 'Password' + sPOPAccount, pop[MailCount].pword);
+    initFile.WriteString('POP Accounts', 'Port_ssl' + sPOPAccount, pop[MailCount].port_ssl);
   end;
 
   for ScreenCount := 1 to MaxScreens do
@@ -968,6 +949,7 @@ begin
   initfile.WriteInteger('General Settings', 'CCharFormLeft', CCharFormLeft);
 
   initfile.WriteBool('General Settings', 'OneBySixteenFixup', OneBySixteenFixup);
+  initfile.WriteBool('General Settings', 'ShowLegacyLoader', ShowLegacyLoader);
 
   initfile.UpdateFile;
   initfile.Free;

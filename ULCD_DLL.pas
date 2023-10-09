@@ -255,21 +255,42 @@ var
   i: byte;
 begin
   if OK then begin
-    if assigned(CustomIndex) then begin
-      for i:= 1 to Length(str) do
-      begin
-        case byte(str[i]) of
-          176 : str[i] := Chr(CustomCharIndex[1]);
-          158 : str[i] := Chr(CustomCharIndex[2]);
-          131 : str[i] := Chr(CustomCharIndex[3]);
-          132 : str[i] := Chr(CustomCharIndex[4]);
-          133 : str[i] := Chr(CustomCharIndex[5]);
-          134 : str[i] := Chr(CustomCharIndex[6]);
-          135 : str[i] := Chr(CustomCharIndex[7]);
-          136 : str[i] := Chr(CustomCharIndex[8]);
-        end;
+    // these two loops to handle
+    // (a) legacy custom characters used by LCD Smartie
+    for i:= 1 to Length(str) do
+    begin
+      case Ord(str[i]) of
+        176: str[i]:=Chr(0);
+        158: str[i]:=Chr(1);
+        131: str[i]:=Chr(2);
+        132: str[i]:=Chr(3);
+        133: str[i]:=Chr(4);
+        134: str[i]:=Chr(5);
+        135: str[i]:=Chr(6);
+        136: str[i]:=Chr(7);
       end;
     end;
+
+    // (b) As we pass to the dll a null terminated string it would think chr(0)
+    //     is the end of line.
+    for i:= 1 to Length(str) do
+    begin
+      case byte(str[i]) of
+        0 : str[i] := Chr(CustomCharIndex[1]);
+        1 : str[i] := Chr(CustomCharIndex[2]);
+        2 : str[i] := Chr(CustomCharIndex[3]);
+        3 : str[i] := Chr(CustomCharIndex[4]);
+        4 : str[i] := Chr(CustomCharIndex[5]);
+        5 : str[i] := Chr(CustomCharIndex[6]);
+        6 : str[i] := Chr(CustomCharIndex[7]);
+        7 : str[i] := Chr(CustomCharIndex[8]);
+      end;
+      if str[i] = #0 then
+        raise Exception.Create('There was an attempt to pass a null character to the display');
+    end;
+    // (Note) dll's should either handle 176, 158, 131, 132, 133, 134, 135, 136
+    //        directly or return a CustomIndex
+
     if assigned(WriteProc) then begin
       try
         WriteProc(pchar(Str));

@@ -31,7 +31,8 @@ uses
   Menus, Graphics, WinampCtrl, ExtCtrls, Controls, Buttons, Classes, Forms,
   USetup, UConfig, ULCD, UData, lcdline, UExceptionLogger, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
-  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math, URLThread, stdctrls;
+  IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math,
+  URLThread, stdctrls, LazFileUtils;
 
   { TLCDSmartieDisplayForm }
 type
@@ -73,7 +74,6 @@ type
     ExceptionLogger1: TExceptionLogger;
     ControlMenuItem: TMenuItem;
     CreditsMenuItem: TMenuItem;
-    Label1: TLabel;
     ToggleActionLogMenuItem: TMenuItem;
     SavePositionMenuItem: TMenuItem;
     N1: TMenuItem;
@@ -541,17 +541,6 @@ begin
   ConfigFileName := 'config.ini';
   ProcessCommandLineParams;  // can change config file name
 
-  if RestartAsAdmin then
-  begin
-    for i := 1 to ParamCount do
-      allParameters := allParameters+' '+ParamStr(i);
-
-    application.MainForm.Hide;
-    application.Terminate;
-    RunAsAdmin(0, application.ExeName, allParameters);
-    exit;
-   end;
-
   config := TConfig.Create(ConfigFileName);
 
   if (config.load() = false) then
@@ -573,6 +562,21 @@ begin
       config.save(); // save default values
       showmessage('Default configuration ('+ConfigFileName+') created')
   end;
+
+  if not IsAdministrator and config.bStartAsAdmin then
+        RestartAsAdmin := true;
+
+  if RestartAsAdmin then
+  begin
+    for i := 1 to ParamCount do
+      allParameters := allParameters+' '+ParamStr(i);
+
+    application.MainForm.Hide;
+    application.Terminate;
+    RunAsAdmin(0, application.ExeName, allParameters);
+    exit;
+   end;
+
 
   ActionLogForm := TForm.Create(nil);
   ActionLogForm.Name := 'ActionsLog';
@@ -598,7 +602,7 @@ begin
     LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
 
   if config.AppendConfigName then
-    LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + copy(config.filename, 0, length(config.filename) - 4);
+    LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + ExtractFileNameWithoutExt(extractfilename(config.filename));
 
   trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
   ShowTrueLCD := Config.EmulateLCD;
@@ -722,8 +726,8 @@ begin
       SetupImage.picture.LoadFromResourceName(HInstance, 'setup_up');
       HideImage.picture.LoadFromResourceName(HInstance, 'hide_up');
 
-      TrayIcon1.Icon.LoadFromResourceName(HInstance, 'smartie');
-      application.Icon.LoadFromResourceName(HInstance, 'smartie');
+      TrayIcon1.Icon := application.Icon;
+      ///application.Icon.LoadFromResourceName(HInstance, 'smartie');
     end;
   end;
 end;
@@ -806,6 +810,13 @@ begin
 end;
 
 procedure TLCDSmartieDisplayForm.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  FormatSettings : TFormatSettings;
+  TimeDateString: string;
+  BackupNameList: TStringList;
+  SR: TSearchRec;
+  aTime: LongInt;
+  configName: string;
 begin
 
   if assigned(IdTCPServer1) then
@@ -826,6 +837,46 @@ begin
   config.MainFormPosTop := LCDSmartieDisplayForm.Top;
   config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
   config.save;
+  configName := config.filename;
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, FormatSettings);
+  SetCurrentDir(extractfilepath(application.exename));
+  TimeDateString := DateTimeToStr(now, FormatSettings);
+  if not DirectoryExists('backup') then
+    if not CreateDir('backup') then
+    ShowMessage('Could not create backup directory');
+
+  TimeDateString := StringReplace(TimeDateString, '/', '-', [rfReplaceAll]);
+  TimeDateString := StringReplace(TimeDateString, ':', '-', [rfReplaceAll]);
+  TimeDateString := StringReplace(TimeDateString, ' ', '_', [rfReplaceAll]);
+
+  if not CopyFile(pchar(configName), pchar('backup\'+ExtractFileNameWithoutExt(extractfilename(configName))+'_'+TimeDateString+'.ini'), false) then
+    ShowMessage('Could not create config backup');
+
+  BackupNameList := TStringList.Create;
+
+  aTime := DateTimeToFileDate(Now);
+  try
+    if FindFirst('backup\'+ExtractFileNameWithoutExt(extractfilename(configName))+'_*', faAnyFile and not faDirectory, SR) = 0 then
+    repeat
+      if sr.Time < aTime then
+      begin
+        aTime := sr.Time;
+        BackupNameList.Insert(0, sr.Name);
+      end
+      else
+        BackupNameList.Add(sr.Name);
+    until FindNext(SR) <> 0;
+    SysUtils.FindClose(SR);
+
+    While BackupNameList.Count > 10 do // make this a config option?
+    begin
+      DeleteFile(pchar('backup\'+BackupNameList[0]));
+      BackupNameList.Delete(0);
+    end;
+  finally
+    BackupNameList.Free;
+  end;
+
   bTerminating := true;
   while timerRefresh.enabled = true do timerRefresh.enabled := false;
   while ActionsTimer.enabled = true do ActionsTimer.enabled := false;
@@ -1066,7 +1117,7 @@ begin
 
     sLeftValue := Data.change(config.actionsArray[counter, 1]);
     sRightValue := config.actionsArray[counter, 3];
-
+    bNum := false;
 
     if Trystrtoint(sLeftValue,iLeftValue) and Trystrtoint(sRightValue,iRightValue) then begin
       bNum := true;
@@ -1480,7 +1531,7 @@ begin
       LCDSmartieDisplayForm.Caption := Config.MainFormCaption;
 
     if config.AppendConfigName then
-      LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + copy(config.filename, 0, length(config.filename) - 4);
+      LCDSmartieDisplayForm.Caption := LCDSmartieDisplayForm.Caption + ' ' + ExtractFileNameWithoutExt(extractfilename(config.filename));
   end;
   trayicon1.Hint:=LCDSmartieDisplayForm.Caption;
 end;
@@ -1785,10 +1836,10 @@ begin
 
         for h := 1 to config.Height do
           begin
-            row := Data.change(Config.ShutdownMessage[h], h, true); // now we can use variables in shutdown message
+            row := Data.change(Config.ShutdownMessage[h]); // now we can use variables in shutdown message
 
-            for x := length(row)+1 to config.Width do
-              row := row + ' ';
+            //for x := length(row)+1 to config.Width do
+            row := copy(row + '                                                                                                   ', 0, config.Width);
 
             if config.OneBySixteenFixup then
             begin
@@ -1797,10 +1848,13 @@ begin
               Lcd.write(copy(row, trunc(config.width / 2)+1, trunc(config.width / 2)));
             end
             else
+            begin
+              Lcd.setPosition(1, h);
               Lcd.write(row);
+            end;
             Sleep(20);
           end;
-          Lcd.setbacklight(false);
+        Lcd.setbacklight(false);
       end;
       Lcd.Destroy();
     end;
@@ -2826,7 +2880,7 @@ begin
     sParameters := sParameters + '-admin ';
 
   sParameters := sParameters + '-config ' + '"' + config.filename + '"';
-  sShortCutName := sShortCutName + ' ' + copy(config.filename, 0, length(config.filename) - 4);
+  sShortCutName := sShortCutName + ' ' + ExtractFileNameWithoutExt(extractfilename(config.filename));
 
   bDelete := not (config.bAutoStart or config.bAutoStartHide);
 
