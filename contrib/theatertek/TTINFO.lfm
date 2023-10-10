@@ -1,17 +1,15 @@
 object TTINFOForm: TTTINFOForm
   Left = 477
+  Height = 85
   Top = 432
   Width = 171
-  Height = 85
   Caption = 'TTINFOForm'
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = []
   OnCreate = FormCreate
-  PixelsPerInch = 96
+  LCLVersion = '3.0.0.1'
   object Timer1: TTimer
     OnTimer = Timer1Timer
     Left = 20

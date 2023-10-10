@@ -136,6 +136,9 @@
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="../../x64/release-dir/plugins/theatertek.dll"/>
+          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
@@ -165,6 +168,7 @@
               <Win32>
                 <GraphicApplication Value="True"/>
               </Win32>
+              <ExecutableType Value="Library"/>
             </Options>
           </Linking>
           <Other>

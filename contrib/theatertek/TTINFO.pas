@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls;
+  Dialogs, ExtCtrls, Buttons;
 
 const
   TT_CONTROL_EVENT = WM_USER+102;
@@ -68,23 +68,35 @@ type
     szPAD : array[1..120] of char;        // Padding for future
   end;
 
+  type
+  TWMCopyData = packed record
+    Msg: Cardinal;
+    From: HWND;                      //  Handle of the Window that passed the data
+    CopyDataStruct: PCopyDataStruct; //  data passed
+    Result: Longint;                 //  Use it to send a value back to the "Sender"
+  end;
+
 type
+
   TTTINFOForm = class(TForm)
     Timer1: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
-    LastRec : dword;
+    PrevWndProc: WNDPROC;
     procedure WMCopyData(var Msg : TWMCopyData); message WM_COPYDATA;
+
   public
     { Public declarations }
     TTWnd : hWnd;
-    sData : ttinfo_struct;
+
   end;
 
 var
   TTINFOForm : TTTINFOForm = nil;
+  sData : ttinfo_struct;
+  LastRec : dword;
 
 implementation
 
@@ -93,11 +105,28 @@ implementation
 uses
   Math;
 
+function WndCallback(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam):LRESULT; stdcall;
+Var
+  pMyData  : CopyDataStruct;
+  ms       : TMemoryStream;
+begin
+
+  if uMsg=WM_COPYDATA then begin {Process it}
+     pMyData:= PCopyDataStruct(lParam)^;
+     move(pMyData.lpData,sData,min(sizeof(sData),pMyData.cbData));
+     LastRec := gettickcount;
+     Exit;
+  end;
+  result:= CallWindowProc(TTINFOForm.PrevWndProc,Ahwnd,uMsg,WParam,LParam);
+end;
+
+
 procedure TTTINFOForm.FormCreate(Sender: TObject);
 begin
   fillchar(sData,sizeof(sData),$00);
   TTWnd := FindWindowEx(0,0,'TTWndClass','TheaterTek DVD');
   LastRec := gettickcount;
+  PrevWndProc:= Windows.WNDPROC(SetWindowLongPtr(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
 end;
 
 procedure TTTINFOForm.Timer1Timer(Sender: TObject);
@@ -116,7 +145,7 @@ end;
 procedure TTTINFOForm.WMCopyData(var Msg : TWMCopyData);
 begin
   LastRec := gettickcount;
-  move(Msg.CopyDataStruct.lpData,sData,min(sizeof(sData),Msg.CopyDataStruct.cbData));
+  //move(Msg.CopyDataStruct.lpData,sData,min(sizeof(sData),Msg.CopyDataStruct.cbData));
 end;
 
 end.

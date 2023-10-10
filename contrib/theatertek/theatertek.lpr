@@ -54,6 +54,7 @@ library theatertek;
 }
 
 uses
+  Interfaces,
   SysUtils,
   Classes,
   TTINFO;
@@ -114,7 +115,7 @@ begin
   try
     if assigned(TTINFOForm) and (TTINFOForm.TTWnd <> 0) then begin
       Func := StrToInt(param1);
-      with TTINFOForm.sData do begin
+      with sData do begin
         case Func of
           0 : Result := pchar(string(szFileName));
           1 : Result := pchar(IntToStr(nTitle));
@@ -157,7 +158,7 @@ begin
     if assigned(TTINFOForm) and (TTINFOForm.TTWnd <> 0) then begin
       Func := StrToInt(param1);
       S := param2;
-      with TTINFOForm.sData do begin
+      with sData do begin
         with TotalTime do
           TT := BHours / 24 + BMinutes / (24*60) + bSeconds / (24*60*60);
         with CurTime.TimeCode do
@@ -183,7 +184,7 @@ begin
   Result := pchar(#0);
   try
     if assigned(TTINFOForm) and (TTINFOForm.TTWnd <> 0) then begin
-      with TTINFOForm.sData do case nState of
+      with sData do case nState of
         gsUninitialized,
         gsGraph_Stopped1,
         gsGraph_Stopped2,

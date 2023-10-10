@@ -3,7 +3,8 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Release x64"/>
+    <ManyBuildModesSelection Value="&quot;Release x32&quot;,&quot;Release x64&quot;"/>
+    <BuildModes Active="Release x32"/>
     <Units Count="1">
       <Unit0>
         <Filename Value="speedfan.lpr"/>
@@ -11,6 +12,7 @@
         <IsVisibleTab Value="True"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
     </Units>
     <OtherDefines Count="5">
