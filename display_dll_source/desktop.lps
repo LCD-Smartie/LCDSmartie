@@ -4,16 +4,16 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <ManyBuildModesSelection Value="&quot;Release x32&quot;,&quot;Release x64&quot;"/>
-    <BuildModes Active="Debug x64"/>
-    <Units Count="7">
+    <BuildModes Active="Release x32"/>
+    <Units Count="15">
       <Unit0>
         <Filename Value="desktop.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="29"/>
-        <CursorPos X="9" Y="67"/>
-        <UsageCount Value="47"/>
+        <CursorPos Y="21"/>
+        <UsageCount Value="59"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="dispform.pas"/>
@@ -23,10 +23,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DISPFORM"/>
         <EditorIndex Value="1"/>
-        <CursorPos X="3" Y="624"/>
-        <UsageCount Value="47"/>
+        <CursorPos X="40" Y="338"/>
+        <UsageCount Value="59"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit1>
       <Unit2>
         <Filename Value="dispform.lfm"/>
@@ -71,6 +72,64 @@
         <CursorPos X="12" Y="446"/>
         <UsageCount Value="11"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="E:\Programs\lazarus64\lcl\include\rasterimage.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="280"/>
+        <CursorPos Y="299"/>
+        <UsageCount Value="11"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="E:\Programs\lazarus64\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2342"/>
+        <CursorPos X="17" Y="2380"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="E:\Programs\lazarus64\fpc\3.2.2\source\rtl\inc\typshrdh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="109"/>
+        <CursorPos X="17" Y="128"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="E:\Programs\lazarus64\lcl\include\windowmagnet.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="96"/>
+        <CursorPos Y="97"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="E:\Programs\laz_conf64\onlinepackagemanager\packages\ExceptionLogger\usysinfo.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="5" Y="16"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="E:\Programs\laz_conf64\onlinepackagemanager\packages\ExceptionLogger\UExceptionLogger.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="3" Y="19"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="E:\Programs\lazarus64\lcl\interfaces\win32\win32winapi.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2554"/>
+        <CursorPos X="5" Y="2573"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="E:\Programs\lazarus64\lcl\interfaces\win32\win32wsmenus.pp"/>
+        <UnitName Value="Win32WSMenus"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="809"/>
+        <CursorPos X="3" Y="827"/>
+        <UsageCount Value="10"/>
+      </Unit14>
     </Units>
     <Debugger>
       <Backend Value="{8184A9F4-BA80-40C4-AA5E-37E0EE8877F2}"/>
@@ -82,135 +141,91 @@
       <Define3 Value="Compiler6_Up"/>
       <Define4 Value="PUREPASCAL"/>
     </OtherDefines>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="18" HistoryIndex="17">
       <Position1>
         <Filename Value="dispform.pas"/>
-        <Caret Line="665" Column="13" TopLine="641"/>
+        <Caret Line="420" Column="5" TopLine="401"/>
       </Position1>
       <Position2>
         <Filename Value="dispform.pas"/>
-        <Caret Line="663" TopLine="644"/>
+        <Caret Line="424" Column="20" TopLine="424"/>
       </Position2>
       <Position3>
         <Filename Value="dispform.pas"/>
-        <Caret Line="664" TopLine="644"/>
+        <Caret Line="505" TopLine="499"/>
       </Position3>
       <Position4>
         <Filename Value="dispform.pas"/>
-        <Caret Line="632" TopLine="605"/>
+        <Caret Line="558" Column="5" TopLine="538"/>
       </Position4>
       <Position5>
         <Filename Value="dispform.pas"/>
-        <Caret Line="624" TopLine="605"/>
+        <Caret Line="555" Column="3" TopLine="532"/>
       </Position5>
       <Position6>
         <Filename Value="dispform.pas"/>
-        <Caret Line="632" TopLine="605"/>
+        <Caret Line="558" TopLine="532"/>
       </Position6>
       <Position7>
         <Filename Value="dispform.pas"/>
-        <Caret Line="663" TopLine="644"/>
+        <Caret Line="396" Column="59" TopLine="385"/>
       </Position7>
       <Position8>
         <Filename Value="dispform.pas"/>
-        <Caret Line="632" TopLine="613"/>
+        <Caret Line="20" Column="42"/>
       </Position8>
       <Position9>
         <Filename Value="dispform.pas"/>
-        <Caret Line="624" TopLine="613"/>
+        <Caret Line="405" Column="24" TopLine="358"/>
       </Position9>
       <Position10>
         <Filename Value="dispform.pas"/>
-        <Caret Line="632" TopLine="613"/>
+        <Caret Line="406" Column="24" TopLine="368"/>
       </Position10>
       <Position11>
         <Filename Value="dispform.pas"/>
-        <Caret Line="624" TopLine="613"/>
+        <Caret Line="606" Column="7" TopLine="586"/>
       </Position11>
       <Position12>
         <Filename Value="dispform.pas"/>
-        <Caret Line="624" TopLine="617"/>
+        <Caret Line="616" Column="31" TopLine="670"/>
       </Position12>
       <Position13>
         <Filename Value="dispform.pas"/>
-        <Caret Line="634" TopLine="617"/>
+        <Caret Line="553" Column="48" TopLine="536"/>
       </Position13>
       <Position14>
         <Filename Value="dispform.pas"/>
-        <Caret Line="628" Column="10" TopLine="607"/>
+        <Caret Line="9" Column="56"/>
       </Position14>
       <Position15>
         <Filename Value="dispform.pas"/>
-        <Caret Line="667" TopLine="646"/>
+        <Caret Line="338" Column="40" TopLine="795"/>
       </Position15>
       <Position16>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="665" TopLine="646"/>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="21" Column="46" TopLine="2"/>
       </Position16>
       <Position17>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="634" TopLine="613"/>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="102" Column="36" TopLine="83"/>
       </Position17>
       <Position18>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="667" TopLine="648"/>
+        <Filename Value="desktop.lpr"/>
+        <Caret Line="102" Column="36" TopLine="83"/>
       </Position18>
-      <Position19>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="634" TopLine="609"/>
-      </Position19>
-      <Position20>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="693" Column="30" TopLine="668"/>
-      </Position20>
-      <Position21>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="628" TopLine="609"/>
-      </Position21>
-      <Position22>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="634" TopLine="609"/>
-      </Position22>
-      <Position23>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="667" TopLine="648"/>
-      </Position23>
-      <Position24>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="632" Column="40" TopLine="611"/>
-      </Position24>
-      <Position25>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="634" TopLine="614"/>
-      </Position25>
-      <Position26>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="635" TopLine="611"/>
-      </Position26>
-      <Position27>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="665" Column="17" TopLine="641"/>
-      </Position27>
-      <Position28>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="635" Column="22" TopLine="623"/>
-      </Position28>
-      <Position29>
-        <Filename Value="dispform.pas"/>
-        <Caret Line="628" Column="22" TopLine="609"/>
-      </Position29>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="1" ActiveMode="default">
         <Mode0 Name="default">
           <local>
-            <HostApplicationFilename Value="D:\Projects\lcdsmartie-laz\x64\release-dir\LCDSmartie.exe"/>
+            <HostApplicationFilename Value="D:\Projects\lcdsmartie\x64\release-dir\LCDSmartie.exe"/>
           </local>
         </Mode0>
       </Modes>
     </RunParams>
-    <HistoryLists Count="3">
+    <HistoryLists Count="1">
       <List0 Name="LaunchingApplication" Type="File" Count="1">
         <Item1 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List0>

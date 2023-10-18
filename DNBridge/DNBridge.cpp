@@ -162,7 +162,7 @@ extern "C"
 			size_t  sizeInBytes = ((result->Length + 1) * 2);
 			char* ch = (char*)malloc(sizeInBytes);
 
-			WideCharToMultiByte(CP_UTF8, 0, wch, sizeInBytes, ch, sizeInBytes, NULL, NULL);
+			WideCharToMultiByte(CP_UTF8, 0, wch, -1, ch, sizeInBytes, NULL, NULL);
 
 			strcpy_s(buffer, ch);
 		}

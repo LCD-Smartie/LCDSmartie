@@ -99,7 +99,7 @@ end;
 
 procedure TCreditsForm.ThisVersionClick(Sender: TObject);
 begin
-  ShellExecute(0, Nil, pchar('https://github.com/stokie-ant/lcdsmartie-laz'), Nil, Nil,
+  ShellExecute(0, Nil, pchar('https://github.com/LCD-Smartie/LCDSmartie'), Nil, Nil,
     SW_NORMAL);
 end;
 

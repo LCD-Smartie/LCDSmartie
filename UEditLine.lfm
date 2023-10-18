@@ -12,6 +12,8 @@ object FormEdit: TFormEdit
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
+  SnapOptions.SnapToMonitor = True
+  SnapOptions.SnapToForms = True
   LCLVersion = '3.0.0.1'
   object Memo1: TMemo
     Left = 0

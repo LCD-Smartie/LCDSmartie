@@ -447,10 +447,19 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="1">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EIdHTTPProtocolException"/>
       </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+      <Item3>
+        <Name Value="RunError(3)"/>
+      </Item3>
+      <Item4>
+        <Name Value="EInOutError"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>

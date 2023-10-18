@@ -907,6 +907,19 @@ procedure TLCDSmartieDisplayForm.FormShow(Sender: TObject);
 begin
   if assigned(config) then
   begin
+    if config.Snapping then
+    begin
+      SnapOptions.SnapFormTarget := true;
+      SnapOptions.SnapToForms := true;
+      SnapOptions.SnapToMonitor := true;
+    end
+    else
+    begin
+      SnapOptions.SnapFormTarget := false;
+      SnapOptions.SnapToForms := false;
+      SnapOptions.SnapToMonitor := false;
+    end;
+
     // restore window position from config
     LCDSmartieDisplayForm.Top  := config.MainFormPosTop;
     LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
@@ -1514,6 +1527,19 @@ begin
 
   setupform.Free;
   setupform := nil;
+
+  if config.Snapping then
+  begin
+    SnapOptions.SnapFormTarget := true;
+    SnapOptions.SnapToForms := true;
+    SnapOptions.SnapToMonitor := true;
+  end
+  else
+  begin
+    SnapOptions.SnapFormTarget := false;
+    SnapOptions.SnapToForms := false;
+    SnapOptions.SnapToMonitor := false;
+  end;
 
   if (config.alwaysOnTop) then
     FormStyle := fsSystemStayOnTop

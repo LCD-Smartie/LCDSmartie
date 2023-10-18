@@ -77,6 +77,7 @@ type
     CChar6SpeedButton: TSpeedButton;
     CChar7SpeedButton: TSpeedButton;
     CChar8SpeedButton: TSpeedButton;
+    EnableSnappingCheckBox: TCheckBox;
     DistributedNetBrowseButton: TSpeedButton;
     DistributedNetLogfileEdit: TEdit;
     Label34: TLabel;
@@ -846,6 +847,19 @@ begin
     CCharDefForm.CCharDefFormCancelButton.OnClick := CCharDefFormCancel;
     CCharDefForm.Top := config.CCharFormTop;
     CCharDefForm.Left := config.CCharFormLeft;
+    if config.Snapping then
+    begin
+      CCharDefForm.SnapOptions.SnapFormTarget := true;
+      CCharDefForm.SnapOptions.SnapToForms := true;
+      CCharDefForm.SnapOptions.SnapToMonitor := true;
+    end
+    else
+    begin
+      CCharDefForm.SnapOptions.SnapFormTarget := false;
+      CCharDefForm.SnapOptions.SnapToForms := false;
+      CCharDefForm.SnapOptions.SnapToMonitor := false;
+    end;
+
     for  loop := 1 to 8 do
     begin
       CCharDefForm.EditArray[loop].OnEnter := CCharDefFormEditEnter;
@@ -1316,6 +1330,20 @@ begin
   CustomTitleTIEdit1.Text := config.MainFormCaption;
 
   {$IFNDEF STANDALONESETUP}
+  if config.Snapping then
+  begin
+    SnapOptions.SnapFormTarget := true;
+    SnapOptions.SnapToForms := true;
+    SnapOptions.SnapToMonitor := true;
+  end
+  else
+  begin
+    SnapOptions.SnapFormTarget := false;
+    SnapOptions.SnapToForms := false;
+    SnapOptions.SnapToMonitor := false;
+  end;
+  EnableSnappingCheckBox.Checked := config.Snapping;
+
   SetupForm.Top := config.SettingsFormPosTop;
   SetupForm.Left := config.SettingsFormPosLeft;
   SetupForm.Height := config.SettingsFormPosHeight;
@@ -2954,6 +2982,21 @@ var
   loop: integer;
 begin
   ReInitLCD := False;
+
+  config.Snapping := EnableSnappingCheckBox.Checked;
+  if config.Snapping then
+  begin
+    SnapOptions.SnapFormTarget := true;
+    SnapOptions.SnapToForms := true;
+    SnapOptions.SnapToMonitor := true;
+  end
+  else
+  begin
+    SnapOptions.SnapFormTarget := false;
+    SnapOptions.SnapToForms := false;
+    SnapOptions.SnapToMonitor := false;
+  end;
+
   if (DisplayPluginList.Caption <> config.DisplayDLLName) or (ParametersEdit.Caption <> config.DisplayDLLParameters) or
     (LCDSizeComboBox.ItemIndex +1  <> config.ScreenSize) or (CustomLinesSizeEdit.Value <> config.Custom_Height) or (CustomCharsSizeEdit.Value <> config.Custom_width) then
     ReInitLCD := True;
@@ -3767,6 +3810,20 @@ begin
         FormEditArray[Loop].Left := config.EditFormPosLeft;
         FormEditArray[Loop].Height := config.EditFormPosHeight;
         FormEditArray[Loop].Width := config.EditFormPosWidth;
+
+        if config.Snapping then
+        begin
+          FormEditArray[Loop].SnapOptions.SnapFormTarget := true;
+          FormEditArray[Loop].SnapOptions.SnapToForms := true;
+          FormEditArray[Loop].SnapOptions.SnapToMonitor := true;
+        end
+        else
+        begin
+          FormEditArray[Loop].SnapOptions.SnapFormTarget := false;
+          FormEditArray[Loop].SnapOptions.SnapToForms := false;
+          FormEditArray[Loop].SnapOptions.SnapToMonitor := false;
+        end;
+
         FormEditArray[Loop].Show;
       end;
     end;

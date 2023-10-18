@@ -109,8 +109,8 @@ object CreditsForm: TCreditsForm
       Height = 13
       Hint = 'https://github.com/stokie-ant/lcdsmartie-laz'
       Top = 320
-      Width = 116
-      Caption = 'LCDSmartie Lazarus dev'
+      Width = 79
+      Caption = 'LCD Smartie dev'
       Font.CharSet = ANSI_CHARSET
       Font.Color = clBlue
       Font.Height = -11

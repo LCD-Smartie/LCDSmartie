@@ -269,6 +269,7 @@ type
     // tabs position
     TabsPosition: TTabPosition;
     OneBySixteenFixup: Boolean;
+    Snapping: Boolean;
     function load: Boolean;
     procedure save;
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
@@ -670,8 +671,9 @@ begin
 
   OneBySixteenFixup := initfile.ReadBool('General Settings', 'OneBySixteenFixup', False);
   ShowLegacyLoader := initfile.ReadBool('General Settings', 'ShowLegacyLoader', False);
-  result := true;
+  Snapping := initfile.ReadBool('General Settings', 'Snapping', False);
 
+  result := true;
   initfile.Free;
 end;
 
@@ -950,6 +952,7 @@ begin
 
   initfile.WriteBool('General Settings', 'OneBySixteenFixup', OneBySixteenFixup);
   initfile.WriteBool('General Settings', 'ShowLegacyLoader', ShowLegacyLoader);
+  initfile.WriteBool('General Settings', 'Snapping', Snapping);
 
   initfile.UpdateFile;
   initfile.Free;

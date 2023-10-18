@@ -1,14 +1,23 @@
 object LCDDisplayForm: TLCDDisplayForm
-  Left = 444
+  AnchorSideLeft.Side = asrBottom
+  Left = 540
   Height = 65
-  Top = 137
+  Top = 114
   Width = 327
+  HorzScrollBar.Visible = False
+  VertScrollBar.Visible = False
+  Anchors = []
   BorderIcons = []
   BorderStyle = bsToolWindow
   Caption = 'LCD Display'
+  ChildSizing.EnlargeHorizontal = crsScaleChilds
+  ChildSizing.EnlargeVertical = crsScaleChilds
+  ChildSizing.ShrinkHorizontal = crsScaleChilds
+  ChildSizing.ShrinkVertical = crsScaleChilds
   ClientHeight = 65
   ClientWidth = 327
   Color = clBtnFace
+  DragMode = dmAutomatic
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
@@ -17,10 +26,11 @@ object LCDDisplayForm: TLCDDisplayForm
   OnShow = FormShow
   Position = poDefault
   ShowInTaskBar = stNever
+  SnapOptions.SnapToMonitor = True
+  SnapOptions.SnapToForms = True
   LCLVersion = '3.0.0.1'
   Scaled = False
   object PaintBox: TPaintBox
-    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 65
     Top = 0
@@ -30,7 +40,6 @@ object LCDDisplayForm: TLCDDisplayForm
     DragMode = dmAutomatic
     PopupMenu = PopupMenu1
     OnMouseDown = PaintBoxMouseDown
-    OnMouseUp = PaintBoxMouseUp
     OnPaint = PaintBoxPaint
   end
   object PopupMenu1: TPopupMenu
@@ -106,10 +115,55 @@ object LCDDisplayForm: TLCDDisplayForm
         OnClick = AlphaMenuItemClick
       end
     end
+    object PixelColorMenuItem: TMenuItem
+      Caption = 'Pixel color'
+      OnClick = PixelColorMenuItemClick
+    end
+    object BackgroundColorMenuItem: TMenuItem
+      Caption = 'Background color'
+      OnClick = BackgroundColorMenuItemClick
+    end
+    object SnapScreenEdgeMenuItem: TMenuItem
+      AutoCheck = True
+      Caption = 'Snap to screen edge'
+      OnClick = SnapScreenEdgeMenuItemClick
+    end
+    object LockPositionMenuItem: TMenuItem
+      AutoCheck = True
+      Caption = 'Lock position'
+    end
   end
   object Timer1: TTimer
+    Interval = 100
     OnTimer = Timer1Timer
     Left = 185
+    Top = 14
+  end
+  object ColorDialog1: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    Left = 48
     Top = 14
   end
 end

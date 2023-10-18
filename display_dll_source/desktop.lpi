@@ -21,7 +21,7 @@
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="3"/>
       <MinorVersionNr Value="1"/>
-      <BuildNr Value="4"/>
+      <BuildNr Value="8"/>
       <StringTable CompanyName="LCD Smartie Team" FileDescription="LCD Smartie desktop display driver"/>
     </VersionInfo>
     <BuildModes Count="4">
@@ -43,10 +43,6 @@
           </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
-            <RelocatableUnit Value="True"/>
-            <Checks>
-              <RangeChecks Value="True"/>
-            </Checks>
             <TargetCPU Value="i386"/>
             <TargetOS Value="win32"/>
             <Optimizations>
@@ -235,13 +231,10 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="ExceptionLogger"/>
-      </Item1>
-      <Item2>
         <PackageName Value="LCL"/>
-      </Item2>
+      </Item1>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
@@ -309,7 +302,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="6">
+    <Exceptions Count="8">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -328,6 +321,12 @@
       <Item6>
         <Name Value="Exception"/>
       </Item6>
+      <Item7>
+        <Name Value="RunError(3)"/>
+      </Item7>
+      <Item8>
+        <Name Value="EInOutError"/>
+      </Item8>
     </Exceptions>
   </Debugging>
 </CONFIG>

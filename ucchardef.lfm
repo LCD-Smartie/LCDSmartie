@@ -1,7 +1,7 @@
 object CCharDefForm: TCCharDefForm
-  Left = 617
+  Left = 612
   Height = 210
-  Top = 194
+  Top = 203
   Width = 435
   BorderIcons = []
   BorderStyle = bsSingle
@@ -9,6 +9,8 @@ object CCharDefForm: TCCharDefForm
   ClientHeight = 210
   ClientWidth = 435
   OnCreate = FormCreate
+  SnapOptions.SnapToMonitor = True
+  SnapOptions.SnapToForms = True
   LCLVersion = '3.0.0.1'
   object Edit1: TEdit
     Left = 24

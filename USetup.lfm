@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 463
+  Left = 474
   Height = 465
-  Top = 180
+  Top = 256
   Width = 855
   Anchors = []
   Caption = 'LCD Smartie 5.x Setup'
@@ -22,7 +22,8 @@ object SetupForm: TSetupForm
   ParentBiDiMode = False
   ParentDoubleBuffered = False
   Position = poScreenCenter
-  SnapOptions.SnapFormTarget = False
+  SnapOptions.SnapToMonitor = True
+  SnapOptions.SnapToForms = True
   LCLVersion = '3.0.0.1'
   Scaled = False
   object MainPageControl: TPageControl
@@ -36,7 +37,7 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 590
     TabStop = False
-    ActivePage = StartupTabSheet
+    ActivePage = ScreensTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 589
     Font.CharSet = ANSI_CHARSET
@@ -44,7 +45,7 @@ object SetupForm: TSetupForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 4
+    TabIndex = 0
     TabOrder = 7
     OnChange = MainPageControlChange
     OnResize = MainPageControlResize
@@ -2080,6 +2081,22 @@ object SetupForm: TSetupForm
           Font.Name = 'Tahoma'
           ParentFont = False
           TabOrder = 6
+        end
+        object EnableSnappingCheckBox: TCheckBox
+          Left = 240
+          Height = 17
+          Hint = 'Allow forms to be snapped to each other or the screen edge'
+          Top = 52
+          Width = 88
+          Caption = 'Edge snapping'
+          Font.CharSet = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 7
         end
       end
       object GroupBox14: TGroupBox

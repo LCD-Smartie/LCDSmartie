@@ -14,6 +14,10 @@ const
   MaxHeight = 8;
   CharWidth = 5;
   CharHeight = 8;
+  SWP_NOMOVE = $0002;
+  SWP_NOSIZE = $0001;
+  SWP_NOACTIVATE = $0010;
+  dwSWPflags = {SWP_NOMOVE or SWP_NOSIZE or} SWP_NOACTIVATE;
 
   DefaultFont : array[32..255,0..CharHeight-1] of byte = (
     ($00,$00,$00,$00,$00,$00,$00,$00), // char 32
@@ -248,6 +252,14 @@ type
     AlphaBlendValue: integer;
     PosX: integer;
     PosY: integer;
+    BackgroundColorRed: Byte;
+    BackgroundColorGreen: Byte;
+    BackgroundColorBlue: Byte;
+    PixelColorRed: Byte;
+    PixelColorGreen: Byte;
+    PixelColorBlue: Byte;
+    ScreenEdgeSnap: boolean;
+    LockPosition: boolean;
   end;
 
 type
@@ -266,12 +278,19 @@ type
     Alpha60MenuItem: TMenuItem;
     Alpha70MenuItem: TMenuItem;
     Alpha80MenuItem: TMenuItem;
+    ColorDialog1: TColorDialog;
+    LockPositionMenuItem: TMenuItem;
+    SnapScreenEdgeMenuItem: TMenuItem;
+    PixelColorMenuItem: TMenuItem;
+    BackgroundColorMenuItem: TMenuItem;
     StayOnTopMenuItem: TMenuItem;
     TransparentMenuItem: TMenuItem;
     PaintBox: TPaintBox;
     PopupMenu1: TPopupMenu;
     Timer1: TTimer;
     procedure AlphaMenuItemClick(Sender: TObject);
+    procedure BackgroundColorMenuItemClick(Sender: TObject);
+    procedure PixelColorMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Free;
@@ -282,6 +301,7 @@ type
     procedure PaintBoxPaint(Sender: TObject);
     procedure PopupMenu1Close(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
+    procedure SnapScreenEdgeMenuItemClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
@@ -289,18 +309,24 @@ type
     MyWidth,MyHeight : integer;
     WidthOffset,HeightOffset : integer;
     CurrentX,CurrentY : integer;
-    Font : TFontArray;
+    ColorFont : TFontArray;
+    BWFont : TFontArray;
     BackgroundBitmap : TBitmap;
     BackgroundColor : TColor;
+    PixelColor: TColor;
+    ChosenBackgroundColor : TColor;
+    ChosenPixelColor: TColor;
     FrameBuffer : array[1..MaxWidth*MaxHeight] of byte;
     CaptionHeight: long;
     BorderWidth: long;
+    Backlight: Boolean;
     procedure readconfig;
     procedure writeconfig;
     procedure WMNCHitTest(var Msg: TWMNCHitTest) ; message WM_NCHitTest;
     procedure LoadFont;
     procedure GetBlankChar(Bitmap : TBitmap);
     procedure GetDefaultBitmap(Index : byte; Bitmap : TBitmap);
+    procedure CopyColorFontBitmap(SourceBitmap,DestBitmap : TBitmap);
     procedure SendChar(C : byte);
     procedure ClearDisplay;
   public
@@ -329,6 +355,19 @@ begin
   config.AlphaBlendValue := ini.ReadInteger('config', 'AlphaBlendValue', 255);
   config.PosX := ini.ReadInteger('config', 'PosX', 0);
   config.PosY := ini.ReadInteger('config', 'PosY', 0);
+
+  config.BackgroundColorRed := ini.ReadInteger('config', 'BackgroundColorRed', 0);
+  config.BackgroundColorGreen := ini.ReadInteger('config', 'BackgroundColorGreen', 255);
+  config.BackgroundColorBlue := ini.ReadInteger('config', 'BackgroundColorBlue', 0);
+  ChosenBackgroundColor := RGB(config.BackgroundColorRed, config.BackgroundColorGreen, config.BackgroundColorBlue);
+
+  config.PixelColorRed := ini.ReadInteger('config', 'PixelColorRed', 0);
+  config.PixelColorGreen := ini.ReadInteger('config', 'PixelColorGreen', 0);
+  config.PixelColorBlue := ini.ReadInteger('config', 'PixelColorBlue', 0);
+  ChosenPixelColor := RGB(config.PixelColorRed, config.PixelColorGreen, config.PixelColorBlue);
+
+  config.ScreenEdgeSnap := ini.ReadBool('config', 'ScreenEdgeSnap', false);
+  config.LockPosition := ini.ReadBool('config', 'LockPosition', false);
   ini.Free;
 end;
 
@@ -342,42 +381,52 @@ begin
   ini.WriteInteger('config', 'AlphaBlendValue', config.AlphaBlendValue);
   ini.WriteInteger('config', 'PosX', config.PosX);
   ini.WriteInteger('config', 'PosY', config.PosY);
+
+  config.BackgroundColorRed := GetRValue(ChosenBackgroundColor);
+  config.BackgroundColorGreen := GetGValue(ChosenBackgroundColor);
+  config.BackgroundColorBlue := GetBValue(ChosenBackgroundColor);
+  ini.WriteInteger('config', 'BackgroundColorRed', config.BackgroundColorRed);
+  ini.WriteInteger('config', 'BackgroundColorGreen', config.BackgroundColorGreen);
+  ini.WriteInteger('config', 'BackgroundColorBlue', config.BackgroundColorBlue);
+
+  config.PixelColorRed := GetRValue(ChosenPixelColor);
+  config.PixelColorGreen := GetGValue(ChosenPixelColor);
+  config.PixelColorBlue := GetBValue(ChosenPixelColor);
+  ini.WriteInteger('config', 'PixelColorRed', config.PixelColorRed);
+  ini.WriteInteger('config', 'PixelColorGreen', config.PixelColorGreen);
+  ini.WriteInteger('config', 'PixelColorBlue', config.PixelColorBlue);
+  ini.WriteBool('config', 'ScreenEdgeSnap', config.ScreenEdgeSnap);
+  ini.WriteBool('config', 'LockPosition', config.LockPosition);
   ini.Free;
 end;
 
 procedure TLCDDisplayForm.Timer1Timer(Sender: TObject);
-const
- SWP_NOMOVE = $0002;
- SWP_NOSIZE = $0001;
- SWP_NOACTIVATE = $0010;
- dwSWPflags = SWP_NOMOVE or  SWP_NOSIZE or SWP_NOACTIVATE;
 begin
-   if StayOnTopMenuItem.Checked then
-     SetWindowPos(Handle, HWND_TOPMOST,	0,0,0,0, dwSWPflags)
-   else
-     SetWindowPos(Handle, HWND_NOTOPMOST, 0,0,0,0, dwSWPflags);
+  if StayOnTopMenuItem.Checked then
+    SetWindowPos(Handle, HWND_TOPMOST,	left, top, width, height, dwSWPflags)
+  else
+    SetWindowPos(Handle, HWND_NOTOPMOST, left, top, width, height, dwSWPflags);
 
    if (config.StayOnTop <> StayOnTopMenuItem.Checked) or (config.AlphaBlend <> AlphaBlend) or
-        (config.AlphaBlendValue <> AlphaBlendValue) or (config.PosY <> Top) or (config.PosX <> Left) then
+        (config.AlphaBlendValue <> AlphaBlendValue) or (config.PosY <> Top) or (config.PosX <> Left)
+        or (config.ScreenEdgeSnap <> SnapScreenEdgeMenuItem.Checked) or (config.LockPosition <> LockPositionMenuItem.Checked) then
    begin
      config.StayOnTop := StayOnTopMenuItem.Checked;
      config.AlphaBlend := AlphaBlend;
      config.AlphaBlendValue := AlphaBlendValue;
      config.PosY := Top;
      config.PosX := Left;
+     config.LockPosition := LockPositionMenuItem.Checked;
+     config.ScreenEdgeSnap := SnapScreenEdgeMenuItem.Checked;
      writeconfig;
    end;
 end;
 
 procedure TLCDDisplayForm.WMNCHitTest(var Msg: TWMNCHitTest) ;
- var
-  Res: SmallInt;
 begin
   inherited;
-  Res := GetKeyState(VK_RBUTTON);
-  if Res > 0 then
-    if Msg.Result = htClient then
-      Msg.Result := htCaption;
+  //Width := (MyWidth*(CharWidth+1)*2)-1;
+  //Height := (MyHeight*(CharHeight+1)*2);
 end;
 
 procedure TLCDDisplayForm.LoadFont;
@@ -385,14 +434,19 @@ var
   Loop : longint;
 begin
   for Loop := 32 to 255 do begin
-    Font[Loop] := TBitmap.Create;
-    Font[Loop].Width := CharWidth;
-    Font[Loop].Height := CharHeight;
+    BWFont[Loop] := TBitmap.Create;
+    BWFont[Loop].Width := CharWidth;
+    BWFont[Loop].Height := CharHeight;
     case loop of
       176, 158, 131, 132,
-      133, 134, 135, 136 : GetBlankChar(Font[Loop]);
-      else GetDefaultBitmap(Loop,Font[Loop]);
+      133, 134, 135, 136 : GetBlankChar(BWFont[Loop]);
+      else GetDefaultBitmap(Loop,BWFont[Loop]);
     end;
+    if assigned(ColorFont[Loop]) then ColorFont[Loop].Free;
+    ColorFont[Loop] := TBitmap.Create;
+    ColorFont[Loop].Width := CharWidth;
+    ColorFont[Loop].Height := CharHeight;
+    CopyColorFontBitmap(BWFont[Loop],ColorFont[Loop]);
   end;
 end;
 
@@ -449,10 +503,31 @@ begin
     end;
 end;
 
+procedure TLCDDisplayForm.BackgroundColorMenuItemClick(Sender: TObject);
+begin
+  ColorDialog1.Color := ChosenBackgroundColor;
+  ColorDialog1.Execute;
+  ChosenBackgroundColor := ColorDialog1.Color;
+  writeconfig;
+  SetBacklight(Backlight);
+end;
+
+procedure TLCDDisplayForm.PixelColorMenuItemClick(Sender: TObject);
+begin
+  ColorDialog1.Color := ChosenPixelColor;
+  ColorDialog1.Execute;
+  ChosenPixelColor := ColorDialog1.Color;
+  writeconfig;
+  SetBacklight(Backlight);
+end;
+
 procedure TLCDDisplayForm.FormCreate(Sender: TObject);
 begin
   readconfig;
-  BackgroundColor := clLime;
+  Backlight := true;
+  BackgroundColor := ChosenBackgroundColor;
+  PixelColor := ChosenPixelColor;
+
   BackgroundBitmap := TBitmap.Create;
   CurrentX := 1;
   CurrentY := 1;
@@ -460,7 +535,7 @@ begin
   MyHeight := 4;
   WidthOffset := Width - PaintBox.Width;
   HeightOffset := Height - PaintBox.Height;
-  fillchar(Font,sizeof(Font),$00);
+  fillchar(ColorFont,sizeof(ColorFont),$00);
   fillchar(FrameBuffer,sizeof(FrameBuffer),32);
   LoadFont;
   show;
@@ -473,6 +548,10 @@ begin
   Left := config.PosX;
   Top := config.PosY;
   StayOnTopMenuItem.Checked := config.StayOnTop;
+  LockPositionMenuItem.Checked := config.LockPosition;
+  SnapScreenEdgeMenuItem.Checked := config.ScreenEdgeSnap;
+  ScreenSnap := SnapScreenEdgeMenuItem.Checked;
+
   Width := (MyWidth*(CharWidth+1)*2);
   Height := (MyHeight*(CharHeight+1)*2);
 
@@ -524,7 +603,7 @@ var
   Loop : longint;
 begin
   for Loop := 32 to 255 do begin
-    Font[Loop].Free;
+    ColorFont[Loop].Free;
   end;
   inherited;
 end;
@@ -535,7 +614,8 @@ begin
   if Button = mbLeft then
   begin
     ReleaseCapture;
-    SendMessage(Handle, WM_SYSCOMMAND, $F012, 0) ; //  61458
+    if not config.LockPosition then
+      SendMessage(Handle, WM_SYSCOMMAND, $F012, 0); //  61458
   end
   else
   begin
@@ -558,7 +638,7 @@ end;
 procedure TLCDDisplayForm.ClearDisplay;
 begin
   with BackgroundBitmap.Canvas do begin
-    CopyMode := cmMergeCopy;
+    CopyMode := cmsrcCopy;
     Pen.Color := BackgroundColor;
     Pen.Mode := pmCopy;
     Pen.Style := psSolid;
@@ -576,7 +656,7 @@ begin
   MyWidth := X;
   MyHeight := Y;
   Height := (MyHeight*(CharHeight+1)*2) {- captionheight - borderwidth};
-  Width := (MyWidth*(CharWidth+1)*2) {- borderwidth} - 1; // not sure where the extra dimensions come from
+  Width := (MyWidth*(CharWidth+1)*2) {- borderwidth}; // not sure where the extra dimensions come from
   PaintBox.Height := Height {+ captionheight + borderwidth + borderwidth};
   PaintBox.Width := Width {+ borderwidth + 3};
 
@@ -615,13 +695,18 @@ begin
   timer1.Enabled:=false;
 end;
 
+procedure TLCDDisplayForm.SnapScreenEdgeMenuItemClick(Sender: TObject);
+begin
+  ScreenSnap := SnapScreenEdgeMenuItem.Checked;
+end;
+
 procedure TLCDDisplayForm.SendChar(C : byte);
 var
   CurChar : TBitmap;
   DestRect : TRect;
   SrcRect : TRect;
 begin
-  CurChar := Font[C];
+  CurChar := ColorFont[C];
   FrameBuffer[CurrentX+(CurrentY-1)*MyWidth] := C;
 
   with SrcRect do begin
@@ -658,13 +743,64 @@ begin
   PaintBoxPaint(nil);
 end;
 
+procedure TLCDDisplayForm.CopyColorFontBitmap(SourceBitmap,DestBitmap : TBitmap);
+var
+  X,Y : byte;
+begin
+  for Y := 0 to CharHeight-1 do begin
+    for X := 0 to CharWidth-1 do begin
+      if (SourceBitmap.Canvas.Pixels[X,Y] = clBlack) then
+        DestBitmap.Canvas.Pixels[X,Y] := PixelColor
+      else
+        DestBitmap.Canvas.Pixels[X,Y] := BackgroundColor;
+    end;
+  end;
+end;
+
 procedure TLCDDisplayForm.SetBacklight(LightOn : boolean);
 var
   Loop,OldPosX,OldPosY : longint;
+  r,g,b:Byte;
+  SetColor: TColor;
 begin
-  if LightOn then BackgroundColor := clLime
-  else BackgroundColor := clGreen;
+  Backlight := LightOn;
+
+  if LightOn then
+  begin
+  BackgroundColor := ChosenBackgroundColor;
+  PixelColor := ChosenPixelColor;
+  end
+  else
+  begin
+    SetColor:=ColorToRGB(ChosenBackgroundColor);
+    r:=GetRValue(SetColor);
+    g:=GetGValue(SetColor);
+    b:=GetBValue(SetColor);
+    r:=r-muldiv(r,50,100);
+    g:=g-muldiv(g,50,100);
+    b:=b-muldiv(b,50,100);
+    BackgroundColor:=RGB(r,g,b);
+
+    SetColor:=ColorToRGB(ChosenPixelColor);
+    r:=GetRValue(SetColor);
+    g:=GetGValue(SetColor);
+    b:=GetBValue(SetColor);
+    r:=r-muldiv(r,50,100);
+    g:=g-muldiv(g,50,100);
+    b:=b-muldiv(b,50,100);
+    PixelColor:=RGB(r,g,b);
+  end;
+
   ClearDisplay;
+
+  for Loop := 32 to 255 do begin
+    if assigned(ColorFont[Loop]) then ColorFont[Loop].Free;
+    ColorFont[Loop] := TBitmap.Create;
+    ColorFont[Loop].Width := CharWidth;
+    ColorFont[Loop].Height := CharHeight;
+    CopyColorFontBitmap(BWFont[Loop],ColorFont[Loop]);
+  end;
+
   OldPosX := CurrentX;
   OldPosY := CurrentY;
   CurrentX := 1;
@@ -681,7 +817,7 @@ procedure TLCDDisplayForm.CustomChar(Index : byte; Bytes : array of byte);
 var
   X,Y : byte;
 begin
-  with Font[127+Index].Canvas do begin
+  with BWFont[127+Index].Canvas do begin
     for X := 0 to CharWidth-1 do begin
       for Y := 0 to CharHeight-1 do begin
         if ((Bytes[Y] and (1 shl X)) > 0) then
@@ -691,7 +827,7 @@ begin
       end;
     end;
   end;
-  SetBacklight(BackgroundColor = clLime);
+  CopyColorFontBitmap(BWFont[127+Index],ColorFont[127+Index]);
 end;
 
 end.
