@@ -1511,6 +1511,7 @@ begin
   for i := 1 to 24 do ButtonsListBox.Items.Delete(1);
   LCDFeaturesTabSheet.Enabled := True;
   ButtonsListBox.Items.Add('FanSpeed(1,1) (nr,divider)');
+  ButtonsListBox.Items.Add('Color(0,255,0) (R,G,B)');
 
   // Screen re-arrange populate SpinEdits
   CopyToScreenSpinEdit.Value := 1;
@@ -1558,7 +1559,7 @@ end;
 procedure TSetupForm.ActionsStringGridSelectEditor(Sender: TObject;
   aCol, aRow: integer; var Editor: TWinControl);
 var
-  Items: array [0..37] of string = ('NextTheme', 'LastTheme',
+  Items: array [0..38] of string = ('NextTheme', 'LastTheme',
     'NextScreen', 'LastScreen', 'GotoTheme(2)',
     'GotoScreen(2)', 'FreezeScreen', 'UnfreezeScreen', 'ToggleFreeze',
     'RefreshAll', 'Backlight(0/1)',
@@ -1572,7 +1573,8 @@ var
     'GPO(1-8,0/1)', 'GPOToggle(1-8)', 'SystemVolumeDown',
     'SystemVolumeMute', 'SystemVolumeUp',
     'GPOFlash(1-8,2)', 'Fan(1-3,0-255)', 'HTTPReq(URL)',
-    'HTTPPost(URL,Key1=Data1,Key2=Data2,...)', 'ActionAfterSecs(Action, seconds)', 'ActionAndDisable(Action)', 'EnableAction(ActionIndex, enabled 1/0)');
+    'HTTPPost(URL,Key1=Data1,Key2=Data2,...)', 'ActionAfterSecs(Action, seconds)', 'ActionAndDisable(Action)', 'EnableAction(ActionIndex, enabled 1/0)',
+    'ChangeColor(Red,Green,Blue)(0-255)');
 begin
   if aCol = 3 then
   begin
@@ -1583,6 +1585,8 @@ begin
   begin
     Editor := ActionsStringGrid.EditorByStyle(cbsPickList);
     TPickListCellEditor(Editor).Items.SetStrings(items);
+    TPickListCellEditor(Editor).AutoComplete := true;
+    TPickListCellEditor(Editor).AutoDropDown:=true;
   end;
   if aCol = 7 then
   begin
@@ -1606,7 +1610,6 @@ begin
   else if SourceRow > 0 then
     ActionsStringGrid.BeginDrag(False, 4);
 end;
-
 
 procedure TSetupForm.ActionsStringGridDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
@@ -2721,6 +2724,7 @@ begin
     24: VariableEdit.Text := '$Mul(2,5)';
     25: VariableEdit.Text := '$Div(10,2)';
     26: VariableEdit.Text := '$ActionEnabled(1)';
+    27: VariableEdit.Text := '$ActiveScreen';
     else
       VariableEdit.Text := NoVariable;
   end; // case
@@ -3356,14 +3360,15 @@ begin
   case ButtonsListBox.ItemIndex of
     0: VariableEdit.Text := '$MObutton';
     1: VariableEdit.Text := '$FanSpeed(1,1)';
-    2: VariableEdit.Text := '$Sensor1';
-    3: VariableEdit.Text := '$Sensor2';
-    4: VariableEdit.Text := '$Sensor3';
-    5: VariableEdit.Text := '$Sensor4';
-    6: VariableEdit.Text := '$Sensor5';
-    7: VariableEdit.Text := '$Sensor6';
-    8: VariableEdit.Text := '$Sensor7';
-    9: VariableEdit.Text := '$Sensor8';
+    2: VariableEdit.Text := '$Color(0,255,0)';
+    3: VariableEdit.Text := '$Sensor1';
+    4: VariableEdit.Text := '$Sensor2';
+    5: VariableEdit.Text := '$Sensor3';
+    6: VariableEdit.Text := '$Sensor4';
+    7: VariableEdit.Text := '$Sensor5';
+    8: VariableEdit.Text := '$Sensor6';
+    9: VariableEdit.Text := '$Sensor7';
+    10: VariableEdit.Text := '$Sensor8';
     else
       VariableEdit.Text := NoVariable;
   end; // case

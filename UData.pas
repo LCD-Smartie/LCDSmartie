@@ -560,6 +560,12 @@ begin
         + CleanString(E.Message) + ']' + postfix;
     end;
   end;
+
+  while pos('$ActiveScreen', line) <> 0 do
+  begin
+    line := StringReplace(line, '$ActiveScreen', IntToStr(LCDSmartieDisplayForm.CurrentScreen), [rfReplaceAll])
+  end;
+
 end;
 
 procedure TData.ResolveTimeVariable(var line: String);
@@ -586,6 +592,10 @@ procedure TData.ResolveLCDFunctionVariables(var line: String);
 var
   spaceline, line2 : String;
   h, iPos1, iPos2 : Integer;
+  args: Array [1..maxArgs] of String;
+  prefix, postfix: String;
+  numArgs: Cardinal;
+  r,g,b: integer;
 begin
   iPos1 :=  pos('$CustomChar(', line);
   while (iPos1 <> 0) do
@@ -628,6 +638,29 @@ begin
         + CleanString(E.Message) + ']', []);
     end;
   end;
+
+  while decodeArgs(line, '$Color', maxArgs, args, prefix, postfix, numargs)
+  do
+  begin
+    try
+      RequiredParameters(numargs, 3, 3);
+      r := strtoint(change(args[1]));
+      g := strtoint(change(args[2]));
+      b := strtoint(change(args[3]));
+      if r > 255 then r := 255;
+      if g > 255 then g := 255;
+      if b > 255 then b := 255;
+      if r < 0 then r := 0;
+      if g < 0 then g := 0;
+      if b < 0 then b := 0;
+      LCDSmartieDisplayForm.lcd.SetColor(r, g, b);
+      line := prefix + postfix;
+    except
+      on E: Exception do line := prefix + '[Color: '
+          + CleanString(E.Message) + ']' + postfix;
+    end;
+  end;
+
 end;
 
 procedure TData.ResolveStringFunctionVariables(var line: String);

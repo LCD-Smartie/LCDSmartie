@@ -39,6 +39,7 @@ type
     procedure setContrast(level: Integer); virtual;
     procedure setBrightness(level: Integer); virtual;
     procedure powerResume; virtual;
+    procedure SetColor(Red: byte; Green: byte; Blue: byte); virtual;
     constructor Create; virtual;
     destructor Destroy; override;
   end;
@@ -91,6 +92,11 @@ begin
 end;
 
 procedure TLCD.setPosition(x, y: Integer);
+begin
+  // dummy procedure - do nothing
+end;
+
+procedure TLCD.setColor(Red, Green, Blue: byte);
 begin
   // dummy procedure - do nothing
 end;

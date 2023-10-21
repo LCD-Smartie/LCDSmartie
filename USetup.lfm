@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 474
+  Left = 848
   Height = 465
-  Top = 256
+  Top = 125
   Width = 855
   Anchors = []
   Caption = 'LCD Smartie 5.x Setup'
@@ -37,7 +37,7 @@ object SetupForm: TSetupForm
     Top = 0
     Width = 590
     TabStop = False
-    ActivePage = ScreensTabSheet
+    ActivePage = ActionsTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 589
     Font.CharSet = ANSI_CHARSET
@@ -45,7 +45,7 @@ object SetupForm: TSetupForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 7
     OnChange = MainPageControlChange
     OnResize = MainPageControlResize
@@ -4055,6 +4055,7 @@ object SetupForm: TSetupForm
           '$Mul(num,num)'
           '$Div(num,num)'
           '$ActionEnabled(Action Index)'
+          '$ActiveScreen'
         )
         ItemHeight = 13
         OnClick = MiscListBoxClick
@@ -4162,6 +4163,7 @@ object SetupForm: TSetupForm
         Anchors = [akTop, akLeft, akRight, akBottom]
         Items.Strings = (
           'Buttons'
+          'Color'
         )
         ItemHeight = 13
         OnClick = ButtonsListBoxClick

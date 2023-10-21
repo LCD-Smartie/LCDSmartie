@@ -32,7 +32,7 @@ uses
   USetup, UConfig, ULCD, UData, lcdline, UExceptionLogger, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
   IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math,
-  URLThread, stdctrls, LazFileUtils;
+  URLThread, stdctrls, LazFileUtils, dateutils;
 
   { TLCDSmartieDisplayForm }
 type
@@ -207,6 +207,7 @@ type
     ConfigFileName: String;
     RestartAsAdmin: boolean;
     IdTCPServer1: TIdTCPServer;
+    scrollT: TDateTime;
     function DoGuess(line: Integer): Integer;
     procedure freeze();
     procedure DoGPO(const ftemp1, ftemp2: Integer);
@@ -243,7 +244,7 @@ type
 
     ActionLogForm: TForm;
     ActionLogMemo: TMemo;
-
+    CurrentScreen: integer;
     CContext: TIdContext;
     procedure hidelog(Sender: TObject; var CanClose: Boolean);
     procedure SetOnscreenBacklight();
@@ -295,7 +296,7 @@ begin
      (wParam = PBT_APMRESUMESUSPEND)
     then
       LCDSmartieDisplayForm.ReInitLCD();
-  end;
+
 
   // time to go to sleep
   if (wParam = PBT_APMSUSPEND) or (wParam = PBT_APMSTANDBY) then
@@ -303,7 +304,7 @@ begin
     LCDSmartieDisplayForm.FiniLCD(true);
     LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
   end;
-
+  end;
   result:= CallWindowProc(LCDSmartieDisplayForm.PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
 end;
 
@@ -624,6 +625,7 @@ begin
   SetOnscreenBacklight();
 
   InitLCD();
+
   ChangeScreen(1);
 
   LCDSmartieDisplayForm.Top  := config.MainFormPosTop;
@@ -1061,6 +1063,7 @@ begin
     ScreenNumberPanel.width := 33;
     ScreenNumberPanel.Caption := IntToStr(activetheme + 1) + ' | ' + IntToStr(activeScreen);
   end;
+  CurrentScreen := activeScreen;
 end;
 
 procedure TLCDSmartieDisplayForm.PopupMenu1Popup(Sender: TObject);
@@ -1086,7 +1089,7 @@ end;
 
 procedure TLCDSmartieDisplayForm.ScrollFlashTimerTimer(Sender: TObject);
 begin
- // ScrollFlashTimer.Interval := 0;
+  ScrollFlashTimer.Interval := 0;
   ScrollFlashTimer.Interval := config.scrollPeriod;
   canscroll := true;
   Inc(flashdelay);
@@ -1265,9 +1268,9 @@ procedure TLCDSmartieDisplayForm.TimerRefreshTimer(Sender: TObject);
 var
   counter, h, loop: Integer;
   line, CCharLine: String;
-  scrollcount: Integer;
+  scrolldone: boolean;
 begin
-  //timerRefresh.Interval := 0;
+  timerRefresh.Interval := 0;
   timerRefresh.Interval := config.refreshRate;
 
   if ((gotnewlines = false) OR (TransitionTimer.enabled = false))then
@@ -1366,27 +1369,24 @@ begin
     if (canscroll) then
     begin
       canscroll := false;
-      scrollcount := 1;
-
       doesGPOflash := not doesGPOflash;
       if (GPOflash > 0) then
       begin
         GPOflash := GPOflash -1;
         DoGPO(whatGPO, 2)
       end;
-    end
-    else
-    begin
-      scrollcount := 0;
     end;
 
     // calculate scroll positions
-
     for counter := 1 to config.height do
     begin
       if (not config.screen[activeScreen].line[counter].noscroll) then
       begin
-          ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, scrollcount));
+        if MilliSecondsBetween(now, scrollT) >= config.scrollPeriod then
+        begin
+          ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, 1));
+          scrolldone := true;
+        end;
       end
       else
         if (scrollPos[counter]>1) then // maintain manual scroll postion
@@ -1398,10 +1398,17 @@ begin
             ScreenLCD[counter].Caption := EscapeAmp(copy(parsedLine[counter], 1, config.width));
         end;
     end;
+
+    if scrolldone then
+    begin
+      scrollT := now;
+      scrolldone := false;
+    end;
   end
   else
   begin          // TransitionTimer.Enabled = true
     DoTransitions();
+    for h := 1 to config.height do LastLineLCD[h] := ''; // force display update while doing transition
   end;
 
   for h := 1 to config.height do
@@ -1432,13 +1439,6 @@ begin
       end;
     end;
   end;
-  // this loop instead of the one above writes a complete screen update
-  // but maybe incompatible with some displays
-  {for h := 1 to config.height do
-  begin
-    Lcd.setPosition(1, h);
-    Lcd.write(copy(UnescapeAmp(ScreenLCD[h].Caption) + '                                        ', 1, config.width));
-  end;}
 end;
 
 procedure TLCDSmartieDisplayForm.UpdateTimersState(InSetupState : boolean);
@@ -2031,7 +2031,6 @@ var
   numArgs: Cardinal;
   sSecondAction: String;
   uiPlugin: Cardinal;
-  URLThread: TURLThread;
   p: pointer;
   u: uint_ptr;
   ActionURLThread: TActionURLThread;
@@ -2168,6 +2167,13 @@ begin
         end;
       end;
       sAction := prefix + postfix;
+    end;
+
+    temp1 := sAction;
+    while decodeArgs(temp1, 'ChangeColor', 3, args, prefix, postfix, numargs) do
+    begin
+      temp1 := '';
+      data.change('$Color('+args[0]+','+args[1]+','+args[2]+')');
     end;
 
     if (Pos('NextTheme', sAction) <> 0) then
@@ -2455,7 +2461,6 @@ var
   scrolltext: String;
   len: Integer;
 begin
-
   if length(scrollvar) > config.width then
   begin
     scrollPos[line] := scrollPos[line] + speed;
@@ -2472,7 +2477,6 @@ begin
         config.width-length(scrolltext));
     end;
     result := scrolltext;
-
   end
   else result := scrollvar;
 end;
@@ -2646,11 +2650,11 @@ begin
 
   TempTransitionTimerInterval := ascreen.TransitionTime*100;
 
-  //TransitionTemp := TransitionTemp2;
-  TransitionTemp := ascreen.TransitionStyle;
+  TransitionTemp := TransitionTemp2;
+  TransitionTemp2 := ascreen.TransitionStyle;
 
-  //if not ascreen.enabled then TransitionTemp2 := tsNone;
-  if TransitionTemp = tsNone then TransitionTimer.Interval := 1;
+  if not ascreen.enabled then TransitionTemp2 := tsNone;
+  if TransitionTemp2 = tsNone then TempTransitionTimerInterval := 1;
 
   if (config.width >= 40) then
     ScreenNumberPanel.Caption := 'Theme: ' + IntToStr(activetheme + 1) + ' Screen: ' +
@@ -2721,10 +2725,18 @@ begin
 
   maxTransCycles := TransitionTimer.Interval div timerRefresh.Interval;
 
-  if (maxTransCycles = 0) then Exit;
-  if (TransCycle > maxTransCycles) then Exit;
+  if (TransCycle > maxTransCycles) or (maxTransCycles = 0) then
+  begin
+    CurrentScreen := activeScreen;
+    Exit;
 
-  if (TransCycle > maxTransCycles / 2) then SendCustomChars();
+  end;
+
+  if (TransCycle >= maxTransCycles / 2) then
+  begin
+    CurrentScreen := activeScreen;
+    SendCustomChars();
+  end;
 
   for x := 1 to config.height do begin
     oldline[x] := copy(oldline[x] +
@@ -2828,7 +2840,7 @@ begin
 
   // For the first half of the cycles - lower the contrast
 
-        if (TransCycle < maxTransCycles/2) then
+        if (TransCycle <= maxTransCycles/2) then
         begin
 
           x := config.DLL_contrast;
@@ -2846,7 +2858,7 @@ begin
         else
         begin
     // raise the contrast over the second half
-
+          CurrentScreen := activeScreen;
           for x := 1 to MaxLines do
           begin
             ScreenLCD[x].Caption := EscapeAmp(newline[x]);
@@ -2869,7 +2881,6 @@ begin
     end;
   end; // case
 end;
-
 
 
 ///////////////////////////////////////////////////////////////////////////////

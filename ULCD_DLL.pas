@@ -22,6 +22,7 @@ type
   TSetGPOProc = procedure(GPO : byte; GPOOn : boolean); stdcall;
   TSetFanProc = procedure(T1,T2 : byte); stdcall;
   TCustomCharIndex = function(Index : byte) : byte; stdcall;
+  TSetColorProc = procedure(Red: byte; Green: byte; Blue: byte); stdcall;
 
   TLCD_DLL = class(TLCD)
   public
@@ -35,6 +36,7 @@ type
     procedure SetContrast(Level: integer); override;
     procedure SetBrightness(Level: integer); override;
     procedure PowerResume; override;
+    procedure SetColor(Red: byte; Green: byte; Blue: byte); override;
     constructor CreateDLL(SizeX,SizeY : byte; DLLName,StartupParameters : string);
     destructor Destroy; override;
   private
@@ -54,6 +56,7 @@ type
     SetFanProc : TSetFanProc;
     CustomIndex : TCustomCharIndex;
     CustomCharIndex : array[1..8] of byte;
+    SetColorProc: TSetColorProc;
     OK : boolean;
   end;
 
@@ -110,6 +113,7 @@ begin
         SetGPOProc := GetProcAddress(MyDLL,pchar('DISPLAYDLL_SetGPO'));
         SetFanProc := GetProcAddress(MyDLL,pchar('DISPLAYDLL_SetFan'));
         CustomIndex := GetProcAddress(MyDLL,pchar('DISPLAYDLL_CustomCharIndex'));
+        SetColorProc := GetProcAddress(MyDLL,pchar('DISPLAYDLL_SetColor'));
       end;
     except
       on E:Exception do begin
@@ -245,6 +249,16 @@ begin
         Key := char(W and $FF);
         Result := true;
       end;
+    except
+    end;
+  end;
+end;
+
+procedure TLCD_DLL.SetColor(Red: byte; Green: byte; Blue: byte);
+begin
+  if OK and assigned(SetColorProc) then begin
+    try
+      SetColorProc(Red, Green, Blue);
     except
     end;
   end;
