@@ -32,7 +32,7 @@ uses
   USetup, UConfig, ULCD, UData, lcdline, UExceptionLogger, IdComponent,
   IdCustomTCPServer, IdTCPServer, IdContext, IdSSL, IdSSLOpenSSL, SysUtils,
   IdGlobal, IdIOHandler, IdIOHandlerStack, IdSSLOpenSSLHeaders, Windows, math,
-  URLThread, stdctrls, LazFileUtils, dateutils;
+  URLThread, stdctrls, LazFileUtils, dateutils, RichMemo;
 
   { TLCDSmartieDisplayForm }
 type
@@ -164,7 +164,7 @@ type
     procedure ServerConnect(AContext: TIdContext);
     procedure ServerExecute(AContext: TIdContext);
     procedure ServerDisconnect(AContext: TIdContext);
-
+    procedure ActionLogClear(Sender: TObject);
   private
     LineRightScrollImages: Array[1..MaxLines] of TImage;
     LineLCDPanels: Array[1..MaxLines] of TLCDLineFrame;
@@ -243,8 +243,11 @@ type
     sSkinDir: string;
 
     ActionLogForm: TForm;
-    ActionLogMemo: TMemo;
-    CurrentScreen: integer;
+    ActionLogMemo: TRichMemo;
+    ActionLogClearButton: TButton;
+	
+	CurrentScreen: integer;
+
     CContext: TIdContext;
     procedure hidelog(Sender: TObject; var CanClose: Boolean);
     procedure SetOnscreenBacklight();
@@ -583,8 +586,20 @@ begin
   ActionLogForm.Name := 'ActionsLog';
   ActionLogForm.Caption := 'Actions Log';
   ActionLogForm.SetBounds(config.ActionLogLeft, config.ActionLogTop, config.ActionLogWidth, config.ActionLogHeight);
-  ActionLogMemo := TMemo.create(nil);
-  ActionLogMemo.Align := alClient;
+  ActionLogMemo := TRichMemo.create(nil);
+  ActionLogMemo.Align := alNone;
+  ActionLogMemo.Anchors := [akTop, akRight, akLeft, akBottom];
+  ActionLogMemo.Width := ActionLogForm.Width;
+  ActionLogMemo.Height := ActionLogForm.Height - 50;
+  ActionLogClearButton := TButton.Create(nil);
+  ActionLogClearButton.Parent := ActionLogForm;
+  ActionLogClearButton.Width := 70;
+  ActionLogClearButton.Height := 30;
+  ActionLogClearButton.Top := ActionLogForm.Height - 40;
+  ActionLogClearButton.Left := ActionLogForm.Width - 80;
+  ActionLogClearButton.Anchors := [akRight, akBottom];
+  ActionLogClearButton.Caption := 'Clear Log';
+  ActionLogClearButton.OnClick := ActionLogClear;
   ActionLogMemo.Parent := ActionLogForm;
   ActionLogMemo.ReadOnly := true;
   ActionLogForm.OnCloseQuery := hidelog;
@@ -668,6 +683,11 @@ begin
     end;
   end;
 
+end;
+
+procedure TLCDSmartieDisplayForm.ActionLogClear(Sender: TObject);
+begin
+  ActionLogMemo.Clear;
 end;
 
 procedure TLCDSmartieDisplayForm.LoadSkin;
@@ -2025,6 +2045,8 @@ var
   p: pointer;
   u: uint_ptr;
   ActionURLThread: TActionURLThread;
+  ActionLogMemoTextStart: integer;
+  ActionLogMemoTextLen: integer;
 begin
   while ActionLogMemo.Lines.Count > 500 do
     ActionLogMemo.Lines.Delete(0);
@@ -2035,6 +2057,17 @@ begin
     temp1 := 'False';
 
   ActionLogMemo.Lines.Add(DateTimeToStr(Now) + ' ' + 'Action: ' + sAction + ' DoAction: ' + temp1);
+  ActionLogMemoTextStart := SendMessage(ActionLogMemo.handle, EM_LINEINDEX, ActionLogMemo.Lines.Count - 1, 0);
+  ActionLogMemoTextLen := SendMessage(ActionLogMemo.handle, EM_LINELENGTH, ActionLogMemoTextStart, 0);
+
+  with ActionLogMemo do
+  begin
+    if temp1 = 'True' then
+      SetRangeColor(ActionLogMemoTextStart, ActionLogMemoTextLen, clGreen)
+    else
+      SetRangeColor(ActionLogMemoTextStart, ActionLogMemoTextLen, clRed);
+  end;
+
 
   // do these first and clear the string to prevent the embedded action from being run now
   if (bDoAction) then

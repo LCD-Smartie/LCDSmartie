@@ -34,7 +34,7 @@ object SetupForm: TSetupForm
     AnchorSideBottom.Side = asrBottom
     Left = 265
     Height = 434
-    Top = 0
+    Top = 3
     Width = 590
     TabStop = False
     ActivePage = ActionsTabSheet
@@ -198,6 +198,7 @@ object SetupForm: TSetupForm
         MinValue = 1
         OnChange = ScreenSpinEditChange
         ParentFont = False
+        PopupMenu = ScreenSpinEditPopupMenu
         TabOrder = 8
         Value = 1
       end
@@ -283,7 +284,7 @@ object SetupForm: TSetupForm
       object DontScrollGroupBox: TGroupBox
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Side = asrCenter
-        Left = 457
+        Left = 471
         Height = 213
         Top = 106
         Width = 2
@@ -293,7 +294,7 @@ object SetupForm: TSetupForm
       end
       object ContinueNextLineGroupBox: TGroupBox
         AnchorSideRight.Side = asrCenter
-        Left = 505
+        Left = 519
         Height = 213
         Top = 106
         Width = 2
@@ -506,7 +507,7 @@ object SetupForm: TSetupForm
       object GroupBox9: TGroupBox
         AnchorSideLeft.Control = Line1EditButton
         AnchorSideLeft.Side = asrBottom
-        Left = 411
+        Left = 423
         Height = 75
         Top = 32
         Width = 48
@@ -534,7 +535,7 @@ object SetupForm: TSetupForm
         end
       end
       object GroupBox11: TGroupBox
-        Left = 459
+        Left = 471
         Height = 75
         Top = 32
         Width = 48
@@ -561,7 +562,7 @@ object SetupForm: TSetupForm
         end
       end
       object GroupBox12: TGroupBox
-        Left = 507
+        Left = 519
         Height = 75
         Top = 32
         Width = 48
@@ -708,9 +709,9 @@ object SetupForm: TSetupForm
         TabOrder = 28
       end
       object DontScrollLine1CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 106
@@ -722,9 +723,9 @@ object SetupForm: TSetupForm
         TabOrder = 29
       end
       object DontScrollLine2CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 132
@@ -736,9 +737,9 @@ object SetupForm: TSetupForm
         TabOrder = 30
       end
       object DontScrollLine3CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 158
@@ -750,9 +751,9 @@ object SetupForm: TSetupForm
         TabOrder = 31
       end
       object DontScrollLine4CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 184
@@ -764,9 +765,9 @@ object SetupForm: TSetupForm
         TabOrder = 32
       end
       object DontScrollLine5CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 210
@@ -778,9 +779,9 @@ object SetupForm: TSetupForm
         TabOrder = 33
       end
       object DontScrollLine6CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 236
@@ -792,9 +793,9 @@ object SetupForm: TSetupForm
         TabOrder = 34
       end
       object DontScrollLine7CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 262
@@ -806,9 +807,9 @@ object SetupForm: TSetupForm
         TabOrder = 35
       end
       object DontScrollLine8CheckBox: TCheckBox
-        AnchorSideLeft.Control = Line1ClearButton
+        AnchorSideLeft.Control = Line1UpDown
         AnchorSideLeft.Side = asrBottom
-        Left = 424
+        Left = 443
         Height = 17
         Hint = 'Don''t scroll this line.'
         Top = 288
@@ -822,7 +823,7 @@ object SetupForm: TSetupForm
       object ContinueLine1CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
         Top = 106
@@ -837,7 +838,7 @@ object SetupForm: TSetupForm
       object ContinueLine2CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
         Top = 132
@@ -852,7 +853,7 @@ object SetupForm: TSetupForm
       object ContinueLine3CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
         Top = 158
@@ -867,7 +868,7 @@ object SetupForm: TSetupForm
       object ContinueLine4CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 1 onto line 2.'
         Top = 184
@@ -882,7 +883,7 @@ object SetupForm: TSetupForm
       object ContinueLine5CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 2 onto line 3.'
         Top = 210
@@ -897,7 +898,7 @@ object SetupForm: TSetupForm
       object ContinueLine6CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
         Top = 236
@@ -912,7 +913,7 @@ object SetupForm: TSetupForm
       object ContinueLine7CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
         Top = 262
@@ -927,7 +928,7 @@ object SetupForm: TSetupForm
       object ContinueLine8CheckBox: TCheckBox
         AnchorSideLeft.Control = DontScrollGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 475
+        Left = 489
         Height = 17
         Hint = 'Continue text that doesn''t fit on line 3 onto line 4.'
         Top = 288
@@ -943,7 +944,7 @@ object SetupForm: TSetupForm
       object CenterLine1CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 106
@@ -957,7 +958,7 @@ object SetupForm: TSetupForm
       object CenterLine2CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 132
@@ -971,7 +972,7 @@ object SetupForm: TSetupForm
       object CenterLine3CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 158
@@ -985,7 +986,7 @@ object SetupForm: TSetupForm
       object CenterLine4CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 184
@@ -999,7 +1000,7 @@ object SetupForm: TSetupForm
       object CenterLine5CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 210
@@ -1013,7 +1014,7 @@ object SetupForm: TSetupForm
       object CenterLine6CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 236
@@ -1027,7 +1028,7 @@ object SetupForm: TSetupForm
       object CenterLine7CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 262
@@ -1041,7 +1042,7 @@ object SetupForm: TSetupForm
       object CenterLine8CheckBox: TCheckBox
         AnchorSideLeft.Control = ContinueNextLineGroupBox
         AnchorSideLeft.Side = asrBottom
-        Left = 525
+        Left = 539
         Height = 17
         Hint = 'Center the text in this line (if it''s shorter than a full line).'
         Top = 288
@@ -1051,118 +1052,6 @@ object SetupForm: TSetupForm
         ParentShowHint = False
         ShowHint = True
         TabOrder = 52
-      end
-      object Line1ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 106
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 53
-      end
-      object Line2ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 132
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 54
-      end
-      object Line3ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 158
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 55
-      end
-      object Line4ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 184
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 56
-      end
-      object Line5ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 210
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 57
-      end
-      object Line6ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 236
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 58
-      end
-      object Line7ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 262
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 59
-      end
-      object Line8ClearButton: TButton
-        AnchorSideLeft.Control = Line1EditButton
-        AnchorSideLeft.Side = asrBottom
-        Left = 383
-        Height = 26
-        Hint = 'Clears this line'
-        Top = 288
-        Width = 23
-        Caption = 'C'
-        OnClick = LineClearButtonClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 60
       end
       object GroupBox3: TGroupBox
         Left = 2
@@ -1174,7 +1063,7 @@ object SetupForm: TSetupForm
         ClientHeight = 38
         ClientWidth = 274
         ParentBackground = False
-        TabOrder = 61
+        TabOrder = 53
         object Button1: TButton
           Left = 8
           Height = 30
@@ -1267,6 +1156,678 @@ object SetupForm: TSetupForm
           ShowHint = True
           ParentShowHint = False
         end
+      end
+      object Line1UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 1 up or down'
+        Top = 106
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 54
+        Thousands = False
+      end
+      object Line2UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 2 up or down'
+        Top = 132
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 55
+        Thousands = False
+      end
+      object Line3UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 3 up or down'
+        Top = 158
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 56
+        Thousands = False
+      end
+      object Line4UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 4 up or down'
+        Top = 184
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 57
+        Thousands = False
+      end
+      object Line5UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 5 up or down'
+        Top = 210
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 58
+        Thousands = False
+      end
+      object Line6UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 6 up or down'
+        Top = 236
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 59
+        Thousands = False
+      end
+      object Line7UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 7 up or down'
+        Top = 262
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 60
+        Thousands = False
+      end
+      object Line8UpDown: TUpDown
+        AnchorSideLeft.Side = asrBottom
+        Left = 408
+        Height = 26
+        Hint = 'Move line 8 up or down'
+        Top = 288
+        Width = 17
+        Max = 0
+        Min = 0
+        OnClick = LineUpDownClick
+        OnContextPopup = LineUpDownContextPopup
+        ParentShowHint = False
+        PopupMenu = MoveLinePopupMenu
+        Position = 0
+        ShowHint = True
+        TabOrder = 61
+        Thousands = False
+      end
+      object Line1ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 106
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Line2ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 132
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Line3ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 158
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Line4ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 184
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Line5ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 210
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Line6ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 236
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Line7ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 262
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
+      end
+      object Line8ClearButton: TSpeedButton
+        AnchorSideLeft.Control = Line1EditButton
+        AnchorSideLeft.Side = asrBottom
+        Left = 383
+        Height = 26
+        Hint = 'Clears this line'
+        Top = 288
+        Width = 25
+        Glyph.Data = {
+          76060000424D7606000000000000360000002800000014000000140000000100
+          2000000000004006000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000F5151518C000000990000
+          009900000099000000995C5C5C4D7777770F0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000141C1C
+          1CC2000000EB000000FF000000FF000000FF000000FF000000FF000000FF1010
+          10EB0404047A0000000000000000000000000000000000000000000000000000
+          0000000000000000004A000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000D60000000A0000
+          00000000000000000000000000000000000000000052000000FA000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000CC0000000A0000000000000000000000000000
+          000A020202FF000000FF000000FF000000FF303030FF030303FF000000FF0000
+          00FF000000FF000000FF4D4D4DFF030303FF000000FF000000FF000000FF0000
+          00A300000000000000000000000000000099000000FF000000FF000000FF2929
+          29FFF2F2F2FFA8A8A8FF000000FF000000FF000000FF858585FFFFFFFFFFA8A8
+          A8FF000000FF000000FF000000FF000000FF00000029000000000000001F0000
+          00F5000000FF000000FF1F1F1FFFF5F5F5FFFFFFFFFFFFFFFFFFA8A8A8FF0303
+          03FF7A7A7AFFFFFFFFFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF000000A30000000000000033000000FF000000FF000000FF0A0A0AFFB8B8
+          B8FFFFFFFFFFFFFFFFFFFFFFFFFFD1D1D1FFFFFFFFFFFFFFFFFFFFFFFFFFD6D6
+          D6FF141414FF000000FF000000FF000000FF000000E00000000A000000990000
+          00FF000000FF000000FF000000FF000000FFB8B8B8FFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFD6D6D6FF0A0A0AFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000099000000FF000000FF000000FF000000FF0000
+          00FF0A0A0AFFEAEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2F2F2FFF0000
+          00FF000000FF000000FF000000FF000000FF000000FF0000001A000000990000
+          00FF000000FF000000FF000000FF000000FF7A7A7AFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFE2E2E2FF1B1B1BFF000000FF000000FF000000FF0000
+          00FF000000FF0000001A00000070000000FF000000FF000000FF000000FF8585
+          85FFFFFFFFFFFFFFFFFFFFFFFFFFEDEDEDFFFFFFFFFFFFFFFFFFFFFFFFFFEBEB
+          EBFF292929FF000000FF000000FF000000FF000000EB0000000F0000002E0000
+          00FC000000FF000000FF2E2E2EFFFCFCFCFFFFFFFFFFFFFFFFFFE8E8E8FF2121
+          21FF646464FFFCFCFCFFFFFFFFFFFFFFFFFF999999FF000000FF000000FF0000
+          00FF020202CC0000000000000000000000E6000000FF000000FF000000FF5757
+          57FFFFFFFFFFF4F4F4FF3B3B3BFF000000FF000000FF575757FFFFFFFFFFB2B2
+          B2FF090909FF000000FF000000FF000000FF0A0A0A7A00000000000000000000
+          0029000000FF000000FF000000FF000000FF545454FF3F3F3FFF000000FF0000
+          00FF000000FF000000FF383838FF070707FF000000FF000000FF000000FF0202
+          02F50000000000000000000000000000000000000085000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000EB000000290000000000000000000000000000
+          0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000FF000000FF000000FF000000FF000000FF000000F5000000290000
+          0000000000000000000000000000000000000000000000000000000000700000
+          00F5000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+          00FF000000C20000002900000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000080000000E6040404F50000
+          00FF010101FF000000E8000000CC111111660000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000003939391F000000330505053333333305000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = LineClearButtonClick
+        ShowHint = True
+        ParentShowHint = False
       end
     end
     object ActionsTabSheet: TTabSheet
@@ -4693,10 +5254,10 @@ object SetupForm: TSetupForm
   object BitBtn4: TBitBtn
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
-    Left = 533
+    Left = 536
     Height = 30
     Top = 434
-    Width = 75
+    Width = 70
     Anchors = [akRight, akBottom]
     Caption = '&Load'
     Kind = bkRetry
@@ -4864,6 +5425,69 @@ object SetupForm: TSetupForm
         Caption = 'File'
         OnClick = ImportFileClick
       end
+    end
+    object ActionNewMenuItem: TMenuItem
+      Caption = 'New'
+      OnClick = ActionAddButtonClick
+    end
+    object ActionDuplicateMenuItem: TMenuItem
+      Caption = 'Duplicate'
+      OnClick = DuplicateActionButtonClick
+    end
+    object ActionDeleteMenuItem: TMenuItem
+      Caption = 'Delete'
+      OnClick = ActionDeleteButtonClick
+    end
+  end
+  object MoveLinePopupMenu: TPopupMenu
+    Left = 552
+    Top = 336
+    object MoveLine1MenuItem: TMenuItem
+      Caption = 'Swap with line 1'
+      OnClick = MoveLineMenuItemClick
+    end
+    object MoveLine2MenuItem: TMenuItem
+      Caption = 'Swap with line 2'
+      OnClick = MoveLineMenuItemClick
+    end
+    object MoveLine3MenuItem: TMenuItem
+      Caption = 'Swap with line 3'
+      OnClick = MoveLineMenuItemClick
+    end
+    object MoveLine4MenuItem: TMenuItem
+      Caption = 'Swap with line 4'
+      OnClick = MoveLineMenuItemClick
+    end
+    object MoveLine5MenuItem: TMenuItem
+      Caption = 'Swap with line 5'
+      OnClick = MoveLineMenuItemClick
+    end
+    object MoveLine6MenuItem: TMenuItem
+      Caption = 'Swap with line 6'
+      OnClick = MoveLineMenuItemClick
+    end
+    object MoveLine7MenuItem: TMenuItem
+      Caption = 'Swap with line 7'
+      OnClick = MoveLineMenuItemClick
+    end
+    object MoveLine8MenuItem: TMenuItem
+      Caption = 'Swap with line 8'
+      OnClick = MoveLineMenuItemClick
+    end
+  end
+  object ScreenSpinEditPopupMenu: TPopupMenu
+    Left = 680
+    Top = 336
+    object HideScreenNoTextMenuItem: TMenuItem
+      AutoCheck = True
+      Caption = 'Hide screens with no text'
+      ShowAlwaysCheckable = True
+      OnClick = HideScreenNoTextMenuItemClick
+    end
+    object HideScreensWithTextMenuItem: TMenuItem
+      AutoCheck = True
+      Caption = 'Hide screens with text'
+      OnClick = HideScreensWithTextMenuItemClick
     end
   end
 end

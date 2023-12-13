@@ -76,7 +76,7 @@
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="6"/>
-      <BuildNr Value="1"/>
+      <BuildNr Value="3"/>
       <CharSet Value="04B0"/>
       <StringTable CompanyName="LCD Smartie Team" FileDescription="LCD Smartie Main Program" InternalName="LCDSmartie.exe"/>
     </VersionInfo>
@@ -148,13 +148,6 @@
 -dDelphi7
 -dCompiler6_Up
 -dPUREPASCAL"/>
-            <OtherDefines Count="5">
-              <Define0 Value="Borland"/>
-              <Define1 Value="Ver150"/>
-              <Define2 Value="Delphi7"/>
-              <Define3 Value="Compiler6_Up"/>
-              <Define4 Value="PUREPASCAL"/>
-            </OtherDefines>
           </Other>
         </CompilerOptions>
       </Item2>
@@ -300,28 +293,31 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="8">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="richmemopackage"/>
       </Item1>
       <Item2>
-        <PackageName Value="ExceptionLogger"/>
+        <PackageName Value="FCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="RunTimeTypeInfoControls"/>
+        <PackageName Value="ExceptionLogger"/>
       </Item3>
       <Item4>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item4>
       <Item5>
-        <PackageName Value="WinampCtrl7"/>
+        <PackageName Value="LazControls"/>
       </Item5>
       <Item6>
-        <PackageName Value="indylaz"/>
+        <PackageName Value="WinampCtrl7"/>
       </Item6>
       <Item7>
-        <PackageName Value="LCL"/>
+        <PackageName Value="indylaz"/>
       </Item7>
+      <Item8>
+        <PackageName Value="LCL"/>
+      </Item8>
     </RequiredPackages>
     <Units Count="25">
       <Unit0>

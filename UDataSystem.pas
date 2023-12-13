@@ -824,8 +824,6 @@ begin
         else
           raise Exception.Create('Bad parameters');
 
-
-
         Line := prefix + cpuval + postfix
       except
         on E: Exception do line := prefix + '[SysCPUCoreSpeed: '

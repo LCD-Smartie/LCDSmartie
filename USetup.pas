@@ -81,13 +81,35 @@ type
     DistributedNetBrowseButton: TSpeedButton;
     DistributedNetLogfileEdit: TEdit;
     Label34: TLabel;
+    ActionNewMenuItem: TMenuItem;
+    ActionDuplicateMenuItem: TMenuItem;
+    ActionDeleteMenuItem: TMenuItem;
+    Line1ClearButton: TSpeedButton;
+    Line2ClearButton: TSpeedButton;
+    Line3ClearButton: TSpeedButton;
+    Line4ClearButton: TSpeedButton;
+    Line5ClearButton: TSpeedButton;
+    Line6ClearButton: TSpeedButton;
+    Line7ClearButton: TSpeedButton;
+    Line8ClearButton: TSpeedButton;
+    HideScreenNoTextMenuItem: TMenuItem;
+    HideScreensWithTextMenuItem: TMenuItem;
+    MoveLine1MenuItem: TMenuItem;
+    MoveLine2MenuItem: TMenuItem;
+    MoveLine3MenuItem: TMenuItem;
+    MoveLine4MenuItem: TMenuItem;
+    MoveLine5MenuItem: TMenuItem;
+    MoveLine6MenuItem: TMenuItem;
+    MoveLine7MenuItem: TMenuItem;
+    MoveLine8MenuItem: TMenuItem;
+    MoveLinePopupMenu: TPopupMenu;
+    ScreenSpinEditPopupMenu: TPopupMenu;
     ShowLegacyLoaderCheckbox: TCheckBox;
     GroupBox3: TGroupBox;
     Label80: TLabel;
     PluginTypeLabel: TLabel;
     OneBySixteenLCDFixupCheckBox: TCheckBox;
     GroupBox1: TGroupBox;
-    Line1ClearButton: TButton;
     CenterLine1CheckBox: TCheckBox;
     CenterLine2CheckBox: TCheckBox;
     CenterLine3CheckBox: TCheckBox;
@@ -100,13 +122,6 @@ type
     ContrastTrackBar: TTrackBar;
     Label78: TLabel;
     Label79: TLabel;
-    Line2ClearButton: TButton;
-    Line3ClearButton: TButton;
-    Line4ClearButton: TButton;
-    Line5ClearButton: TButton;
-    Line6ClearButton: TButton;
-    Line7ClearButton: TButton;
-    Line8ClearButton: TButton;
     ShowNetStatsCheckBox: TCheckBox;
     ShowGameStatsCheckBox: TCheckBox;
     ShowBOINCCheckBox: TCheckBox;
@@ -273,6 +288,14 @@ type
     ShutdownEdit7: TMemo;
     ShutdownEdit8: TMemo;
     Splitter1: TSplitter;
+    Line1UpDown: TUpDown;
+    Line2UpDown: TUpDown;
+    Line3UpDown: TUpDown;
+    Line4UpDown: TUpDown;
+    Line5UpDown: TUpDown;
+    Line6UpDown: TUpDown;
+    Line7UpDown: TUpDown;
+    Line8UpDown: TUpDown;
     UsageLabel: TLabel;
     WebProxyPortEdit: TEdit;
     WebProxyServerEdit: TEdit;
@@ -454,6 +477,8 @@ type
     procedure ExportFileMenuItemClick(Sender: TObject);
     procedure ExportLinesButtonClick(Sender: TObject);
     procedure HidePluginMenuItemClick(Sender: TObject);
+    procedure HideScreenNoTextMenuItemClick(Sender: TObject);
+    procedure HideScreensWithTextMenuItemClick(Sender: TObject);
     procedure IconSelectComboBoxChange(Sender: TObject);
     procedure IconSelectComboBoxGetItems(Sender: TObject);
     procedure ImportClipboardClick(Sender: TObject);
@@ -468,8 +493,12 @@ type
     procedure FormChangeBounds(Sender: TObject);
     procedure InfoTimerTimer(Sender: TObject);
     procedure LeftTabsPositionComboBoxChange(Sender: TObject);
+    procedure LineUpDownContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure LineUpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure LineClearButtonClick(Sender: TObject);
     procedure MainPageControlResize(Sender: TObject);
+    procedure MoveLineMenuItemClick(Sender: TObject);
     procedure OpenPluginFolderButtonClick(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
     procedure PerfCountersListBoxClick(Sender: TObject);
@@ -583,7 +612,9 @@ type
     FormEditArray: Array [1..MaxLines] of TFormEdit;
     LineEditArray: Array[1..MaxLines] of TEdit;
     LineEditButtonArray: Array[1..MaxLines] of TSpeedButton;
-    LineClearButtonArray: Array[1..MaxLines] of TButton;
+    LineClearButtonArray: Array[1..MaxLines] of TSpeedButton;
+    LineUpDownArray: Array[1..MaxLines] of TUpDown;
+    MoveLinePopupItems: Array[1..MaxLines] of TMenuItem;
     ContinueLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
     DontScrollLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
     CenterLineCheckBoxArray: Array[1..MaxLines] of TCheckBox;
@@ -598,7 +629,6 @@ type
     ShowHiddenPlugins: boolean;
     MirrorCustomArray: TCustomArray;
     procedure LoadCCharSpeedButtonGlyphs;
-    procedure FocusToInputField;
     procedure SaveScreen(scr: integer);
     procedure LoadScreen(scr: integer);
     procedure LoadHint(DisplayDLLName: string);
@@ -1129,6 +1159,53 @@ begin
   LeftPageControl.TabPosition := config.TabsPosition;
 end;
 
+procedure TSetupForm.LineUpDownContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+var
+  loop: integer;
+begin
+  for loop := 1 to MaxLines do
+    if Sender = LineUpDownArray[loop] then
+      MoveLinePopupMenu.Tag := loop;
+end;
+
+procedure TSetupForm.LineUpDownClick(Sender: TObject; Button: TUDBtnType);
+var
+  TempLine: String;
+  loop: integer;
+  iLine: integer;
+  LineCount: integer;
+begin
+  for loop := 1 to MaxLines do
+    if not LineEditArray[loop].Visible then break;
+
+  LineCount := loop - 1;
+
+
+  with Sender as TUpDown do
+  begin
+    for loop := 1 to LineCount do
+      if Sender = LineUpDownArray[loop] then
+        iLine := loop;
+
+    TempLine := LineEditArray[iLine].Text;
+
+    if Button = btNext then
+    begin
+      if iLine = 1 then Exit; // this line can not go any higher
+      LineEditArray[iLine].Text := LineEditArray[iLine - 1].Text;
+      LineEditArray[iLine - 1].Text := TempLine;
+    end
+    else
+    if Button = btPrev then
+    begin
+      if iLine = LineCount then Exit; // this line can not go any lower
+      LineEditArray[iLine].Text := LineEditArray[iLine + 1].Text;
+      LineEditArray[iLine + 1].Text := TempLine;
+    end;
+  end;
+end;
+
 procedure TSetupForm.LineClearButtonClick(Sender: TObject);
 var
   loop: integer;
@@ -1146,6 +1223,20 @@ end;
 procedure TSetupForm.MainPageControlResize(Sender: TObject);
 begin
   MainPageControl.Invalidate;
+end;
+
+procedure TSetupForm.MoveLineMenuItemClick(Sender: TObject);
+var
+  loop: integer;
+  LineTemp: string;
+begin
+  for loop := 1 to MaxLines do
+    if Sender = MoveLinePopupItems[loop] then
+      break;
+
+  LineTemp := LineEditArray[MoveLinePopupMenu.Tag].Text;
+  LineEditArray[MoveLinePopupMenu.Tag].Text := LineEditArray[loop].Text;
+  LineEditArray[loop].Text := LineTemp;
 end;
 
 procedure TSetupForm.OpenPluginFolderButtonClick(Sender: TObject);
@@ -1766,6 +1857,8 @@ begin
     LineEditArray[loop].Enabled := True;
     LineEditButtonArray[loop].Visible := False;
     LineClearButtonArray[loop].Visible := False;
+    LineUpDownArray[loop].Visible := False;
+    MoveLinePopupItems[loop].Visible := False;
     ContinueLineCheckBoxArray[loop].Visible := False;
     DontScrollLineCheckBoxArray[loop].Visible := False;
     CenterLineCheckBoxArray[loop].Visible := False;
@@ -1782,6 +1875,8 @@ begin
     begin
       LineEditButtonArray[loop].Visible := True;
       LineClearButtonArray[loop].Visible := True;
+      LineUpDownArray[loop].Visible := True;
+      MoveLinePopupItems[loop].Visible := True;
     end;
     ContinueLineCheckBoxArray[loop].Visible := True;
     DontScrollLineCheckBoxArray[loop].Visible := True;
@@ -2489,13 +2584,56 @@ begin
 end;
 
 procedure TSetupForm.ScreenSpinEditChange(Sender: TObject);
+var
+  loop, i: integer;
+  ScreenFound: boolean;
+  direction: integer;
+  LineCount: integer;
 begin
+  for loop := 1 to MaxLines do
+    if not LineEditArray[loop].Visible then break;
+
+  LineCount := loop - 1;
+
+  direction := -1;
+  if CurrentScreen < ScreenSpinEdit.Value then
+    direction := 1;
+
+  loop := ScreenSpinEdit.Value;
+  if HideScreenNoTextMenuItem.Checked or HideScreensWithTextMenuItem.Checked then
+  begin
+    ScreenFound := false;
+    while not ScreenFound do
+    begin
+      if (loop > MaxScreens) or (loop < 1) then
+      begin
+        loop := CurrentScreen;
+        break;
+      end;
+
+      for i := 1 to LineCount do
+        if ((config.screen[loop].line[i].text <> '') and HideScreenNoTextMenuItem.Checked) or
+            ((config.screen[loop].line[i].text = '') and HideScreensWithTextMenuItem.Checked)then
+        begin
+          loop := loop;
+          ScreenFound := true;
+          break;
+        end;
+
+      if ScreenFound then break;
+
+      loop := loop+direction;
+    end;
+  end;
+  ScreenSpinEdit.OnChange:=nil;
+  ScreenSpinEdit.Value := loop;
+  ScreenSpinEdit.OnChange := ScreenSpinEditChange;
   SaveScreen(CurrentScreen);
 
   try
-    CurrentScreen := max(1, min(MaxScreens, ScreenSpinEdit.Value));
+    CurrentScreen := max(1, min(MaxScreens, loop));
   except
-    CurrentScreen := 1;
+    CurrentScreen := CurrentScreen;
   end;
   LoadScreen(CurrentScreen);
 {$IFNDEF STANDALONESETUP}
@@ -2524,32 +2662,6 @@ begin
   end
   else
     VariableEdit.Text := NoVariable;
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
-end;
-
-
-// Select currently active text field that will receive variable if 'insert'
-// is pressed.
-// I dont think this is neccessary. Also it prevents the arrow keys from being used to move through list boxes
-procedure TSetupForm.FocusToInputField;
-var
-  tempint1, tempint2: integer;
-  loop: integer;
-begin
-  if (ScreensTabSheet.Visible) then // in Screens tab
-  begin
-    for loop := 1 to MaxLines do
-      if (loop = setupbutton) and (LineEditArray[loop].Enabled) and (LineEditArray[loop].Visible) then
-      begin
-      tempint1 := LineEditArray[loop].SelStart;
-      tempint2 := LineEditArray[loop].SelLength;
-      LineEditArray[loop].SetFocus;
-      LineEditArray[loop].SelStart := tempint1;
-      LineEditArray[loop].SelLength := tempint2;
-      end;
-  end;
 end;
 
 procedure TSetupForm.InsertButtonClick(Sender: TObject);
@@ -2728,9 +2840,6 @@ begin
     else
       VariableEdit.Text := NoVariable;
   end; // case
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
 end;
 
 procedure TSetupForm.BOINCListBoxClick(Sender: TObject);
@@ -2769,9 +2878,6 @@ begin
     else
       VariableEdit.Text := NoVariable;
   end; // case
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
 end;
 
 procedure TSetupForm.LeftPageControlChange(Sender: TObject);
@@ -2847,9 +2953,6 @@ begin
     VariableEdit.Text := '$EmailSub(' + IntToStr(CurrentlyShownEmailAccount + 1) + ')'
   else if EmailLastFromRadioButton.Checked then
     VariableEdit.Text := '$EmailFrom(' + IntToStr(CurrentlyShownEmailAccount + 1) + ')';
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
 end;
 
 procedure TSetupForm.ContinueLineCheckBoxClick(Sender: TObject);
@@ -2897,14 +3000,6 @@ begin
     else
       VariableEdit.Text := NoVariable;
   end; // case
-
-  {if not (S = NoVariable) then
-  begin
-    VariableEdit.Text := S + IntToStr(GamestatsListBox.ItemIndex + 1);
-    FocusToInputField();
-  end
-  else
-    VariableEdit.Text := S; }
 end;
 
 procedure TSetupForm.LineEditEnter(Sender: TObject);
@@ -2935,9 +3030,6 @@ begin
   end
   else
     VariableEdit.Text := NoVariable;
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
 end;
 
 procedure TSetupForm.FoldingAtHomeListBoxClick(Sender: TObject);
@@ -2957,9 +3049,6 @@ begin
     else
       VariableEdit.Text := NoVariable;
   end; // case
-
-  //if not (VariableEdit.Text = NoVariable) then
-  //  FocusToInputField();
 end;
 
 // for detecting Enter being pressed in a list box
@@ -3199,6 +3288,16 @@ begin
   LineClearButtonArray[3] := Line3ClearButton; LineClearButtonArray[4] := Line4ClearButton;
   LineClearButtonArray[5] := Line5ClearButton; LineClearButtonArray[6] := Line6ClearButton;
   LineClearButtonArray[7] := Line7ClearButton; LineClearButtonArray[8] := Line8ClearButton;
+
+  LineUpDownArray[1] := Line1UpDown; LineUpDownArray[2] := Line2UpDown;
+  LineUpDownArray[3] := Line3UpDown; LineUpDownArray[4] := Line4UpDown;
+  LineUpDownArray[5] := Line5UpDown; LineUpDownArray[6] := Line6UpDown;
+  LineUpDownArray[7] := Line7UpDown; LineUpDownArray[8] := Line8UpDown;
+
+  MoveLinePopupItems[1] := MoveLine1MenuItem; MoveLinePopupItems[2] := MoveLine2MenuItem;
+  MoveLinePopupItems[3] := MoveLine3MenuItem; MoveLinePopupItems[4] := MoveLine4MenuItem;
+  MoveLinePopupItems[5] := MoveLine5MenuItem; MoveLinePopupItems[6] := MoveLine6MenuItem;
+  MoveLinePopupItems[7] := MoveLine7MenuItem; MoveLinePopupItems[8] := MoveLine8MenuItem;
 
   ContinueLineCheckBoxArray[1] := ContinueLine1CheckBox; ContinueLineCheckBoxArray[2] := ContinueLine2CheckBox;
   ContinueLineCheckBoxArray[3] := ContinueLine3CheckBox; ContinueLineCheckBoxArray[4] := ContinueLine4CheckBox;
@@ -3446,6 +3545,16 @@ begin
   hiddenDllsIni.WriteString('HiddenDlls', ExtractFileName(PluginListBox.FileName), 'Hide');
   hiddenDllsIni.Free;
   Btn_PluginRefreshClick(nil);
+end;
+
+procedure TSetupForm.HideScreenNoTextMenuItemClick(Sender: TObject);
+begin
+  HideScreensWithTextMenuItem.Checked := false;
+end;
+
+procedure TSetupForm.HideScreensWithTextMenuItemClick(Sender: TObject);
+begin
+  HideScreenNoTextMenuItem.Checked := false;
 end;
 
 // unhide an item
