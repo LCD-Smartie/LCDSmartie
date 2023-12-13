@@ -34,6 +34,41 @@ Public Class LCDSmartie
     ' The actual value used by Smartie will be the higher of this value and of the "dll check interval" setting
     ' on the Misc tab.  [This function is optional, Smartie will assume 300ms if it is not provided.]
     '
+
+    '
+    '
+    ' From 5.6 LCD Smartie support embedded info retreval for plugins to be displayed under the plugins tab on Config screen a help users to use plugins withoug searching for documentation 
+    ' The follwoing two functions are examples for the additional info 
+    Public Function SmartieDemo()
+        Dim demolist As New StringBuilder()
+
+        demolist.AppendLine("plugin info and description to be displayed here plugin for LCD Smartie")
+        demolist.AppendLine("Replace the text on the lines and add more to generate the emebdded info")
+        demolist.AppendLine("------ Function1 ------")
+        demolist.AppendLine(">>>  Description  <<<")
+        demolist.AppendLine("YSome additional info ")
+        demolist.AppendLine("The following example can be added by double clicking:  $dll(plugin,1,param1,param2)")
+        demolist.AppendLine("------ Function20 ------")
+        demolist.AppendLine(">>>  Plugin info  <<<")
+        demolist.AppendLine("example:  $dll(plugin,20, , )")
+        demolist.AppendLine("------------------------------------------------------------------------------------------------------------------")
+        demolist.AppendLine(" *** Visit ***")
+        demolist.AppendLine("> Home page")
+        demolist.AppendLine("https://lcdsmartie.sourceforge.net")
+        demolist.AppendLine("> Forums")
+        demolist.AppendLine("https://www.lcdsmartie.org")
+        demolist.AppendLine("> Active development branch (latest version)")
+        demolist.AppendLine("https://github.com/LCD-Smartie/LCDSmartie/")
+
+        Dim result As String = demolist.ToString()
+        Return result
+    End Function
+
+    Public Function SmartieInfo()
+        Return "Developer: Dev Name" & vbNewLine & "Version: 0.0 "
+    End Function
+
+    
     Public Function GetMinRefreshInterval() As Integer
 
         Return 300 ' 300 ms (around 3 times a second)

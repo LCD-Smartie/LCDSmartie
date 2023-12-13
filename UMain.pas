@@ -274,7 +274,7 @@ uses
   UCredits, ULCD_DLL, UUtils, lazutf8,
   FONTMGR, InterfaceBase, Win32Int, ComObj;
 
-// message handler
+// power broadcast message handler
 // lazarus only supports passing certain messages so we have to implement our own handler
 function WndCallback(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam):LRESULT; stdcall;
 const
@@ -286,26 +286,26 @@ const
   PBT_APMRESUMESTANDBY = 8;
   PBT_APMRESUMEAUTOMATIC = $012;
 begin
-
-  // wake up from hibernate / suspend
   if ( uMsg =  WM_POWERBROADCAST) then
   begin
-  if (wParam = PBT_APMRESUMEAUTOMATIC) or
-     (wParam = PBT_APMRESUMECRITICAL) or
-     (wParam = PBT_APMRESUMESTANDBY) or
-     (wParam = PBT_APMRESUMESUSPEND)
+    if (wParam = PBT_APMRESUMEAUTOMATIC) or
+       (wParam = PBT_APMRESUMECRITICAL) or
+       (wParam = PBT_APMRESUMESTANDBY) or
+       (wParam = PBT_APMRESUMESUSPEND)
     then
-      LCDSmartieDisplayForm.ReInitLCD();
+      LCDSmartieDisplayForm.ReInitLCD()
 
-
-  // time to go to sleep
-  if (wParam = PBT_APMSUSPEND) or (wParam = PBT_APMSTANDBY) then
-  begin
-    LCDSmartieDisplayForm.FiniLCD(true);
-    LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
-  end;
-  end;
-  result:= CallWindowProc(LCDSmartieDisplayForm.PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
+    else if (wParam = PBT_APMSUSPEND) or
+            (wParam = PBT_APMSTANDBY)
+    then
+    begin
+      LCDSmartieDisplayForm.FiniLCD(true);
+      LCDSmartieDisplayForm.Lcd := TLCD.Create(); // replace with a dummy driver.
+    end;
+    result := 0;
+  end
+  else
+    result:= CallWindowProc(LCDSmartieDisplayForm.PrevWndProc,Ahwnd,uMsg,WParam,LParam); // pass on all other messages
 end;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1481,29 +1481,20 @@ end;
 
 // ShowMenu/Minimize has been selected from the tray/popup menu
 procedure TLCDSmartieDisplayForm.ShowWindow1Click(Sender: TObject);
-var
-EXStyle: Long;
-AppHandle: THandle;
 begin
-  AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
-  EXStyle:= GetWindowLong(AppHandle, GWL_EXSTYLE);
   if LCDSmartieDisplayForm.Visible then
   begin // hide
     config.MainFormPosTop := LCDSmartieDisplayForm.Top;
     config.MainFormPosLeft := LCDSmartieDisplayForm.Left;
     config.save;
-    //SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and not WS_EX_APPWINDOW);
     LCDSmartieDisplayForm.Visible:=false;
-     // the window gets messed up when restored after being hidden while minimized
-     // I assume that when the window is unhidden the user wants to see it anyway
     WindowState := wsNormal;
   end
   else
   begin // show
     LCDSmartieDisplayForm.Top := config.MainFormPosTop;
     LCDSmartieDisplayForm.Left := config.MainFormPosLeft;
-    //SetWindowLong(AppHandle, GWL_EXSTYLE, EXStyle and WS_EX_APPWINDOW);
-    LCDSmartieDisplayForm.Visible:=true;
+    LCDSmartieDisplayForm.Visible:= true;
     ResizeHeight;
   end;
 end;
@@ -2441,7 +2432,7 @@ begin
   // Wipe the our view of the display - this will cause a full redraw.
   for x := 1 to config.height do
   begin
-    tmpline[x] := '';
+    LastLineLCD[x] := '';
   end;
 end;
 
