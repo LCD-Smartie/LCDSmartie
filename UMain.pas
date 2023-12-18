@@ -1406,7 +1406,9 @@ begin
         begin
           ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, 1));
           scrolldone := true;
-        end;
+        end
+        else
+          ScreenLCD[counter].Caption := EscapeAmp(scroll(parsedLine[counter], counter, 0))
       end
       else
         if (scrollPos[counter]>1) then // maintain manual scroll postion

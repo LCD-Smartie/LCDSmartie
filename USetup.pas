@@ -94,6 +94,8 @@ type
     Line8ClearButton: TSpeedButton;
     HideScreenNoTextMenuItem: TMenuItem;
     HideScreensWithTextMenuItem: TMenuItem;
+    HideNotEnabledMenuItem: TMenuItem;
+    HideEnabledMenuItem: TMenuItem;
     MoveLine1MenuItem: TMenuItem;
     MoveLine2MenuItem: TMenuItem;
     MoveLine3MenuItem: TMenuItem;
@@ -476,6 +478,8 @@ type
     procedure ExportFileClick(Sender: TObject);
     procedure ExportFileMenuItemClick(Sender: TObject);
     procedure ExportLinesButtonClick(Sender: TObject);
+    procedure HideEnabledMenuItemClick(Sender: TObject);
+    procedure HideNotEnabledMenuItemClick(Sender: TObject);
     procedure HidePluginMenuItemClick(Sender: TObject);
     procedure HideScreenNoTextMenuItemClick(Sender: TObject);
     procedure HideScreensWithTextMenuItemClick(Sender: TObject);
@@ -628,6 +632,7 @@ type
     DetectedOS: string;
     ShowHiddenPlugins: boolean;
     MirrorCustomArray: TCustomArray;
+    LineCount: integer;
     procedure LoadCCharSpeedButtonGlyphs;
     procedure SaveScreen(scr: integer);
     procedure LoadScreen(scr: integer);
@@ -1174,14 +1179,7 @@ var
   TempLine: String;
   loop: integer;
   iLine: integer;
-  LineCount: integer;
 begin
-  for loop := 1 to MaxLines do
-    if not LineEditArray[loop].Visible then break;
-
-  LineCount := loop - 1;
-
-
   with Sender as TUpDown do
   begin
     for loop := 1 to LineCount do
@@ -1830,7 +1828,6 @@ end;
 
 procedure TSetupForm.LCDSizeComboBoxChange(Sender: TObject);
 var
-  LineCount: integer;
   loop: integer;
 begin
   if LCDSizeComboBox.ItemIndex < 0 then LCDSizeComboBox.ItemIndex := 0;
@@ -2588,19 +2585,14 @@ var
   loop, i: integer;
   ScreenFound: boolean;
   direction: integer;
-  LineCount: integer;
 begin
-  for loop := 1 to MaxLines do
-    if not LineEditArray[loop].Visible then break;
-
-  LineCount := loop - 1;
-
   direction := -1;
   if CurrentScreen < ScreenSpinEdit.Value then
     direction := 1;
 
   loop := ScreenSpinEdit.Value;
-  if HideScreenNoTextMenuItem.Checked or HideScreensWithTextMenuItem.Checked then
+  if HideScreenNoTextMenuItem.Checked or HideScreensWithTextMenuItem.Checked or
+    HideNotEnabledMenuItem.Checked or HideEnabledMenuItem.Checked then
   begin
     ScreenFound := false;
     while not ScreenFound do
@@ -2612,13 +2604,30 @@ begin
       end;
 
       for i := 1 to LineCount do
-        if ((config.screen[loop].line[i].text <> '') and HideScreenNoTextMenuItem.Checked) or
-            ((config.screen[loop].line[i].text = '') and HideScreensWithTextMenuItem.Checked)then
-        begin
-          loop := loop;
-          ScreenFound := true;
-          break;
-        end;
+      begin
+        if HideScreenNoTextMenuItem.Checked then
+          if config.screen[loop].line[i].text <> '' then
+          begin
+            ScreenFound := true;
+            break;
+          end;
+
+        if HideScreensWithTextMenuItem.Checked then
+          if config.screen[loop].line[i].text = '' then
+          begin
+            ScreenFound := true;
+          end
+          else
+          begin
+            ScreenFound := false;
+            break;
+          end;
+      end;
+      if HideNotEnabledMenuItem.Checked and config.screen[loop].settings.enabled then
+        ScreenFound := true;
+
+      if HideEnabledMenuItem.Checked and not config.screen[loop].settings.enabled then
+        ScreenFound := true;
 
       if ScreenFound then break;
 
@@ -3550,11 +3559,29 @@ end;
 procedure TSetupForm.HideScreenNoTextMenuItemClick(Sender: TObject);
 begin
   HideScreensWithTextMenuItem.Checked := false;
+  HideNotEnabledMenuItem.Checked := false;
+  HideEnabledMenuItem.Checked := false;
 end;
 
 procedure TSetupForm.HideScreensWithTextMenuItemClick(Sender: TObject);
 begin
   HideScreenNoTextMenuItem.Checked := false;
+  HideNotEnabledMenuItem.Checked := false;
+  HideEnabledMenuItem.Checked := false;
+end;
+
+procedure TSetupForm.HideNotEnabledMenuItemClick(Sender: TObject);
+begin
+  HideScreensWithTextMenuItem.Checked := false;
+  HideScreenNoTextMenuItem.Checked := false;
+  HideEnabledMenuItem.Checked := false;
+end;
+
+procedure TSetupForm.HideEnabledMenuItemClick(Sender: TObject);
+begin
+  HideScreensWithTextMenuItem.Checked := false;
+  HideScreenNoTextMenuItem.Checked := false;
+  HideNotEnabledMenuItem.Checked := false;
 end;
 
 // unhide an item
