@@ -2058,7 +2058,7 @@ begin
   else
     temp1 := 'False';
 
-  ActionLogMemo.Lines.Add(DateTimeToStr(Now) + ' ' + 'Action: ' + sAction + ' DoAction: ' + temp1);
+  ActionLogMemo.Lines.Add(DateTimeToStr(Now) + ' Rule: ' + inttostr(ActionIndex) + ' Action: ' + sAction + ' DoAction: ' + temp1);
   ActionLogMemoTextStart := SendMessage(ActionLogMemo.handle, EM_LINEINDEX, ActionLogMemo.Lines.Count - 1, 0);
   ActionLogMemoTextLen := SendMessage(ActionLogMemo.handle, EM_LINELENGTH, ActionLogMemoTextStart, 0);
 

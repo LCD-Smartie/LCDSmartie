@@ -84,6 +84,8 @@ type
     ActionNewMenuItem: TMenuItem;
     ActionDuplicateMenuItem: TMenuItem;
     ActionDeleteMenuItem: TMenuItem;
+    Label81: TLabel;
+    Label82: TLabel;
     Line1ClearButton: TSpeedButton;
     Line2ClearButton: TSpeedButton;
     Line3ClearButton: TSpeedButton;
@@ -3561,6 +3563,7 @@ begin
   HideScreensWithTextMenuItem.Checked := false;
   HideNotEnabledMenuItem.Checked := false;
   HideEnabledMenuItem.Checked := false;
+  if HideScreenNoTextMenuItem.Checked then Label81.Caption := 'Configured screens' else Label81.Caption := 'All screens'
 end;
 
 procedure TSetupForm.HideScreensWithTextMenuItemClick(Sender: TObject);
@@ -3568,6 +3571,7 @@ begin
   HideScreenNoTextMenuItem.Checked := false;
   HideNotEnabledMenuItem.Checked := false;
   HideEnabledMenuItem.Checked := false;
+  if HideScreensWithTextMenuItem.Checked then Label81.Caption := 'Empty screens' else Label81.Caption := 'All screens'
 end;
 
 procedure TSetupForm.HideNotEnabledMenuItemClick(Sender: TObject);
@@ -3575,6 +3579,7 @@ begin
   HideScreensWithTextMenuItem.Checked := false;
   HideScreenNoTextMenuItem.Checked := false;
   HideEnabledMenuItem.Checked := false;
+  if HideNotEnabledMenuItem.Checked then Label81.Caption := 'Enabled screens' else Label81.Caption := 'All screens'
 end;
 
 procedure TSetupForm.HideEnabledMenuItemClick(Sender: TObject);
@@ -3582,6 +3587,7 @@ begin
   HideScreensWithTextMenuItem.Checked := false;
   HideScreenNoTextMenuItem.Checked := false;
   HideNotEnabledMenuItem.Checked := false;
+  if HideEnabledMenuItem.Checked then Label81.Caption := 'Disabled screens' else Label81.Caption := 'All screens'
 end;
 
 // unhide an item

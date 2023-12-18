@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 482
+  Left = 624
   Height = 465
-  Top = 226
+  Top = 386
   Width = 855
   Anchors = []
   Caption = 'LCD Smartie 5.x Setup'
@@ -188,6 +188,7 @@ object SetupForm: TSetupForm
       object ScreenSpinEdit: TSpinEdit
         Left = 48
         Height = 21
+        Hint = 'Right click to set filters'
         Top = 13
         Width = 41
         Font.CharSet = ANSI_CHARSET
@@ -198,7 +199,9 @@ object SetupForm: TSetupForm
         MinValue = 1
         OnChange = ScreenSpinEditChange
         ParentFont = False
+        ParentShowHint = False
         PopupMenu = ScreenSpinEditPopupMenu
+        ShowHint = True
         TabOrder = 8
         Value = 1
       end
@@ -208,7 +211,7 @@ object SetupForm: TSetupForm
         Hint = 'Rather than automatically selecting in sequence, chose them randomly.'
         Top = 352
         Width = 110
-        Anchors = [akLeft, akBottom]
+        Anchors = [akRight, akBottom]
         Caption = '&Randomize screens'
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWindowText
@@ -2284,6 +2287,21 @@ object SetupForm: TSetupForm
         OnClick = LineClearButtonClick
         ShowHint = True
         ParentShowHint = False
+      end
+      object Label81: TLabel
+        Left = 312
+        Height = 13
+        Top = 16
+        Width = 145
+        AutoSize = False
+        Caption = 'All screens'
+      end
+      object Label82: TLabel
+        Left = 263
+        Height = 13
+        Top = 16
+        Width = 44
+        Caption = 'Showing:'
       end
     end
     object ActionsTabSheet: TTabSheet
@@ -5942,7 +5960,7 @@ object SetupForm: TSetupForm
   end
   object ScreenSpinEditPopupMenu: TPopupMenu
     Left = 680
-    Top = 336
+    Top = 344
     object HideScreenNoTextMenuItem: TMenuItem
       AutoCheck = True
       Caption = 'Hide screens with no text'
@@ -5956,7 +5974,7 @@ object SetupForm: TSetupForm
     end
     object HideNotEnabledMenuItem: TMenuItem
       AutoCheck = True
-      Caption = 'Hide not enabled screens'
+      Caption = 'Hide non enabled screens'
       OnClick = HideNotEnabledMenuItemClick
     end
     object HideEnabledMenuItem: TMenuItem
