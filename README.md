@@ -14,6 +14,13 @@ Some changes of note:
 A more detailed list of changes can be found on [version changes](Documents/VersionChanges.md) document. 
 
 
+### Program screenshots
+Main interface\
+ ![Main Interface](/Documents/main_interface_5.6.png) <br />
+
+Config interface\
+ ![Main Interface](/Documents/config_interface_5.6.png) <br />
+
 ### Issues
 Please use the Github issues tab to report issues with the program and
 please join the community at https://lcdsmartie.org/forums for help and support in using the program or to make suggestions for future development
