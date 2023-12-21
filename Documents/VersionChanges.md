@@ -1,5 +1,5 @@
 
-**Version changes on v5.6**
+**Changes on v5.6**
 
  - The Setup interface is now sizeable.
  - The Side tabs appearance can be customised. User can select tabs
