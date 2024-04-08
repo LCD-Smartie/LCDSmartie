@@ -3868,8 +3868,8 @@ begin
     (Pos('***', lowercase(ListBox.Items[Index])) = 1)  or
     (Pos('>>>', lowercase(ListBox.Items[Index])) = 1)) then
     begin
-    Canvas.Brush.Color := config.demoColC;
-    Canvas.Font.Bold := true;
+       Canvas.Brush.Color := config.demoColC;
+      Canvas.Font.Bold := true;
     end
   else
   if ((Pos('--', lowercase(ListBox.Items[Index])) = 1) or

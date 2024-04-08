@@ -1392,7 +1392,7 @@ begin
         DoGPO(whatGPO, 2)
       end;
     end;
-
+    scrolldone := false;
     // calculate scroll positions
     for counter := 1 to config.height do
     begin
@@ -1420,7 +1420,6 @@ begin
     if scrolldone then
     begin
       scrollT := now;
-      scrolldone := false;
     end;
   end
   else
@@ -2472,7 +2471,7 @@ begin
   end;
 end;
 
-function TLCDSmartieDisplayForm.scroll(const scrollvar: String;const line, speed: Integer):
+function TLCDSmartieDisplayForm.scroll(const scrollvar: String; const line, speed: Integer):
   String;
 var
   scrolltext: String;

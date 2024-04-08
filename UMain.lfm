@@ -27,7 +27,7 @@ object LCDSmartieDisplayForm: TLCDSmartieDisplayForm
   Position = poDefault
   SnapOptions.SnapToMonitor = True
   SnapOptions.SnapToForms = True
-  LCLVersion = '3.0.0.1'
+  LCLVersion = '3.2.0.0'
   Scaled = False
   object BarLeftImage: TImage
     Left = 0

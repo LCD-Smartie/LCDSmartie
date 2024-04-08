@@ -962,6 +962,7 @@ function TData.FindPlugin(const sDllName: String): Cardinal;
 var
   uiDll: Cardinal;
   sLoadDllName: String;
+  exceptionString: String;
 begin
   // for speed reason - check if this is the same plugin as the last one:
   if (sDllName = cache_lastFindPlugin) then
@@ -985,7 +986,12 @@ begin
         on E: Exception do
         begin
           //showmessage('Load of plugin failed: ' + e.Message); // bloody annoying popup
-          dllmessage := e.Message; // save it here instead so we can print it out later
+          case (config.ExceptionOption) of
+            0: exceptionString := E.Message;
+            1: exceptionString := config.ExceptionText;
+            2: exceptionString := ''
+          end;
+          dllmessage := exceptionString; // save it here instead so we can print it out later
         end;
       end;
     end;
