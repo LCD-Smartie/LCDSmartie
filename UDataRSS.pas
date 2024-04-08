@@ -202,6 +202,7 @@ var
   items: Cardinal;
   titles: Array[0..MaxRSSItems] of String;
   descs: Array[0..MaxRSSItems] of String;
+  exceptionString: string;
 begin
   for counter := 0 to RSSEntries-1 do
   begin
@@ -243,11 +244,16 @@ begin
         on E: Exception do
         begin
           fDataLock.Enter();
+          case (config.ExceptionOption) of
+            0: exceptionString := '[Rss: ' + E.Message + ']';
+            1: exceptionString := config.ExceptionText;
+            2: exceptionString := ''
+          end;
           try
             RSS[counter].items := 0;
-            RSS[counter].title[0] := '[Rss: ' + E.Message + ']';
-            RSS[counter].desc[0] := '[Rss: ' + E.Message + ']';
-            RSS[counter].whole := '[Rss: ' + E.Message + ']';
+            RSS[counter].title[0] := exceptionString;
+            RSS[counter].desc[0] := exceptionString;
+            RSS[counter].whole := exceptionString;
           finally
             fDataLock.Leave();
           end;

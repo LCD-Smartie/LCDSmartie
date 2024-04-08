@@ -68,6 +68,7 @@ var
   SSLHandler: TIdSSLIOHandlerSocketOpenSSL; //ssl added 20/03/2006 by vcorp // long in needs of updating then
   myGotEmail: Boolean;
   messages: Integer;
+  exceptionString: string;
 begin
   fillchar(CheckForMail,sizeof(CheckForMail),$00);
 
@@ -180,10 +181,15 @@ begin
         on E: Exception do
         begin
           fDataLock.Enter();
+          case (config.ExceptionOption) of
+            0: exceptionString := '[email: ' + E.Message + ']';
+            1: exceptionString := config.ExceptionText;
+            2: exceptionString := ''
+          end;
           try
             fMail[AccountLoop].messages := 0;
-            fMail[AccountLoop].lastSubject := '[email: ' + E.Message + ']';
-            fMail[AccountLoop].lastFrom := '[email: ' + E.Message + ']';
+            fMail[AccountLoop].lastSubject := exceptionString;
+            fMail[AccountLoop].lastFrom := exceptionString;
           finally
             fDataLock.Leave();
           end;

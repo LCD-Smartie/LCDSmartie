@@ -65,6 +65,7 @@ var
   screenline: String;
   srvr: String;
   sTemp: String;
+  exceptionString: string;
 begin
   for ScreenCount := 1 to MaxScreens do
   begin
@@ -155,11 +156,16 @@ begin
         on E: Exception do
         begin
           fDataLock.Enter();
+          case (config.ExceptionOption) of
+            0: exceptionString := '[Exception: ' + E.Message + ']';
+            1: exceptionString := config.ExceptionText;
+            2: exceptionString := ''
+          end;
           try
-            qstatreg1[ScreenCount, LineCount] := '[Exception: ' + E.Message + ']';
-            qstatreg2[ScreenCount, LineCount] := '[Exception: ' + E.Message + ']';
-            qstatreg3[ScreenCount, LineCount] := '[Exception: ' + E.Message + ']';
-            qstatreg4[ScreenCount, LineCount] := '[Exception: ' + E.Message + ']';
+            qstatreg1[ScreenCount, LineCount] := exceptionString;
+            qstatreg2[ScreenCount, LineCount] := exceptionString;
+            qstatreg3[ScreenCount, LineCount] := exceptionString;
+            qstatreg4[ScreenCount, LineCount] := exceptionString;
           finally
             fDataLock.Leave();
           end;

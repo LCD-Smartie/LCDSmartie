@@ -68,6 +68,7 @@ var
   JsonTeam: myJSONItem;
   iRank: integer;
   i: integer;
+  exceptionString: string;
 begin
   try
     JsonStats := myJSONItem.Create;
@@ -118,17 +119,22 @@ begin
     on E: Exception do
     begin
       fDataLock.Enter();
+      case (config.ExceptionOption) of
+        0: exceptionString := '[fold: ' + E.Message + ']';
+        1: exceptionString := config.ExceptionText;
+        2: exceptionString := ''
+      end;
       try
-        foldLastWU := '[fold: ' + E.Message + ']';
-        foldActClientsWeek := '[fold: ' + E.Message + ']';
-        foldActClientsFiftyMin := '[fold: ' + E.Message + ']';
-        foldTeamName := '[fold: ' + E.Message + ']';
-        foldTeamScore := '[fold: ' + E.Message + ']';
-        foldTeamWU := '[fold: ' + E.Message + ']';
-        foldTeamLastWU := '[fold: ' + E.Message + ']';
-        foldScore := '[fold: ' + E.Message + ']';
-        foldRank := '[fold: ' + E.Message + ']';
-        foldWU := '[fold: ' + E.Message + ']';
+        foldLastWU := exceptionString;
+        foldActClientsWeek := exceptionString;
+        foldActClientsFiftyMin := exceptionString;
+        foldTeamName := exceptionString;
+        foldTeamScore := exceptionString;
+        foldTeamWU := exceptionString;
+        foldTeamLastWU := exceptionString;
+        foldScore := exceptionString;
+        foldRank := exceptionString;
+        foldWU := exceptionString;
       finally
         fDataLock.Leave();
       end;

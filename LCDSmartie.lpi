@@ -76,8 +76,8 @@
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="5"/>
       <MinorVersionNr Value="6"/>
-      <RevisionNr Value="1"/>
-      <BuildNr Value="1"/>
+      <RevisionNr Value="2"/>
+      <BuildNr Value="2"/>
       <CharSet Value="04B0"/>
       <StringTable CompanyName="LCD Smartie Team" FileDescription="LCD Smartie Main Program" InternalName="LCDSmartie.exe"/>
     </VersionInfo>
@@ -505,7 +505,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="4">
+    <Exceptions Count="5">
       <Item1>
         <Name Value="EIdHTTPProtocolException"/>
       </Item1>
@@ -518,6 +518,9 @@
       <Item4>
         <Name Value="EInOutError"/>
       </Item4>
+      <Item5>
+        <Name Value="EConvertError"/>
+      </Item5>
     </Exceptions>
   </Debugging>
 </CONFIG>

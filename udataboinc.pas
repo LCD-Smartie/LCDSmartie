@@ -170,6 +170,7 @@ var
   ANode, HostNode: TDOMNode;
   BoincFilename, reqURL, PasswordHash: String;
   i: integer;
+  exceptionString: string;
 begin
   // first get the server config to find the base rpc url
   reqURL := Server+'get_project_config.php';
@@ -307,16 +308,22 @@ begin
     begin
       fDataLock.Enter();
       try
-        BoincStats[serverindex].id := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].cpid := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].create_time := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].name := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].country := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].total_credit := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].expavg_credit := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].expavg_time := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].teamid := '[BOINC: ' + E.Message + ']';
-        BoincStats[serverindex].url := '[BOINC: ' + E.Message + ']';
+        case (config.ExceptionOption) of
+        0: exceptionString := '[BOINC: ' + E.Message + ']';
+        1: exceptionString := config.ExceptionText;
+        2: exceptionString := ''
+        end;
+
+        BoincStats[serverindex].id := exceptionString;
+        BoincStats[serverindex].cpid := exceptionString;
+        BoincStats[serverindex].create_time := exceptionString;
+        BoincStats[serverindex].name := exceptionString;
+        BoincStats[serverindex].country := exceptionString;
+        BoincStats[serverindex].total_credit := exceptionString;
+        BoincStats[serverindex].expavg_credit := exceptionString;
+        BoincStats[serverindex].expavg_time := exceptionString;
+        BoincStats[serverindex].teamid := exceptionString;
+        BoincStats[serverindex].url := exceptionString;
       finally
         fDataLock.Leave();
       end;

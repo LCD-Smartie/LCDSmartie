@@ -160,7 +160,7 @@ var
   posParen, posFuncStart, posArgsStart, posArgsEnd, posComma, posComma2: Integer;
   posTemp: Integer;
   uiLevel: Cardinal;
-  iStrLen, i: Integer;
+  iStrLen: Integer;
 begin
   Result := true;
   numArgs := 0;

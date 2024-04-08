@@ -241,13 +241,10 @@ type
     DisplayError: boolean;
     StartTime: TDATETIME;
     sSkinDir: string;
-
     ActionLogForm: TForm;
     ActionLogMemo: TRichMemo;
     ActionLogClearButton: TButton;
-	
-	CurrentScreen: integer;
-
+    CurrentScreen: integer;
     CContext: TIdContext;
     procedure hidelog(Sender: TObject; var CanClose: Boolean);
     procedure SetOnscreenBacklight();
@@ -694,7 +691,6 @@ procedure TLCDSmartieDisplayForm.LoadSkin;
 var
   sSkinPath: String;
   IconPath: string;
-  hIcon: TIcon;
   loop: byte;
 begin
   try
@@ -1818,7 +1814,6 @@ end;
 procedure TLCDSmartieDisplayForm.InitLCD();
 var
   i: Integer;
-  w, h: integer;
 begin
   // Sync the display to our current view of the custom chars.
   for i:= 1 to 8 do
@@ -1863,10 +1858,9 @@ end;
 
 procedure TLCDSmartieDisplayForm.FiniLCD(WriteShutdownMessage : boolean);
 var
-  h,x : integer;
+  h : integer;
   row : string;
 begin
-
   timerRefresh.enabled := false;  // stop updates to lcd
 
   try
@@ -1876,8 +1870,6 @@ begin
         for h := 1 to config.Height do
           begin
             row := Data.change(Config.ShutdownMessage[h]); // now we can use variables in shutdown message
-
-            //for x := length(row)+1 to config.Width do
             row := copy(row + '                                                                                                   ', 0, config.Width);
 
             if config.OneBySixteenFixup then
@@ -2102,22 +2094,6 @@ begin
 
   // Handle actions have do something when they are activated and de-activated.
 
-  if (pos('Backlight(', sAction) <> 0) then
-  begin
-    temp1 := copy(sAction, pos('(', sAction) + 1, 1);
-
-    if (temp1 = '0') or (temp1 = '1') then
-    begin
-      iTemp := 1;
-      if temp1 = '0' then iTemp := 0;
-
-      if (not bDoAction) then
-        iTemp := 1 - iTemp;
-
-      backlit(iTemp);
-    end;
-  end;
-
   if (pos('GPO(', sAction) <> 0) then
   begin
     temp1 := copy(sAction, pos('(', sAction) + 1,
@@ -2142,7 +2118,6 @@ begin
       end;
     end;
   end;
-
 
   if (pos('EnableScreen(', sAction) <> 0) then
   begin
@@ -2179,6 +2154,22 @@ begin
   // Handle actions that only do something when activated.
   if (bDoAction) then
   begin
+    if (pos('Backlight(', sAction) <> 0) then
+    begin
+      temp1 := copy(sAction, pos('(', sAction) + 1, 1);
+
+      if (temp1 = '0') or (temp1 = '1') then
+      begin
+        iTemp := 1;
+        if temp1 = '0' then iTemp := 0;
+
+        if (not bDoAction) then
+          iTemp := 1 - iTemp;
+
+        backlit(iTemp);
+      end;
+    end;
+
     while decodeArgs(sAction, '$dll', maxArgs, args, prefix, postfix, numargs) do
     begin
       if (numargs = 4) then

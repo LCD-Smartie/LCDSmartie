@@ -27,7 +27,7 @@ unit UConfig;
 
 interface
 
-Uses  Windows, SysUtils, Classes, comctrls;
+Uses  Windows, SysUtils, Classes, comctrls, Graphics;
 
 const
   sMyConfigFileFormatVersion = '1.0';
@@ -270,6 +270,16 @@ type
     TabsPosition: TTabPosition;
     OneBySixteenFixup: Boolean;
     Snapping: Boolean;
+    ExceptionOption: integer;
+    ExceptionText: string;
+    // plugin demos colors
+    demoColA: TColor;
+    demoColB: TColor;
+    demoColC: TColor;
+    demoColD: TColor;
+    demoColE: TColor;
+    demoColF: TColor;
+
     function load: Boolean;
     procedure save;
     property ScreenSize: Integer read fScreenSize write SetScreenSize;
@@ -290,7 +300,11 @@ constructor TConfig.Create(filename: String);
 begin
   sFileName := filename;
   xiMinFadeContrast := 0;
-  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, localeFormat);
+  try
+    GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, localeFormat);
+  except
+    raise ;
+  end;
   RSSList.Names := TStringList.Create;
   RSSList.Addresses := TStringList.Create;
   inherited Create();
@@ -342,7 +356,7 @@ begin
     result := false;
     Exit;
   end;
-   //initfile.Encoding.Free;
+   initfile.Encoding.UTF8;
 //  sConfigFileFormatVersion := initfile.ReadString('Versions',
 //    'ConfigFileFormat', '1.0');
 //  sScreenTextSyntaxVersion := initfile.ReadString('Versions',
@@ -672,6 +686,15 @@ begin
   OneBySixteenFixup := initfile.ReadBool('General Settings', 'OneBySixteenFixup', False);
   ShowLegacyLoader := initfile.ReadBool('General Settings', 'ShowLegacyLoader', False);
   Snapping := initfile.ReadBool('General Settings', 'Snapping', False);
+  ExceptionOption := initfile.ReadInteger('General Settings', 'ExceptionOption', 0);
+  ExceptionText := initFile.ReadString('General Settings', 'ExceptionText', 'ExExEx');
+
+  demoColA := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColA', '$00A2CBFF'));
+  demoColB := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColB', '$00F5872C'));
+  demoColC := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColC', '$00C891FF'));
+  demoColD := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColD', '$005656FF'));
+  demoColE := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColE', '$00B3FFFF'));
+  demoColF := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColF', '$009EF39E'));
 
   result := true;
   initfile.Free;
@@ -694,14 +717,25 @@ begin
     sMyScreenTextSyntaxVersion);
   initfile.WriteBool('General Settings', 'AppendConfigName', AppendConfigName);
   initfile.WriteString('General Settings', 'MainFormCaption', MainFormCaption);
+
+  // Form positions. Discard negative numbers to prevent
+  // forms displaying off screen in some situations
+  if MainFormPosTop < 0 then MainFormPosTop := 0;
   initfile.WriteInteger('General Settings', 'MainFormPosTop', MainFormPosTop);
+  if MainFormPosLeft < 0 then MainFormPosLeft := 0;
   initfile.WriteInteger('General Settings', 'MainFormPosLeft', MainFormPosLeft);
+  if SettingsFormPosTop < 0 then SettingsFormPosTop := 0;
   initfile.WriteInteger('General Settings', 'SettingsFormPosTop', SettingsFormPosTop);
+  if SettingsFormPosLeft < 0 then SettingsFormPosLeft := 0;
   initfile.WriteInteger('General Settings', 'SettingsFormPosLeft', SettingsFormPosLeft);
+  if EditFormPosTop < 0 then EditFormPosTop := 0;
   initfile.WriteInteger('General Settings', 'EditFormPosTop', EditFormPosTop);
+  if EditFormPosLeft < 0 then EditFormPosLeft := 0;
+  initfile.WriteInteger('General Settings', 'EditFormPosLeft', EditFormPosLeft);
+
   initfile.WriteInteger('General Settings', 'SettingsFormPosHeight', SettingsFormPosHeight);
   initfile.WriteInteger('General Settings', 'SettingsFormPosWidth', SettingsFormPosWidth);
-  initfile.WriteInteger('General Settings', 'EditFormPosLeft', EditFormPosLeft);
+
   initfile.WriteInteger('General Settings', 'EditFormPosHeight', EditFormPosHeight);
   initfile.WriteInteger('General Settings', 'EditFormPosWidth', EditFormPosWidth);
 
@@ -953,6 +987,14 @@ begin
   initfile.WriteBool('General Settings', 'OneBySixteenFixup', OneBySixteenFixup);
   initfile.WriteBool('General Settings', 'ShowLegacyLoader', ShowLegacyLoader);
   initfile.WriteBool('General Settings', 'Snapping', Snapping);
+  initfile.WriteInteger('General Settings', 'ExceptionOption', ExceptionOption);
+  initFile.WriteString('General Settings', 'ExceptionText', ExceptionText);
+  initfile.WriteString('Plugin Demo Colors', 'demoColA', ColorToString(demoColA));
+  initfile.WriteString('Plugin Demo Colors', 'demoColB', ColorToString(demoColB));
+  initfile.WriteString('Plugin Demo Colors', 'demoColC', ColorToString(demoColC));
+  initfile.WriteString('Plugin Demo Colors', 'demoColD', ColorToString(demoColD));
+  initfile.WriteString('Plugin Demo Colors', 'demoColE', ColorToString(demoColE));
+  initfile.WriteString('Plugin Demo Colors', 'demoColF', ColorToString(demoColF));
 
   initfile.UpdateFile;
   initfile.Free;

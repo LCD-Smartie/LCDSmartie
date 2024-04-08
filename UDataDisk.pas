@@ -5,7 +5,7 @@ unit UDataDisk;
 interface
 
 uses
-  DataThread, windows, UMain;
+  DataThread, windows, UMain, UConfig;
 
 const
   HDKey = '$HD';
@@ -232,6 +232,7 @@ var
   numArgs: Cardinal;
   letter : Cardinal;
   MyKey : string;
+  exceptionString: string;
 begin
   MyKey := HDKeys[HDStat];
   while decodeArgs(Line, MyKey, maxArgs, args, prefix, postfix, numargs) do begin
@@ -267,7 +268,15 @@ begin
       end;
       Line := Line + postfix;
     except
-      on E: Exception do Line := prefix + '['+ CleanString(MyKey + ': ' + E.Message) + ']' + postfix;
+      on E: Exception do
+      begin
+        case (config.ExceptionOption) of
+        0: exceptionString := '['+ CleanString(MyKey + ': ' + E.Message) + ']';
+        1: exceptionString := config.ExceptionText;
+        2: exceptionString := ''
+        end;
+        Line := prefix + exceptionString + postfix;
+      end;
     end;
   end;
 end;

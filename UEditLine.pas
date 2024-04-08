@@ -25,23 +25,9 @@ type
 var
   FormEdit: TFormEdit;
 
-procedure DoEditLineForm;
-
 implementation
 
 {$R *.lfm}
-
-procedure DoEditLineForm;
-var
-  EditLineForm: TFormEdit;
-begin
-
-  {EditLineForm := TFormEdit.Create(nil);
-  with EditLineForm do begin
-    ShowModal;
-    Free;
-  end;}
-end;
 
 { TFormEdit }
 

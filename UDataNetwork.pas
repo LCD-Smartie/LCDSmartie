@@ -5,7 +5,7 @@ unit UDataNetwork;
 interface
 
 uses
-  SysUtils, DataThread, UMain;
+  SysUtils, DataThread, UMain, UConfig;
 
 type
   TNetworkStatistics =
@@ -275,6 +275,7 @@ var
   prefix, postfix: String;
   numArgs: Cardinal;
   adapterNum: Cardinal;
+  exceptionString: string;
 begin
   VarKey := NetworkStatisticsKeys[Variable];
   while decodeArgs(Line, VarKey, maxArgs, args, prefix, postfix, numargs) do begin
@@ -287,7 +288,7 @@ begin
         try
           case Variable of
             nsNetIPAddress : Line := Line + netadapterip;
-			nsNetAdapter : Line := Line + netadaptername;
+	    nsNetAdapter : Line := Line + netadaptername;
             nsNetDownK : Line := Line + FloatToStrF(Round(iNetTotalDown/1024*10)/10,ffFixed, 18, 1, localeFormat);
             nsNetUpK : Line := Line + FloatToStrF(Round(iNetTotalUp/1024*10)/10,ffFixed, 18, 1, localeFormat);
             nsNetDownM : Line := Line + FloatToStrF(Round((iNetTotalDown div 1024)/1024*10)/10,ffFixed, 18, 1, localeFormat);
@@ -318,7 +319,16 @@ begin
       end;
       Line := Line + postfix;
     except
-      on E: Exception do Line := prefix + '[' + CleanString(VarKey + ': ' + E.Message) + ']' + postfix;
+      on E: Exception do
+      begin
+        case (config.ExceptionOption) of
+          0: exceptionString := '[' + CleanString(VarKey + ': ' + E.Message) + ']';
+          1: exceptionString := config.ExceptionText;
+          2: exceptionString := ''
+        end;
+        Line := prefix + exceptionString + postfix;
+
+      end;
     end;
   end;
 end;

@@ -59,6 +59,7 @@ type
     AppendConfigNameCheckBox: TCheckBox;
     AutoStart: TRadioButton;
     AutoStartHide: TRadioButton;
+    Bevel1: TBevel;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
@@ -77,15 +78,25 @@ type
     CChar6SpeedButton: TSpeedButton;
     CChar7SpeedButton: TSpeedButton;
     CChar8SpeedButton: TSpeedButton;
+    ExceptionTextEdit: TEdit;
     EnableSnappingCheckBox: TCheckBox;
     DistributedNetBrowseButton: TSpeedButton;
     DistributedNetLogfileEdit: TEdit;
+    GroupBox15: TGroupBox;
+    GroupBox16: TGroupBox;
+    Label18: TLabel;
     Label34: TLabel;
     ActionNewMenuItem: TMenuItem;
     ActionDuplicateMenuItem: TMenuItem;
     ActionDeleteMenuItem: TMenuItem;
+    Label43: TLabel;
+    Label5: TLabel;
+    Label60: TLabel;
+    Label61: TLabel;
+    Label62: TLabel;
     Label81: TLabel;
     Label82: TLabel;
+    Label83: TLabel;
     Line1ClearButton: TSpeedButton;
     Line2ClearButton: TSpeedButton;
     Line3ClearButton: TSpeedButton;
@@ -98,6 +109,7 @@ type
     HideScreensWithTextMenuItem: TMenuItem;
     HideNotEnabledMenuItem: TMenuItem;
     HideEnabledMenuItem: TMenuItem;
+    MenuItem1: TMenuItem;
     MoveLine1MenuItem: TMenuItem;
     MoveLine2MenuItem: TMenuItem;
     MoveLine3MenuItem: TMenuItem;
@@ -107,8 +119,14 @@ type
     MoveLine7MenuItem: TMenuItem;
     MoveLine8MenuItem: TMenuItem;
     MoveLinePopupMenu: TPopupMenu;
+    ExceptOpt0RadioButton: TRadioButton;
+    ExceptOpt1RadioButton: TRadioButton;
+    ExceptOpt2RadioButton: TRadioButton;
+    PluginsColorChooserPopupMenu: TPopupMenu;
+    ScreenEnabledCheckBox: TCheckBox;
+    ScreenLabel: TLabel;
+    ScreenSpinEdit: TSpinEdit;
     ScreenSpinEditPopupMenu: TPopupMenu;
-    ShowLegacyLoaderCheckbox: TCheckBox;
     GroupBox3: TGroupBox;
     Label80: TLabel;
     PluginTypeLabel: TLabel;
@@ -126,6 +144,7 @@ type
     ContrastTrackBar: TTrackBar;
     Label78: TLabel;
     Label79: TLabel;
+    ShowLegacyLoaderCheckbox: TCheckBox;
     ShowNetStatsCheckBox: TCheckBox;
     ShowGameStatsCheckBox: TCheckBox;
     ShowBOINCCheckBox: TCheckBox;
@@ -182,20 +201,14 @@ type
     Label1: TLabel;
     Label10: TLabel;
     Label14: TLabel;
-    Label18: TLabel;
     Label3: TLabel;
     Label4: TLabel;
-    Label43: TLabel;
     Label44: TLabel;
     Label45: TLabel;
-    Label5: TLabel;
     Label51: TLabel;
     Label58: TLabel;
     Label59: TLabel;
     Label6: TLabel;
-    Label60: TLabel;
-    Label61: TLabel;
-    Label62: TLabel;
     Label7: TLabel;
     Label71: TLabel;
     Label77: TLabel;
@@ -232,9 +245,6 @@ type
     ProgramScrollIntervalSpinEdit: TSpinEdit;
     ProgramSettingsGroupBox: TGroupBox;
     RandomizeScreensCheckBox: TCheckBox;
-    ScreenEnabledCheckBox: TCheckBox;
-    ScreenLabel: TLabel;
-    ScreenSpinEdit: TSpinEdit;
     SkinSelectComboBox: TComboBox;
     GroupBox2: TGroupBox;
     Label76: TLabel;
@@ -504,6 +514,7 @@ type
     procedure LineUpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure LineClearButtonClick(Sender: TObject);
     procedure MainPageControlResize(Sender: TObject);
+    procedure MenuItem1Click(Sender: TObject);
     procedure MoveLineMenuItemClick(Sender: TObject);
     procedure OpenPluginFolderButtonClick(Sender: TObject);
     procedure pdhRefreshButtonClick(Sender: TObject);
@@ -512,6 +523,8 @@ type
     procedure PluginDemoListBoxClick(Sender: TObject);
     procedure ListBoxKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure PluginDemoListBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure PluginListBoxMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ShowHiddenPluginsMenuItemClick(Sender: TObject);
@@ -612,6 +625,7 @@ type
     procedure FormEditMemoOnClick(Sender: TObject);
     procedure PluginListBoxDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
+    procedure OncolButton1ColorChanged(Sender: TObject);
   private
     CustomCharCheckBoxes: Array[0..40] of TCheckBox;
     SavedCustomCharButtons: Array[0..32] of TSpeedButton;
@@ -647,6 +661,7 @@ type
     procedure CCharDefFormOK(Sender: TObject);
     procedure CCharDefFormCancel(Sender: TObject);
     procedure CCharDefFormEditEnter(Sender: TObject);
+    procedure PluginsColorChooser(X, Y: integer);
   end;
 
 procedure UpdateSetupForm(cKey: char);
@@ -1643,6 +1658,13 @@ begin
   MainPageControl.ActivePageIndex := config.LastMainTabIndex;
 
   OneBySixteenLCDFixupCheckBox.Checked := config.OneBySixteenFixup;
+
+  case (config.ExceptionOption) of
+    0: ExceptOpt0RadioButton.Checked := true;
+    1: ExceptOpt1RadioButton.Checked := true;
+    2: ExceptOpt2RadioButton.Checked := true;
+  end;
+  ExceptionTextEdit.Text := config.ExceptionText;
 
   VariableEdit.Text := NoVariable;
 end;
@@ -2677,7 +2699,7 @@ end;
 
 procedure TSetupForm.InsertButtonClick(Sender: TObject);
 var
-  tempint, loop, sp, ep: integer;
+  tempint, loop, ep: integer;
 begin
   if VariableEdit.Text <> NoVariable then
   begin
@@ -3249,6 +3271,12 @@ begin
   config.ShowEmail := ShowEmailCheckBox.Checked;
   config.OneBySixteenFixup := OneBySixteenLCDFixupCheckBox.Checked;
   config.ShowLegacyLoader := ShowLegacyLoaderCheckbox.Checked;
+
+  if ExceptOpt0RadioButton.Checked then config.ExceptionOption := 0;
+  if ExceptOpt1RadioButton.Checked then config.ExceptionOption := 1;
+  if ExceptOpt2RadioButton.Checked then config.ExceptionOption := 2;
+  config.ExceptionText := ExceptionTextEdit.Text;
+
   config.save();
   {$IFNDEF STANDALONESETUP}
   if ReinitLcd then
@@ -3677,9 +3705,11 @@ var
   TextFileContent: TStrings;
   i, indexStart, indexEnd, p: integer;
   InfoList: TStringList;
+  infoType: string;
 begin
   GotInfo := false;
   GotDemo := false;
+  infoType := 'None';
   PluginName := ExtractFileName(PluginListBox.FileName);
   PluginDemoListBox.Clear;
 
@@ -3720,6 +3750,7 @@ begin
         end;
       end;
       GotInfo := true;
+      infoType := 'Dll';
     end;
   except
       on E: Exception do
@@ -3731,6 +3762,7 @@ begin
     if not (reply = '') then begin
       PluginDemoListBox.Items.AddDelimitedText(reply,#10,true);
       GotDemo := true;
+      infoType := 'Dll';
     end;
   except
     on E: Exception do
@@ -3771,6 +3803,7 @@ begin
           end;
         end;
         GotInfo := true;
+        infoType := 'Text';
       end;
 
       indexStart := TextFileContent.IndexOf('[[DEMO]]', 0);
@@ -3782,6 +3815,7 @@ begin
           PluginDemoListBox.Items.Add(TextFileContent[i]);
         end;
         GotDemo := true;
+        infoType := 'Text';
       end;
       TextFileContent.Free;
     end;
@@ -3795,6 +3829,190 @@ begin
     3: PluginTypeLabel.Caption := 'DotNet';
   end;
 
+  PluginListBox.Hint := 'Name: ' + PluginName + #13#10 + 'Type: ' +
+  PluginTypeLabel.Caption + #13#10' Info source: ' + infoType;
+end;
+
+//// Colorize demo box items
+procedure TSetupForm.PluginDemoListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  ListBox: TListBox;
+  Canvas: TCanvas;
+begin
+  ListBox := Control as TListBox;
+  Canvas := PluginDemoListBox.Canvas;
+  Canvas.Font.Color := clBlack;
+
+  if (Pos('$dll', lowercase(ListBox.Items[Index])) > 0) then
+  begin
+    Canvas.Brush.Color := config.demoColF;
+  end
+  else
+  if ((Pos('http://', lowercase(ListBox.Items[Index])) = 1) or
+    (Pos('https://', lowercase(ListBox.Items[Index])) = 1)) then
+    Canvas.Brush.Color := config.demoColE
+  else
+  if ((Pos('note', lowercase(ListBox.Items[Index])) = 1) or
+    (Pos('warn', lowercase(ListBox.Items[Index])) = 1)) then
+    begin
+      Canvas.Brush.Color := config.demoColD;
+      Canvas.Font.Bold := true;
+    end
+  else
+  if (pos('   ', lowercase(ListBox.Items[Index])) = 1) then
+    Canvas.Font.Bold := true
+  else
+  if ((Pos('---', lowercase(ListBox.Items[Index])) = 1) or
+    (Pos('###', lowercase(ListBox.Items[Index])) = 1)  or
+    (Pos('***', lowercase(ListBox.Items[Index])) = 1)  or
+    (Pos('>>>', lowercase(ListBox.Items[Index])) = 1)) then
+    begin
+    Canvas.Brush.Color := config.demoColC;
+    Canvas.Font.Bold := true;
+    end
+  else
+  if ((Pos('--', lowercase(ListBox.Items[Index])) = 1) or
+    (Pos('##', lowercase(ListBox.Items[Index])) = 1)  or
+    (Pos('**', lowercase(ListBox.Items[Index])) = 1)  or
+    (Pos('>>', lowercase(ListBox.Items[Index])) = 1)) then
+    Canvas.Brush.Color := config.demoColB
+  else
+  if ((Pos('-', lowercase(ListBox.Items[Index])) = 1) or
+    (Pos('#', lowercase(ListBox.Items[Index])) = 1)  or
+    (Pos('*', lowercase(ListBox.Items[Index])) = 1)  or
+    (Pos('>', lowercase(ListBox.Items[Index])) = 1)) then
+    Canvas.Brush.Color := config.demoColA
+  else
+//  if ((Pos(':', lowercase(ListBox.Items[Index])) = 1) or
+//    (Pos(';', lowercase(ListBox.Items[Index])) = 1)) then
+//    Canvas.Brush.Color := $80bcfc;
+
+  if odSelected in State then
+    Canvas.Brush.Color := clAqua;
+  Canvas.FillRect(ARect);
+  Canvas.TextOut(ARect.Left, ARect.Top, ListBox.Items[Index]);
+
+end;
+
+//// Plugins Demos Color Chooser
+procedure TSetupForm.MenuItem1Click(Sender: TObject);
+begin
+  PluginsColorChooser(mouse.CursorPos.X, mouse.CursorPos.Y);
+end;
+
+procedure TSetupForm.PluginsColorChooser(X, Y: integer);
+var
+  f: TForm;
+  colButton1: TColorButton; {-}
+  colLabel1: TLabel;
+  colButton2: TColorButton; {--}
+  colLabel2: TLabel;
+  colButton3: TColorButton; {---}
+  colLabel3: TLabel;
+  colButton4: TColorButton; {Note}
+  colLabel4: TLabel;
+  colButton5: TColorButton; {http://}
+  colLabel5: TLabel;
+  colButton6: TColorButton; {dll}
+  colLabel6: TLabel;
+begin
+  f := TForm.Create(nil);
+  f.Width := 180;
+  f.Height := 190;
+  f.Top := mouse.CursorPos.Y+10;
+  f.Left := mouse.CursorPos.X+10;
+  f.BorderStyle := bsDialog;
+  colButton1 := TColorButton.Create(f);
+  colButton1.Parent := f;
+  colButton1.Top := 0;
+  colButton1.ButtonColor := config.demoColA;
+  colButton1.OnColorChanged := oncolButton1ColorChanged;
+  colButton1.Name := 'A';
+  colLabel1 := TLabel.Create(f);
+  colLabel1.Parent := f;
+  colLabel1.Top := 0;
+  colLabel1.Left := 80;
+  colLabel1.Caption := '-, #, *, >';
+  colButton2 := TColorButton.Create(f);
+  colButton2.Parent := f;
+  colButton2.Top := 30;
+  colButton2.ButtonColor := config.demoColB;
+  colButton2.OnColorChanged := oncolButton1ColorChanged;
+  colButton2.Name := 'B';
+  colLabel2 := TLabel.Create(f);
+  colLabel2.Parent := f;
+  colLabel2.Top := 30;
+  colLabel2.Left := 80;
+  colLabel2.Caption := '--, ##, **, >>';
+  colButton3 := TColorButton.Create(f);
+  colButton3.Parent := f;
+  colButton3.Top := 60;
+  colButton3.ButtonColor := config.demoColC;
+  colButton3.OnColorChanged := oncolButton1ColorChanged;
+  colButton3.Name := 'C';
+  colLabel3 := TLabel.Create(f);
+  colLabel3.Parent := f;
+  colLabel3.Top := 60;
+  colLabel3.Left := 80;
+  colLabel3.Caption := '---, ###, ***, >>>';
+  colButton4 := TColorButton.Create(f);
+  colButton4.Parent := f;
+  colButton4.Top := 90;
+  colButton4.ButtonColor := config.demoColD;
+  colButton4.OnColorChanged := oncolButton1ColorChanged;
+  colButton4.Name := 'D';
+  colLabel4 := TLabel.Create(f);
+  colLabel4.Parent := f;
+  colLabel4.Top := 90;
+  colLabel4.Left := 80;
+  colLabel4.Caption := 'Note, Warn';
+  colButton5 := TColorButton.Create(f);
+  colButton5.Parent := f;
+  colButton5.Top := 120;
+  colButton5.ButtonColor := config.demoColE;
+  colButton5.OnColorChanged := oncolButton1ColorChanged;
+  colButton5.Name := 'E';
+  colLabel5 := TLabel.Create(f);
+  colLabel5.Parent := f;
+  colLabel5.Top := 120;
+  colLabel5.Left := 80;
+  colLabel5.Caption := 'http://, https://';
+  colButton6 := TColorButton.Create(f);
+  colButton6.Parent := f;
+  colButton6.Top := 150;
+  colButton6.ButtonColor := config.demoColF;
+  colButton6.OnColorChanged := oncolButton1ColorChanged;
+  colButton6.Name := 'F';
+  colLabel6 := TLabel.Create(f);
+  colLabel6.Parent := f;
+  colLabel6.Top := 150;
+  colLabel6.Left := 80;
+  colLabel6.Caption := '$dll';
+  f.ShowModal;
+  config.demoColA:=colButton1.ButtonColor;
+  config.demoColB:=colButton2.ButtonColor;
+  config.demoColC:=colButton3.ButtonColor;
+  config.demoColD:=colButton4.ButtonColor;
+  config.demoColE:=colButton5.ButtonColor;
+  config.demoColF:=colButton6.ButtonColor;
+  f.Free;
+end;
+
+procedure TSetupForm.oncolButton1ColorChanged(Sender: TObject);
+begin
+  with Sender as TColorButton do
+    case (Name[1]) of
+      'A': config.demoColA := ButtonColor;
+      'B': config.demoColB := ButtonColor;
+      'C': config.demoColC := ButtonColor;
+      'D': config.demoColD := ButtonColor;
+      'E': config.demoColE := ButtonColor;
+      'F': config.demoColF := ButtonColor;
+    end;
+
+  if not (PluginListBox.FileName  = '') then
+    PluginListBoxClick(nil);
 end;
 
 procedure TSetupForm.PluginDemoListBoxClick(Sender: TObject);
@@ -3807,12 +4025,12 @@ begin
   begin
     S := PluginDemoListBox.Items[PluginDemoListBox.ItemIndex];
 
-    if ((Pos('http://', lowercase(S)) = 1) or (Pos('https://', lowercase(S)) = 1)) and (GetKeyState(VK_SHIFT) < 0) then
+    if ((Pos('http://', lowercase(S)) = 1) or
+      (Pos('https://', lowercase(S)) = 1)) and (GetKeyState(VK_SHIFT) < 0) then
     Begin
       ShellExecute(0, Nil, pchar(S), Nil, Nil, SW_NORMAL);
       Exit;
     end;
-
 
     P := Pos('$', S);
     if P > 0 then
@@ -3838,11 +4056,8 @@ begin
     if FileExists(IconPathName) then
     begin
       GetIconFromFile(IconPathName, hIcon, SHIL_SMALL);
-
       TrayIconPreview16.Picture.Icon.Assign(hIcon);
-
       GetIconFromFile(IconPathName, hIcon, SHIL_LARGE);
-
       TrayIconPreview32.Picture.Icon.Assign(hIcon);
     end
     else
@@ -3984,6 +4199,7 @@ begin
     if assigned(FormEditArray[Loop]) then
       if Sender = FormEditArray[loop].Apply then
       begin
+        FormEditArray[loop].Memo1.Text := StringReplace(FormEditArray[loop].Memo1.Text, #13#10, ' ', [rfReplaceAll]);
         LineEditArray[FormEditArray[loop].LineNumber].Text := FormEditArray[loop].Memo1.Text;
       end;
 end;
@@ -3996,6 +4212,7 @@ begin
     if assigned(FormEditArray[Loop]) then
       if Sender = FormEditArray[loop].OK then
       begin
+        FormEditArray[loop].Memo1.Text := StringReplace(FormEditArray[loop].Memo1.Text, #13#10, ' ', [rfReplaceAll]);
         LineEditArray[FormEditArray[loop].LineNumber].Text := FormEditArray[loop].Memo1.Text;
         config.EditFormPosTop := FormEditArray[loop].Top;
         config.EditFormPosLeft := FormEditArray[loop].Left;

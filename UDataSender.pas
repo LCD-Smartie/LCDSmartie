@@ -6,7 +6,8 @@ interface
 
 uses
   SysUtils, DataThread, IdGlobal, classes,
-  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, UMain, IdExceptionCore;
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, UMain,
+  IdExceptionCore, UConfig;
 
 const
   SenderKeyPrefix = '$Sender';
@@ -74,7 +75,7 @@ var
    // I should make this fit MaxLineLen if there is one
   BufferArray :TIdBytes;
   linelen, linenum: integer;
-  t: string;
+  exceptionString: string;
 begin
   // make a delay that depends on the refresh interval rather than sleeping in the update thread
   if (SkipRefresh > 0) then
@@ -110,10 +111,15 @@ begin
         except
           on E : Exception do
           begin
-            RLine[1] := E.Message;
-            RLine[2] := E.Message;
-            RLine[3] := E.Message;
-            RLine[4] := E.Message;
+            case (config.ExceptionOption) of
+              0: exceptionString := '[Sender: ' + E.Message + ']';
+              1: exceptionString := config.ExceptionText;
+              2: exceptionString := ''
+            end;
+            RLine[1] := exceptionString;
+            RLine[2] := exceptionString;
+            RLine[3] := exceptionString;
+            RLine[4] := exceptionString;
             IdTCPClient1.Destroy;
             SenderInfo.ClientActive := false;
             SkipRefresh := 100;  // don't hammer the server. SkipRefresh x refresh interval
@@ -152,10 +158,15 @@ begin
             on E: EIdReadTimeOut do Exit;
             on E : Exception do
             begin
-              RLine[1] := E.Message;
-              RLine[2] := E.Message;
-              RLine[3] := E.Message;
-              RLine[4] := E.Message;
+              case (config.ExceptionOption) of
+                0: exceptionString := '[Sender: ' + E.Message + ']';
+                1: exceptionString := config.ExceptionText;
+                2: exceptionString := ''
+              end;
+              RLine[1] := exceptionString;
+              RLine[2] := exceptionString;
+              RLine[3] := exceptionString;
+              RLine[4] := exceptionString;
               SenderInfo.ClientActive := false;
               exit;
             end;

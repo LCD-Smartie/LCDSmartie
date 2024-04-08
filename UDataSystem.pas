@@ -25,7 +25,7 @@ unit UDataSystem;
 interface
 
 uses
-  DataThread, Windows, SysUtils, Classes, Registry, shellapi, JwaWindows, jwatlhelp32, jwaWinBase, usmbios, UMain;
+  DataThread, Windows, SysUtils, Classes, Registry, shellapi, JwaWindows, jwatlhelp32, jwaWinBase, usmbios, UMain, UConfig;
 
 const
   // lets put a prefix key to make it clear what they are
@@ -152,7 +152,6 @@ type
     SMBios: tsmbios;
     CPUType: string;
     CPUSpeed: double;
-    systeminfo: SYSTEM_INFO;
     PPIbuff: array of TPROCESSOR_POWER_INFORMATION;
     pdhQueryHandle: THANDLE;
     pdhCPUUsageCounterHandle: THANDLE;
@@ -757,10 +756,10 @@ var
   args: Array [1..maxArgs] of String;
   prefix, postfix: String;
   numArgs: Cardinal;
-  arg: string;
   i: integer;
   cpuname: string;
   cpuval: string;
+  exceptionString: string;
 begin
 
   fDataLock.Enter();
@@ -794,8 +793,16 @@ begin
 
         Line := prefix + cpuval + postfix
       except
-        on E: Exception do line := prefix + '[SysCPUCoreusage: '
-        + CleanString(E.Message) + ']' + postfix;
+        on E: Exception do
+        begin
+          case (config.ExceptionOption) of
+            0: exceptionString := '[SysCPUCoreusage: ' + CleanString(E.Message) + ']';
+            1: exceptionString := config.ExceptionText;
+            2: exceptionString := ''
+          end;
+
+          line := prefix + exceptionString + postfix;
+        end;
       end;
     end;
   end;
@@ -826,8 +833,17 @@ begin
 
         Line := prefix + cpuval + postfix
       except
-        on E: Exception do line := prefix + '[SysCPUCoreSpeed: '
-        + CleanString(E.Message) + ']' + postfix;
+        on E: Exception do
+        begin
+          case (config.ExceptionOption) of
+            0: exceptionString := '[SysCPUCoreSpeed: ' + CleanString(E.Message) + ']';
+            1: exceptionString := config.ExceptionText;
+            2: exceptionString := ''
+          end;
+
+          line := prefix + exceptionString + postfix;
+        end;
+
       end;
     end;
    end;

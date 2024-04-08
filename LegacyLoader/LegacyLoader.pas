@@ -246,6 +246,7 @@ end;
 function LegacyPluginLoader.ExecuteFunction(ID: integer; iFunc: integer; sParam1: string; sparam2: string): string;
 begin
   result := '';
+  if iFunc < 1 then raise Exception.Create('ID: '+inttostr(ID)+' Legacy Plugin '+dlls[ID].sName+' function ' + inttostr(iFunc) + ' not found');
   if iFunc <= iMaxPluginFuncs then
     try
       result := strpas(dlls[ID].functions[iFunc]( pchar(sParam1), pchar(sParam2)))
