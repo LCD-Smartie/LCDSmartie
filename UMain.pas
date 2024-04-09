@@ -1418,9 +1418,7 @@ begin
     end;
 
     if scrolldone then
-    begin
       scrollT := now;
-    end;
   end
   else
   begin          // TransitionTimer.Enabled = true

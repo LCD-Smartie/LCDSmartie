@@ -7,6 +7,80 @@ interface
 uses
   SysUtils, DataThread, UMain, UConfig;
 
+// Windows vista and later can use IfTable2 for 64 bit counters
+type
+  TInterfaceAndOperStatusFlags = record
+    HardwareInterface : boolean;
+    FilterInterface : boolean;
+    ConnectorPresent : boolean;
+    NotAuthenticated : boolean;
+    NotMediaConnected : boolean;
+    Paused : boolean;
+    LowPower : boolean;
+    EndPointInterface : boolean;
+  end;
+
+const
+  MAX_INTERFACE_NAME_LEN = 256;
+  IF_MAX_PHYS_ADDRESS_LENGTH = 32;
+  ANY_SIZE = 1;
+
+type
+  MIB_IF_ROW2 = record
+    InterfaceLuid: UINT64;
+    InterfaceIndex: UINT32;
+    InterfaceGuid: TGUID;
+    Alias: array [0..MAX_INTERFACE_NAME_LEN] of WCHAR;
+    Description: array [0..MAX_INTERFACE_NAME_LEN] of WCHAR;
+    PhysicalAddressLength: LongWord;
+    PhysicalAddress: array [0..IF_MAX_PHYS_ADDRESS_LENGTH - 1] of byte;
+    PermanentPhysicalAddress: array [0..IF_MAX_PHYS_ADDRESS_LENGTH - 1] of byte;
+    Mtu: UINT32;
+    ifType: UINT32;
+    TunnelType: INT32;
+    MediaType: INT32;
+    PhysicalMediumType: INT32;
+    AccessType: INT32;
+    DirectionType: INT32;
+    InterfaceAndOperStatusFlags: TInterfaceAndOperStatusFlags;
+    OperStatus: INT32;
+    AdminStatus: INT32;
+    MediaConnectState: INT32;
+    NetworkGuid: TGUID;
+    ConnectionType: INT32;
+    TransmitLinkSpeed: UINT64;
+    ReceiveLinkSpeed: UINT64;
+    InOctets: UINT64;
+    InUcastPkts: UINT64;
+    InNUcastPkts: UINT64;
+    InDiscards: UINT64;
+    InErrors: UINT64;
+    InUnknownProtos: UINT64;
+    InUcastOctets: UINT64;
+    InMulticastOctets: UINT64;
+    InBroadcastOctets: UINT64;
+    OutOctets: UINT64;
+    OutUcastPkts: UINT64;
+    OutNUcastPkts: UINT64;
+    OutDiscards: UINT64;
+    OutErrors: UINT64;
+    OutUcastOctets: UINT64;
+    OutMulticastOctets: UINT64;
+    OutBroadcastOctets: UINT64;
+    OutQLen: UINT64;
+  end;
+
+  type
+    PMIB_IF_TABLE2 = ^TMIB_IF_TABLE2;
+    TMIB_IF_TABLE2 = record
+      dwNumEntries: LongWord;
+      table: array [0..ANY_SIZE - 1] of MIB_IF_ROW2;
+    end;
+
+function GetIfTable2(var pIfTable2: PMIB_IF_TABLE2): DWORD; stdcall; external 'iphlpapi' name 'GetIfTable2';
+function FreeMibTable(pIfTable2: PMIB_IF_TABLE2): DWORD; stdcall; external 'iphlpapi' name 'FreeMibTable';
+// end IfTable2
+
 type
   TNetworkStatistics =
     (nsNetIPAddress, nsNetAdapter, nsNetDownK, nsNetUpK, nsNetDownM, nsNetUpM,
@@ -101,7 +175,9 @@ type
   private
     // network stats
     NetworkAdapterStats : Array[0..MAXNETSTATS-1] of TNetworkAdapterStats;
+    isWinVista: boolean;
     procedure ResolveNetVariable(Variable : TNetworkStatistics; var Line : string);
+    function getIsWinVista: boolean;
   protected
     function AllowRefresh : boolean; override;
     procedure  DoUpdate; override;
@@ -118,6 +194,7 @@ uses
 
 constructor TNetworkDataThread.Create;
 begin
+  isWinVista := getIsWinVista;
   inherited Create(1000);
 end;
 
@@ -131,6 +208,18 @@ begin
   Result := true;
 end;
 
+function TNetworkDataThread.getIsWinVista: Boolean;
+var
+  oviVersionInfo: windows.TOSVERSIONINFO;
+begin
+  oviVersionInfo.dwOSVersionInfoSize := SizeOf(oviVersionInfo);
+  if not windows.GetVersionEx(oviVersionInfo) then raise
+    Exception.Create('Can''t get the Windows version');
+  if (oviVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT) and
+    (oviVersionInfo.dwMajorVersion >= 6) then getIsWinVista := true
+  else getIsWinVista := false;
+end;
+
 procedure  TNetworkDataThread.DoUpdate;
 var
   Size: ULONG;
@@ -142,11 +231,16 @@ var
   BufLen: ULONG;
   Adapter, Adapters: PIP_ADAPTER_INFO;
   IPAddr: PIP_ADDR_STRING;
+  IntfTable2: PMIB_IF_TABLE2;
+  MibRow2: MIB_IF_ROW2;
+  i: integer;
 begin
 
   if (Active) then
   begin
- 
+    if isWinVista then
+      GetIfTable2(IntfTable2);
+
  //   GetHostName(Buffer, Sizeof(Buffer));
  //   phoste := GetHostByName(buffer);
  //   fDataLock.Enter();
@@ -174,6 +268,7 @@ begin
         for AdapterNumber := 0 to maxEntries - 1 do with NetworkAdapterStats[AdapterNumber] do
         begin
         {$R-}MibRow := IntfTable.Table[AdapterNumber];{$R+}
+
         // Ignore everything except ethernet cards
         //if MibRow.dwType <> MIB_IF_TYPE_ETHERNET then Continue;
 
@@ -184,50 +279,88 @@ begin
             fDataLock.Leave();
           end;
 
-          // System values have a limit of 4Gb, so keep our own values,
-          // and track overflows.
-          if (MibRow.dwInOctets < iPrevSysNetTotalDown) then
+          // Use IfTable2 on vista+
+          if isWinVista then
           begin
-            // System values have wrapped (at 4Gb)
-            iNetTotalDown := iNetTotalDown + MibRow.dwInOctets
-              + (MAXDWORD - iPrevSysNetTotalDown)
-          end
-          else
-          begin
-            iNetTotalDown := iNetTotalDown + (MibRow.dwInOctets - iPrevSysNetTotalDown);
-          end;
-          iPrevSysNetTotalDown := MibRow.dwInOctets;
+            // GetIfTable2 can't sort its results like GetIfTable
+            {$R-}
+            for i := 0 to maxEntries do
+              if IntfTable2.table[i].InterfaceIndex = MibRow.dwIndex then
+              begin
+                MibRow2 := IntfTable2.table[i];
+                break; // no need to search further
+              end;
+            {$R+}
 
-          // System values have a limit of 4Gb, so keep our own values,
-          // and track overflows.
-          if (MibRow.dwOutOctets < iPrevSysNetTotalUp) then
-          begin
-            // System values have wrapped (at 4Gb)
-            iNetTotalUp := iNetTotalUp + MibRow.dwOutOctets + (MAXDWORD - iPrevSysNetTotalUp)
+            iNetTotalDown := MibRow2.InOctets;
+            iNetTotalUp := MibRow2.OutOctets;
+            uiNetUnicastDown := MibRow2.InUcastPkts;
+            uiNetUnicastUp := MibRow2.OutUcastPkts;
+            uiNetNonUnicastDown := MibRow2.InNUcastPkts;
+            uiNetNonUnicastUp := MibRow2.OutNUcastPkts;
+            uiNetDiscardsDown := MibRow2.InDiscards;
+            uiNetDiscardsUp := MibRow2.OutDiscards;
+            uiNetErrorsDown := MibRow2.InErrors;
+            uiNetErrorsUp := MibRow2.OutErrors;
+
+            dNetSpeedDownK := round((iNetTotalDown-iNetTotalDownOld)/1024*10)/10;
+            dNetSpeedUpK := round((iNetTotalUp-iNetTotalupOld)/1024*10)/10;
+            dNetSpeedDownM := round(((iNetTotalDown-iNetTotalDownOld) div 1024)/1024*10)/10;
+            dNetSpeedUpM := round(((iNetTotalUp-iNetTotalUpOld) div 1024)/1024*10)/10;
+
+            iNetTotalDownOld := iNetTotalDown;
+            iNetTotalUpOld := iNetTotalUp;
           end
-          else
+          else // use old 32 bit IfTable counters
           begin
-            iNetTotalUp := iNetTotalUp + (MibRow.dwOutOctets - iPrevSysNetTotalUp);
+            // System values have a limit of 4Gb, so keep our own values,
+            // and track overflows.
+            if (MibRow.dwInOctets < iPrevSysNetTotalDown) then
+            begin
+              // System values have wrapped (at 4Gb)
+              iNetTotalDown := iNetTotalDown + MibRow.dwInOctets
+                + (MAXDWORD - iPrevSysNetTotalDown)
+            end
+            else
+            begin
+              iNetTotalDown := iNetTotalDown + (MibRow.dwInOctets - iPrevSysNetTotalDown);
+            end;
+            iPrevSysNetTotalDown := MibRow.dwInOctets;
+
+            // System values have a limit of 4Gb, so keep our own values,
+            // and track overflows.
+            if (MibRow.dwOutOctets < iPrevSysNetTotalUp) then
+            begin
+              // System values have wrapped (at 4Gb)
+              iNetTotalUp := iNetTotalUp + MibRow.dwOutOctets + (MAXDWORD - iPrevSysNetTotalUp)
+            end
+            else
+            begin
+              iNetTotalUp := iNetTotalUp + (MibRow.dwOutOctets - iPrevSysNetTotalUp);
+            end;
+            iPrevSysNetTotalUp := MibRow.dwOutOctets;
+            uiNetUnicastDown := MibRow.dwInUcastPkts;
+            uiNetUnicastUp := MibRow.dwOutUcastPkts;
+            uiNetNonUnicastDown := MibRow.dwInNUcastPkts;
+            uiNetNonUnicastUp := MibRow.dwOutNUcastPkts;
+            uiNetDiscardsDown := MibRow.dwInDiscards;
+            uiNetDiscardsUp := MibRow.dwOutDiscards;
+            uiNetErrorsDown := MibRow.dwInErrors;
+            uiNetErrorsUp := MibRow.dwOutErrors;
+
+            dNetSpeedDownK := round((iNetTotalDown-iNetTotalDownOld)/1024*10)/10;
+            dNetSpeedUpK := round((iNetTotalUp-iNetTotalupOld)/1024*10)/10;
+            dNetSpeedDownM := round(((iNetTotalDown-iNetTotalDownOld) div 1024)/1024*10)/10;
+            dNetSpeedUpM := round(((iNetTotalUp-iNetTotalUpOld) div 1024)/1024*10)/10;
+
+            iNetTotalDownOld := iNetTotalDown;
+            iNetTotalUpOld := iNetTotalUp;
           end;
-          iPrevSysNetTotalUp := MibRow.dwOutOctets;
-          uiNetUnicastDown := MibRow.dwInUcastPkts;
-          uiNetUnicastUp := MibRow.dwOutUcastPkts;
-          uiNetNonUnicastDown := MibRow.dwInNUcastPkts;
-          uiNetNonUnicastUp := MibRow.dwOutNUcastPkts;
-          uiNetDiscardsDown := MibRow.dwInDiscards;
-          uiNetDiscardsUp := MibRow.dwOutDiscards;
-          uiNetErrorsDown := MibRow.dwInErrors;
-          uiNetErrorsUp := MibRow.dwOutErrors;
-          dNetSpeedDownK := round((iNetTotalDown-iNetTotalDownOld)/1024*10)/10;
-          dNetSpeedUpK := round((iNetTotalUp-iNetTotalupOld)/1024*10)/10;
-          dNetSpeedDownM := round(((iNetTotalDown-iNetTotalDownOld) div 1024)/1024*10)/10;
-          dNetSpeedUpM := round(((iNetTotalUp-iNetTotalUpOld) div 1024)/1024*10)/10;
-          iNetTotalDownOld := iNetTotalDown;
-          iNetTotalUpOld := iNetTotalUp;
         end;
       end;
     finally
       if (IntfTable <> nil) then FreeMem(IntfTable);
+      if isWinVista then FreeMibTable(IntfTable2);
     end;
 
     BufLen := 1024*15;
@@ -264,7 +397,6 @@ begin
     finally
       FreeMem(Adapters);
     end;
-
   end;
 end;
 
