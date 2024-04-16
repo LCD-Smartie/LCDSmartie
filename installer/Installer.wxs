@@ -9,7 +9,7 @@
 		<?define UpgradeCode = "b776587d-e022-4a12-89ef-bb7f7a1e5145" ?>
 	<?endif?>
 	<!-- This builds a Windows Installer 4.5 MSI - the x64 and x86 versions are considered separate and installed to separate locations because of technical reasons (component rules). -->
-    <Package Name="LCD Smartie $(Suffix)" Version="5.6.0.0" Manufacturer="LCD Smartie Team" UpgradeCode="$(UpgradeCode)" UpgradeStrategy="majorUpgrade" Scope="perUser" InstallerVersion="405">
+	<Package Name="LCD Smartie $(Suffix)" Version="5.6.0.0" Manufacturer="LCD Smartie Team" UpgradeCode="$(UpgradeCode)" UpgradeStrategy="majorUpgrade" Scope="perUser" InstallerVersion="405">
 		<ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
 		<MediaTemplate EmbedCab="yes" />
 		<!-- Required to not clobber config.ini! Note that this requires strict adherence to the component rules, 
@@ -32,5 +32,5 @@
 			</Directory>
 		</StandardDirectory>
 		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-    </Package>
+	</Package>
 </Wix>
