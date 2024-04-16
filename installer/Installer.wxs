@@ -23,7 +23,7 @@
 						<Exclude Files="..\..\$(ReleaseDir)\config.ini" />
 					</Files>
 					<File Source="$(ReleaseDir)\LCDSmartie.exe">
-						<Shortcut Directory="StartMenuFolder" Name="LCD Smartie $(Suffix)"/>
+						<Shortcut Directory="ProgramMenuFolder" Name="LCD Smartie $(Suffix)"/>
 					</File>
 					<Component Guid="*" NeverOverwrite="yes"> <!-- Never ever overwrite config.ini! It will, however, still be wiped on a repair. -->
 						<File Source="$(ReleaseDir)\config.ini" KeyPath="yes" />
