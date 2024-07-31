@@ -1,0 +1,36 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+	<?if $(sys.BUILDARCH) = x64?>
+		<?define ReleaseDir = "..\x64\release-dir" ?>
+		<?define Suffix = "(x64)" ?>
+		<?define UpgradeCode = "c67f8d58-275a-4ec7-9da8-1899e519134e" ?>
+	<?else?>
+		<?define ReleaseDir = "..\release-dir" ?>
+		<?define Suffix = "(x86)" ?>
+		<?define UpgradeCode = "b776587d-e022-4a12-89ef-bb7f7a1e5145" ?>
+	<?endif?>
+	<!-- This builds a Windows Installer 4.5 MSI - the x64 and x86 versions are considered separate and installed to separate locations because of technical reasons (component rules). -->
+	<Package Name="LCD Smartie $(Suffix)" Version="5.6.0.0" Manufacturer="LCD Smartie Team" UpgradeCode="$(UpgradeCode)" UpgradeStrategy="majorUpgrade" Scope="perUser" InstallerVersion="405">
+		<ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+		<MediaTemplate EmbedCab="yes" />
+		<!-- Required to not clobber config.ini! Note that this requires strict adherence to the component rules, 
+			 see https://learn.microsoft.com/en-us/windows/win32/msi/organizing-applications-into-components -->
+		<MajorUpgrade Schedule="afterInstallExecute" AllowDowngrades="yes" />
+		<StandardDirectory Id="LocalAppDataFolder">
+			<Directory Name="Programs">
+				<Directory Name="LCD Smartie $(Suffix)" Id="INSTALLFOLDER">
+					<Files Include="..\..\$(ReleaseDir)\**">
+						<Exclude Files="..\..\$(ReleaseDir)\LCDSmartie.exe" />
+						<Exclude Files="..\..\$(ReleaseDir)\config.ini" />
+					</Files>
+					<File Source="$(ReleaseDir)\LCDSmartie.exe">
+						<Shortcut Directory="ProgramMenuFolder" Name="LCD Smartie $(Suffix)"/>
+					</File>
+					<Component Guid="*" NeverOverwrite="yes"> <!-- Never ever overwrite config.ini! It will, however, still be wiped on a repair. -->
+						<File Source="$(ReleaseDir)\config.ini" KeyPath="yes" />
+					</Component>
+				</Directory>
+			</Directory>
+		</StandardDirectory>
+		<WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+	</Package>
+</Wix>
