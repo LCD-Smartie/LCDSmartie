@@ -56,12 +56,13 @@ function FileToString(sFilename: String): String;
 function stripspaces(FString: String): String;
 procedure RequiredParameters(uiArgs: Cardinal; uiMinArgs: Cardinal; uiMaxArgs: Cardinal = 0);
 function stripHtml(str: String): String;
+function PrintException(Ex: String): String;
 
 
 implementation
 
 uses
-  Windows, Registry, ShlObj, ActiveX, ComObj, Forms, StrUtils;
+  Windows, Registry, ShlObj, ActiveX, ComObj, Forms, StrUtils, UConfig;
 
 constructor TMyThread.Create(myMethod: TThreadMethod);
 begin
@@ -493,6 +494,16 @@ begin
     raise Exception.Create('Too few parameters');
   if (uiArgs > uiMaxArgs) then
     raise Exception.Create('Too many parameters');
+end;
+
+function PrintException(Ex: String): String;
+begin
+  case (config.ExceptionOption) of
+    1: result := config.ExceptionText;
+    2: result := ''
+    else
+      result := Ex;
+  end;
 end;
 
 begin

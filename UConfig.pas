@@ -689,12 +689,12 @@ begin
   ExceptionOption := initfile.ReadInteger('General Settings', 'ExceptionOption', 0);
   ExceptionText := initFile.ReadString('General Settings', 'ExceptionText', 'ExExEx');
 
-  demoColA := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColA', '$00A2CBFF'));
+  demoColA := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColA', '$002B9AAE'));
   demoColB := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColB', '$00F5872C'));
-  demoColC := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColC', '$00C891FF'));
-  demoColD := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColD', '$005656FF'));
-  demoColE := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColE', '$00B3FFFF'));
-  demoColF := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColF', '$009EF39E'));
+  demoColC := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColC', '$001FC727'));
+  demoColD := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColD', '$004A4AFF'));
+  demoColE := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColE', '$005ED6DF'));
+  demoColF := StringToColor(initfile.ReadString('Plugin Demo Colors', 'demoColF', '$00C2F8C2'));
 
   result := true;
   initfile.Free;
@@ -705,7 +705,7 @@ end;
 procedure TConfig.saveINI;
 var
   initfile : TMemINIFile;
-  sScreen, sLine, sPOPAccount, sGameLine: String;
+  sScreen, sLine, sPOPAccount, sGameLine, tempStr: String;
   ActionsCount, MailCount, ScreenCount, LineCount, boincAccountsCount, i: Integer;
   sPrefix: String;
 begin
@@ -786,7 +786,10 @@ begin
     for LineCount := 1 to MaxLines do
     begin
       sLine := Format('%.2u', [LineCount], localeFormat);
-      initFile.WriteString(sScreen, 'Text' + sLine, '"'+screen[ScreenCount].line[LineCount].text+'"');
+      // try to remove newlines that may occur in the screen text
+      tempStr := StringReplace(screen[ScreenCount].line[LineCount].text, #10, '', [rfReplaceAll]);
+      tempStr := StringReplace(tempStr, #13, '', [rfReplaceAll]);
+      initFile.WriteString(sScreen, 'Text' + sLine, '"' + tempStr + '"');
     end;
 
     for LineCount := 1 to MaxLines do

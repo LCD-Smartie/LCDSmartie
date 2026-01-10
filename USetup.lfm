@@ -1,7 +1,7 @@
 object SetupForm: TSetupForm
-  Left = 844
+  Left = 265
   Height = 522
-  Top = 157
+  Top = 95
   Width = 855
   Anchors = []
   Caption = 'LCD Smartie 5.x Setup'
@@ -37,7 +37,7 @@ object SetupForm: TSetupForm
     Top = 3
     Width = 590
     TabStop = False
-    ActivePage = MyTabSheet
+    ActivePage = ScreensTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     Constraints.MinWidth = 589
     Font.CharSet = ANSI_CHARSET
@@ -45,7 +45,7 @@ object SetupForm: TSetupForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     ParentFont = False
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 7
     OnChange = MainPageControlChange
     OnResize = MainPageControlResize

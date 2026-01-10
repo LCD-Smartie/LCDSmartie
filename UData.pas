@@ -327,18 +327,6 @@ begin
   bForceRefresh := false;
 end;
 
-function exceptionMessage(message: string): string;
-var
-  exceptionString: string;
-begin
-  case (config.ExceptionOption) of
-    0: exceptionString := message;
-    1: exceptionString := config.ExceptionText;
-    2: exceptionString := ''
-  end;
-  result := exceptionString;
-end;
-
 function TData.change(line: String; qstattemp: Integer = 1;
    bCacheResults: Boolean = false): String;
 label
@@ -367,7 +355,7 @@ endChange:
   except
     on E: Exception do
     begin
-      line := exceptionMessage('[Unhandled Exception: ' + CleanString(E.Message) + ']');
+      line := PrintException('[Unhandled Exception: ' + CleanString(E.Message) + ']');
     end;
   end;
 
@@ -483,7 +471,7 @@ begin
 
       line := prefix + FloatToStr(ccount, fmt) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Count: '
+      on E: Exception do line := prefix + PrintException('[Count: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -496,7 +484,7 @@ begin
       storage[strtoint(change(args[2]))] := change(args[1]);
       line := prefix + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Count: '
+      on E: Exception do line := prefix + PrintException('[Count: '
           + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -509,7 +497,7 @@ begin
       RequiredParameters(numargs, 1, 1);
       line := prefix + storage[strtoint(change(args[1]))] + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Count: '
+      on E: Exception do line := prefix + PrintException('[Count: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -522,7 +510,7 @@ begin
       t := power(10, strtoint(change(args[2])));
       line := prefix + floattostr(round(strtofloat(change(args[1]),fmt)*t)/t,fmt) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Round: '
+      on E: Exception do line := prefix + PrintException('[Round: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -534,7 +522,7 @@ begin
       RequiredParameters(numargs, 2, 2);
       line := prefix + floattostr(strtofloat(change(args[1]),fmt) + strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Add: '
+      on E: Exception do line := prefix + PrintException('[Add: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -546,7 +534,7 @@ begin
       RequiredParameters(numargs, 2, 2);
       line := prefix + floattostr(strtofloat(change(args[1]),fmt) - strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Sub: '
+      on E: Exception do line := prefix + PrintException('[Sub: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -558,7 +546,7 @@ begin
       RequiredParameters(numargs, 2, 2);
       line := prefix + floattostr(strtofloat(change(args[1]),fmt) * strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Mul: '
+      on E: Exception do line := prefix + PrintException('[Mul: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -570,7 +558,7 @@ begin
       RequiredParameters(numargs, 2, 2);
       line := prefix + floattostr(strtofloat(change(args[1]),fmt) / strtofloat(change(args[2]),fmt),fmt) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Div: '
+      on E: Exception do line := prefix + PrintException('[Div: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -596,7 +584,7 @@ begin
       tempst := formatdatetime(line2, now, localeFormat);
       line := StringReplace(line, '$Time(' + line2 + ')', tempst, []);
     except
-      on E: Exception do line := StringReplace(line, '$Time(', exceptionMessage('[Time: '
+      on E: Exception do line := StringReplace(line, '$Time(', PrintException('[Time: '
         + CleanString(E.Message) + ']'), []);
     end;
   end;
@@ -621,7 +609,7 @@ begin
       LCDSmartieDisplayForm.customchar(AnsiMidStr(line, iPos1+12, iPos2-(iPos1+12)));
       Delete(line, iPos1, iPos2-iPos1+1);
     except
-      on E: Exception do line := StringReplace(line, '$CustomChar(', exceptionMessage(
+      on E: Exception do line := StringReplace(line, '$CustomChar(', PrintException(
         '[CustomChar: ' + CleanString(E.Message) + ']'), []);
     end;
     iPos1 :=  PosEx('$CustomChar(', line, iPos1);
@@ -648,7 +636,7 @@ begin
         + line2 + '$)$', spaceline, [])
       else line := StringReplace(line, '$Flash(', 'ERROR', []);
     except
-      on E: Exception do line := StringReplace(line, '$Flash(', exceptionMessage('[Flash: '
+      on E: Exception do line := StringReplace(line, '$Flash(', PrintException('[Flash: '
         + CleanString(E.Message) + ']'), []);
     end;
   end;
@@ -670,7 +658,7 @@ begin
       LCDSmartieDisplayForm.lcd.SetColor(r, g, b);
       line := prefix + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Color: '
+      on E: Exception do line := prefix + PrintException('[Color: '
           + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -706,7 +694,7 @@ begin
       if (spacecount >  iPos2-(iPos1+7)) then
         Insert(DupeString(' ', spacecount-(iPos2-(iPos1+7))), line, iPos1);
     except
-      on E: Exception do line := StringReplace(line, '$Right(', exceptionMessage('[Right: '
+      on E: Exception do line := StringReplace(line, '$Right(', PrintException('[Right: '
         + CleanString(E.Message) + ']'), []);
     end;
 
@@ -723,7 +711,7 @@ begin
 
       line := prefix + CenterText(change(args[1]), spacecount) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Center: '
+      on E: Exception do line := prefix + PrintException('[Center: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -734,7 +722,7 @@ begin
       RequiredParameters(numargs, 1, 1);
       line := prefix + Chr(StrToInt(change(args[1]))) + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Chr: '
+      on E: Exception do line := prefix + PrintException('[Chr: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -751,7 +739,7 @@ begin
 
       line := prefix + spaceline + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Fill: ' + E.Message + ']') +
+      on E: Exception do line := prefix + PrintException('[Fill: ' + E.Message + ']') +
         postfix;
     end;
   end;
@@ -778,7 +766,7 @@ begin
 
       line := prefix + STHDBar + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[Bar: '
+      on E: Exception do line := prefix + PrintException('[Bar: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -852,7 +840,7 @@ begin
       Lines.Free;
       line := prefix + spaceline + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[LogFile: '
+      on E: Exception do line := prefix + PrintException('[LogFile: '
         + CleanString(E.message) + ']') + postfix;
     end;
   end;
@@ -874,7 +862,7 @@ begin
       closefile(fFile3);
       line := prefix + line3 + postfix;
     except
-      on E: Exception do line := prefix + exceptionMessage('[File: '
+      on E: Exception do line := prefix + PrintException('[File: '
         + CleanString(E.Message) + ']') + postfix;
     end;
   end;
@@ -932,7 +920,7 @@ begin
           sAnswer := CallPlugin(uiPlugin, StrToInt(change(args[2])), change(args[3], qstattemp), change(args[4], qstattemp));
         except
           on E: Exception do
-            sAnswer := '[Dll: ' + CleanString(E.Message) + ']';
+            sAnswer := PrintException('[Dll: ' + CleanString(E.Message) + ']');
         end;
       end;
 
@@ -953,7 +941,7 @@ begin
       line := prefix +  sAnswer + postfix;
     except
       on E: Exception do
-        line := prefix + exceptionMessage('[Dll: ' + CleanString(E.Message) + ']') + postfix;
+        line := prefix + PrintException('[Dll: ' + CleanString(E.Message) + ']') + postfix;
     end;
   end;
 end;
@@ -986,12 +974,7 @@ begin
         on E: Exception do
         begin
           //showmessage('Load of plugin failed: ' + e.Message); // bloody annoying popup
-          case (config.ExceptionOption) of
-            0: exceptionString := E.Message;
-            1: exceptionString := config.ExceptionText;
-            2: exceptionString := ''
-          end;
-          dllmessage := exceptionString; // save it here instead so we can print it out later
+          dllmessage := PrintException(E.Message); // save it here instead so we can print it out later
         end;
       end;
     end;
@@ -1046,17 +1029,17 @@ begin
         else if @dlls[uiDll].functions[iFunc] <> nil then
           Result := dlls[uiDll].functions[iFunc]( pchar(sParam1), pchar(sParam2) )
         else
-          Result := '[Dll: Function not found]';
+          Result := PrintException('[Dll: Function not found]');
       except
         on E: Exception do
-          Result := '[Dll: ' + CleanString(E.Message) + ']';
+          Result := PrintException('[Dll: ' + CleanString(E.Message) + ']');
       end;
     end
     else
-      Result := '[Dll: function number out of range]';
+      Result := PrintException('[Dll: function number out of range]');
   end
   else
-    Result := '[Dll: Can not load plugin]' + dllmessage;
+    Result := PrintException('[Dll: Can not load plugin]' + dllmessage);
 end;
 
 procedure TData.LoadPlugin(sDllName: String; bDotNet: Boolean = false);

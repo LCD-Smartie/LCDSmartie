@@ -1,7 +1,7 @@
 object FormEdit: TFormEdit
-  Left = 1200
+  Left = 521
   Height = 177
-  Top = 118
+  Top = 106
   Width = 366
   BorderIcons = []
   BorderStyle = bsSizeToolWin
@@ -14,7 +14,7 @@ object FormEdit: TFormEdit
   Font.Name = 'Tahoma'
   SnapOptions.SnapToMonitor = True
   SnapOptions.SnapToForms = True
-  LCLVersion = '3.0.0.1'
+  LCLVersion = '3.2.0.0'
   object Memo1: TMemo
     Left = 0
     Height = 141

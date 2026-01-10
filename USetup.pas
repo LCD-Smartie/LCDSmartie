@@ -3094,8 +3094,9 @@ end;
 
 procedure TSetupForm.Splitter1ChangeBounds(Sender: TObject);
 begin
-  if Splitter1.Left < LeftPageControl.Constraints.MinWidth then
-     Splitter1.Left := LeftPageControl.Width;
+  if (Splitter1.Left < LeftPageControl.Constraints.MinWidth) then
+     if (WindowState <> wsMinimized) and (Splitter1.Left > 0) then
+       Splitter1.Left := LeftPageControl.Width;
   self.Update;
 end;
 
