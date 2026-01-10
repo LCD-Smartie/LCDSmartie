@@ -31,7 +31,7 @@
     > New actions added _HTTPReq, HTTPPost, ActionAfterSecs, ActionAndDisable, EnableAction, SystemVolumeUp, SystemVolumeDown, SystemVolumeMute\
     > New event related to action added _ActionEnabled_ under Misc. tab.\
     > Added Actions log window to help user inspect action activity.\
-    > Added alternative row addressing support on LCD Settings.
+ - Added alternative row addressing support on LCD Settings.
  - Char editor side tab renewed with 32 slots for design and save custom characters and an additional copy slot to help on multiple characters design.
  - Remote Display function was further developed to be more stable.
  - Few interface bugs fixed.
